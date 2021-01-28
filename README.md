@@ -1,4 +1,4 @@
-# MAPME Protected Aras
+# MAPME Protected Areas
 
 Repository for creating reproducible geodata processing routines to analyze protected areas. 
 
