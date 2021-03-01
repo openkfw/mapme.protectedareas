@@ -1,0 +1,74 @@
+---
+title: "Dopa REST Services"
+author: "Om P Bhandari"
+date: "3/1/2021"
+output: html_document
+---
+
+### Introduction
+
+Digital Observatory for Protected Areas (DOPA) Explorer is an initiative from the Joint Research Centre (JRC), European Commission which is the web-based information system of the Protected Areas (PAs) providing information on the global level. They have maintained huge datasets of the PAs and can be accessed through REST API. The script `dopa-rest.R` provides different functions to access the datasets in CSV format. 
+<br />
+<br />
+The functions listed in the `dopa-rest.R` are:
+
+1. `redlist_status` takes wdpaid as argument. Returns statistics (counts species, by class, by IUCN categories) for species (Corals, Sharks & Rays, Amphibians, Birds, Mammals) in Protected Area; calculated as intersection of species ranges with WDPA.
+<br />
+<br />
+2. `redlist_list` takes wdpaid as argument. Returns list of species (Corals, Sharks & Rays, Amphibians, Birds, Mammals) in Protected Area; calculated as intersection of species ranges with WDPA.
+<br />
+<br />
+3. `wdpalevel_centroid` takes wdpaid as argument. Calculates WDPA point coordinates (x,y) in EPSG 4326 (Lat Long WGS84) for points PAs real coords are shown. For polygon PAs centroids are calculated with the function ST_PointOnSurface, which returns a point guaranteed to lie on the surface.
+<br />
+<br />
+4. `water_stats` takes wdpaid as argument. Returns information on the current surface area of permanent and seasonal water, and the net change over the period 1984-2015.
+<br />
+<br />
+5. `all_indicators` takes wdpaid as argument. Returns all indicators for Protected Areas.
+<br />
+<br />
+6. `landcover_change` takes wdpaid as argument. Returns absolute cover of ESA LC CCI classes (aggregated by level 1: 4 classes) which changed within first and last epoch i.e. 1995 & 2015 for a given WDPA.
+<br />
+<br />
+7. `landcover_esa` takes wdpaid, year (1995,2000,2005,2010,2015), and aggregation level (0,1,2,3) as arguments. Returns percentage and absolute cover of different ESA CCI LC classes for a given WDPA Aggregation levels 0 (original ESA LC classes), 1, 2 and 3 are available.
+<br />
+<br />
+8. `lcc_percent` takes wdpaid as argument. Returns percentage and absolute cover of ESA LC CCI classes which changed within first and last epoch for a given WDPA.
+<br />
+<br />
+9. `landcover_copernicus` takes wdpaid and aggregation level (0,2) as arguments. Returns percentage and absolute cover of Copernicus Land Cover classes for a given WDPA aggregation levels 0 (original Copernicus LC classes) and 2 (DOPA) are available.
+<br />
+<br />
+10. `normalizedind_country` takes an indicator as argument, one among the listed many in `all_indicators`. Returns, for protected area in country, absolute, normalized and average value of the selected indicator, and ranking within the country.
+<br />
+<br />
+11. `normalizedind_ecoregion` takes an indicator as argument, one among the listed many in `all_indicators` and ecoregion id as arguments. Returns, for protected area in ecoregion, absolute, normalized and average value of the selected indicator, and ranking within the ecoregion.
+<br />
+<br />
+12. `get_dopa` is a global function and takes one of the four topics ("protected_sites", "species", "water", "landcover"), one of the seven getQuery ("get_wdpa_level_centroid", "get_pa_water_stats", "get_pa_redlist_status", "get_pa_redlist_list", "get_wdpa_all_inds", "get_wdpa_lcc_esa", "get_wdpa_lcc_esa_percent") and wdpaid as arguments. Returns the desired variables in CSV format.
+<br />
+<br />
+
+
+
+
+
+```{r}
+
+```
+
+
+### Data
+
+```{r}
+
+```
+
+### Methods
+
+```{r}
+
+```
+
+
+### References
