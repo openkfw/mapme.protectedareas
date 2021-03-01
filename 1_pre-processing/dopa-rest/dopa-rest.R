@@ -1,11 +1,10 @@
 #  dopa-rest.R
 
 
-## (1) request redlist_status per wdpaid
-# Returns statistics (counts species, by class, by IUCN categories) for species...
-#...(Corals, Sharks & Rays, Amphibians, Birds, Mammals) in Protected Area; calculated...
-#...as intersection of species ranges with WDPA
-
+## (1) redlist_status
+# request redlist_status per wdpaid
+# Returns statistics (counts species, by class, by IUCN categories) for species (Corals, Sharks & Rays, Amphibians, Birds, Mammals) in Protected Area;...
+#...calculated as intersection of species ranges with WDPA
 
 redlist_status <- function(wdpaid){
   # create the url
@@ -36,14 +35,13 @@ df.redlist_status<-data.frame(class=NA,
                               data_deficient=NA,
                               wdpa_id=NA)
 
-
 #example
 redlist_status(146)
 
 
-## (2) request redlist_list per wdpaid
-# Returns list of species (Corals, Sharks & Rays, Amphibians, Birds, Mammals)...
-#...in Protected Area; calculated as intersection of species ranges with WDPA
+## (2) redlist_list 
+# request redlist_list per wdpaid
+# Returns list of species (Corals, Sharks & Rays, Amphibians, Birds, Mammals) in Protected Area; calculated as intersection of species ranges with WDPA
 
 redlist_list <- function(wdpaid){
   # create the url
@@ -73,14 +71,13 @@ df.redlist_list<-data.frame(iucn_species_id=NA,
                               code=NA,
                               wdpa_id=NA)
 
-
 #example
 redlist_list(63645)
 
 
-## (3) request get_wdpa_level_centroid per wdpaid
-# Calculates WDPA point coordinates (x,y) in EPSG 4326 (Lat Long WGS84)...
-#...For points PAs real coords are shown. For polygon PAs centroids are calculated with the...
+## (3) wdpalevel_centroid 
+# request get_wdpa_level_centroid per wdpaid
+# Calculates WDPA point coordinates (x,y) in EPSG 4326 (Lat Long WGS84) for points PAs real coords are shown. For polygon PAs centroids are calculated with the...
 #...function ST_PointOnSurface, which returns a point guaranteed to lie on the surface.
 
 wdpalevel_centroid <- function(wdpaid){
@@ -106,15 +103,13 @@ df.wdpalevel_centroid <- data.frame(wdpaid=NA,
                             x=NA,
                             y=NA)
 
-
 #example
 wdpalevel_centroid(555528898)
 
 
-
-## (4) request get_pa_water-stats per wdpaid
-# Returns information on the current surface area of permanent and seasonal water,...
-#...and the net change over the period 1984-2015
+## (4) water_stats 
+# request get_pa_water-stats per wdpaid
+# Returns information on the current surface area of permanent and seasonal water, and the net change over the period 1984-2015
 
 water_stats <- function(wdpaid){
   # create the url
@@ -144,7 +139,8 @@ df.water_stats <- data.frame(wdpaid=NA,
 water_stats(671)
 
 
-## (5) request get_wdpa_all_indicators per wdpaid
+## (5) all_indicators
+# request get_wdpa_all_indicators per wdpaid
 # Returns all indicators for pa
 
 all_indicators <- function(wdpaid){
@@ -158,9 +154,9 @@ all_indicators <- function(wdpaid){
 all_indicators(142)
 
 
-## (6) request get_wdpa_lcc-esa per wdpaid
-# For a given WDPA, returns absolute cover of ESA LC CCI classes (aggregated by level 1: 4 classes)...
-#...which changed within first and last epoch i.e. 1995 & 2015
+## (6) landcover_change 
+# request get_wdpa_lcc-esa per wdpaid
+# For a given WDPA, returns absolute cover of ESA LC CCI classes (aggregated by level 1: 4 classes) which changed within first and last epoch i.e. 1995 & 2015
 
 landcover_change <- function(wdpaid){
   # create the url
@@ -189,10 +185,9 @@ df.landcover_change <- data.frame(lc1_1995=NA,
 landcover_change(32671)
 
 
-## (7) request get_wdpa_lc-esa per wdpaid and year(1995,2000,2005,2010,2015) & aggregation level (0,1,2,3)
-# Returns percentage and absolute cover of different ESA CCI LC classes for a given WDPA...
-#...Aggregation levels 0 (original ESA LC classes), 1, 2 and 3 are available.
-
+## (7) landcover_esa 
+# request get_wdpa_lc-esa per wdpaid and year(1995,2000,2005,2010,2015) & aggregation level (0,1,2,3)
+# Returns percentage and absolute cover of different ESA CCI LC classes for a given WDPA Aggregation levels 0 (original ESA LC classes), 1, 2 and 3 are available.
 
 landcover_esa <- function(wdpaid, year, agg){
   # create the url
@@ -222,9 +217,10 @@ df.landcover_esa <- data.frame(percent=NA,
 #example
 landcover_esa(32671, 2015, 0)
 
-## (8) request get_wdpa_lcc_esa_percent per wdpaid
-# For a given WDPA, returns percentage and absolute cover of ESA LC CCI classes...
-#...which changed within first and last epoch.
+
+## (8) lcc_percent 
+# request get_wdpa_lcc_esa_percent per wdpaid
+# For a given WDPA, returns percentage and absolute cover of ESA LC CCI classes which changed within first and last epoch.
 
 lcc_percent <- function(wdpaid){
   # create the url
@@ -253,10 +249,10 @@ df.lcc_percent <- data.frame(percent=NA,
 lcc_percent(32671)
 
 
-## (9) request get_wdpa_lc_copernicus per wdpaid and year(2015) & aggregation level (0,2)
+## (9) landcover_copernicus 
+# request get_wdpa_lc_copernicus per wdpaid and year(2015) & aggregation level (0,2)
 # Returns percentage and absolute cover of Copernicus Land Cover classes for a given WDPA...
 #...Aggregation levels 0 (original Copernicus LC classes) and 2 (DOPA) are available.
-
 
 landcover_copernicus <- function(wdpaid, agg){
   # create the url
@@ -287,7 +283,8 @@ df.landcover_copernicus <- data.frame(percent=NA,
 landcover_copernicus(32671, 2)
 
 
-## (10) request get_country_pa_normalized_indicator per indicator listed in "all_indicators"
+## (10) normalizedind_country
+# request get_country_pa_normalized_indicator per indicator listed in "all_indicators"
 # Returns, for protected area in country, absolute, normalized and average value of the...
 #...selected indicator, and ranking within the country
 
@@ -320,18 +317,9 @@ df.normalizedind_country <- data.frame(country_rank=NA,
 normalizedind_country("agri_ind_pa")
 
 
-## (11) request get_ecoregion_pa_normalized_indicator per indicator listed in "all_indicators"
-# Returns, for protected area in ecoregion, absolute, normalized and average value of the...
-#...selected indicator, and ranking within the ecoregion
-
-
-normalizedind_ecoregion <- function(ind, id){
-  
-  url <- paste0("https://dopa-services.jrc.ec.europa.eu/services/d6dopa40/habitats_and_biotopes/get_ecoregion_pa_normalized_indicator?format=csv&indicator=",ind,"&ecoregionid=",id)
-  destfile <- paste0("1_pre-processing/dopa-rest/ecoregion_pa_normalized_indicator_",ind,"_",id,".csv")
-  download.file(url, destfile)
-}
-
+## (11) normalizedind_ecoregion 
+# request get_ecoregion_pa_normalized_indicator per indicator listed in "all_indicators"
+# Returns, for protected area in ecoregion, absolute, normalized and average value of the selected indicator, and ranking within the ecoregion
 
 normalizedind_ecoregion <- function(ind, id){
   # create the url
@@ -360,18 +348,14 @@ df.normalizedind_ecoregion <- data.frame(ecoregion_rank=NA,
 normalizedind_ecoregion("agri_ind_pa", 81214)
 
 
-### -- Global Function -- ###
+## (12) get_dopa
 
-#Guideline to use global function
-
+# Guideline to use global function
 # Argument Topic: "protected_sites", "species", "water", "landcover"
-
 # Argument getQuery: "get_wdpa_level_centroid", "get_pa_water_stats", "get_pa_redlist_status", "get_pa_redlist_list"...
 # ..."get_wdpa_all_inds", "get_wdpa_lcc_esa" & "get_wdpa_lcc_esa_percent"
-
-## -- for other two services "get_wdpa_lc_esa" & "get_wdpa_lc_copernicus" -- reuires two more arguments i.e...
-## .. "agg" and "year" -- so global function cannot be applied. Simply opt for individual functions
-
+# -- for other two services "get_wdpa_lc_esa" & "get_wdpa_lc_copernicus" -- reuires two more arguments i.e...
+# .. "agg" and "year" -- so global function cannot be applied. Simply opt for individual functions
 
 get_dopa <- function(topic, getQuery, wdpaid){
   
