@@ -7,15 +7,37 @@ output: html_document
 
 ### Introduction
 
-Digital Observatory for Protected Areas (DOPA) Explorer is an initiative from the Joint Research Centre (JRC), European Commission which is the web-based information system of the Protected Areas (PAs) providing information on the global level. They have maintained huge datasets of the PAs and can be accessed through REST API. The script `dopa-rest.R` provides different functions to access the datasets in CSV format. 
+Digital Observatory for Protected Areas (DOPA) Explorer is an initiative from the Joint Research Centre (JRC), European Commission which is the web-based information system of the Protected Areas (PAs) providing information on the global level. DOPA has maintained huge datasets of the PAs and can be accessed through REST API. The script `dopa-rest.R` provides different functions to access the datasets in CSV format. 
 <br />
 <br />
-The functions listed in the `dopa-rest.R` are:
+The functions listed in the `dopa-rest.R` are:<br />
+`redlist_status`, `redlist_list`, `wdpalevel_centroid`, `water_stats`, `all_indicators`, `landcover_change`,  `landcover_esa`,  `lcc_percent`,  `landcover_copernicus`, `normalizedind_country`, `normalizedind_ecoregion` and `get_dopa`.
 
-1. `redlist_status` takes wdpaid as argument. Returns statistics (counts species, by class, by IUCN categories) for species (Corals, Sharks & Rays, Amphibians, Birds, Mammals) in Protected Area; calculated as intersection of species ranges with WDPA.
+
+### Data
+
+1. `redlist_status` takes wdpaid as argument.<br /> 
+    Returns statistics (counts species, by class, by IUCN categories) for species (Corals, Sharks & Rays, Amphibians,     Birds, Mammals) in Protected Area; calculated as intersection of species ranges with WDPA.
 <br />
 <br />
-2. `redlist_list` takes wdpaid as argument. Returns list of species (Corals, Sharks & Rays, Amphibians, Birds, Mammals) in Protected Area; calculated as intersection of species ranges with WDPA.
+  Data source: IUCN Redlist <br />
+  Spatial Coverage: Global <br />
+  Spatial Resolution: 5 km <br />
+  Temporal Coverage: 1964-2020 <br />
+  Temporal Resolution: Biannual Updates <br />
+  [Metadata Link]("http://cmsdocs.s3.amazonaws.com/RedListGuidelines.pdf") 
+<br />
+<br />
+2. `redlist_list` takes wdpaid as argument.<br /> 
+    Returns list of species (Corals, Sharks & Rays, Amphibians, Birds, Mammals) in Protected Area; calculated as intersection of species ranges with WDPA.
+<br />
+<br />
+  Data source: IUCN Redlist <br />
+  Spatial Coverage: Global <br />
+  Spatial Resolution: 5 km <br />
+  Temporal Coverage: 1964-2020 <br />
+  Temporal Resolution: Biannual Updates <br />
+  [Metadata Link]("http://cmsdocs.s3.amazonaws.com/RedListGuidelines.pdf")
 <br />
 <br />
 3. `wdpalevel_centroid` takes wdpaid as argument. Calculates WDPA point coordinates (x,y) in EPSG 4326 (Lat Long WGS84) for points PAs real coords are shown. For polygon PAs centroids are calculated with the function ST_PointOnSurface, which returns a point guaranteed to lie on the surface.
@@ -48,21 +70,10 @@ The functions listed in the `dopa-rest.R` are:
 12. `get_dopa` is a global function and takes one of the four topics ("protected_sites", "species", "water", "landcover"), one of the seven getQuery ("get_wdpa_level_centroid", "get_pa_water_stats", "get_pa_redlist_status", "get_pa_redlist_list", "get_wdpa_all_inds", "get_wdpa_lcc_esa", "get_wdpa_lcc_esa_percent") and wdpaid as arguments. Returns the desired variables in CSV format.
 <br />
 <br />
-
-
-
-
-
 ```{r}
 
 ```
 
-
-### Data
-
-```{r}
-
-```
 
 ### Methods
 
