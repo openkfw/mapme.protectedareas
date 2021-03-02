@@ -9,31 +9,32 @@
 redlist_status <- function(wdpaid){
   # create the url
   url <- paste0("https://dopa-services.jrc.ec.europa.eu/services/d6dopa40/species/get_pa_redlist_status?format=csv&wdpaid=",wdpaid)
-  # create string for temporary file
-  destfile <- paste0("1_pre-processing/dopa-rest/redlist_status_",wdpaid,".csv")
+  # create empty dataframe to receive results
+  df.redlist_status<-data.frame(class=NA,
+                                total_species=NA,
+                                threatened=NA,
+                                critically_endangered=NA,
+                                endangered=NA,
+                                vulnerable=NA,
+                                near_threatened=NA,
+                                least_concern=NA,
+                                data_deficient=NA,
+                                wdpa_id=NA)
+  # create string for temporary file - string should be in temp folder
+  destfile <- paste0(tempdir(),"/redlist_status_",wdpaid,".csv")
   # download the file
   download.file(url, destfile)
   # read in temporary csv
-  tmp.df <- read.csv(paste0("1_pre-processing/dopa-rest/redlist_status_",wdpaid,".csv"),sep="|")
+  tmp.df <- read.csv(paste0(tempdir(),"/redlist_status_",wdpaid,".csv"),sep="|")
   # create a column from wdpa id 
   tmp.df$wdpa_id <- wdpaid
   # delete the temporary file
-  file.remove(paste0("1_pre-processing/dopa-rest/redlist_status_",wdpaid,".csv"))
+  file.remove(paste0(tempdir(),"/redlist_status_",wdpaid,".csv"))
   # append the results of the file to an existing dataframe/table and return results
-  return(rbind(df.redlist_status,tmp.df))
+  return(rbind(df.redlist_status,tmp.df)[-1,])
 }
 
-# create empty dataframe to receive results
-df.redlist_status<-data.frame(class=NA,
-                              total_species=NA,
-                              threatened=NA,
-                              critically_endangered=NA,
-                              endangered=NA,
-                              vulnerable=NA,
-                              near_threatened=NA,
-                              least_concern=NA,
-                              data_deficient=NA,
-                              wdpa_id=NA)
+
 
 #example
 redlist_status(146)
@@ -44,24 +45,8 @@ redlist_status(146)
 # Returns list of species (Corals, Sharks & Rays, Amphibians, Birds, Mammals) in Protected Area; calculated as intersection of species ranges with WDPA
 
 redlist_list <- function(wdpaid){
-  # create the url
-  url <- paste0("https://dopa-services.jrc.ec.europa.eu/services/d6dopa40/species/get_pa_redlist_list?format=csv&wdpaid=",wdpaid)
-  # create string for temporary file
-  destfile <- paste0("1_pre-processing/dopa-rest/redlist_list_",wdpaid,".csv")
-  # download the file
-  download.file(url, destfile)
-  # read in temporary csv
-  tmp.df <- read.csv(paste0("1_pre-processing/dopa-rest/redlist_list_",wdpaid,".csv"),sep="|")
-  # create a column from wdpa id 
-  tmp.df$wdpa_id <- wdpaid
-  # delete the temporary file
-  file.remove(paste0("1_pre-processing/dopa-rest/redlist_list_",wdpaid,".csv"))
-  # append the results of the file to an existing dataframe/table and return results
-  return(rbind(df.redlist_list,tmp.df))
-}
-
-# create empty dataframe to receive results
-df.redlist_list<-data.frame(iucn_species_id=NA,
+  # create empty dataframe to receive results
+  df.redlist_list<-data.frame(iucn_species_id=NA,
                               taxon=NA,
                               kingdom=NA,
                               phylum=NA,
@@ -70,6 +55,25 @@ df.redlist_list<-data.frame(iucn_species_id=NA,
                               family=NA,
                               code=NA,
                               wdpa_id=NA)
+  # create the url
+  url <- paste0("https://dopa-services.jrc.ec.europa.eu/services/d6dopa40/species/get_pa_redlist_list?format=csv&wdpaid=",wdpaid)
+  # create string for temporary file - PLEASE ADAPT TO TEMPDIR - SEE ABOVE
+  destfile <- paste0("1_pre-processing/dopa-rest/redlist_list_",wdpaid,".csv")
+  # download the file
+  download.file(url, destfile)
+  # read in temporary csv
+  tmp.df <- read.csv(paste0("1_pre-processing/dopa-rest/redlist_list_",wdpaid,".csv"),sep="|")
+  # create a column from wdpa id 
+  tmp.df$wdpa_id <- wdpaid
+  # rename the columns to match the example dataset
+  colnames(tmp.df)<-colnames(df.redlist_list)
+  # delete the temporary file
+  file.remove(paste0("1_pre-processing/dopa-rest/redlist_list_",wdpaid,".csv"))
+  # append the results of the file to an existing dataframe/table and return results
+  return(rbind(df.redlist_list,tmp.df)[-1,])
+}
+
+
 
 #example
 redlist_list(63645)
