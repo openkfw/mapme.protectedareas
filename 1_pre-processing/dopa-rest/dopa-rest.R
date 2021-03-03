@@ -58,22 +58,20 @@ redlist_list <- function(wdpaid){
   # create the url
   url <- paste0("https://dopa-services.jrc.ec.europa.eu/services/d6dopa40/species/get_pa_redlist_list?format=csv&wdpaid=",wdpaid)
   # create string for temporary file - PLEASE ADAPT TO TEMPDIR - SEE ABOVE
-  destfile <- paste0("1_pre-processing/dopa-rest/redlist_list_",wdpaid,".csv")
+  destfile <- paste0(tempdir(),"/redlist_list_",wdpaid,".csv")
   # download the file
   download.file(url, destfile)
   # read in temporary csv
-  tmp.df <- read.csv(paste0("1_pre-processing/dopa-rest/redlist_list_",wdpaid,".csv"),sep="|")
+  tmp.df <- read.csv(paste0(tempdir(),"/redlist_list_",wdpaid,".csv"),sep="|")
   # create a column from wdpa id 
   tmp.df$wdpa_id <- wdpaid
   # rename the columns to match the example dataset
   colnames(tmp.df)<-colnames(df.redlist_list)
   # delete the temporary file
-  file.remove(paste0("1_pre-processing/dopa-rest/redlist_list_",wdpaid,".csv"))
+  file.remove(paste0(tempdir(),"/redlist_list_",wdpaid,".csv"))
   # append the results of the file to an existing dataframe/table and return results
   return(rbind(df.redlist_list,tmp.df)[-1,])
 }
-
-
 
 #example
 redlist_list(63645)
@@ -85,27 +83,26 @@ redlist_list(63645)
 #...function ST_PointOnSurface, which returns a point guaranteed to lie on the surface.
 
 wdpalevel_centroid <- function(wdpaid){
+  # create empty dataframe to receive results
+  df.wdpalevel_centroid <- data.frame(wdpaid=NA,
+                                      wdpa_pid=NA,
+                                      name=NA,
+                                      iso3=NA,
+                                      x=NA,
+                                      y=NA)
   # create the url
   url <- paste0("https://dopa-services.jrc.ec.europa.eu/services/d6dopa40/protected_sites/get_wdpa_level_centroid?format=csv&wdpaid=",wdpaid)
   # create string for temporary file
-  destfile <- paste0("1_pre-processing/dopa-rest/wdpalevel_centroid_",wdpaid,".csv")
+  destfile <- paste0(tempdir(),"/wdpalevel_centroid_",wdpaid,".csv")
   # download the file
   download.file(url, destfile)
   # read in temporary csv
-  tmp.df<-read.csv(paste0("1_pre-processing/dopa-rest/wdpalevel_centroid_",wdpaid,".csv"),sep="|")
+  tmp.df<-read.csv(paste0(tempdir(),"/wdpalevel_centroid_",wdpaid,".csv"),sep="|")
   # delete the temporary file
-  file.remove(paste0("1_pre-processing/dopa-rest/wdpalevel_centroid_",wdpaid,".csv"))
+  file.remove(paste0(tempdir(),"/wdpalevel_centroid_",wdpaid,".csv"))
   # append the results of the file to an existing dataframe/table and return results
-  return(rbind(df.wdpalevel_centroid,tmp.df))
+  return(rbind(df.wdpalevel_centroid,tmp.df)[-1,])
 }
-
-# create empty dataframe to receive results
-df.wdpalevel_centroid <- data.frame(wdpaid=NA,
-                            wdpa_pid=NA,
-                            name=NA,
-                            iso3=NA,
-                            x=NA,
-                            y=NA)
 
 #example
 wdpalevel_centroid(555528898)
@@ -116,28 +113,27 @@ wdpalevel_centroid(555528898)
 # Returns information on the current surface area of permanent and seasonal water, and the net change over the period 1984-2015
 
 water_stats <- function(wdpaid){
+  # create empty dataframe to receive results
+  df.water_stats <- data.frame(wdpaid=NA,
+                               perm_now_km2=NA,
+                               seas_now_km2=NA,
+                               net_p_change_km2=NA,
+                               net_s_change_km2=NA,
+                               percent_net_perm_change=NA,
+                               percent_net_seas_change=NA)
   # create the url
   url <- paste0("https://dopa-services.jrc.ec.europa.eu/services/d6dopa40/water/get_pa_water_stats?format=csv&wdpa_id=",wdpaid)
   # create string for temporary file
-  destfile <- paste0("1_pre-processing/dopa-rest/water_stats_",wdpaid,".csv")
+  destfile <- paste0(tempdir(),"/water_stats_",wdpaid,".csv")
   # download the file
   download.file(url, destfile)
   # read in temporary csv
-  tmp.df<-read.csv(paste0("1_pre-processing/dopa-rest/water_stats_",wdpaid,".csv"),sep="|")
+  tmp.df<-read.csv(paste0(tempdir(),"/water_stats_",wdpaid,".csv"),sep="|")
   # delete the temporary file
-  file.remove(paste0("1_pre-processing/dopa-rest/water_stats_",wdpaid,".csv"))
+  file.remove(paste0(tempdir(),"/water_stats_",wdpaid,".csv"))
   # append the results of the file to an existing dataframe/table and return results
-  return(rbind(df.water_stats,tmp.df))
+  return(rbind(df.water_stats,tmp.df)[-1,])
 }
-
-# create empty dataframe to receive results
-df.water_stats <- data.frame(wdpaid=NA,
-                             perm_now_km2=NA,
-                             seas_now_km2=NA,
-                             net_p_change_km2=NA,
-                             net_s_change_km2=NA,
-                             percent_net_perm_change=NA,
-                             percent_net_seas_change=NA)
 
 #example
 water_stats(671)
@@ -148,10 +144,18 @@ water_stats(671)
 # Returns all indicators for pa
 
 all_indicators <- function(wdpaid){
-  
+  # create the url
   url <- paste0("https://dopa-services.jrc.ec.europa.eu/services/d6dopa40/protected_sites/get_wdpa_all_inds?format=csv&wdpaid=",wdpaid)
-  destfile <- paste0("1_pre-processing/dopa-rest/all_indicators_",wdpaid,".csv")
+  # create string for temporary file
+  destfile <- paste0(tempdir(),"/all_indicators_",wdpaid,".csv")
+  # download the file
   download.file(url, destfile)
+  # read in temporary csv
+  tmp.df<-read.csv(paste0(tempdir(),"/all_indicators_",wdpaid,".csv"),sep="|")
+  # delete the temporary file
+  file.remove(paste0(tempdir(),"/all_indicators_",wdpaid,".csv"))
+  # append the results of the file to an existing dataframe/table and return results
+  return(tmp.df)
 }
 
 #example
@@ -163,27 +167,26 @@ all_indicators(142)
 # For a given WDPA, returns absolute cover of ESA LC CCI classes (aggregated by level 1: 4 classes) which changed within first and last epoch i.e. 1995 & 2015
 
 landcover_change <- function(wdpaid){
+  # create empty dataframe to receive results
+  df.landcover_change <- data.frame(lc1_1995=NA,
+                                    lc2_2015=NA,
+                                    area=NA,
+                                    wdpa_id=NA)
   # create the url
   url <- paste0("https://dopa-services.jrc.ec.europa.eu/services/d6dopa40/landcover/get_wdpa_lcc_esa?format=csv&wdpaid=",wdpaid)
   # create string for temporary file
-  destfile <- paste0("1_pre-processing/dopa-rest/landcover_change_",wdpaid,".csv")
+  destfile <- paste0(tempdir(),"/landcover_change_",wdpaid,".csv")
   # download the file
   download.file(url, destfile)
   # read in temporary csv
-  tmp.df<-read.csv(paste0("1_pre-processing/dopa-rest/landcover_change_",wdpaid,".csv"),sep="|")
+  tmp.df<-read.csv(paste0(tempdir(),"/landcover_change_",wdpaid,".csv"),sep="|")
   # create a column from wdpa id 
   tmp.df$wdpa_id <- wdpaid
   # delete the temporary file
-  file.remove(paste0("1_pre-processing/dopa-rest/landcover_change_",wdpaid,".csv"))
+  file.remove(paste0(tempdir(),"/landcover_change_",wdpaid,".csv"))
   # append the results of the file to an existing dataframe/table and return results
-  return(rbind(df.landcover_change,tmp.df))
+  return(rbind(df.landcover_change,tmp.df)[-1,])
 }
-
-# create empty dataframe to receive results
-df.landcover_change <- data.frame(lc1_1995=NA,
-                             lc2_2015=NA,
-                             area=NA,
-                             wdpa_id=NA)
 
 #example
 landcover_change(32671)
@@ -194,29 +197,28 @@ landcover_change(32671)
 # Returns percentage and absolute cover of different ESA CCI LC classes for a given WDPA Aggregation levels 0 (original ESA LC classes), 1, 2 and 3 are available.
 
 landcover_esa <- function(wdpaid, year, agg){
+  # create empty dataframe to receive results
+  df.landcover_esa <- data.frame(percent=NA,
+                                 area=NA,
+                                 lc_class=NA,
+                                 label=NA,
+                                 color=NA,
+                                 wdpa_id=NA)
   # create the url
   url <- paste0("https://dopa-services.jrc.ec.europa.eu/services/d6dopa40/landcover/get_wdpa_lc_esa?format=csv&wdpaid=",wdpaid,"&year=",year,"&agg=",agg)
   # create string for temporary file
-  destfile <- paste0("1_pre-processing/dopa-rest/landcover_esa_",wdpaid,"_",year,"_",agg,".csv")
+  destfile <- paste0(tempdir(),"/landcover_esa_",wdpaid,"_",year,"_",agg,".csv")
   # download the file
   download.file(url, destfile)
   # read in temporary csv
-  tmp.df <- read.csv(paste0("1_pre-processing/dopa-rest/landcover_esa_",wdpaid,"_",year,"_",agg,".csv"),sep="|")
+  tmp.df <- read.csv(paste0(tempdir(),"/landcover_esa_",wdpaid,"_",year,"_",agg,".csv"),sep="|")
   # create a column from wdpa id 
   tmp.df$wdpa_id <- wdpaid
   # delete the temporary file
-  file.remove(paste0("1_pre-processing/dopa-rest/landcover_esa_",wdpaid,"_",year,"_",agg,".csv"))
+  file.remove(paste0(tempdir(),"/landcover_esa_",wdpaid,"_",year,"_",agg,".csv"))
   # append the results of the file to an existing dataframe/table and return results
-  return(rbind(df.landcover_esa,tmp.df))
+  return(rbind(df.landcover_esa,tmp.df)[-1,])
 }
-
-# create empty dataframe to receive results
-df.landcover_esa <- data.frame(percent=NA,
-                               area=NA,
-                               lc_class=NA,
-                               label=NA,
-                               color=NA,
-                               wdpa_id=NA)
 
 #example
 landcover_esa(32671, 2015, 0)
@@ -227,27 +229,26 @@ landcover_esa(32671, 2015, 0)
 # For a given WDPA, returns percentage and absolute cover of ESA LC CCI classes which changed within first and last epoch.
 
 lcc_percent <- function(wdpaid){
+  # create empty dataframe to receive results
+  df.lcc_percent <- data.frame(percent=NA,
+                               area_lcc=NA,
+                               area_pa=NA,
+                               wdpa_id=NA)
   # create the url
   url <- paste0("https://dopa-services.jrc.ec.europa.eu/services/d6dopa40/landcover/get_wdpa_lcc_esa_percent?format=csv&wdpaid=",wdpaid)
   # create string for temporary file
-  destfile <- paste0("1_pre-processing/dopa-rest/lcc_percent_",wdpaid,".csv")
+  destfile <- paste0(tempdir(),"/lcc_percent_",wdpaid,".csv")
   # download the file
   download.file(url, destfile)
   # read in temporary csv
-  tmp.df<-read.csv(paste0("1_pre-processing/dopa-rest/lcc_percent_",wdpaid,".csv"),sep="|")
+  tmp.df<-read.csv(paste0(tempdir(),"/lcc_percent_",wdpaid,".csv"),sep="|")
   # create a column from wdpa id 
   tmp.df$wdpa_id <- wdpaid
   # delete the temporary file
-  file.remove(paste0("1_pre-processing/dopa-rest/lcc_percent_",wdpaid,".csv"))
+  file.remove(paste0(tempdir(),"/lcc_percent_",wdpaid,".csv"))
   # append the results of the file to an existing dataframe/table and return results
-  return(rbind(df.lcc_percent,tmp.df))
+  return(rbind(df.lcc_percent,tmp.df)[-1,])
 }
-
-# create empty dataframe to receive results
-df.lcc_percent <- data.frame(percent=NA,
-                             area_lcc=NA,
-                             area_pa=NA,
-                             wdpa_id=NA)
 
 #example
 lcc_percent(32671)
@@ -259,29 +260,28 @@ lcc_percent(32671)
 #...Aggregation levels 0 (original Copernicus LC classes) and 2 (DOPA) are available.
 
 landcover_copernicus <- function(wdpaid, agg){
+  # create empty dataframe to receive results
+  df.landcover_copernicus <- data.frame(percent=NA,
+                                        area=NA,
+                                        lc_class=NA,
+                                        label=NA,
+                                        color=NA,
+                                        wdpa_id=NA)
   # create the url
   url <- paste0("https://dopa-services.jrc.ec.europa.eu/services/d6dopa40/landcover/get_wdpa_lc_copernicus?format=csv&agg=",agg,"&wdpaid=",wdpaid,"&year=2015")
   # create string for temporary file
-  destfile <- paste0("1_pre-processing/dopa-rest/landcover_copernicus_",wdpaid,"_",agg,".csv")
+  destfile <- paste0(tempdir(),"/landcover_copernicus_",wdpaid,"_",agg,".csv")
   # download the file
   download.file(url, destfile)
   # read in temporary csv
-  tmp.df <- read.csv(paste0("1_pre-processing/dopa-rest/landcover_copernicus_",wdpaid,"_",agg,".csv"),sep="|")
+  tmp.df <- read.csv(paste0(tempdir(),"/landcover_copernicus_",wdpaid,"_",agg,".csv"),sep="|")
   # create a column from wdpa id 
   tmp.df$wdpa_id <- wdpaid
   # delete the temporary file
-  file.remove(paste0("1_pre-processing/dopa-rest/landcover_copernicus_",wdpaid,"_",agg,".csv"))
+  file.remove(paste0(tempdir(),"/landcover_copernicus_",wdpaid,"_",agg,".csv"))
   # append the results of the file to an existing dataframe/table and return results
-  return(rbind(df.landcover_copernicus,tmp.df))
+  return(rbind(df.landcover_copernicus,tmp.df)[-1,])
 }
-
-# create empty dataframe to receive results
-df.landcover_copernicus <- data.frame(percent=NA,
-                               area=NA,
-                               lc_class=NA,
-                               label=NA,
-                               color=NA,
-                               wdpa_id=NA)
 
 #example
 landcover_copernicus(32671, 2)
@@ -293,29 +293,28 @@ landcover_copernicus(32671, 2)
 #...selected indicator, and ranking within the country
 
 normalizedind_country <- function(ind){
+  # create empty dataframe to receive results
+  df.normalizedind_country <- data.frame(country_rank=NA,
+                                         wdpaid=NA,
+                                         iso3=NA,
+                                         iso2=NA,
+                                         un_m49=NA,
+                                         ind=NA,
+                                         normalized_ind=NA,
+                                         normalized_avg_ind=NA)
   # create the url
   url <- paste0("https://dopa-services.jrc.ec.europa.eu/services/d6dopa40/administrative_units/get_country_pa_normalized_indicator?format=csv&indicator=",ind,"&iso=ITA")
   # create string for temporary file
-  destfile <- paste0("1_pre-processing/dopa-rest/country_pa_normalized_indicator_",ind,".csv")
+  destfile <- paste0(tempdir(),"/country_pa_normalized_indicator_",ind,".csv")
   # download the file
   download.file(url, destfile)
   # read in temporary csv
-  tmp.df <- read.csv(paste0("1_pre-processing/dopa-rest/country_pa_normalized_indicator_",ind,".csv"),sep="|")
+  tmp.df <- read.csv(paste0(tempdir(),"/country_pa_normalized_indicator_",ind,".csv"),sep="|")
   # delete the temporary file
-  file.remove(paste0("1_pre-processing/dopa-rest/country_pa_normalized_indicator_",ind,".csv"))
+  file.remove(paste0(tempdir(),"/country_pa_normalized_indicator_",ind,".csv"))
   # append the results of the file to an existing dataframe/table and return results
-  return(rbind(df.normalizedind_country,tmp.df))
+  return(rbind(df.normalizedind_country,tmp.df)[-1,])
 }
-
-# create empty dataframe to receive results
-df.normalizedind_country <- data.frame(country_rank=NA,
-                                       wdpaid=NA,
-                                       iso3=NA,
-                                       iso2=NA,
-                                       un_m49=NA,
-                                       ind=NA,
-                                       normalized_ind=NA,
-                                       normalized_avg_ind=NA)
 
 #example
 normalizedind_country("agri_ind_pa")
@@ -326,27 +325,26 @@ normalizedind_country("agri_ind_pa")
 # Returns, for protected area in ecoregion, absolute, normalized and average value of the selected indicator, and ranking within the ecoregion
 
 normalizedind_ecoregion <- function(ind, id){
+  # create empty dataframe to receive results
+  df.normalizedind_ecoregion <- data.frame(ecoregion_rank=NA,
+                                           wdpa_id=NA,
+                                           ecoregion_id=NA,
+                                           ind=NA,
+                                           normalized_ind=NA,
+                                           normalized_avg_ind=NA)
   # create the url
   url <- paste0("https://dopa-services.jrc.ec.europa.eu/services/d6dopa40/habitats_and_biotopes/get_ecoregion_pa_normalized_indicator?format=csv&indicator=",ind,"&ecoregionid=",id)
   # create string for temporary file
-  destfile <- paste0("1_pre-processing/dopa-rest/ecoregion_pa_normalized_indicator_",ind,"_",id,".csv")
+  destfile <- paste0(tempdir(),"/ecoregion_pa_normalized_indicator_",ind,"_",id,".csv")
   # download the file
   download.file(url, destfile)
   # read in temporary csv
-  tmp.df <- read.csv(paste0("1_pre-processing/dopa-rest/ecoregion_pa_normalized_indicator_",ind,"_",id,".csv"),sep="|")
+  tmp.df <- read.csv(paste0(tempdir(),"/ecoregion_pa_normalized_indicator_",ind,"_",id,".csv"),sep="|")
   # delete the temporary file
-  file.remove(paste0("1_pre-processing/dopa-rest/country_pa_normalized_indicator_",ind,"_",id,".csv"))
+  file.remove(paste0(tempdir(),"/country_pa_normalized_indicator_",ind,"_",id,".csv"))
   # append the results of the file to an existing dataframe/table and return results
-  return(rbind(df.normalizedind_ecoregion,tmp.df))
+  return(rbind(df.normalizedind_ecoregion,tmp.df)[-1,])
 }
-
-# create empty dataframe to receive results
-df.normalizedind_ecoregion <- data.frame(ecoregion_rank=NA,
-                                       wdpa_id=NA,
-                                       ecoregion_id=NA,
-                                       ind=NA,
-                                       normalized_ind=NA,
-                                       normalized_avg_ind=NA)
 
 #example
 normalizedind_ecoregion("agri_ind_pa", 81214)
@@ -362,14 +360,21 @@ normalizedind_ecoregion("agri_ind_pa", 81214)
 # .. "agg" and "year" -- so global function cannot be applied. Simply opt for individual functions
 
 get_dopa <- function(topic, getQuery, wdpaid){
-  
+  # create the url
   url <- paste0("https://dopa-services.jrc.ec.europa.eu/services/d6dopa40/",topic,"/",getQuery,"?format=csv&wdpaid=",wdpaid)
-  destfile <- paste0("1_pre-processing/dopa-rest/",getQuery,"_",wdpaid,".csv")
+  # create string for temporary file
+  destfile <- paste0(tempdir(),"/",getQuery,"_",wdpaid,".csv")
+  # download the file
   download.file(url, destfile)
+  # read in temporary csv
+  tmp.df<-read.csv(paste0(tempdir(),"/",getQuery,"_",wdpaid,".csv"),sep="|")
+  # delete the temporary file
+  file.remove(paste0(tempdir(),"/",getQuery,"_",wdpaid,".csv"))
+  # append the results of the file to an existing dataframe/table and return results
+  return(tmp.df)
 }
 
 #examples
 get_dopa("species", "get_pa_redlist_status", 146)
-get_dopa("landcover", "get_wdpa_lcc_esa", 146)
-get_dopa("water", "get_pa_water_stats", 146)
-get_dopa("protected_sites", "get_wdpa_all_inds", 146)
+get_dopa("landcover", "get_wdpa_lcc_esa", 32671)
+get_dopa("protected_sites", "get_wdpa_all_inds", 142)
