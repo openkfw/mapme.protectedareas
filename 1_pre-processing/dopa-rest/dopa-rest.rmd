@@ -4,7 +4,8 @@ author: "J Schielein, OP Bhandari"
 date: "3/1/2021"
 output: html_document
 ---
-```{r, include=FALSE}
+
+```{r, include=TRUE}
 source("dopa-rest.R", local = knitr::knit_global())
 # or sys.source("your-script.R", envir = knitr::knit_global())
 library(knitr)
@@ -13,17 +14,15 @@ library(rmarkdown)
 
 ### Introduction
 
-Digital Observatory for Protected Areas (DOPA) Explorer is an initiative from the Joint Research Centre (JRC), European Commission which is the web-based information system of the Protected Areas (PAs) providing information on the global level. DOPA has maintained huge datasets of the PAs and can be accessed through REST API. The script `dopa-rest.R` provides different functions to access the datasets in CSV format. 
+The Digital Observatory for Protected Areas (DOPA) is an initiative from the Joint Research Centre (JRC) of the European Commission. It is database and a [web-based information system](https://dopa.jrc.ec.europa.eu/) on Protected Areas (PAs) providing information on the global level. DOPA processes maintains several datasets that characterize PAs according to e.g. biodiversity and land use wich can be accessed through REST API. The script `dopa-rest.R` provides different functions to access the datasets and download them temporary in CSV format to then create a dataframe for further uste in R. Please not that all the functions work with the Unique Identifier of Protected Areas according to the [IUCN/WDPA] (https://www.protectedplanet.net/), where you can also identify the WDPA ID of your area of interest. 
 <br />
 <br />
 The functions listed in the `dopa-rest.R` are:<br />
-`redlist_status`, `redlist_list`, `wdpalevel_centroid`, `water_stats`, `all_indicators`, `landcover_change`,  `landcover_esa`,  `lcc_percent`,  `landcover_copernicus`, `normalizedind_country`, `normalizedind_ecoregion` and `get_dopa`.
+`get_redlist_status`, `redlist_list`, `wdpalevel_centroid`, `water_stats`, `all_indicators`, `landcover_change`,  `landcover_esa`,  `lcc_percent`,  `landcover_copernicus`, `normalizedind_country`, `normalizedind_ecoregion` and `get_dopa`.
 
-
-### Data
-
-1. `redlist_status` takes wdpaid as argument.<br /> 
-    Returns statistics (counts species, by class, by IUCN categories) for species (Corals, Sharks & Rays, Amphibians,     Birds, Mammals) in Protected Area; calculated as intersection of species ranges with WDPA.
+### Overview of the functions and how to apply them
+1. `get_redlist_status` takes the WDPA Identifier (wdpaid) as an argument.<br /> 
+    The function returns statistics (counts species, by class, by IUCN categories) for species (Corals, Sharks & Rays, Amphibians, Birds, Mammals) in the given orotected area; The data is calculated as an intersection of species habitats with WDPA.
 <br />
 <br />
     Data source: IUCN Redlist <br />
@@ -39,10 +38,55 @@ The functions listed in the `dopa-rest.R` are:<br />
       - Example usage:<br />
       
 ```{r warning=FALSE}
-#This code generates species status' statistics for the PA with wdpaid 146 
-paged_table(redlist_status(146))
+# You may first want to source the function file in order to have all function exposed in R
+source("dopa-rest.R")
+
+#This code generates species status' statistics for the PA with wdpaid 146 and shows it in a paged table for the markdown.
+df_redlist_status<-
+    get_redlist_status(146)
 ```
 <br />
+With the results table looking like this:
+<br />
+```{r warning=FALSE, echo=FALSE}
+# show table in Rmarkdown
+paged_table(df_redlist_status)
+```
+<br />
+
+You can also process several areas at once using the plyr package
+```{r warning=FALSE}
+library(plyr)
+# get data
+df_redlist_status<-
+    ldply(.data = c(146,147),.fun = get_redlist_status)
+```
+<br />
+With the results table looking like this:
+<br />
+```{r warning=FALSE, echo=FALSE}
+# show table in Rmarkdown
+paged_table(df_redlist_status)
+```
+<br />
+If you want to combine this data with georeferenced information from WDPA to create maps you might consider using the `wdpar` package from CRAN that creates an interface to WDPA or you might want to download the data manually and join it in R. In the following we show an example on how to use the `wdpar` package. You will first need to download the data for the country where your PA is located, then preprocess/clean the data, and then merge it. 
+
+```{r warning=FALSE}
+library(wdpar)
+# download 
+wdpar::wdpa_fetch()
+# clean the data 
+wdpar::wdpa_clean()
+# merge/join
+
+# NEEDS to be further elaborated. 
+# Or alternatively, and what would be actually nicer, create an own querry for the WDPA API based on the wdpa ID which is currently not possible with this package. 
+# see: https://api.protectedplanet.net/documentation
+
+
+```
+
+
 
 2. `redlist_list` takes wdpaid as argument.<br /> 
     Returns list of species (Corals, Sharks & Rays, Amphibians, Birds, Mammals) in Protected Area; calculated as intersection of species ranges with WDPA.
