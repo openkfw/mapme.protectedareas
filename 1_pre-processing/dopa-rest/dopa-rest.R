@@ -1,4 +1,7 @@
-#  dopa-rest.R
+# dopa-rest.R
+# Authors: Om Bandhari, Johannes Schielein
+# Purpose: This script contains functions to create Querries to the DOPA Rest Services from JRC
+# Note: Please make sure you are registered with DOPA and have the required authorization for using REST Services (non commercial usage only)
 
 
 ## (1) redlist_status
@@ -6,7 +9,7 @@
 # Returns statistics (counts species, by class, by IUCN categories) for species (Corals, Sharks & Rays, Amphibians, Birds, Mammals) in Protected Area;...
 #...calculated as intersection of species ranges with WDPA
 
-redlist_status <- function(wdpaid){
+get_redlist_status <- function(wdpaid){
   # create the url
   url <- paste0("https://dopa-services.jrc.ec.europa.eu/services/d6dopa40/species/get_pa_redlist_status?format=csv&wdpaid=",wdpaid)
   # create empty dataframe to receive results
@@ -37,7 +40,7 @@ redlist_status <- function(wdpaid){
 
 
 #example
-redlist_status(146)
+# get_redlist_status(146)
 
 
 ## (2) redlist_list 
@@ -74,7 +77,7 @@ redlist_list <- function(wdpaid){
 }
 
 #example
-redlist_list(63645)
+# redlist_list(63645)
 
 
 ## (3) wdpalevel_centroid 
@@ -105,7 +108,7 @@ wdpalevel_centroid <- function(wdpaid){
 }
 
 #example
-wdpalevel_centroid(555528898)
+# wdpalevel_centroid(555528898)
 
 
 ## (4) water_stats 
@@ -136,7 +139,7 @@ water_stats <- function(wdpaid){
 }
 
 #example
-water_stats(671)
+# water_stats(671)
 
 
 ## (5) all_indicators
@@ -159,7 +162,7 @@ all_indicators <- function(wdpaid){
 }
 
 #example
-all_indicators(142)
+# all_indicators(142)
 
 
 ## (6) landcover_change 
@@ -189,7 +192,7 @@ landcover_change <- function(wdpaid){
 }
 
 #example
-landcover_change(32671)
+# landcover_change(32671)
 
 
 ## (7) landcover_esa 
@@ -221,7 +224,7 @@ landcover_esa <- function(wdpaid, year, agg){
 }
 
 #example
-landcover_esa(32671, 2015, 0)
+# landcover_esa(32671, 2015, 0)
 
 
 ## (8) lcc_percent 
@@ -251,7 +254,7 @@ lcc_percent <- function(wdpaid){
 }
 
 #example
-lcc_percent(32671)
+# lcc_percent(32671)
 
 
 ## (9) landcover_copernicus 
@@ -284,7 +287,7 @@ landcover_copernicus <- function(wdpaid, agg){
 }
 
 #example
-landcover_copernicus(32671, 2)
+# landcover_copernicus(32671, 2)
 
 
 ## (10) normalizedind_country
@@ -317,7 +320,7 @@ normalizedind_country <- function(ind){
 }
 
 #example
-normalizedind_country("agri_ind_pa")
+# normalizedind_country("agri_ind_pa")
 
 
 ## (11) normalizedind_ecoregion 
@@ -347,7 +350,7 @@ normalizedind_ecoregion <- function(ind, id){
 }
 
 #example
-normalizedind_ecoregion("agri_ind_pa", 81214)
+# normalizedind_ecoregion("agri_ind_pa", 81214)
 
 
 ## (12) get_dopa
@@ -375,6 +378,6 @@ get_dopa <- function(topic, getQuery, wdpaid){
 }
 
 #examples
-get_dopa("species", "get_pa_redlist_status", 146)
-get_dopa("landcover", "get_wdpa_lcc_esa", 32671)
-get_dopa("protected_sites", "get_wdpa_all_inds", 142)
+#get_dopa("species", "get_pa_redlist_status", 146)
+#get_dopa("landcover", "get_wdpa_lcc_esa", 32671)
+#get_dopa("protected_sites", "get_wdpa_all_inds", 142)
