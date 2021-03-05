@@ -23,7 +23,7 @@ mapme.protectedareas/
 		├── about.Rmd
 		├── index.Rmd
 		├── license.Rmd
-		├──  *.Rmd # here are all Rmd files containing the description of the data processing. 
+		├──  *.Rmd # Rmarkdown files containing the description of how individual variables where processed. 
 		└── _site.yml
 	├── code/  
 		├── *.R # here are all the processing functions whose usage is described in the analysis part. Libraries are also loaded here
