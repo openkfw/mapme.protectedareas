@@ -16,11 +16,11 @@ The folder structure is as follows
 mapme.protectedareas/
 
 	.
-	├── gitignore # specifies which files to ignore from the git
+	├── .gitignore # specifies which files to ignore from the git
 	├── .Rprofile # contains information on which libraries and settings should be used at start
 	├── _workflowr.yml  # yml file needed to control workflowr
 	├──  analysis/
-    		├── about.Rmd
+		├── about.Rmd
 		├── index.Rmd
 		├── license.Rmd
 		├──  *.Rmd # here are all Rmd files containing the description of the data processing. 
