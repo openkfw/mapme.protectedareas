@@ -1,0 +1,73 @@
+---
+title: "Net Forest Carbon Flux"
+author: "Johannes Schielein, Om Bhandari"
+date: "3/5/2021"
+output: html_document
+---
+
+```{r warning=FALSE}
+# load required libraries
+library(terra)
+library(raster)
+library(rgdal)
+library(tmap)
+library(sf)
+```
+
+
+### Introduction
+
+Forest Carbon Emissions are GHG emissions that originate from forest cover loss and subsequent ABG and BEG biomass loss. Net forest carbon flux represents the net exchange of carbon between forests and the atmosphere. Forest act as both a Source and Sink for Carbon.
+
+In order to calculate net carbon flux or simply carbon balance, we need to follow these steps:
+  - Download raster `r1` of the desired grid
+  - Clip extent of raster to AOI polygon to create new raster `r2`
+  - Rasterize WDPA vector polygon `v1` to the extent of `r2` to get `r3`
+  - Load `r2` (base raster layer) and `r3` (raster zone layer)
+  - Perform Zonal Statistics between `r2` and `r3`
+  
+
+```{r warning=FALSE}
+
+# load raster from file - here we have used raster data from Amazonas state of Brazil
+zone_ras <- raster("/home/rstudio/shared/Om/test/Zone_Stats.tif")
+crs(zone_ras) <- "+proj=utm +zone=48 +datum=WGS84"
+zone_ras
+
+# load your vector from file - this vector contains wdpa polygons with ID 33608 & 33714
+amz <- vect(read_sf("/home/rstudio/shared/Om/test/Amazonas.shp"))
+crs(amz) <- "+proj=utm +zone=48 +datum=WGS84"
+plot(amz)
+```
+
+```{r warning=FALSE}
+# create raster `raster_amz` to match the extent from raster files
+raster_amz <- rast(ncol=4900, nrow=1832, xmin=-63.3025, xmax=-62.0775, ymin=-9.13275, ymax=-8.67475)
+# set the crs to UTM Zone 48 - WGS84
+crs(raster_amz) <- "+proj=utm +zone=48 +datum=WGS84"
+# check data
+raster_amz
+```
+
+```{r warning=FALSE}
+# since the extent of both rasters match now we can perform rasterization
+x <- rasterize(amz, raster_amz, amz$WDPAID, length, background=NA, update=FALSE,   touches=is.lines(amz), cover=FALSE, filename="/home/rstudio/shared/Om/test/amaz_raster.tif")
+# check data
+x
+# plot rasterized map
+plot(x)
+```
+
+```{r warning=FALSE}
+# load rasterized data 
+x1 <- raster("/home/rstudio/shared/Om/test/amaz_raster.tif")
+#check data
+x1
+```
+
+```{r warning=FALSE}
+# perform zonal statistics
+statsZone <- zonal(zone_ras, x1, fun='sum', na.rm=T)
+statsZone
+```
+
