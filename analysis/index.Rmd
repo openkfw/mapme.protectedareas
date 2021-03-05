@@ -8,4 +8,9 @@ editor_options:
   chunk_output_type: console
 ---
 
-Welcome to my research website.
+Welcome to the KfW Protected Areas Database Workflow Website. Here you can find all routines for datasources that where used to create the KfW PA database. This project was created with as a reproducible project using the *workflowr* package. For more information please visit [workflowr](https://github.com/jdblischak/workflowr) website. In addition, this project uses the the *renv* package to enable others to exactly work with the same package versions that had been utilized in this project. For more information please visit the [renv](https://rstudio.github.io/renv/index.html) website.  
+
+This website is structured to show you the routines for each data-sources one by one with reproducible data-sets. Data routines range from processing raw data with geospatial techniques till using API services the query existing data-sources such as the [DOPA Explorer from EU/JRC](https://dopa-explorer.jrc.ec.europa.eu/). To get more information please visit our Github repository and eventually leave a comment or new issue. 
+
+Chapters:
+- [Querrying data from DOPA Rest API](dopa-rest.html).

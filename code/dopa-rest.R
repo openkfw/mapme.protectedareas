@@ -29,7 +29,7 @@ get_redlist_status <- function(wdpaid) {
   download.file(url, destfile)
   # read in temporary csv
   tmp.df <- read.csv(paste0(tempdir(),"/redlist_status_",wdpaid,".csv"),sep="|")
-  # create a column from wdpa id 
+  # create a column from wdpa id
   tmp.df$wdpa_id <- wdpaid
   # delete the temporary file
   file.remove(paste0(tempdir(),"/redlist_status_",wdpaid,".csv"))
@@ -42,11 +42,11 @@ get_redlist_status <- function(wdpaid) {
 
 
 
-# (2) get_redlist_list 
+# (2) get_species_list
 # request redlist_list per wdpaid
 # Returns list of species (Corals, Sharks & Rays, Amphibians, Birds, Mammals) in Protected Area; calculated as intersection of species ranges with WDPA
 
-get_redlist_list <- function(wdpaid) {
+get_species_list <- function(wdpaid) {
   # create the url
   url <- paste0("https://dopa-services.jrc.ec.europa.eu/services/d6dopa40/species/get_pa_redlist_list?format=csv&wdpaid=",wdpaid)
   # create empty dataframe to receive results
@@ -65,7 +65,7 @@ get_redlist_list <- function(wdpaid) {
   download.file(url, destfile)
   # read in temporary csv
   tmp.df <- read.csv(paste0(tempdir(),"/redlist_list_",wdpaid,".csv"),sep="|")
-  # create a column from wdpa id 
+  # create a column from wdpa id
   tmp.df$wdpa_id <- wdpaid
   # rename the columns to match the example dataset
   colnames(tmp.df) <- colnames(df.redlist_list)
@@ -76,11 +76,11 @@ get_redlist_list <- function(wdpaid) {
 }
 
 # example
-# get_redlist_list(63645)
+# get_species_list(63645)
 
 
 
-# (3) get_wdpa_level_centroid 
+# (3) get_wdpa_level_centroid
 # request get_wdpa_level_centroid per wdpaid
 # Calculates WDPA point coordinates (x,y) in EPSG 4326 (Lat Long WGS84) for points PAs real coords are shown. For polygon PAs centroids are calculated with the...
 # ...function ST_PointOnSurface, which returns a point guaranteed to lie on the surface.
@@ -112,7 +112,7 @@ get_wdpa_level_centroid <- function(wdpaid) {
 
 
 
-# (4) get_water_stats 
+# (4) get_water_stats
 # request get_pa_water-stats per wdpaid
 # Returns information on the current surface area of permanent and seasonal water, and the net change over the period 1984-2015
 
@@ -144,7 +144,7 @@ get_water_stats <- function(wdpaid) {
 
 
 
-# (5) get_landcover_esa 
+# (5) get_landcover_esa
 # request get_wdpa_lc-esa per wdpaid and year(1995,2000,2005,2010,2015) & aggregation level (0,1,2,3)
 # Returns percentage and absolute cover of different ESA CCI LC classes for a given WDPA Aggregation levels 0 (original ESA LC classes), 1, 2 and 3 are available.
 
@@ -164,7 +164,7 @@ get_landcover_esa <- function(wdpaid, year, agg) {
   download.file(url, destfile)
   # read in temporary csv
   tmp.df <- read.csv(paste0(tempdir(),"/landcover_esa_",wdpaid,"_",year,"_",agg,".csv"),sep="|")
-  # create a column from wdpa id 
+  # create a column from wdpa id
   tmp.df$wdpa_id <- wdpaid
   # delete the temporary file
   file.remove(paste0(tempdir(),"/landcover_esa_",wdpaid,"_",year,"_",agg,".csv"))
@@ -177,7 +177,7 @@ get_landcover_esa <- function(wdpaid, year, agg) {
 
 
 
-# (6) get_landcover_copernicus 
+# (6) get_landcover_copernicus
 # request get_wdpa_lc_copernicus per wdpaid and year(2015) & aggregation level (0,2)
 # Returns percentage and absolute cover of Copernicus Land Cover classes for a given WDPA...
 #...Aggregation levels 0 (original Copernicus LC classes) and 2 (DOPA) are available.
@@ -198,7 +198,7 @@ get_landcover_copernicus <- function(wdpaid, agg) {
   download.file(url, destfile)
   # read in temporary csv
   tmp.df <- read.csv(paste0(tempdir(),"/landcover_copernicus_",wdpaid,"_",agg,".csv"),sep="|")
-  # create a column from wdpa id 
+  # create a column from wdpa id
   tmp.df$wdpa_id <- wdpaid
   # delete the temporary file
   file.remove(paste0(tempdir(),"/landcover_copernicus_",wdpaid,"_",agg,".csv"))
@@ -229,7 +229,7 @@ get_lcc_esa <- function(wdpaid) {
   download.file(url, destfile)
   # read in temporary csv
   tmp.df <- read.csv(paste0(tempdir(),"/lcc_esa",wdpaid,".csv"),sep="|")
-  # create a column from wdpa id 
+  # create a column from wdpa id
   tmp.df$wdpa_id <- wdpaid
   # delete the temporary file
   file.remove(paste0(tempdir(),"/lcc_esa",wdpaid,".csv"))
@@ -242,7 +242,7 @@ get_lcc_esa <- function(wdpaid) {
 
 
 
-# (8) get_lcc_esa_percent 
+# (8) get_lcc_esa_percent
 # request get_wdpa_lcc_esa_percent per wdpaid
 # For a given WDPA, returns percentage and absolute cover of ESA LC CCI classes which changed within first and last epoch.
 
@@ -260,7 +260,7 @@ get_lcc_esa_percent <- function(wdpaid) {
   download.file(url, destfile)
   # read in temporary csv
   tmp.df <- read.csv(paste0(tempdir(),"/lcc_esa_percent_",wdpaid,".csv"),sep="|")
-  # create a column from wdpa id 
+  # create a column from wdpa id
   tmp.df$wdpa_id <- wdpaid
   # delete the temporary file
   file.remove(paste0(tempdir(),"/lcc_esa_percent_",wdpaid,".csv"))
@@ -331,7 +331,7 @@ get_country_pa_normalized_ind <- function(ind) {
 
 
 
-# (11) get_ecoregion_pa_normalized_ind 
+# (11) get_ecoregion_pa_normalized_ind
 # request get_ecoregion_pa_normalized_indicator per indicator listed in "all_indicators"
 # Returns, for protected area in ecoregion, absolute, normalized and average value of the selected indicator, and ranking within the ecoregion
 
