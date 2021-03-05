@@ -8,8 +8,6 @@ editor_options:
   chunk_output_type: console
 workflowr:
   suppress_report: TRUE
-
-
 ---
 
 Welcome to the KfW Protected Areas Database Workflow Website. Here you can find all routines for datasources that where used to create the KfW PA database. This project was created as a reproducible research project using the *workflowr* package. For more information please visit [workflowr](https://github.com/jdblischak/workflowr) website. In addition, this project uses the the *renv* package to enable others to exactly work with the same package versions that had been utilized in this project. For more information please visit the [renv](https://rstudio.github.io/renv/index.html) website. In order to reproduce the analysis in this script and work with our routines, you need to download our [Github repository](https://github.com/openkfw/mapme.protectedareas) or work with individual files from the *code* folder in the repo. 
