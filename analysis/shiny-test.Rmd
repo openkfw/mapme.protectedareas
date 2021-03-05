@@ -1,0 +1,17 @@
+---
+title: "shiny-test"
+author: "Johannes Schielein"
+date: "2021-03-05"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+This is just a showcase to include a shiny app which can later also allow user to interactively explore the results. 
+
+
+```{r shiny-app}
+knitr::include_app("https://johannesschielein.shinyapps.io/random-coffee/")
+```
+

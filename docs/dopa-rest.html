@@ -508,16 +508,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastree52478b96774008f0b20004658ac76016c2312fe7targetblank52478b9a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/openkfw/mapme.protectedareas/tree/52478b96774008f0b20004658ac76016c2312fe7" target="_blank">52478b9</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastree28fb9d5e564b2c1ca2772917a21ee57f03326665targetblank28fb9d5a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/openkfw/mapme.protectedareas/tree/28fb9d5e564b2c1ca2772917a21ee57f03326665" target="_blank">28fb9d5</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastree52478b96774008f0b20004658ac76016c2312fe7targetblank52478b9a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastree28fb9d5e564b2c1ca2772917a21ee57f03326665targetblank28fb9d5a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/openkfw/mapme.protectedareas/tree/52478b96774008f0b20004658ac76016c2312fe7" target="_blank">52478b9</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/openkfw/mapme.protectedareas/tree/28fb9d5e564b2c1ca2772917a21ee57f03326665" target="_blank">28fb9d5</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -529,9 +529,12 @@ Ignored files:
     Ignored:    renv/library/
     Ignored:    renv/local/
 
+Untracked files:
+    Untracked:  analysis/shiny-test.Rmd
+
 Unstaged changes:
     Modified:   analysis/dopa-rest.rmd
-    Modified:   code/dopa-rest.R
+    Modified:   analysis/index.Rmd
 
 </code></pre>
 <p>
@@ -575,6 +578,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/516d799ae7e258282c39f2e6f604d1a0ee604266/analysis/dopa-rest.rmd" target="_blank">516d799</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-03-05
+</td>
+<td>
+create workflow r website
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/openkfw/mapme.protectedareas/516d799ae7e258282c39f2e6f604d1a0ee604266/docs/dopa-rest.html" target="_blank">516d799</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-03-05
+</td>
+<td>
+create workflow r website
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/e410b624e9ba0da9201a2ed96ad7ca0190d99170/analysis/dopa-rest.rmd" target="_blank">e410b62</a>
 </td>
 <td>
@@ -594,13 +631,9 @@ new init commit with new datastructure for improved reproduciblity
 </div>
 </div>
 </div>
-<pre class="r"><code>knitr::opts_knit$set(root.dir = &#39;../&#39;)
-# sys.source(&quot;code/dopa-rest.R&quot;, envir = knitr::knit_global())
-library(knitr)
-library(rmarkdown)</code></pre>
 <div id="introduction" class="section level3">
 <h3>Introduction</h3>
-<p>The Digital Observatory for Protected Areas (DOPA) is an initiative from the Joint Research Centre (JRC) of the European Commission. It is database and a <a href="https://dopa.jrc.ec.europa.eu/">web-based information system</a> on Protected Areas (PAs) providing information on the global level. DOPA processes maintains several datasets that characterize PAs according to e.g. biodiversity and land use wich can be accessed through REST API. The script <code>dopa-rest.R</code> provides different functions to access the datasets and download them temporary in CSV format to then create a dataframe for further uste in R. Please not that all the functions work with the Unique Identifier of Protected Areas according to the [IUCN/WDPA] (<a href="https://www.protectedplanet.net/" class="uri">https://www.protectedplanet.net/</a>), where you can also identify the WDPA ID of your area of interest.</p>
+<p>The Digital Observatory for Protected Areas (DOPA) is an initiative from the Joint Research Centre (JRC) of the European Commission. It is database and a <a href="https://dopa.jrc.ec.europa.eu/">web-based information system</a> on Protected Areas (PAs) providing information on the global level. DOPA processes maintains several datasets that characterize PAs according to e.g. biodiversity and land use wich can be accessed through REST API. The script <code>dopa-rest.R</code> provides different functions to access the datasets and download them temporary in CSV format to then create a dataframe for further uste in R. Please not that all the functions work with the Unique Identifier of Protected Areas according to the <a href="https://www.protectedplanet.net/">IUCN/WDPA</a>, where you can also identify the WDPA ID of your area of interest.</p>
 <p>The functions listed in the <code>dopa-rest.R</code> are: <code>get_redlist_status</code>, <code>redlist_list</code>, <code>wdpalevel_centroid</code>, <code>water_stats</code>, <code>all_indicators</code>, <code>landcover_change</code>, <code>landcover_esa</code>, <code>lcc_percent</code>, <code>landcover_copernicus</code>, <code>normalizedind_country</code>, <code>normalizedind_ecoregion</code> and <code>get_dopa</code>.</p>
 <p>At first you might want to load the source functions for this routine.</p>
 <pre class="r"><code>source(&quot;code/dopa-rest.R&quot;)</code></pre>
@@ -859,20 +892,20 @@ locale:
 [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
 
 attached base packages:
-[1] stats     graphics  grDevices datasets  utils     methods   base     
+[1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] plyr_1.8.6      rmarkdown_2.5   knitr_1.30      workflowr_1.6.2
+[1] plyr_1.8.6    rmarkdown_2.5 knitr_1.30   
 
 loaded via a namespace (and not attached):
  [1] Rcpp_1.0.6      rstudioapi_0.13 whisker_0.4     magrittr_2.0.1 
- [5] R6_2.5.0        rlang_0.4.9     stringr_1.4.0   tools_4.0.3    
- [9] xfun_0.19       git2r_0.27.1    htmltools_0.5.0 ellipsis_0.3.1 
-[13] rprojroot_2.0.2 yaml_2.2.1      digest_0.6.27   tibble_3.0.4   
-[17] lifecycle_0.2.0 crayon_1.3.4    later_1.1.0.1   vctrs_0.3.5    
-[21] promises_1.1.1  fs_1.5.0        glue_1.4.2      evaluate_0.14  
-[25] stringi_1.5.3   compiler_4.0.3  pillar_1.4.7    jsonlite_1.7.1 
-[29] httpuv_1.5.4    renv_0.13.0     pkgconfig_2.0.3</code></pre>
+ [5] workflowr_1.6.2 R6_2.5.0        rlang_0.4.9     stringr_1.4.0  
+ [9] tools_4.0.3     xfun_0.19       git2r_0.27.1    htmltools_0.5.0
+[13] ellipsis_0.3.1  yaml_2.2.1      digest_0.6.27   rprojroot_2.0.2
+[17] tibble_3.0.4    lifecycle_0.2.0 crayon_1.3.4    later_1.1.0.1  
+[21] vctrs_0.3.5     promises_1.1.1  fs_1.5.0        glue_1.4.2     
+[25] evaluate_0.14   stringi_1.5.3   compiler_4.0.3  pillar_1.4.7   
+[29] jsonlite_1.7.1  httpuv_1.5.4    pkgconfig_2.0.3</code></pre>
 </div>
 </div>
 
