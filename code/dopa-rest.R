@@ -273,11 +273,11 @@ get_lcc_esa_percent <- function(wdpaid) {
 
 
 
-# (9) get_all_indicators
+# (9) get_multiple_indicators
 # request get_wdpa_all_indicators per wdpaid
 # Returns all indicators for pa
 
-get_all_indicators <- function(wdpaid) {
+get_multiple_indicators <- function(wdpaid) {
   # create the url
   url <- paste0("https://dopa-services.jrc.ec.europa.eu/services/d6dopa40/protected_sites/get_wdpa_all_inds?format=csv&wdpaid=",wdpaid)
   # create string for temporary file
@@ -293,7 +293,7 @@ get_all_indicators <- function(wdpaid) {
 }
 
 # example
-# get_all_indicators(142)
+# get_multiple_indicators(142)
 
 
 
