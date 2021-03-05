@@ -5,7 +5,7 @@ date: "3/1/2021"
 output: html_document
 ---
 
-```{r setup, include=TRUE}
+```{r setup, include=FALSE}
 knitr::opts_knit$set(root.dir = '../')
 # sys.source("code/dopa-rest.R", envir = knitr::knit_global())
 library(knitr)
@@ -14,7 +14,7 @@ library(rmarkdown)
 
 ### Introduction
 
-The Digital Observatory for Protected Areas (DOPA) is an initiative from the Joint Research Centre (JRC) of the European Commission. It is database and a [web-based information system](https://dopa.jrc.ec.europa.eu/) on Protected Areas (PAs) providing information on the global level. DOPA processes maintains several datasets that characterize PAs according to e.g. biodiversity and land use wich can be accessed through REST API. The script `dopa-rest.R` provides different functions to access the datasets and download them temporary in CSV format to then create a dataframe for further uste in R. Please not that all the functions work with the Unique Identifier of Protected Areas according to the [IUCN/WDPA] (https://www.protectedplanet.net/), where you can also identify the WDPA ID of your area of interest. 
+The Digital Observatory for Protected Areas (DOPA) is an initiative from the Joint Research Centre (JRC) of the European Commission. It is database and a [web-based information system](https://dopa.jrc.ec.europa.eu/) on Protected Areas (PAs) providing information on the global level. DOPA processes maintains several datasets that characterize PAs according to e.g. biodiversity and land use wich can be accessed through REST API. The script `dopa-rest.R` provides different functions to access the datasets and download them temporary in CSV format to then create a dataframe for further uste in R. Please not that all the functions work with the Unique Identifier of Protected Areas according to the [IUCN/WDPA](https://www.protectedplanet.net/), where you can also identify the WDPA ID of your area of interest. 
 
 
 The functions listed in the `dopa-rest.R` are:
