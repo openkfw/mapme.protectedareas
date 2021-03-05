@@ -35,6 +35,9 @@ mapme.protectedareas/
 
 Please not the following: This repository only contains sample data to enable others to create a reproducible workflow for their data. It does not contain the whole input and output data from very large datasets which are used to process the whole KfW PA portfolio and create the analysis. 
 
+# Issues and their labels (priorization)
+This repository offers common labels such as `bug` or `enhancement`. In addition it also has labels to create a priorization scheme to see which issues should be prioritized and adressed first. To that end we use a simplified method called *MoSCoW* which categorizes tasks into *Must*, *Should*, *Could* and *Won't*. Issues of category *Must* are the most relevant and should be adressed first. After adressing all of these issues we will move forward to the *Should* and if time left to the *Could*. In addition there is a label called *Fast Lane* which is used to mark such issues that should be adressed first **within** their given category. So an issue with *Should* and *Fast Lane* should be adressed quickly after all of the *musts* are processed. 
+
 
 [workflowr]: https://github.com/jdblischak/workflowr
 [renv]:https://rstudio.github.io/renv/index.html

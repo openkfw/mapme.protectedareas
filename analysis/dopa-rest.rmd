@@ -75,7 +75,7 @@ paged_table(df_redlist_status)
 If you want to combine this data with georeferenced information from WDPA to create maps you might consider using the `wdpar` package from CRAN that creates an interface to WDPA or you might want to download the data manually and join it in R. In the following we show an example on how to use the `wdpar` package. You will first need to download the data for the country where your PA is located, then preprocess/clean the data, and then merge it. 
 
 
-### Get Species in PA
+### Get species list
 2. `get_species_list` takes wdpaid as argument. It returns a list of species (Corals, Sharks & Rays, Amphibians, Birds, Mammals) which habitat areas intersect with the Protected Area according to data from IUCN.
 
 Some information on this dataset:
@@ -104,8 +104,8 @@ With the results table looking like this:
 paged_table(df_species)
 ```
 
-### Get Centroid of the PA
-3. `wdpalevel_centroid` takes wdpaid as argument and returns the centroid of the WDPA poylgon (x,y) in EPSG 4326 (Lat Long WGS84). For polygon PAs centroids are calculated with the function ST_PointOnSurface, which returns a point guaranteed to lie on the surface.
+### Get centroid
+The function `wdpalevel_centroid` takes wdpaid as argument and returns the centroid of the WDPA poylgon (x,y) in EPSG 4326 (Lat Long WGS84). For polygon PAs centroids are calculated with the function ST_PointOnSurface, which returns a point guaranteed to lie on the surface.
 
 How to use the function? 
 - Pass the wdpaid of the protected area to generate it's point coordinates; for polygon to generate centroid coordinates 
@@ -124,88 +124,103 @@ paged_table(df_wdpa_level_centroid)
 ```
 
 
-4. `water_stats` takes wdpaid as argument. 
+### Get water surface area 
+4. The function `get_water_stats` takes wdpaid as argument. 
     Returns information on the current surface area of permanent and seasonal water, and the net change over the period 1984-2015.
 
 
-    Data source: Global Surface Water Explorer 
-    Spatial Coverage:  Global 
-    Spatial Resolution: 30 m 
-    Temporal Coverage: 1984-2019 
-    Temporal Resolution: Perioic updates  
-    [Metadata Link]("https://storage.cloud.google.com/global-surface-water/downloads_ancillary/DataUsersGuidev2019.pdf")
+- Data source: Global Surface Water Explorer 
+- Spatial Coverage:  Global 
+- Spatial Resolution: 30 m 
+- Temporal Coverage: 1984-2019 
+- Temporal Resolution: Perioic updates  
+- [Metadata Link]("https://storage.cloud.google.com/global-surface-water/downloads_ancillary/DataUsersGuidev2019.pdf")
 
 
-    How to use the function? 
-      - Pass the wdpaid of the protected area to generate the water statistics within it 
-      - Example usage:
+You can use the function in the same way as the functions before by providing a WDPA ID to download the data for a specific area. 
       
 ```{r warning=FALSE}
 #This code generates the water statistics for the PA with wdpaid 671
-paged_table(get_water_stats(671))
+df_water_stats<-
+  get_water_stats(671)
+```
+with the results table looking like this:
+```{r warning=FALSE, echo=FALSE}
+# show table in Rmarkdown
+paged_table(df_water_stats)
 ```
 
-
-5. `all_indicators` takes wdpaid as argument. 
-    Returns all indicators for Protected Areas.
-
-
-    How to use the function? 
-      - Pass the wdpaid of the area to generate all the possible indicators' values available within the PA 
-      - Example usage:
+### Get multiple indicators
+The function `get_multiple_indicators` takes wdpaid as argument and returns several indicators for the PAs. As always you just have to provide the WDPA ID.
       
 ```{r warning=FALSE}
 #This code generates all the indicators available for the PA with wdpaid 142
-paged_table(get_all_indicators(142))
+df_multiple_indicators<-
+  get_multiple_indicators(142)
+```
+
+with the results table looking like this:
+```{r warning=FALSE, echo=FALSE}
+# show table in Rmarkdown
+paged_table(df_multiple_indicators)
 ```
 
 
-6. `landcover_change` takes wdpaid as argument. 
-    Returns absolute cover of ESA LC CCI classes (aggregated by level 1: 4 classes) which changed within first and last epoch i.e. 1995 & 2015 for a given WDPA.
+### Get landcover change from ESA
+The function `get_landcover_esa` takes wdpaid as argument and returns absolute cover of ESA LC CCI classes (aggregated by level 1: 4 classes) which changed within first and last epoch i.e. 1995 & 2015 for a given PA
 
+- Data source: ESA CCI Land Cover 
+- Spatial Coverage:  Global 
+- Spatial Resolution: 300 m 
+- Temporal Coverage: 1992-2015 
+- Temporal Resolution: Annual updates  
+- [Metadata Link]("http://maps.elie.ucl.ac.be/CCI/viewer/download/ESACCI-LC-Ph2-PUGv2_2.0.pdf")
 
-    Data source: ESA CCI Land Cover 
-    Spatial Coverage:  Global 
-    Spatial Resolution: 300 m 
-    Temporal Coverage: 1992-2015 
-    Temporal Resolution: Annual updates  
-    [Metadata Link]("http://maps.elie.ucl.ac.be/CCI/viewer/download/ESACCI-LC-Ph2-PUGv2_2.0.pdf")
-
-
-    How to use the function? 
-      - Pass the wdpaid of the area to generate landcover change statistics between 1995 & 2015 for that PA 
-      - Example usage:
+How to use the function? 
+- Pass the wdpaid of the area to generate landcover change statistics between 1995 & 2015 
+- Pass the year for the statistics end
+- Pass aggregation level
+*TODO*: Explain shortly what the aggregation levels are 
       
 ```{r warning=FALSE}
 #This code generates the absolute landcover change of ESA Land Cover classes for the PA with wdpaid 32671 between 1995 & 2015
-paged_table(get_landcover_esa(32671,year = 2000,agg=0))
+df_landcover_esa<-
+  get_landcover_esa(32671,year = 2000,agg=0)
 ```
+with the resulting table looking like this:
+```{r warning=FALSE, echo=FALSE}
+# show table in Rmarkdown
+paged_table(df_multiple_indicators)
+```
+
+
+### Get laddcover ESA
+TODO: HOW IS THIS DIFFERENT FROM THE ONE ABOVE? I guess the one above with change should be probabla `get_lcc_esa` right? So you would also need to adapt the description. 
 
 
 7. `landcover_esa` takes wdpaid, year (1995,2000,2005,2010,2015), and aggregation level (0,1,2,3) as arguments. 
     Returns percentage and absolute cover of different ESA CCI LC classes for a given WDPA Aggregation levels 0 (original ESA LC classes), 1, 2 and 3 are available.
 
+- Data source: ESA CCI Land Cover 
+- Spatial Coverage:  Global 
+- Spatial Resolution: 300 m 
+- Temporal Coverage: 1992-2015 
+- Temporal Resolution: Annual updates  
+- [Metadata Link]("http://maps.elie.ucl.ac.be/CCI/viewer/download/ESACCI-LC-Ph2-PUGv2_2.0.pdf") 
 
-    Data source: ESA CCI Land Cover 
-    Spatial Coverage:  Global 
-    Spatial Resolution: 300 m 
-    Temporal Coverage: 1992-2015 
-    Temporal Resolution: Annual updates  
-    [Metadata Link]("http://maps.elie.ucl.ac.be/CCI/viewer/download/ESACCI-LC-Ph2-PUGv2_2.0.pdf") 
 
-
-    How to use the function? 
-      - Pass the wdpaid of the area to generate ESA landcover statistics for that PA 
-      - Pass the desired year
-      - Pass the desired aggregation level
-      - Example usage:
+*How to use the function?*
+- Pass the wdpaid of the area to generate ESA landcover statistics for that PA 
+- Pass the desired year
+- Pass the desired aggregation level
+- Example usage:
       
 ```{r warning=FALSE}
 #This code generates percentage and absolute cover of ESA Land Cover classes for the PA with wdpaid 32671 for the year 2015 and at 0 aggregation level
 paged_table(get_landcover_esa(32671, 2015, 0))
 ```
 
-
+### Get absolute landcover ESA
 8. `lcc_percent` takes wdpaid as argument. 
     Returns percentage and absolute cover of ESA LC CCI classes which changed within first and last epoch for a given WDPA.
 
@@ -227,7 +242,7 @@ paged_table(get_landcover_esa(32671, 2015, 0))
 paged_table(get_lcc_esa_percent(32671))
 ```
 
-
+### Get landcover COPERNICUS
 9. `landcover_copernicus` takes wdpaid and aggregation level (0,2) as arguments. 
     Returns percentage and absolute cover of Copernicus Land Cover classes for a given WDPA aggregation levels 0 (original Copernicus LC classes) and 2 (DOPA) are available.
 
@@ -250,6 +265,7 @@ paged_table(get_landcover_copernicus(32671, 2))
 ```
 
 
+### Get country stats
 10. `normalizedind_country` takes an indicator as argument, one among the listed many in `all_indicators`. 
     Returns, for protected area in country, absolute, normalized and average value of the selected indicator, and ranking within the country.
 
@@ -263,7 +279,7 @@ paged_table(get_landcover_copernicus(32671, 2))
 paged_table(get_country_pa_normalized_ind("agri_ind_pa"))
 ```
 
-
+### Get ecoregion stats
 11. `normalizedind_ecoregion` takes an indicator as argument, one among the listed many in `all_indicators` and ecoregion id as arguments. 
     Returns, for protected area in ecoregion, absolute, normalized and average value of the selected indicator, and ranking within the ecoregion.
 
@@ -278,7 +294,7 @@ paged_table(get_country_pa_normalized_ind("agri_ind_pa"))
 paged_table(get_ecoregion_pa_normalized_ind("agri_ind_pa", 16))
 ```
 
-
+### Flexible DOPA Query
 12. `get_dopa` is a global function and takes topic, getQuery and wdpaid as arguments. 
     Topics include: "protected_sites", "species", "water", "landcover"  
     getQuery include "get_wdpa_level_centroid", "get_pa_water_stats", "get_pa_redlist_status", "get_pa_redlist_list", "get_wdpa_all_inds", "get_wdpa_lcc_esa", "get_wdpa_lcc_esa_percent"
