@@ -18,6 +18,10 @@ This website is structured to show you the routines for each data-sources one by
 
 Chapters:
 
+- [About this project (readme.md)](dopa-rest.html).
+
+- [How to contribute (contrib.md)](dopa-rest.html).
+
 - [Querrying data from DOPA Rest API](dopa-rest.html).
 
 Also we have created a little app to interactively explore our portfolio. You can access the app [here](shiny-test.html).
