@@ -1,5 +1,5 @@
 # MAPME Protected Areas
-This file contains information on the general goals of the project. For details on the repository, open-source code and information on how to contribute please have a look at our contribution description (insert link here). If you want to use the source code of this repository to create your own analysis, please have a look at our documentation pages (insert link here). If you are interested in the results of our portfolio analysis and impact evaluation please visit our reporting sites (insert link here). 
+This file contains information on the general goals of the project. For details on the repository, open-source code and information on how to contribute please have a look at our contribution description (currently in contributions.md). If you want to use the source code of this repository to create your own analysis, please have a look at our documentation pages (currently in contributions.md). If you are interested in the results of our portfolio analysis and impact evaluation please visit our reporting sites (insert link here later). 
 
 ## Goal of this repository and project
 
