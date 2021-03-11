@@ -69,6 +69,7 @@ Please try to develop your routine using a small subset of **sample** data that 
 4. Create a `Rmd` file placed in the *analysis* folder (see structure above). Best practice is to use the `wflow_open()` command which will create a new `Rmd` file. Name this new file according to the pre-processed data-source and variable e.g. `wwf_teow.Rmd` for TEOW Ecoregions from the World Wildlife Fund for Nature (WWF) or `gfw_forests.Rmd` for different variables from the Global Forest Watch (GFW) such as *forest cover*, *forest cover loss* or *emissions from forest cover loss*. The full command to create a new script in our example would therefore look like this `wflow_open("analysis/wwf_teow.Rmd")`
 5. Create a `R`-script for larger functional code-junks in the *code* folder (if you need to create new routines). This file can be sourced in the `Rmd` (details and naming convention below).
 6. Create a reference to the new routine and its documentation by creating a link to the rendered html file in `index.Rmd` (details below)
+7. Add relevant meta-data to the `Rmd` file (details below).
 
 #### Seperate R scripts with source code 
 You should try to develop R-functions that are seperated in an R-script and then sourced in the `Rmd` files. Those functions and R-scripts should be placed in the *code* folder (see structure above). This is especially relevant for code which can be re-used in several pre-processing routines such as chained pre-processing steps e.g. `reproject` -> `rasterize` -> `stack` -> `zonal`. 
@@ -82,6 +83,26 @@ Here you have two differing naming conventions when saving the script:
 All of the files in the *analysis* folder will be rendered to create the project website. In order to render new `Rmd` files use the function `wflow_build()` from the `workflowr` package. After rendering, html files will be created in the *docs* folder. **PLEASE MAKE SURE to create new links in the `index.Rmd` that will reference to this new html files**. This will ensure, that the new routines appear in the rendered website afterwards. 
 
 **PLEASE MAKE also sure to document newly created `R` files in `index.Rmd`** to allow others to get a quick assessment of the existing pre-processing routines. You only need to do this if you think your routine could be used also outside of the context in which you processed your dataset (i.e. more generic methods as shown above in the example of chained processing steps). If possible you can also use a graphical expression of the workflow (see examples in index) which will enable others to understand your routine quickly. Images for such graphical expressions should be stored in *docs* as well containing the name of the routine. For the example above this would be *rasterize_and_zonalstats.png*. You can find a Powerpoint Template for workflows in the *docs* folder as well. 
+
+#### Contents of the `Rmd` file
+In order to create a good documentation of the processed data and the authors of the script we would like to ask for some minimal information in the `Rmd` files consisting of
+
+* Author Name (and optionally contact details, link to github account or other)
+* Purpose of the script
+  * what is shown by the dataset(s) and what information is to be derived, 
+  * what is done in the script and which processing scripts from the *code* folder are used
+  * what data comes out in the end. 
+* Meta-data for the processed dataset(s)
+  * Name of the dataset(s) and source(s) (scientific citation if available)
+  * Version number of the data (if the data is updated and possess this information)
+  * geographical extension
+  * spatial resolution
+  * temporal resolution
+  * link to the main meta-data document from the data-source
+  * download-link
+  * when was the data downloaded
+* Detailed description of the data processing
+* Time necessary to process the sample data and details on the machine used to process it. 
 
 
 ### Analysis

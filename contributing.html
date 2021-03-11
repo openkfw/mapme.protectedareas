@@ -481,6 +481,7 @@ summary {
 <li>Create a <code>Rmd</code> file placed in the <em>analysis</em> folder (see structure above). Best practice is to use the <code>wflow_open()</code> command which will create a new <code>Rmd</code> file. Name this new file according to the pre-processed data-source and variable e.g. <code>wwf_teow.Rmd</code> for TEOW Ecoregions from the World Wildlife Fund for Nature (WWF) or <code>gfw_forests.Rmd</code> for different variables from the Global Forest Watch (GFW) such as <em>forest cover</em>, <em>forest cover loss</em> or <em>emissions from forest cover loss</em>. The full command to create a new script in our example would therefore look like this <code>wflow_open(&quot;analysis/wwf_teow.Rmd&quot;)</code></li>
 <li>Create a <code>R</code>-script for larger functional code-junks in the <em>code</em> folder (if you need to create new routines). This file can be sourced in the <code>Rmd</code> (details and naming convention below).</li>
 <li>Create a reference to the new routine and its documentation by creating a link to the rendered html file in <code>index.Rmd</code> (details below)</li>
+<li>Add relevant meta-data to the <code>Rmd</code> file (details below).</li>
 </ol>
 <div id="seperate-r-scripts-with-source-code" class="section level4">
 <h4>Seperate R scripts with source code</h4>
@@ -495,6 +496,32 @@ summary {
 <h4>Render and link your report</h4>
 <p>All of the files in the <em>analysis</em> folder will be rendered to create the project website. In order to render new <code>Rmd</code> files use the function <code>wflow_build()</code> from the <code>workflowr</code> package. After rendering, html files will be created in the <em>docs</em> folder. <strong>PLEASE MAKE SURE to create new links in the <code>index.Rmd</code> that will reference to this new html files</strong>. This will ensure, that the new routines appear in the rendered website afterwards.</p>
 <p><strong>PLEASE MAKE also sure to document newly created <code>R</code> files in <code>index.Rmd</code></strong> to allow others to get a quick assessment of the existing pre-processing routines. You only need to do this if you think your routine could be used also outside of the context in which you processed your dataset (i.e. more generic methods as shown above in the example of chained processing steps). If possible you can also use a graphical expression of the workflow (see examples in index) which will enable others to understand your routine quickly. Images for such graphical expressions should be stored in <em>docs</em> as well containing the name of the routine. For the example above this would be <em>rasterize_and_zonalstats.png</em>. You can find a Powerpoint Template for workflows in the <em>docs</em> folder as well.</p>
+</div>
+<div id="contents-of-the-rmd-file" class="section level4">
+<h4>Contents of the <code>Rmd</code> file</h4>
+<p>In order to create a good documentation of the processed data and the authors of the script we would like to ask for some minimal information in the <code>Rmd</code> files consisting of</p>
+<ul>
+<li>Author Name (and optionally contact details, link to github account or other)</li>
+<li>Purpose of the script
+<ul>
+<li>what is shown by the dataset(s) and what information is to be derived,</li>
+<li>what is done in the script and which processing scripts from the <em>code</em> folder are used</li>
+<li>what data comes out in the end.</li>
+</ul></li>
+<li>Meta-data for the processed dataset(s)
+<ul>
+<li>Name of the dataset(s) and source(s) (scientific citation if available)</li>
+<li>Version number of the data (if the data is updated and possess this information)</li>
+<li>geographical extension</li>
+<li>spatial resolution</li>
+<li>temporal resolution</li>
+<li>link to the main meta-data document from the data-source</li>
+<li>download-link</li>
+<li>when was the data downloaded</li>
+</ul></li>
+<li>Detailed description of the data processing</li>
+<li>Time necessary to process the sample data and details on the machine used to process it.</li>
+</ul>
 </div>
 </div>
 <div id="analysis" class="section level3">
