@@ -6,7 +6,8 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_knit$set(root.dir = "/home/ombhandari/shared/Om/mapme.protectedareas/")
+knitr::opts_knit$set(root.dir = '../')
+# load required libraries
 library(rmarkdown)
 library(terra)
 library(rgdal)
@@ -27,9 +28,10 @@ Forest Carbon Emissions are GHG emissions that originate from forest cover loss 
 To calculate zonal statistics for net forest carbon flux that changed between 2001 to 2019, enlisted is the required processing routine:
   
   - Download raster data of the desired grid using function `get_net_carbon_flux`
-  - Fetch country level wdpa data from library `wdpar` and clean the data
+  - Fetch country level wdpa data from library `wdpar`
   - Select desired wdpa polygon from wdpa data
-  - Clip the carbon_flux raster by the selected polygon to its extent
+  - Clean the data
+  - Clip the carbon_flux raster by the selected polygon to its extent and mask layer
   - Rasterize the selected polygon area
   - Perform zonal statistics
 
@@ -44,15 +46,16 @@ source("code/carbon-flux.R")
 
 How to use the function?
 
-- you can call the function `get_net_carbon_flux` by passing (lat, lon) arguments for eg. ("10S", "050W") or ("10N", "020E")
+- you can call the function `get_net_carbon_flux` by passing (lat, lon) arguments as string for eg. ("10S", "050W") or ("10N", "020E")
 - you should check the coordinates of your desired area and need to find out the grid under which interval of latitude and longitude does it fall
-- or simply visit the [GFW Dataset Portal](https://data.globalforestwatch.org/datasets/net-forest-carbon-flux/data?geometry=163.031%2C-61.608%2C31.547%2C83.830) to verify chosen grid coordinates
+- or simply visit the [GFW Dataset Portal](https://data.globalforestwatch.org/datasets/net-forest-carbon-flux/data) to verify chosen grid coordinates
+- Note: If in case you choose to compute zonal statistics for larger polygon level or for many polygon levels, then one raster data might not be enough for your computation. Then you must download multiple raster files so as to cover the polygon extent and merge them later simply using `merge` function.
 
 
 ```{r callFunction, warning=FALSE, include=TRUE}
 
-# call the function to download raster for the country Brazil
-# returned values is in 'Mg_CO2_ha-1'
+# call the function to download raster for a part of the country Brazil where we want to compute zonal statistics
+# Note: raster value is 'Mg_CO2_ha-1'
 get_net_carbon_flux("00N", "060W")
 ```
 
@@ -70,24 +73,24 @@ plot(myRaster)
 
 ### Polygon data preparation
 
-Since we already prepared raster data for our analysis. Now, we will try to get the country level polygon data from `wdpar` package. `wdpar` is a library to interface to the World Database on Protected Areas (WDPA).
+Since we already prepared raster data for our analysis. Now, we will try to get the country level polygon data from `wdpar` package. `wdpar` is a library to interface to the World Database on Protected Areas (WDPA). The library is used to monitor the performance of existing PAs and determine priority areas for the establishment of new PAs.
 
 ```{r fetchWdpar, warning=FALSE, include=TRUE}
 
 # fetch the raw data from wdpar of country Brazil - for other countries of your choice, simply provide the country name or the ISO name e.g. Gy for Guyana, COL for Colombia
-br_raw_pa_data <- wdpa_fetch("Brazil")
+br_raw_pa_data <- wdpa_fetch("Brazil") #can also use wdpa_fetch("BRA")
 ```
 
-Since there are more than 3000 enlisted protected areas in Brazil, we want to have a look at the polygon data of:
-  - Reserva Biologica Do Rio Trombetas - wdpaid 43 
-	- Reserva Extrativista Rio Cajari - wdpaid 31776
+Since there are more than 3000 enlisted protected areas in Brazil, we want to compute zonal statistics only for the polygon data of:
+  	- Reserva Biologica Do Rio Trombetas - wdpaid 43,
+	- Reserva Extrativista Rio Cajari - wdpaid 31776, and
 	- Estacao Ecologica Do Jari - wdpaid 4891
 
 For this, we have to subset the country level polygon data to the pa level.
 
 ```{r subset, warning=FALSE, include=TRUE}
 
-# subset three wdpa polygons
+# subset three wdpa polygons by their wdpa ids
 trombetas <- br_raw_pa_data[br_raw_pa_data$WDPAID == 43, ]
 jari <- br_raw_pa_data[br_raw_pa_data$WDPAID == 4891, ]
 cajari <- br_raw_pa_data[br_raw_pa_data$WDPAID == 31776, ]
@@ -116,7 +119,7 @@ brac_sp <- as(brac, "Spatial")
 
 ### Crop the Carbon Flux Raster
 
-As we completed raster and vector data preparation, the next step would be to clip the raster layer by the selected shapefile polygon; its extent and mask layer.
+As we completed raster and vector data preparation, the next step would be to clip the raster layer by the selected shapefile polygon both by its extent and mask layer.
 
 ```{r cropRaster, warning=FALSE, include=TRUE}
 
@@ -138,7 +141,7 @@ plot(myMask)
 
 ### Rasterize the polygon layer
 
-To compute the zonal statistics, it is necessary to rasterize the polygon layer. We need to pass the extent layer and the mask layer to the rasterize function.
+To compute the zonal statistics, it is necessary to rasterize the polygon layer. Doing so, values are transferred from the spatial objects to raster cells. We need to pass the extent layer and the mask layer to the rasterize function.
 
 ```{r rasterize, warning=FALSE, include=TRUE}
 
@@ -159,4 +162,4 @@ zstats
 ```
 By mathematical definition, net forest carbon flux is the difference between average annual gross emissions and average annual gross removals. Hence, positive result denotes forests as net sources of carbon and negative results denotes forests as net sinks of carbon.
 
-For all the three polygons we considered, we get the negative result. That means forest in these three Protected Areas act as the net sinks of carbon.
+For all the three polygons we considered, we got the negative result. That means forests in these three Protected Areas act as the net sinks of carbon.
