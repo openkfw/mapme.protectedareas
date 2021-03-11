@@ -1,6 +1,6 @@
 # MAPME Protected Areas
 
-Repository for creating reproducible geodata processing routines to analyze protected areas portfolio from KfW 
+Repository for creating reproducible geodata processing routines to analyze protected areas portfolio from KfW. To find out more detailed information on this project please visit this [about page][].  
 
 Variables will cover: 
 * general PA and administrational information
@@ -41,3 +41,4 @@ This repository offers common labels such as `bug` or `enhancement`. In addition
 
 [workflowr]: https://github.com/jdblischak/workflowr
 [renv]:https://rstudio.github.io/renv/index.html
+[renv]:/about.html
