@@ -5,69 +5,158 @@ date: "3/5/2021"
 output: html_document
 ---
 
-```{r warning=FALSE}
-# load required libraries
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = "/home/ombhandari/shared/Om/mapme.protectedareas/")
+library(rmarkdown)
 library(terra)
-library(raster)
 library(rgdal)
 library(tmap)
+library(sp)
+library(raster)
 library(sf)
+library(wdpar)
+library(ggplot2)
 ```
 
 
 ### Introduction
 
-Forest Carbon Emissions are GHG emissions that originate from forest cover loss and subsequent ABG and BEG biomass loss. Net forest carbon flux represents the net exchange of carbon between forests and the atmosphere. Forest act as both a Source and Sink for Carbon.
+Forest Carbon Emissions are GHG emissions that originate from forest cover loss and subsequent Above Ground Biomass and Below Ground Biomass loss. Net forest carbon flux represents the net exchange of carbon between forests and the atmosphere. Forest act as both a Source and Sink for Carbon. 
 
-In order to calculate net carbon flux or simply carbon balance, we need to follow these steps:
-  - Download raster `r1` of the desired grid
-  - Clip extent of raster to AOI polygon to create new raster `r2`
-  - Rasterize WDPA vector polygon `v1` to the extent of `r2` to get `r3`
-  - Load `r2` (base raster layer) and `r3` (raster zone layer)
-  - Perform Zonal Statistics between `r2` and `r3`
+
+To calculate zonal statistics for net forest carbon flux that changed between 2001 to 2019, enlisted is the required processing routine:
   
+  - Download raster data of the desired grid using function `get_net_carbon_flux`
+  - Fetch country level wdpa data from library `wdpar` and clean the data
+  - Select desired wdpa polygon from wdpa data
+  - Clip the carbon_flux raster by the selected polygon to its extent
+  - Rasterize the selected polygon area
+  - Perform zonal statistics
 
-```{r warning=FALSE}
 
-# load raster from file - here we have used raster data from Amazonas state of Brazil
-zone_ras <- raster("/home/rstudio/shared/Om/test/Zone_Stats.tif")
-crs(zone_ras) <- "+proj=utm +zone=48 +datum=WGS84"
-zone_ras
+### Raster data preparation
 
-# load your vector from file - this vector contains wdpa polygons with ID 33608 & 33714
-amz <- vect(read_sf("/home/rstudio/shared/Om/test/Amazonas.shp"))
-crs(amz) <- "+proj=utm +zone=48 +datum=WGS84"
-plot(amz)
+At first you should link to the source functions to go through this routine.
+```{r source, include=TRUE}
+source("code/carbon-flux.R")
 ```
 
-```{r warning=FALSE}
-# create raster `raster_amz` to match the extent from raster files
-raster_amz <- rast(ncol=4900, nrow=1832, xmin=-63.3025, xmax=-62.0775, ymin=-9.13275, ymax=-8.67475)
-# set the crs to UTM Zone 48 - WGS84
-crs(raster_amz) <- "+proj=utm +zone=48 +datum=WGS84"
-# check data
-raster_amz
+
+How to use the function?
+
+- you can call the function `get_net_carbon_flux` by passing (lat, lon) arguments for eg. ("10S", "050W") or ("10N", "020E")
+- you should check the coordinates of your desired area and need to find out the grid under which interval of latitude and longitude does it fall
+- or simply visit the [GFW Dataset Portal](https://data.globalforestwatch.org/datasets/net-forest-carbon-flux/data?geometry=163.031%2C-61.608%2C31.547%2C83.830) to verify chosen grid coordinates
+
+
+```{r callFunction, warning=FALSE, include=TRUE}
+
+# call the function to download raster for the country Brazil
+# returned values is in 'Mg_CO2_ha-1'
+get_net_carbon_flux("00N", "060W")
 ```
 
-```{r warning=FALSE}
-# since the extent of both rasters match now we can perform rasterization
-x <- rasterize(amz, raster_amz, amz$WDPAID, length, background=NA, update=FALSE,   touches=is.lines(amz), cover=FALSE, filename="/home/rstudio/shared/Om/test/amaz_raster.tif")
-# check data
-x
-# plot rasterized map
-plot(x)
+After successfully running this function, you can see that the raster file is stored in the temporary directory of R, which we can see above within double quote. For the next step, simply pass the returned temporary file path from the 'callFunction' chunk to the 'loadRaster' chunk so as to load the downloaded raster file.
+
+```{r loadRaster, warning=FALSE, include=TRUE}
+
+# load the raster, view and plot the data
+myRaster <- raster("/tmp/Rtmps0oMVx/carbon_flux_00N_060W.tif")
+# view the data
+myRaster
+# plot the raster
+plot(myRaster)
 ```
 
-```{r warning=FALSE}
-# load rasterized data 
-x1 <- raster("/home/rstudio/shared/Om/test/amaz_raster.tif")
-#check data
-x1
+### Polygon data preparation
+
+Since we already prepared raster data for our analysis. Now, we will try to get the country level polygon data from `wdpar` package. `wdpar` is a library to interface to the World Database on Protected Areas (WDPA).
+
+```{r fetchWdpar, warning=FALSE, include=TRUE}
+
+# fetch the raw data from wdpar of country Brazil - for other countries of your choice, simply provide the country name or the ISO name e.g. Gy for Guyana, COL for Colombia
+br_raw_pa_data <- wdpa_fetch("Brazil")
 ```
 
-```{r warning=FALSE}
-# perform zonal statistics
-statsZone <- zonal(zone_ras, x1, fun='sum', na.rm=T)
-statsZone
+Since there are more than 3000 enlisted protected areas in Brazil, we want to have a look at the polygon data of:
+  - Reserva Biologica Do Rio Trombetas - wdpaid 43 
+	- Reserva Extrativista Rio Cajari - wdpaid 31776
+	- Estacao Ecologica Do Jari - wdpaid 4891
+
+For this, we have to subset the country level polygon data to the pa level.
+
+```{r subset, warning=FALSE, include=TRUE}
+
+# subset three wdpa polygons
+trombetas <- br_raw_pa_data[br_raw_pa_data$WDPAID == 43, ]
+jari <- br_raw_pa_data[br_raw_pa_data$WDPAID == 4891, ]
+cajari <- br_raw_pa_data[br_raw_pa_data$WDPAID == 31776, ]
+# merge polygons into one file
+bra <- rbind(trombetas, jari, cajari)
 ```
 
+
+The next immediate step would be to clean the fetched raw data. Cleaning is done so as to:
+- exclude protected areas that are not yet implemented
+- exclude protected areas with limited conservation value
+- replace missing data codes (e.g. "0") with missing data values (i.e. NA)
+- replace protected areas represented as points with circular protected areas that correspond to their reported extent
+- repair any topological issues with the geometries
+- erase overlapping areas
+
+```{r cleanWdpar, warning=FALSE, include=TRUE}
+
+# clean the data
+brac <- wdpa_clean(bra)
+# spatial 
+brac_sp <- as(brac, "Spatial")
+```
+
+
+
+### Crop the Carbon Flux Raster
+
+As we completed raster and vector data preparation, the next step would be to clip the raster layer by the selected shapefile polygon; its extent and mask layer.
+
+```{r cropRaster, warning=FALSE, include=TRUE}
+
+# extent preparation
+myExtent <- spTransform(brac_sp, CRS(proj4string(myRaster)))
+# plot the extent that will be used to crop the raster layer
+plot(myExtent)
+# crop raster using polygon extent
+myCrop <- crop(myRaster, myExtent)
+# plot the data - shows the raster after getting cropped by the extent of polygon
+plot(myCrop)
+# crop raster using polygon mask
+myMask <- mask(myCrop, myExtent)
+# plot the data - shows the raster after getting cropped by the polygon mask
+plot(myMask)
+```
+
+
+
+### Rasterize the polygon layer
+
+To compute the zonal statistics, it is necessary to rasterize the polygon layer. We need to pass the extent layer and the mask layer to the rasterize function.
+
+```{r rasterize, warning=FALSE, include=TRUE}
+
+# rasterize
+r <- rasterize(myExtent, myMask, myExtent$WDPAID, background=NA, update=FALSE, touches=is.lines(myExtent), cover=FALSE)
+```
+
+
+### Compute zonal statistics
+
+A zonal statistics operation is one that calculates statistics on cell values of a raster (a value raster) within the zones defined by another dataset [ArcGIS definition].
+
+```{r zoneStats, warning=FALSE, include=TRUE}
+
+# zonal stats
+zstats <- zonal(myMask, r, fun='sum', na.rm=T)
+zstats
+```
+By mathematical definition, net forest carbon flux is the difference between average annual gross emissions and average annual gross removals. Hence, positive result denotes forests as net sources of carbon and negative results denotes forests as net sinks of carbon.
+
+For all the three polygons we considered, we get the negative result. That means forest in these three Protected Areas act as the net sinks of carbon.
