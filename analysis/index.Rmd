@@ -22,4 +22,4 @@ Chapters:
 
 - [Querrying data from DOPA Rest API](dopa-rest.html).
 
-- [Carbon Flux](carbon-flux.html).
+- [Net forest carbon flux (Harris et al. 2021)](carbon-flux.html).
