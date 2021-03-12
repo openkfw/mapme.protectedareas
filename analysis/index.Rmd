@@ -16,9 +16,9 @@ This website is structured to show you the routines for each data-sources one by
 
 Chapters:
 
-- [About this project (readme.md)](dopa-rest.html).
+- [About this project](README.html).
 
-- [How to contribute (contrib.md)](dopa-rest.html).
+- [How to contribute](contribute.html).
 
 - [Querrying data from DOPA Rest API](dopa-rest.html).
 

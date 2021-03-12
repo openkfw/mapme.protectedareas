@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Johannes Schielein" />
+
+<meta name="date" content="2021-03-12" />
+
+<title>General Introduction</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
+<script src="site_libs/anchor-sections-1.0/anchor-sections.js"></script>
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">mapme.protectedareas</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">General Introduction</h1>
+<h4 class="author">Johannes Schielein</h4>
+<h4 class="date">2021-03-12</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2021-03-12
+</p>
+<p>
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 1
+</p>
+<p>
+<strong>Knit directory:</strong> <code>mapme.protectedareas/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.6.2). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges"> <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted changes </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguncommittedchanges" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The R Markdown is untracked by Git. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20210305code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(20210305)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20210305code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20210305)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastree9cf92e0de79510ed420995d8f3716d1e76c2d13atargetblank9cf92e0a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/openkfw/mapme.protectedareas/tree/9cf92e0de79510ed420995d8f3716d1e76c2d13a" target="_blank">9cf92e0</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastree9cf92e0de79510ed420995d8f3716d1e76c2d13atargetblank9cf92e0a" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version <a href="https://github.com/openkfw/mapme.protectedareas/tree/9cf92e0de79510ed420995d8f3716d1e76c2d13a" target="_blank">9cf92e0</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rproj.user/
+    Ignored:    analysis/README.html
+    Ignored:    contributing.html
+    Ignored:    mapme.protectedareas.Rproj
+    Ignored:    renv/library/
+    Ignored:    renv/local/
+    Ignored:    renv/staging/
+
+Untracked files:
+    Untracked:  analysis/README.Rmd
+    Untracked:  analysis/contribute.Rmd
+
+Unstaged changes:
+    Modified:   .DS_Store
+    Modified:   analysis/index.Rmd
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+<p>
+There are no past versions. Publish this analysis with <code>wflow_publish()</code> to start tracking its development.
+</p>
+<hr>
+</div>
+</div>
+</div>
+<p>This file includes information on how to use this repository and create good contributions. We also use a code of conduct for open source projects adapted from the Contributor Covenant homepage. You can find this conduct in the file CoC.md.</p>
+<div id="how-can-i-use-this-repository" class="section level2">
+<h2>How can I use this repository?</h2>
+<p>Put here information on the usage (later).</p>
+</div>
+<div id="how-can-i-contribute" class="section level2">
+<h2>How can I contribute?</h2>
+<ol style="list-style-type: decimal">
+<li><a href="#reporting-bugs-and-suggesting-enhancements">Reporting Bugs &amp; Suggesting Enhancements</a></li>
+<li><a href="#remarks-on-contributing-code">Contributing Code</a></li>
+<li><a href="#issues-and-prioritization">Issues and Prioritization</a></li>
+</ol>
+<div id="reporting-bugs-and-suggesting-enhancements" class="section level3">
+<h3>Reporting Bugs And Suggesting Enhancements</h3>
+<p>Add here information on where and how to report bugs and add suggestions (later)</p>
+</div>
+<div id="remarks-on-contributing-code" class="section level3">
+<h3>Remarks on Contributing Code</h3>
+<p>In order to ensure reproducibility, proper documentation and open-source code is key. In addition to making all routines public, we also have a strong focus on the proper <strong>documentation of utilized methods</strong>. Here are the necessary steps contributors should do to make a contribution to this repository.</p>
+<ol style="list-style-type: decimal">
+<li><strong>Read this contrib file</strong>. It contains most of the relevant information to get started.</li>
+<li><strong>Create a new issue</strong> in this repository that describes your intended contribution and wait for a reaction from the community.</li>
+<li>If you are a contributor to this repository <strong>open a new branch</strong> to work on your issue. Give the branch a name that makes it easy to understand what the intended contribution might be. <strong>Example for Branchname</strong>: <em>wwf_teow_preprocessing</em> to add preprocessing routines for the WWF/TEOW dataset.<br />
+</li>
+<li>If you are not a contributor (yet) you might want to forge this repository first and later create an upstream pull request.</li>
+<li>This repository uses the <a href="https://style.tidyverse.org/">tidyverse Styleguide</a> for creating commits in R. Please have a look at it, if you are not familiar.</li>
+<li>This repository tries to follow the recommendations of <a href="https://ropenscilabs.github.io/statistical-software-review-book/standards.html#spatial-software">Ropenscilabs</a> for developing spatial software in R. Please have a look at it, if you are not familiar. <strong>The two main libraries to be used for geo-processing are <code>sf</code> and <code>terra</code>. Please try to write your functions using these packages instead of the older packages <code>sp</code> and <code>raster</code>.</strong></li>
+<li>Before creating new code you might want to have a <strong>look at the existing code-base</strong> to see whether you can take advantage of existing processing or analysis routines. The easiest way is probably to have a look at the documentation pages (&lt;-insert link from index later here-&gt;) and look at the utilized routines there before going into the code itself. It is encouraged re-utilize code from the <em>code</em> folder as much as possible to reduce maintenance needs and complexity.</li>
+<li>We use <code>R</code> scripts to process our data and <code>Rmarkdownscripts (Rmd)</code> to document the utilized data, methods, pre-processing routines and analysis scripts. We have some <strong>basic recommendations and minimum standards for code developemt</strong> which are shown below.</li>
+<li>Develop your code with <strong>sample data</strong> that is quick to process and easy to reproduce. There are also some recommendations on sample data below.</li>
+</ol>
+</div>
+<div id="repository-structure" class="section level3">
+<h3>Repository Structure</h3>
+<p>This repository is structured as a reproducible project using the workflowr package. For more information please visit <a href="https://github.com/jdblischak/workflowr">workflowr</a> website. In addition, this repository used the the renv package to enable others to exactly work with the same package versions that had been utilized in this project. For more information please visit the <a href="https://rstudio.github.io/renv/index.html">renv</a> website.</p>
+<p>mapme.protectedareas/</p>
+<pre><code>.
+├── .gitignore # specifies which files to ignore from the git
+├── .Rprofile # contains information on which libraries and settings should be used at start
+├── _workflowr.yml  # yml file needed to control workflowr
+├──  analysis/
+    ├── about.Rmd
+    ├── index.Rmd
+    ├── license.Rmd 
+    ├──  *.Rmd # Rmarkdown files to document pre-processing and analysis routines
+    └── _site.yml
+├── code/  
+    ├── *.R # R-functions and scripts utilized in Rmd
+├── data/   # raw imputable sample data for the routine. 
+├── docs/  # htmls builds of the Rmds in analysis/ 
+├── output/  # intermediate and final data output from sample data
+├── README.md # general information on the project
+└── renv/  # renv directory to lock used package versions</code></pre>
+</div>
+<div id="preprocessing-datasets" class="section level3">
+<h3>Preprocessing Datasets</h3>
+<p>This is a step-by-step guide to create a new pre-processing routine based on the example of TEOW ecoregions dataset from WWF. <strong>Pre-processing routines are organized in this repository along the line of thematic data-sets from differing data-sources</strong>. The intention of this organization is to have a <strong>modular structure</strong> that allows for easy adding or deleting data-sources from the pre-processing routine and eventually chain them together. Also this allows us to debug the code more easily if the routine is chained. <strong>An exception</strong> to this structure are routines that allow access to already pre-processed data-sets, in our case the <code>API</code>-Access <em>DOPA/JRC Rest Services</em>, which provides tabular information for several thematic data-sets pre-processed by JRC on the base of PAs.</p>
+<p>Please try to develop your routine using a small subset of <strong>sample</strong> data that takes few processing time for the documentation and has low storage requirements. For PAs we recommend e.g. to use 1 or 2 PAs from your area of interest. We currently use the <code>wdpar</code> package to automatically download and preprocess sample PAs from the <em>WDPA</em>. You can also save the sample data in the <em>data</em> folder. This is recommended if the dataset you use has no definitive storage place on the internet. Nevertheless, it is encouraged to include the downloading process in the routine as well and save the sample data in the temporary folder that is created by the <em>Rsession</em>.</p>
+<p><strong>To create a new pre-processing routine you should</strong></p>
+<ol style="list-style-type: decimal">
+<li>Create a new issue for the data-source that should be processed. The Title could be for example: <em>“Pre-process TEOW ecoregion data from WWF to create tabular data for PA polygon database”</em></li>
+<li>Create a new branch in the repository as discussed above. This branch should indicate what is done e.g. <em>“preprocess_teow”</em></li>
+<li>Have a look at existing processing routines as mentioned above to see if you can recycle code or use existing routines.</li>
+<li>Create a <code>Rmd</code> file placed in the <em>analysis</em> folder (see structure above). Best practice is to use the <code>wflow_open()</code> command which will create a new <code>Rmd</code> file. Name this new file according to the pre-processed data-source and variable e.g. <code>wwf_teow.Rmd</code> for TEOW Ecoregions from the World Wildlife Fund for Nature (WWF) or <code>gfw_forests.Rmd</code> for different variables from the Global Forest Watch (GFW) such as <em>forest cover</em>, <em>forest cover loss</em> or <em>emissions from forest cover loss</em>. The full command to create a new script in our example would therefore look like this <code>wflow_open("analysis/wwf_teow.Rmd")</code></li>
+<li>Create a <code>R</code>-script for larger functional code-junks in the <em>code</em> folder (if you need to create new routines). This file can be sourced in the <code>Rmd</code> (details and naming convention below).</li>
+<li>Create a reference to the new routine and its documentation by creating a link to the rendered html file in <code>index.Rmd</code> (details below)</li>
+<li>Add relevant meta-data to the <code>Rmd</code> file (details below).</li>
+</ol>
+<div id="seperate-r-scripts-with-source-code" class="section level4">
+<h4>Seperate R scripts with source code</h4>
+<p>You should try to develop R-functions that are seperated in an R-script and then sourced in the <code>Rmd</code> files. Those functions and R-scripts should be placed in the <em>code</em> folder (see structure above). This is especially relevant for code which can be re-used in several pre-processing routines such as chained pre-processing steps e.g. <code>reproject</code> -&gt; <code>rasterize</code> -&gt; <code>stack</code> -&gt; <code>zonal</code>.</p>
+<p>Here you have two differing naming conventions when saving the script:</p>
+<ul>
+<li>You can create a new name that links the <code>R</code> file to the name of your <code>Rmd</code>file. This could be for example <em>preprocessing_wwf_teow.R</em>. Use this if your code is most probably specific to the dataset that you process.</li>
+<li>If you create a new processing routine that is more generic and can be utilized in several other projects as well. Try to find a name that best describes this routine. For the example chain above such name could be <em>rasterize_and_zonalstats.R</em>. If you create such a generic routine make sure to also create a link and a small descrpition of this new routine in the <code>index.Rmd</code> file as described in the subsequent section.</li>
+</ul>
+</div>
+<div id="render-and-link-your-report" class="section level4">
+<h4>Render and link your report</h4>
+<p>All of the files in the <em>analysis</em> folder will be rendered to create the project website. In order to render new <code>Rmd</code> files use the function <code>wflow_build()</code> from the <code>workflowr</code> package. After rendering, html files will be created in the <em>docs</em> folder. <strong>PLEASE MAKE SURE to create new links in the <code>index.Rmd</code> that will reference to this new html files</strong>. This will ensure, that the new routines appear in the rendered website afterwards.</p>
+<p><strong>PLEASE MAKE also sure to document newly created <code>R</code> files in <code>index.Rmd</code></strong> to allow others to get a quick assessment of the existing pre-processing routines. You only need to do this if you think your routine could be used also outside of the context in which you processed your dataset (i.e. more generic methods as shown above in the example of chained processing steps). If possible you can also use a graphical expression of the workflow (see examples in index) which will enable others to understand your routine quickly. Images for such graphical expressions should be stored in <em>docs</em> as well containing the name of the routine. For the example above this would be <em>rasterize_and_zonalstats.png</em>. You can find a Powerpoint Template for workflows in the <em>docs</em> folder as well.</p>
+</div>
+<div id="contents-of-the-rmd-file" class="section level4">
+<h4>Contents of the <code>Rmd</code> file</h4>
+<p>In order to create a good documentation of the processed data and the authors of the script we would like to ask for some minimal information in the <code>Rmd</code> files consisting of</p>
+<ul>
+<li>Author Name (and optionally contact details, link to github account or other)</li>
+<li>Purpose of the script
+<ul>
+<li>what is shown by the dataset(s) and what information is to be derived,</li>
+<li>what is done in the script and which processing scripts from the <em>code</em> folder are used</li>
+<li>what data comes out in the end.</li>
+</ul></li>
+<li>Meta-data for the processed dataset(s)
+<ul>
+<li>Name of the dataset(s) and source(s) (scientific citation if available)</li>
+<li>Version number of the data (if the data is updated and possess this information)</li>
+<li>geographical extension</li>
+<li>spatial resolution</li>
+<li>temporal resolution</li>
+<li>link to the main meta-data document from the data-source</li>
+<li>download-link</li>
+<li>when was the data downloaded</li>
+</ul></li>
+<li>Detailed description of the data processing</li>
+<li>Time necessary to process the sample data and details on the machine used to process it.</li>
+</ul>
+</div>
+</div>
+<div id="analysis" class="section level3">
+<h3>Analysis</h3>
+<p>This will be added later.</p>
+</div>
+</div>
+<div id="issues-and-prioritization" class="section level2">
+<h2>Issues and Prioritization</h2>
+<p>This repository offers common labels such as <code>bug</code> or <code>enhancement</code>. In addition it also has labels to create a priorization scheme to see which issues should be prioritized and adressed first. To that end we use a simplified method called <em>MoSCoW</em> which categorizes tasks into <code>Must</code>, <code>Should</code>, <code>Could</code> and <code>Won't</code>. Issues of category <code>Must</code> are the most relevant and should be addressed first. After addressing all of these issues we will move forward to the <code>Should</code> and if time left to the <code>Could</code>. In addition there is a label called <code>Fast Lane</code> which is used to mark such issues that should be addressed first <strong>within</strong> their given category. So an issue with <code>Should</code> and <code>Fast Lane</code> should be adressed quickly after all of the <code>Musts</code> are processed.</p>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.0.3 (2020-10-10)
+Platform: x86_64-apple-darwin17.0 (64-bit)
+Running under: macOS Big Sur 10.16
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRblas.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRlapack.dylib
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+[1] workflowr_1.6.2
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_1.0.6      rstudioapi_0.13 knitr_1.30      magrittr_2.0.1 
+ [5] R6_2.5.0        rlang_0.4.10    stringr_1.4.0   tools_4.0.3    
+ [9] xfun_0.19       git2r_0.27.1    htmltools_0.5.0 ellipsis_0.3.1 
+[13] rprojroot_2.0.2 yaml_2.2.1      digest_0.6.27   tibble_3.0.4   
+[17] lifecycle_1.0.0 crayon_1.3.4    later_1.1.0.1   vctrs_0.3.6    
+[21] promises_1.1.1  fs_1.5.0        glue_1.4.2      evaluate_0.14  
+[25] rmarkdown_2.5   stringi_1.5.3   compiler_4.0.3  pillar_1.4.7   
+[29] httpuv_1.5.4    renv_0.13.0     pkgconfig_2.0.3</code></pre>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
