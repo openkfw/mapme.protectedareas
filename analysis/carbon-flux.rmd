@@ -5,18 +5,15 @@ date: "3/5/2021"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
+```{r setup, message=FALSE}
 knitr::opts_knit$set(root.dir = '../')
 # load required libraries
-library(rmarkdown)
-library(terra)
-library(rgdal)
-library(tmap)
-library(sp)
-library(raster)
-library(sf)
-library(wdpar)
-library(ggplot2)
+library("sp")
+library("raster")
+library("sf")
+library("wdpar")
+library("dplyr")
+
 ```
 
 
@@ -53,19 +50,17 @@ How to use the function?
 
 
 ```{r callFunction, warning=FALSE, include=TRUE}
-
+options(timeout=180) # sets timeout for downloads to 180seconds
 # call the function to download raster for a part of the country Brazil where we want to compute zonal statistics
 # Note: raster value is 'Mg_CO2_ha-1'
-get_net_carbon_flux("00N", "060W")
+myRaster <- 
+  get_net_carbon_flux("00N", "060W")
 ```
 
 After successfully running this function, you can see that the raster file is stored in the temporary directory of R, which we can see above within double quote. For the next step, simply pass the returned temporary file path from the 'callFunction' chunk to the 'loadRaster' chunk so as to load the downloaded raster file.
 
 ```{r loadRaster, warning=FALSE, include=TRUE}
-
-# load the raster, view and plot the data
-myRaster <- raster("/tmp/Rtmps0oMVx/carbon_flux_00N_060W.tif")
-# view the data
+# view raster metadata
 myRaster
 # plot the raster
 plot(myRaster)
@@ -73,16 +68,15 @@ plot(myRaster)
 
 ### Polygon data preparation
 
-Since we already prepared raster data for our analysis. Now, we will try to get the country level polygon data from `wdpar` package. `wdpar` is a library to interface to the World Database on Protected Areas (WDPA). The library is used to monitor the performance of existing PAs and determine priority areas for the establishment of new PAs.
+Since we already prepared raster data for our analysis. Now, we will try to get the country level polygon data from `wdpar` package. `wdpar` is a library to interface to the World Database on Protected Areas (WDPA). The library is used to monitor the performance of existing PAs and determine priority areas for the establishment of new PAs. We will use Brazil - for other countries of your choice, simply provide the country name or the ISO name e.g. Gy for Guyana, COL for Colombia
 
 ```{r fetchWdpar, warning=FALSE, include=TRUE}
-
-# fetch the raw data from wdpar of country Brazil - for other countries of your choice, simply provide the country name or the ISO name e.g. Gy for Guyana, COL for Colombia
-br_raw_pa_data <- wdpa_fetch("Brazil") #can also use wdpa_fetch("BRA")
+# fetch the raw data from wdpar of country
+br_raw_pa_data <- wdpa_fetch("Brazil")
 ```
 
 Since there are more than 3000 enlisted protected areas in Brazil, we want to compute zonal statistics only for the polygon data of:
-  	- Reserva Biologica Do Rio Trombetas - wdpaid 43,
+  - Reserva Biologica Do Rio Trombetas - wdpaid 43,
 	- Reserva Extrativista Rio Cajari - wdpaid 31776, and
 	- Estacao Ecologica Do Jari - wdpaid 4891
 
@@ -91,11 +85,9 @@ For this, we have to subset the country level polygon data to the pa level.
 ```{r subset, warning=FALSE, include=TRUE}
 
 # subset three wdpa polygons by their wdpa ids
-trombetas <- br_raw_pa_data[br_raw_pa_data$WDPAID == 43, ]
-jari <- br_raw_pa_data[br_raw_pa_data$WDPAID == 4891, ]
-cajari <- br_raw_pa_data[br_raw_pa_data$WDPAID == 31776, ]
-# merge polygons into one file
-bra <- rbind(trombetas, jari, cajari)
+bra<-
+  br_raw_pa_data%>%
+  filter(WDPAID %in% c(43,4891,31776))
 ```
 
 
