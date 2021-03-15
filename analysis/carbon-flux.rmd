@@ -1,6 +1,6 @@
 ---
 title: "Net Forest Carbon Flux"
-author: "Johannes Schielein, Om Bhandari"
+author: "Johannes Schielein, Om Prakash Bhandari"
 date: "3/5/2021"
 output: html_document
 ---
@@ -8,8 +8,7 @@ output: html_document
 ```{r setup, message=FALSE}
 knitr::opts_knit$set(root.dir = '../')
 # load required libraries
-library("sp")
-library("raster")
+library("terra")
 library("sf")
 library("wdpar")
 library("dplyr")
@@ -19,10 +18,11 @@ library("dplyr")
 
 ### Introduction
 
-Forest Carbon Emissions are GHG emissions that originate from forest cover loss and subsequent Above Ground Biomass and Below Ground Biomass loss. Net forest carbon flux represents the net exchange of carbon between forests and the atmosphere. Forest act as both a Source and Sink for Carbon. 
+Forest Carbon Emissions are greenhouse gas emissions that originate from forest cover loss and subsequent Above Ground Biomass and Below Ground Biomass loss. Forest cover loss might be the result of either anthropogenic deforestation or disasters such as forest fires and same goes for biomass loss too. Forest acts as both a Source and Sink for Carbon. Sink, when the forest absorbs more carbon than it releases. Source, when forest releases more carbon than it absorbs. To determine whether forests in defined zone acts as source or sink of carbon, net forest carbon flux is calculated which represents the net exchange of carbon between forests and the atmosphere.
 
+The purpose of this analysis is to compute net forest carbon flux for the desired wdpa polygons. This is achieved through zonal statistics operation. A zonal statistics operation is one that calculates statistics on cell values of a raster (a value raster) within the zones defined by another dataset [ArcGIS definition].
 
-To calculate zonal statistics for net forest carbon flux that changed between 2001 to 2019, enlisted is the required processing routine:
+To calculate zonal statistics for net forest carbon flux that changed between 2001 to 2019, following processing routine is followed in this analysis:
   
   - Download raster data of the desired grid using function `get_net_carbon_flux`
   - Fetch country level wdpa data from library `wdpar`
@@ -33,9 +33,24 @@ To calculate zonal statistics for net forest carbon flux that changed between 20
   - Perform zonal statistics
 
 
+### Datasource and Metadata Information
+
+- Dataset: Net Forest Carbon Flux - Global Forest Watch (Harris et al. (2021))
+- Geographical Coverage: Global
+- Spatial resolution: 30 meter
+- Temporal Coverage: 2001-2019
+- Temporal resolution: Annual Updates
+- Unit: megagrams CO2 emissions/ha
+- Data downloaded: 5th March, 2021
+- [Metadata Link]("https://www.arcgis.com/home/item.html?id=211f218e70284507a8761fbea099945e")
+- [Download Link]("https://data.globalforestwatch.org/datasets/net-forest-carbon-flux/data")
+
+
+
 ### Raster data preparation
 
-At first you should link to the source functions to go through this routine.
+At first you should link to the source functions to go through this routine. The script `carbon-flux.R` contains the function to download the raster file of the desired grid.
+
 ```{r source, include=TRUE}
 source("code/carbon-flux.R")
 ```
@@ -43,8 +58,8 @@ source("code/carbon-flux.R")
 
 How to use the function?
 
-- you can call the function `get_net_carbon_flux` by passing (lat, lon) arguments as string for eg. ("10S", "050W") or ("10N", "020E")
-- you should check the coordinates of your desired area and need to find out the grid under which interval of latitude and longitude does it fall
+- call the function `get_net_carbon_flux` by passing (lat, lon) arguments as string for eg. ("10S", "050W") or ("10N", "020E")
+- check the coordinates of your desired area and find out the grid under which interval of latitude and longitude does it fall
 - or simply visit the [GFW Dataset Portal](https://data.globalforestwatch.org/datasets/net-forest-carbon-flux/data) to verify chosen grid coordinates
 - Note: If in case you choose to compute zonal statistics for larger polygon level or for many polygon levels, then one raster data might not be enough for your computation. Then you must download multiple raster files so as to cover the polygon extent and merge them later simply using `merge` function.
 
@@ -57,7 +72,7 @@ myRaster <-
   get_net_carbon_flux("00N", "060W")
 ```
 
-After successfully running this function, you can see that the raster file is stored in the temporary directory of R, which we can see above within double quote. For the next step, simply pass the returned temporary file path from the 'callFunction' chunk to the 'loadRaster' chunk so as to load the downloaded raster file.
+After successfully running this function, you can see that the raster file is downloaded and stored in the temporary directory of R and is loaded to the working directory as the layer name `myRaster` as class object 'SpatRaster'.
 
 ```{r loadRaster, warning=FALSE, include=TRUE}
 # view raster metadata
@@ -103,28 +118,30 @@ The next immediate step would be to clean the fetched raw data. Cleaning is done
 
 # clean the data
 brac <- wdpa_clean(bra)
-# spatial 
-brac_sp <- as(brac, "Spatial")
+# SpatialPolygonsDataFrame for sf compatibility
+brac_sf <- st_as_sf(brac)
 ```
 
 
 
 ### Crop the Carbon Flux Raster
 
-As we completed raster and vector data preparation, the next step would be to clip the raster layer by the selected shapefile polygon both by its extent and mask layer.
+As we completed raster and vector data preparation, the next step would be to clip the raster layer by the selected shapefile polygon both by its extent and mask layer. If we clip by extent, it does clipping the raster by its bounding box. However, mask layer clipping returns the raster to defined vector polygon layer.
 
 ```{r cropRaster, warning=FALSE, include=TRUE}
 
 # extent preparation
-myExtent <- spTransform(brac_sp, CRS(proj4string(myRaster)))
+myExtent <- st_transform(brac_sf, "+proj=longlat +datum=WGS84 +no_defs")
+# SpatVector for `terra` compatibility
+myExtent_v <- vect(myExtent)
 # plot the extent that will be used to crop the raster layer
-plot(myExtent)
+plot(myExtent_v)
 # crop raster using polygon extent
-myCrop <- crop(myRaster, myExtent)
+myCrop <- terra::crop(myRaster, myExtent_v)
 # plot the data - shows the raster after getting cropped by the extent of polygon
 plot(myCrop)
 # crop raster using polygon mask
-myMask <- mask(myCrop, myExtent)
+myMask <- terra::mask(myCrop, myExtent_v)
 # plot the data - shows the raster after getting cropped by the polygon mask
 plot(myMask)
 ```
@@ -138,7 +155,7 @@ To compute the zonal statistics, it is necessary to rasterize the polygon layer.
 ```{r rasterize, warning=FALSE, include=TRUE}
 
 # rasterize
-r <- rasterize(myExtent, myMask, myExtent$WDPAID, background=NA, update=FALSE, touches=is.lines(myExtent), cover=FALSE)
+r <- terra::rasterize(myExtent_v, myMask, myExtent_v$WDPAID, background=NA, update=FALSE, touches=is.lines(myExtent_v), cover=FALSE)
 ```
 
 
@@ -150,8 +167,19 @@ A zonal statistics operation is one that calculates statistics on cell values of
 
 # zonal stats
 zstats <- zonal(myMask, r, fun='sum', na.rm=T)
-zstats
+# create dataframe
+df.zstats <- data.frame(WDPAID=NA,
+                        Net_Forest_Carbon_Flux=NA)
+# rename column to match with dataframe
+colnames(zstats) <- colnames(df.zstats)
+# view the data
+rbind(df.zstats,zstats)[-1,]
 ```
 By mathematical definition, net forest carbon flux is the difference between average annual gross emissions and average annual gross removals. Hence, positive result denotes forests as net sources of carbon and negative results denotes forests as net sinks of carbon.
 
 For all the three polygons we considered, we got the negative result. That means forests in these three Protected Areas act as the net sinks of carbon.
+
+
+### References
+
+[1] Harris, N.L., D.A. Gibbs, A. Baccini, R.A. Birdsey, S. de Bruin, M. Farina, L. Fatoyinbo, M.C. Hansen, M. Herold, R.A. Houghton, P.V. Potapov, D. Requena Suarez, R.M. Roman-Cuesta, S.S. Saatchi, C.M. Slay, S.A. Turubanova, A. Tyukavina. 2021. Global maps of twenty-first century forest carbon fluxes. Nature Climate Change. https://doi.org/10.1038/s41558-020-00976-6
