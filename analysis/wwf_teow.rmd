@@ -8,16 +8,14 @@ output: html_document
 ```{r setup, message=FALSE}
 knitr::opts_knit$set(root.dir = '../')
 # load required libraries
-library("sp")
 library("sf")
 library("wdpar")
 library("dplyr")
-library("rmapshaper")
-library("rmarkdown")
-library(tmap)
+library("rmarkdown") # only used for rendering tables  for this website
+starttime<-Sys.time()
 ```
 
-### Introduction
+# Introduction
 
 **Description of the dataset from WWF:**
 
@@ -37,7 +35,7 @@ To carry out this analysis, we will follow this processing routine:
 - for each wdpaid, get name of the PA, ecoregion IDs, ecoregion names and area of intersected polygons
 
 
-### WDPA polygon data preparation
+# Download and prepare WDPA polygons 
 
 First of all, we will try to get the country level polygon data from `wdpar` package. `wdpar` is a library to interface to the World Database on Protected Areas (WDPA). The library is used to monitor the performance of existing PAs and determine priority areas for the establishment of new PAs. We will use Brazil - for other countries of your choice, simply provide the country name or the ISO3 name e.g. Gy for Guyana, COL for Colombia
 
@@ -51,7 +49,7 @@ Since there are more than 3000 enlisted protected areas in Brazil, we are intere
 	- Reserva Extrativista Rio Cajari - wdpaid 31776, and
 	- Estacao Ecologica Do Jari - wdpaid 4891
 
-For this, we have to subset the country level polygon data to the pa level.
+For this, we have to subset the country level polygon data to the PAs level.
 
 ```{r subset, warning=FALSE, include=TRUE}
 
@@ -61,8 +59,7 @@ br_wdpa_subset<-
   filter(WDPAID %in% c(43,4891,31776))
 ```
 
-
-The next immediate step would be to clean the fetched raw data with the functionality provided by the `wdpar` package. Cleaning is done so as to:
+The next immediate step would be to clean the fetched raw data with the functionality provided with routines from the `wdpar` package. Cleaning is done so as to:
 
 - exclude protected areas that are not yet implemented
 - exclude protected areas that are UNESCO reserves
@@ -80,52 +77,69 @@ br_wdpa_subset <- wdpa_clean(
   br_wdpa_subset, 
   erase_overlaps = F
   )
-
-#br_wdpa_subset <- st_transform(br_wdpa_subset, 4326)
+# we can plot a feature of the data to see the three selected polygons
+plot(br_wdpa_subset[1])
 ```
-
-### TEOW polygon data preparation
   
 Since, we prepared WDPA polygon data for our analysis, we now load the TEOW global shapefile layer from archived file or if you want to download the teow global shapefile, you can download the file calling the function `get_wwf_teow`. 
 
 ```{r loadTeow, warning=FALSE, include=TRUE}
 
 # load TEOW global polygons
-teow <- read_sf(paste(getwd(),"/data/Terrestrial_Ecoregions_World.shp",sep=""))
-# simplify geometry
-teow_simp <- ms_simplify(teow)
+teow <- 
+  read_sf(paste(getwd(),"/data/Terrestrial_Ecoregions_World.shp",sep=""))
+
+# simplify geometry (this might be useful for other, very complex  polygon layers)
+# library("rmapshaper")
+# teow_simp <- 
+#   ms_simplify(teow)
 
 ```
 
-### Intersect TEOW and WDPA Polygon layer
+# Intersect TEOW and WDPA Polygon layer
 
 To analyse how  much of wdpa area is within  which part of the ecoregion, intersection function is applied. `st_intersection` allows us to see that result. To be able to apply st_intersection, the polygon layers should be saved as `sf` object. To carry out intersection function, coordinate reference system of both the polygons should be same. For this, we use `st_transform` to achieve this.
 
 ```{r intersect, warning=FALSE, include=TRUE}
 ## reproject teow to match WDPA
-teow<-st_transform(teow,crs = st_crs(br_wdpa_subset))
+teow <-
+  st_transform(teow,crs = st_crs(br_wdpa_subset))
+# br_wdpa_subset<-st_transform(br_wdpa_subset,crs = st_crs(teow))
 
-teow_wdpa_intersection <- st_intersection(teow, br_wdpa_subset)
+teow_wdpa_intersection <- 
+  st_intersection(teow, br_wdpa_subset)
 # plot intersection layer
-tm_shape(teow_wdpa_intersection)+
-  tm_polygons(teow,)
-```
+plot(teow_wdpa_intersection[1])
 
-# Extract areas and required columns from the intersection layer
+```
+We can see that there is one intersection for the polygon in the eastern part of the research area i.e that we now have for polygons whereas before the intersection we had only three. 
+
+
+# Calculate Areas
 
 Since, we already achieved the intersection, now we want to extract the actual area of interaction between wdpa polygons and teow polygons.
 
 ```{r extract, warning=FALSE, include=TRUE}
 
 # ectract areas (Sqkm) and save it as new column
-teow_pol$Area_Sqm <- st_area(teow_pol)
+teow_wdpa_intersection$teow_intersect_sqkm <- 
+  st_area(teow_wdpa_intersection)
 # tibble - turns existing object to tibble dataframe from library `dplyr`
-myData <- as_tibble(teow_pol)
+myData <- as_tibble(teow_wdpa_intersection)
 # select only necessary columns from the intersected polygon
 myData_f <- myData %>% 
-  select(WDPAID, NAME, ECO_ID, ECO_NAME, Area_Sqm)
-# view the data
-myData_f
-# with results looking like this in paged table format
+  select(WDPAID, NAME, ECO_ID, ECO_NAME, BIOME, teow_intersect_sqkm)
+```
+With the results looking like this
+
+``````{r tableshow, warning=FALSE, echo=FALSE}
 paged_table(myData_f)
+```
+
+
+In the end we are going to have a look how long the rendering of this file took so that people get an idea about the processing speed of this routine
+
+```{r time, warning=FALSE, include=TRUE}
+stoptime<-Sys.time()
+print(starttime-stoptime)
 ```
