@@ -59,10 +59,11 @@ paged_table(df_redlist_status)
 
 You can also process several areas at once using the plyr package
 ```{r warning=FALSE}
-library(plyr)
-# get data
+library(dplyr)
 df_redlist_status<-
-    ldply(.data = c(146,147),.fun = get_redlist_status)
+  lapply(c(146,147), 
+       FUN = get_redlist_status)%>% 
+  bind_rows()
 ```
 
 With the results table looking like this:
