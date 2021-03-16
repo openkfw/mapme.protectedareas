@@ -20,6 +20,10 @@ Chapters:
 
 - [How to contribute](contribute.html).
 
-- [Querrying data from DOPA Rest API](dopa-rest.html).
+- [WWF/TEOW Ecoregions data](wwf_teow.html).
+
+- [Querying data from DOPA Rest API](dopa-rest.html).
+
+- [Processing TEOW Polygons](wwf_teow.html).
 
 - [Net forest carbon flux (Harris et al. 2021)](carbon-flux.html).
