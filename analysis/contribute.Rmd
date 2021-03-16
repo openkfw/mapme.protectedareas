@@ -1,0 +1,15 @@
+---
+title: "General Introduction"
+author: "Johannes Schielein"
+date: "2021-03-12"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+
+
+```{r echo=FALSE, results='asis'}
+cat(readLines("contributing.md")[-1], sep = "\n")
+```
+
