@@ -22,6 +22,8 @@ Chapters:
 
 - [How to contribute (contrib.md)](dopa-rest.html).
 
+- [WWF/TEOW Ecoregions data](wwf_teow.html).
+
 - [Querying data from DOPA Rest API](dopa-rest.html).
 
 - [Processing TEOW Polygons](wwf_teow.html).
