@@ -104,6 +104,12 @@ In order to create a good documentation of the processed data and the authors of
 * Detailed description of the data processing
 * Time necessary to process the sample data and details on the machine used to process it. 
 
+#### Naming coonvention of the data
+In order to adopt an unambiguous data storage strategy, it would be great to have standard naming convention for all the datasets that would be used as either in raw form or saved as processed form. The naming convention should follow following structure:
+
+*repository_data-name_raw/processed.extension
+*Example1: mapme.protectedareas_net-forest-carbon-flux-10N-060W_raw.tif
+*Example2: mapme.protectedareas_Terrestrial-Ecoregions-World_processed.shp
 
 ### Analysis
 This will be added later. 
