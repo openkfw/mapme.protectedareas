@@ -2,7 +2,15 @@
 This file includes information on how to use this repository and create good contributions. We also use a code of conduct for open source projects adapted from the Contributor Covenant homepage. You can find this conduct in the file CoC.md. 
 
 ## How can I use this repository?
-Put here information on the usage (later). 
+There are two different ways to use this repository. The quickest way is to just follow the tutorial scripts and manually install whatever libraries are required in the scripts. This should work most of the times, however, for some repositories there might be changes in the future so some of the functions from the tutorials here might not work anymore because the code might be outdated. If this is so you can use all the "old" libraries that come as part of this repository as well. Just follow the steps in the next paragraph if you want to copy the whole repository to your local machine and use exactly the same libraries that where utilized to create the scripts. 
+
+This repository uses `renv` package to allow for version control. To use this repository on your local machine you can do the following
+1. Forge the repository to your own github
+2. Create a new version control project in Rstudio and link this project to your forged repository on github
+3. pull the main branch
+4. install the `renv` package on your local machine
+6. Run `renv::restore()`. This should reinstall all necessary libraries for this repository on your local machine. 
+7. Run the codes from the tutorial scripts to your liking. 
 
 ## How can I contribute? 
 1. [Reporting Bugs & Suggesting Enhancements](#reporting-bugs-and-suggesting-enhancements)
