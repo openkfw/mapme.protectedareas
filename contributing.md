@@ -64,6 +64,32 @@ mapme.protectedareas/
 [workflowr]: https://github.com/jdblischak/workflowr
 [renv]:https://rstudio.github.io/renv/index.html
 
+
+### Datalake
+This repository uses a datalake to store input, output and processing data. This datalake is non public because of its size. For every dataset we also provide information where the data originated from, so you might want to recreate the datalake structure on your local machine if you use this repository. Our datalake structure is organized as follows:
+
+datalake/
+
+	.
+	├── mapme.protectedares/ # specifies the project folder. is named in the same way as the repository
+		├── input/ # contains unprocessed input data with original filenames 
+		  ├── teow/ 
+		  ├── global_mangrove_watch/
+		  ├── net_carbon_flux/
+		  └── ...
+		├── output/ # here goes all relevant, processed output data
+		    ├── polygon / # the polygon-data on country level of supported and non supported PAs
+		    ├── raster /  # raster representation of variables for the impact evaluation
+				└── tabular / # tabular data containing wdpa_id (lines) and processed variables (columns)
+				    ├── 1_full_database / merged final table of all individual variables
+				    ├── teow/
+				    ├── global_mangrove_watch/
+				    ├── net_carbon_flux/
+				    └── ...
+		└── processing/ # contains data that is generated during processing.
+
+**Naming conventions for datalake**: Please name all folders and _processed_ datasets lowercase and with underline _ as seperator instead of whitspace. Please keep the original data names in the input folder. Please, also make sure to keep the clean the processing folder regularly. Nevertheless, if there are datasets that take very long processing time you might want to keep them permanently in the processing folder. 
+
 ### Preprocessing Datasets
 This is a step-by-step guide to create a new pre-processing routine based on the example of TEOW ecoregions dataset from WWF. **Pre-processing routines are organized in this repository along the line of thematic data-sets from differing data-sources**. The intention of this organization is to have a **modular structure** that allows for easy adding or deleting data-sources from the pre-processing routine and eventually chain them together. Also this allows us to debug the code more easily if the routine is chained. **An exception** to this  structure are routines that allow access to already pre-processed data-sets, in our case the `API`-Access *DOPA/JRC Rest Services*, which provides tabular information for several thematic data-sets pre-processed by JRC on the base of PAs.
 
