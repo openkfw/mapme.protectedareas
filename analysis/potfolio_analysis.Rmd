@@ -1,0 +1,167 @@
+---
+title: "MAPME Protected Areas report for KfW 2-Jahresbericht"
+author: "Johannes Schielein"
+date: "2021-03-18"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+```{r setup, message = FALSE,warning = FALSE,include = FALSE}
+# load relevant libraries
+library("tidyverse")
+library("readxl")
+library("janitor")
+library("sf")
+library("leaflet")
+library("RColorBrewer")
+library("plotly")
+```
+
+```{r preprocess, message = FALSE, warning = FALSE, include = FALSE}
+## read in data, clean and join relevant variables 
+# get a clean list of column names
+dopa_raw<-
+  read_excel("../../datalake/mapme.protectedareas/input/dopa/dopa_4-0/dopa_v4-0.xlsx",
+             sheet = "Protected Areas",
+             skip = 4,
+             col_names = T, na = "#N/A")
+#clean column names
+dopa_raw<-
+  clean_names(dopa_raw)
+
+# Note: for a more detailed description on the variable names please open the original excel sheet
+
+# load supported areas
+wdpa_kfw<-
+  read_sf("../../datalake/mapme.protectedareas/output/wdpa-kfw/wdpa_kfw_spatial_latinamerica_2021-02-01_supportedPAs.gpkg")
+
+# check how many PAs from the KfW portfolio can be found in the dopa dataset
+table(wdpa_kfw$WDPA_PID%in%dopa_raw$id)
+# Note: 372 PAs could be detected and 61 not. At this stage DOPA can therefore only serve to analyze 85% of KfW Portfolio. 
+
+# prepare data for join
+dopa_raw$id<-as.character(dopa_raw$id) 
+
+# join
+dopa_kfw<-
+  left_join(wdpa_kfw, dopa_raw, by=c("WDPA_PID" = "id"))
+
+# load ecosystems-data
+teow<-read_sf("../../datalake/mapme.protectedareas/input/teow/Terrestrial-Ecoregions-World.gpkg")
+```
+
+## Introduction
+Conservation finance is an important field in the KfW development bank. The evaluation department, together with operational departments tries to learn more about our conservation projects by using internal data as well as open geodata to assess the relevance and effectiveness of our projects in Latin-america. The main impact goals of our conservation financing efforts can be summarized under three broad topics: 
+
+1. Conservation of biological diversity
+2. Mitigation of global climate change e.g by reducing deforestation
+3. Improvement of livelihoods of the local population that uses the natural ressources
+
+Conservation finance has increased in importance for German development cooperation and considerably more financial resources had been spent in Latin-america since 2004. 
+
+```{r financeplot, echo=FALSE, message=FALSE, warning=FALSE}
+kfw_finance<-read_csv("../../datalake/mapme.protectedareas/input/wdpa-kfw/data-from-internal_confidential/mapme.protectedareas_kfw-finance_complete-2021-03-17.csv")
+
+finance_plot <-
+  kfw_finance %>%
+  group_by(year) %>%
+  summarize(total_disbursed = sum(disbursement_total)) %>%
+  filter(year != 2021) %>%
+  ggplot() +
+  geom_bar(aes(x = year, y = total_disbursed / (10 ^ 6)),
+           stat = "identity",
+           fill = "darkblue") +
+  labs(y = "Disbursements (Mio. €)", x = "", fill = "") +
+  theme_classic()
+
+ggplotly(finance_plot)
+
+```
+We machted our Latinamerica portfolio with the *World Database on Protected Areas - WDPA* (IUCN) and used data from the  *Digital Observatory for Protected Areas Explorer DOPA* (EU/JRC) to make a first assessment of our portfolio. Our database currently comprises `r nrow(dopa_kfw)` PAs in latinamerica (only) which are situated in `r length(unique(dopa_kfw$ISO3))` different countries. Those areas can be broadly categorized into `r table(dopa_kfw$MARINE)[[3]]` terrestrial, `r table(dopa_kfw$MARINE)[[1]]` marine, and `r table(dopa_kfw$MARINE)[[2]]` partial marine/terrestrial protected areass. They cover a total surface of `r round(sum(st_area(dopa_kfw))/(10^12),digits=3)` Mio. km^2^ which is about `r round(sum(st_area(dopa_kfw))/(10^9)/357.581,digits=1)` times the size of Germany. 
+
+```{r firstmap, echo=FALSE, warning=FALSE}
+dopa_kfw_centroid<-dopa_kfw %>%
+  filter(!is.na(MARINE))%>%
+  st_centroid()
+
+# create colorramp
+pal <- colorFactor(
+  palette = c("darkblue","orange","darkgreen"),
+  domain = dopa_kfw_centroid$MARINE
+)
+
+# add map
+dopa_kfw_centroid<-st_transform(st_centroid(dopa_kfw),crs = 4326)
+my_map <-
+  leaflet(data = dopa_kfw_centroid) %>%
+  addProviderTiles(providers$CartoDB.Positron) %>%
+  addCircles(opacity = 0.9,color = ~pal(MARINE))%>%
+  addLegend("bottomright", pal = pal, values = ~MARINE,
+    title = "Area Types",
+    opacity = 1
+  )
+my_map
+
+```
+The conservation of natural forests is one of the main policy goals of our financial support. In total KfW's financial support contributed to the protection of a forest area which extents over `r round(sum(dopa_kfw$tree_cover_km2,na.rm=T)/10^6, digits=3)` Mio km^2^ or `r round(sum(dopa_kfw$tree_cover_km2,na.rm=T)/357581, digits=1)` times the size of Germany. Most of the supported forests are situated in the Amazon basin where we cooperate with the governments of Bolivia, Brazil, Colombia, Ecuador and Peru. 
+
+Geodata can also tell us a bit about the relevance of conserving forests to mitigate global climate change. The following chart shows us, for example, how much carbon is stored in the vegetation and soils for supported protected areas. Conservation finance can help to keep this carbon in place that might be otherwise released to the atmosphere due to deforestation and forest degradation. 
+
+```{r carbonplot, echo=FALSE, warning=FALSE}
+biomass_long <-
+  dopa_kfw %>%
+  select(ISO3, total_mg_66, total_mg_71, total_mg_76) %>%
+  st_drop_geometry() %>%
+  pivot_longer(.,
+               c(total_mg_66, total_mg_71,total_mg_76),
+               names_to = "Carbon",
+               values_to = "tonnes")
+
+biomass_long$Carbon<-gsub("total_mg_66","Soil Organic Carbon",biomass_long$Carbon)
+biomass_long$Carbon<-gsub("total_mg_71","Below Ground Carbon",biomass_long$Carbon)
+biomass_long$Carbon<-gsub("total_mg_76","Above Ground Carbon",biomass_long$Carbon)
+
+# group other countries
+biomass_long$ISO3<-ifelse(biomass_long$ISO3=="BRA","Brazil","Other Countries")
+
+carbon_plot <-
+  na.omit(biomass_long) %>%
+  ggplot() +
+  geom_bar(aes(ISO3,
+               round(tonnes / 10 ^ 9, digits = 2),
+               fill = Carbon), stat = "identity") +
+  labs(y = "Stored Carbon", x = "", fill = "") +
+  theme_classic()
+ggplotly(carbon_plot)
+
+```
+
+As we can see the protected areas network in Latin America stores `r round((sum(biomass_long$tonnes,na.rm = T))/10^9,digits=2)` Gigatons of carbon that, if released completely to the atmosphere, would generate emissions which correspond to `r round(sum(biomass_long$tonnes,na.rm = T)*3.67/739000000,digits=0)` times the annual GHG emissions of Germany. Most of this carbon is stored in Brazil which is by far the largest country on the continent with the biggest network of protected areass. With the creation of this database and the use of open geodata we hope to be able to learn more about the effectiveness of our projects to reduce deforestation, the loss of biological diversity and to improve the livelihoods of people worldwide living in and around protected areas. 
+
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
