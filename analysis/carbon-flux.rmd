@@ -2,22 +2,26 @@
 title: "Net Forest Carbon Flux"
 author: "Johannes Schielein, Om Prakash Bhandari"
 date: "3/5/2021"
-output: html_document
+output: workflowr::wflow_html
 ---
 
 ```{r setup, message=FALSE}
-knitr::opts_knit$set(root.dir = '../')
+
 # load required libraries
 library("terra")
 library("sf")
 library("wdpar")
 library("dplyr")
-library("mapview") # used for interactive maps in this website; not essential for analysis
 library("rmarkdown") # only used for rendering tables  for this website
 
 starttime<-Sys.time() # mark the start time of this routine to calculate processing time at the end
 ```
 
+At first you might want to load the source functions for this routine. 
+```{r loadlsource, warning=FALSE, include=TRUE}
+
+source("code/carbon-flux.R")
+```
 
 # Introduction
 
@@ -42,23 +46,14 @@ The purpose of this analysis is to compute net forest carbon flux for the desire
 To calculate zonal statistics for net forest carbon flux that changed between 2001 to 2019, following processing routine is followed in this analysis:
   
 
-```{r workflow, echo=FALSE, fig.cap="TEOW Processing Workflow"}
-
-options(knitr.graphics.error = FALSE)
-knitr::include_graphics("docs/assets/workflows/carbon_flux_zonal_stats.jpg")
-```
+![](assets/workflows/carbon_flux_zonal_stats.png)
 
 
 # Download and prepare raster data
 
 ### Using API
 
-At first you should link to the source functions to go through this routine. The script `carbon-flux.R` contains the function to download the raster file of the desired grid.
-
-```{r source, include=TRUE}
-source("code/carbon-flux.R")
-```
-
+The script `carbon-flux.R` contains the function to download the raster file of the desired grid.
 
 How to use the function?
 
@@ -89,11 +84,12 @@ plot(myRaster)
 ### Using Archived File
 
 The entire processing routine can be implemented using archived raster file which are stored in datalake. The only difference will be, we load the raster from datalake rather than downloading the raster by calling the function `get_net_carbon_flux`. Doing so will eliminate the possible connection issues to the data server and will speed up the processing routine. 
+Also, using single raster for Latin America will remove the complications in finding the adequate grid.
 
 ```{r loadArchivedRast, warning=FALSE, include=TRUE}
 
-# load raster for 00N, 060W
-myRaster_ar <- rast("/home/rstudio/shared/datalake/mapme.protectedareas_net-forest-carbon-flux-00N-060W_raw.tif")
+# load net forest carbon flux raster for whole LA
+myRaster_ar <- rast("/home/rstudio/shared/datalake/mapme.protectedareas/input/net_carbon_flux/LA.tif")
 ```
 
 
@@ -107,13 +103,14 @@ myRaster_ar
 plot(myRaster_ar)
 ```
 
-Note: For this routine, we are using `myRaster`, the one from API.
+Note: For this routine, we are using `myRaster_ar`, the archived one.
 
 # Download and prepare WDPA polygons
 
 Since we already prepared raster data for our analysis. Now, we will try to get the country level polygon data from `wdpar` package. `wdpar` is a library to interface to the World Database on Protected Areas (WDPA). The library is used to monitor the performance of existing PAs and determine priority areas for the establishment of new PAs. We will use Brazil - for other countries of your choice, simply provide the country name or the ISO name e.g. Gy for Guyana, COL for Colombia
 
 ```{r fetchWdpar, warning=FALSE, include=TRUE}
+
 # fetch the raw data from wdpar of country
 br_wdpa_raw <- wdpa_fetch("Brazil")
 ```
@@ -141,7 +138,6 @@ The next immediate step would be to clean the fetched raw data with the function
 - replace missing data codes (e.g. "0") with missing data values (i.e. NA)
 - replace protected areas represented as points with circular protected areas that correspond to their reported extent
 - repair any topological issues with the geometries
-- (erase overlapping areas) -> which might be important for area reporting on country level but is not done in our context here
 
 ```{r cleanWdpar, warning=FALSE, include=TRUE}
 
@@ -152,8 +148,8 @@ br_wdpa_subset <- wdpa_clean(
   )
 # SpatialPolygonsDataFrame for sf compatibility
 br_wdpa_subset_sf <- st_as_sf(br_wdpa_subset)
-# we can create an interactive map to see the three selected polygons
-mapView(br_wdpa_subset)
+# we can plot the data to see the three selected polygons
+plot(br_wdpa_subset_sf[1])
 ```
 
 
@@ -169,7 +165,7 @@ myExtent <- st_transform(br_wdpa_subset_sf, "+proj=longlat +datum=WGS84 +no_defs
 # SpatVector for `terra` compatibility
 myExtent_v <- vect(myExtent)
 # crop raster using polygon extent
-myCrop <- terra::crop(myRaster, myExtent_v)
+myCrop <- terra::crop(myRaster_ar, myExtent_v)
 # plot the data - shows the raster after getting cropped by the extent of polygon
 plot(myCrop)
 # crop raster using polygon mask
@@ -194,6 +190,7 @@ r <- terra::rasterize(myExtent_v, myMask, myExtent_v$WDPAID, background=NA, upda
 # Compute zonal statistics
 
 A zonal statistics operation is one that calculates statistics on cell values of a raster (a value raster) within the zones defined by another dataset [ArcGIS definition].
+
 
 ```{r zoneStats, warning=FALSE, include=TRUE}
 
