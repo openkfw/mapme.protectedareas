@@ -373,7 +373,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2021-04-14
+<strong>Last updated:</strong> 2021-04-21
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -464,16 +464,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastreeaa7d4a45c8397fca123d1be9a6f73e4b57e47781targetblankaa7d4a4a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/openkfw/mapme.protectedareas/tree/aa7d4a45c8397fca123d1be9a6f73e4b57e47781" target="_blank">aa7d4a4</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastree0a62a7334a8ec6a35e4ecd88c3a2f03e04be2559targetblank0a62a73a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/openkfw/mapme.protectedareas/tree/0a62a7334a8ec6a35e4ecd88c3a2f03e04be2559" target="_blank">0a62a73</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastreeaa7d4a45c8397fca123d1be9a6f73e4b57e47781targetblankaa7d4a4a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastree0a62a7334a8ec6a35e4ecd88c3a2f03e04be2559targetblank0a62a73a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/openkfw/mapme.protectedareas/tree/aa7d4a45c8397fca123d1be9a6f73e4b57e47781" target="_blank">aa7d4a4</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/openkfw/mapme.protectedareas/tree/0a62a7334a8ec6a35e4ecd88c3a2f03e04be2559" target="_blank">0a62a73</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -486,8 +486,12 @@ Ignored files:
     Ignored:    renv/library/
     Ignored:    renv/staging/
 
+Untracked files:
+    Untracked:  analysis/figure/
+    Untracked:  analysis/index.html
+    Untracked:  analysis/site_libs/
+
 Unstaged changes:
-    Modified:   code/big_data_processing.R
     Modified:   renv.lock
 
 </code></pre>
@@ -527,6 +531,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/4b843c864e02b6f9d07c8a6fb6a9a3b1ffa8e25a/analysis/carbon-flux.rmd" target="_blank">4b843c8</a>
+</td>
+<td>
+ombhandari
+</td>
+<td>
+2021-04-21
+</td>
+<td>
+update file name
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/openkfw/mapme.protectedareas/4b843c864e02b6f9d07c8a6fb6a9a3b1ffa8e25a/docs/carbon-flux.html" target="_blank">4b843c8</a>
+</td>
+<td>
+ombhandari
+</td>
+<td>
+2021-04-21
+</td>
+<td>
+update file name
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -883,7 +921,7 @@ Ohm-Np
 <h3>Using Archived File</h3>
 <p>The entire processing routine can be implemented using archived raster file which are stored in datalake. The only difference will be, we load the raster from datalake rather than downloading the raster by calling the function <code>get_net_carbon_flux</code>. Doing so will eliminate the possible connection issues to the data server and will speed up the processing routine. Also, using single raster for Latin America will remove the complications in finding the adequate grid.</p>
 <pre class="r"><code># load net forest carbon flux raster for whole LA
-myRaster_ar &lt;- rast(&quot;/home/rstudio/shared/datalake/mapme.protectedareas/input/net_carbon_flux/LA.tif&quot;)</code></pre>
+myRaster_ar &lt;- rast(&quot;../../datalake/mapme.protectedareas/input/net_carbon_flux/LA.tif&quot;)</code></pre>
 <p>Now the raster file is loaded to the working directory as the layer name <code>myRaster_ar</code> as class object ‘SpatRaster’.</p>
 <pre class="r"><code># view raster metadata
 myRaster_ar</code></pre>
@@ -1200,7 +1238,7 @@ rbind(df.zstats,zstats)[-1,]</code></pre>
 <p>In the end we are going to have a look how long the rendering of this file took so that people get an idea about the processing speed of this routine.</p>
 <pre class="r"><code>stoptime&lt;-Sys.time()
 print(starttime-stoptime)</code></pre>
-<pre><code>Time difference of -2.619508 mins</code></pre>
+<pre><code>Time difference of -2.730416 mins</code></pre>
 <div id="references" class="section level3">
 <h3>References</h3>
 <p>[1] Harris, N.L., D.A. Gibbs, A. Baccini, R.A. Birdsey, S. de Bruin, M. Farina, L. Fatoyinbo, M.C. Hansen, M. Herold, R.A. Houghton, P.V. Potapov, D. Requena Suarez, R.M. Roman-Cuesta, S.S. Saatchi, C.M. Slay, S.A. Turubanova, A. Tyukavina. 2021. Global maps of twenty-first century forest carbon fluxes. Nature Climate Change. <a href="https://doi.org/10.1038/s41558-020-00976-6" class="uri">https://doi.org/10.1038/s41558-020-00976-6</a></p>
