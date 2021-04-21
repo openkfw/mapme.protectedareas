@@ -89,7 +89,7 @@ Also, using single raster for Latin America will remove the complications in fin
 ```{r loadArchivedRast, warning=FALSE, include=TRUE}
 
 # load net forest carbon flux raster for whole LA
-myRaster_ar <- rast("/home/rstudio/shared/datalake/mapme.protectedareas/input/net_carbon_flux/LA.tif")
+myRaster_ar <- rast("../../datalake/mapme.protectedareas/input/net_carbon_flux/LA.tif")
 ```
 
 
