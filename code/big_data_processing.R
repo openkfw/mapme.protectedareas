@@ -87,21 +87,21 @@ calculate_teow_intersection_biome <- function(my_pa_polygon) {
   # reproject to LAEA projection
   teow_intersect_proj <- st_transform(teow_intersect, area_proj(my_pa_polygon))
   # calculate area of the intersected portion
-  teow_intersect_proj$teow_intersect_sqkm <- as.character(st_area(teow_intersect_proj)/1000000)
+  teow_intersect_proj$biome_intersect_sqkm <- as.character(st_area(teow_intersect_proj)/1000000)
   # load as dataframe 
   myData <- as_tibble(teow_intersect_proj)
   # select desired columns
   myData_f <- myData %>% 
-    select(WDPAID, BIOME_NAME, teow_intersect_sqkm)
+    select(WDPAID, BIOME_NAME, biome_intersect_sqkm)
   # pivot to long format
   myData_long <- pivot_longer(myData_f,
-                              cols=c(BIOME_NAME, teow_intersect_sqkm))
+                              cols=c(BIOME_NAME, biome_intersect_sqkm))
   # rename the attributes to match global output long table format 
   value_biome <- myData_long %>%
     filter(name=="BIOME_NAME") %>%
     pull(value)
   myData_final <- myData_long %>%
-    filter(name=="teow_intersect_sqkm") %>%
+    filter(name=="biome_intersect_sqkm") %>%
     mutate(a = value_biome,
            name = stringr::str_c(name, "_" ,a)) %>%
     select(-a) %>%
