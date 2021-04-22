@@ -135,6 +135,15 @@ carbon_plot <-
   theme_classic()
 ggplotly(carbon_plot)
 
+# save the plot outside
+ggsave(
+  filename = "output/plots/portfolio_analysis-carbo_plot.eps",
+  plot = carbon_plot,
+  width = 10,
+  height = 8,
+  units = "cm"
+)
+
 ```
 
 As we can see the protected areas network in Latin America stores `r round((sum(biomass_long$tonnes,na.rm = T))/10^9,digits=2)` Gigatons of carbon that, if released completely to the atmosphere, would generate emissions which correspond to `r round(sum(biomass_long$tonnes,na.rm = T)*3.67/739000000,digits=0)` times the annual GHG emissions of Germany. Most of this carbon is stored in Brazil which is by far the largest country on the continent with the biggest network of protected areass. With the creation of this database and the use of open geodata we hope to be able to learn more about the effectiveness of our projects to reduce deforestation, the loss of biological diversity and to improve the livelihoods of people worldwide living in and around protected areas. 
