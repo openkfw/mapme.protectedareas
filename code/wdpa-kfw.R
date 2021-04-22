@@ -1,43 +1,98 @@
 # Routine for downloading all polygons from countries where PAs are supported by KfW
 # Author: Johannes Schielein
-library(tidyverse)
+library("tidyverse")
+# library("devtools")
+# we will use the latest wdpar version
+# install_github("https://github.com/prioritizr/wdpar")
+library("wdpar")
 
-# load list 
+# ----- load data and check for missings ----- 
+## load kfw list 
 wdpa_kfw_db<-
-  read_csv("data/wdpa-kfw_latinamerica_2021-02-01.csv")
+  read_csv("data/wdpa-kfw_latinamerica_2021-04-22.csv")
 
-# download the current wdpa database as csv
-download.file("https://d1gam3xoknrgr2.cloudfront.net/current/WDPA_Mar2021_Public_csv.zip", 
-              "/home/johannes/shared/datalake/WDPA_Mar2021_Public_csv.zip")
-
-# link gathered from: https://d1gam3xoknrgr2.cloudfront.net/
-
-# extract file contents
-unzip("/home/johannes/shared/datalake/WDPA_Mar2021_Public_csv.zip",exdir = "/home/johannes/shared/datalake/mapma.protectedareas_wdpa")
-
-# list files
-list.files("/home/johannes/shared/datalake/mapma.protectedareas_wdpa")
-
-# delete old files
-file.remove("/home/johannes/shared/datalake/WDPA_Mar2021_Public_csv.zip")
+# ## load wdpa data (nedds to be done only once)
+# wdpa_url<-"https://d1gam3xoknrgr2.cloudfront.net/current/WDPA_Apr2021_Public_csv.zip"
+# # link gathered from: https://d1gam3xoknrgr2.cloudfront.net/
+# 
+# # download the current wdpa database as csv
+# download.file(wdpa_url, 
+#               "../../datalake/mapme.protectedareas/input/wdpa-kfw/WDPA_Mar2021_Public_csv.zip")
+# 
+# # extract file contents
+# unzip("../../datalake/mapme.protectedareas/input/wdpa-kfw/WDPA_Mar2021_Public_csv.zip",
+#       exdir = "../../datalake/mapme.protectedareas/input/wdpa-kfw/")
+# 
+# # list files
+# list.files("../../datalake/mapme.protectedareas/input/wdpa-kfw/")
+# 
+# # delete old files
+# file.remove("../../datalake/mapme.protectedareas/input/wdpa-kfw/WDPA_Mar2021_Public_csv.zip")
 
 # load database
 wdpa_db<-
-  read_csv("/home/johannes/shared/datalake/mapma.protectedareas_wdpa/WDPA_Mar2021_Public_csv.csv")
+  read_csv("../../datalake/mapme.protectedareas/input/wdpa-kfw/WDPA_Apr2021_Public_csv.csv")
 
+## NOTES REGARDING THE original KfW database
+  # Different issues arise with the original data
+  # (Problem 1) There was a mixture of WDPA_ID and WDPA_PIDs by the creator of the data. this was fixed below
+  # (Problem 2) Some WDPA_IDs are invalid (fixed below)
+  # (Problem 3) Because this database is based on two different rounds of data gathering
+      # there are entries where WDPA_ID is duplicated, hence bmz_n_1 might also be duplicated and should be corrected. (fixed outside in excel)
+
+## Note the matching should be done on PIDs which is the most detailed ID 
 # test KfW data
-table(wdpa_kfw_db$wdpa_pid%in%wdpa_db$WDPAID)
-# there are currently six entries which are not in the WDPA database. Show those entries
+table(wdpa_kfw_db$wdpa_pid%in%wdpa_db$WDPA_PID)
+
+# there are currently  entries which are not in the WDPA database. Show those entries
 wdpa_kfw_db_missings <-
   wdpa_kfw_db %>%
-  filter(!wdpa_kfw_db$wdpa_pid %in% wdpa_db$WDPAID)
+  filter(!wdpa_kfw_db$wdpa_pid %in% wdpa_db$WDPA_PID)
 
 View(wdpa_kfw_db_missings)
 
-# merge the data
-wdpa_kfw_db$wdpa_pid<-as.double(wdpa_kfw_db$wdpa_pid)
+## --- fix wrong and missing WDPA IDs -----
+# Los Cobanos
+wdpa_kfw_db <-
+  wdpa_kfw_db %>%
+  mutate(wdpa_pid = replace(wdpa_pid, wdpa_pid == "107424", "555703444"))
+
+# Sierra del Abra Tanchipa.
+# Note: 101416_B is in spatial data but not this csv list from WDPA
+wdpa_kfw_db <-
+  wdpa_kfw_db %>%
+  mutate(wdpa_pid = replace(wdpa_pid, wdpa_pid == "101416_B", "101416"))
+
+# Shell Beach PA. 
+  # Note: 41057_A is in spatial data but not this csv list from WDPA
+wdpa_kfw_db <-
+  wdpa_kfw_db %>%
+  mutate(wdpa_pid = replace(wdpa_pid, wdpa_pid == "41057_A", "41057"))
+
+# Sistema de Islas, Islotes y Puntas Guaneras
+wdpa_kfw_db <-
+  wdpa_kfw_db %>%
+  mutate(wdpa_pid = replace(wdpa_pid, wdpa_pid == "55544090", "555544090"))
+
+# Reserva Ecologica Estadual Da Juatinga IS PART OF Área De Proteção Ambiental De Cairuçu
+wdpa_kfw_db <-
+  wdpa_kfw_db %>%
+  mutate(wdpa_pid = replace(wdpa_pid, name_kfw == "Juatinga", "19458"))
+
+
+# ----- check remaining errors and describe raw databse----- 
+# check for duplicates
+wdpa_kfw_db_tmp %>%
+  filter(duplicated(.[["wdpa_pid"]]))
+
+# check for missings
+wdpa_kfw_db %>%
+  filter(!wdpa_kfw_db$wdpa_pid %in% wdpa_db$WDPAID)
+
+
+# ----- merge data to get countries labels-----
 wdpa_join_db<-
-  full_join(wdpa_db,wdpa_kfw_db,by=c("WDPAID"="wdpa_pid"))
+  full_join(wdpa_db,wdpa_kfw_db_join,by=c("WDPAID"="wdpa_pid"))
 
 # get countries where kfw is active
 wdpa_kfw_countries <-
@@ -46,34 +101,42 @@ wdpa_kfw_countries <-
   with(unique(ISO3))
 
 # ----- download and preprocess the polygon data -----
-library("devtools")
-# we will use the latest wdpar version
-install_github("https://github.com/prioritizr/wdpar")
-library("wdpar")
 
-wdpa_get_and_preprocess_withoverlaps <-
-  function(my_iso) {
-    tmp.data <-
-      wdpa_fetch(my_iso,
-                 wait = TRUE,
-                 download_dir =  tempdir())
-      wdpa_clean(tmp.data,
-                 erase_overlaps = F,
-                 exclude_unesco = F)
-  }
+###  create function to download and preprocess with wdpar package
+## NOTE
+  # This function simplifies the geometries of the polygons
+  # Its parameters can be adapted to be either more precise (which reduces processing speed later)
+  # or to be more simple (which increases processing speed but leads to lower spatial accuracy)
+  # the default parameters given here produce reasonable results especially for larger area assessments. 
+  # for single or smaller area assessments it might be beneficial, however, to simplify with higher precision. 
 
+## NOTE 2
+  # There are two methods to get the polygon data. 
+    # First is using API (provided by function). Second is downloading original data. 
+    # For both datasets, the data is incomplete i.e. not all WDPA IDs from the KfW table are found. 
+    # Therefore we combine both methods. 
 
-
-wdpa_get_and_preprocess_withoverlaps <- function(my_iso) {
+wdpa_get_and_preprocess_withoverlaps <- function(my_iso=NULL,
+                                                 my_snap_tolerance=5, # 5 meters per default
+                                                 my_simplify_tolerance=5,
+                                                 fetchdata=TRUE, # per default data is downloaded if not provide data
+                                                 mydata=NULL) {
   out <- tryCatch(
     { message(paste("Starting to process ", my_iso))
-      tmp.data <-
-        wdpa_fetch(my_iso,
-                   wait = TRUE,
-                   download_dir =  tempdir())
+      if (fetchdata == TRUE)
+      {
+        tmp.data <-
+          wdpa_fetch(my_iso,
+                     wait = TRUE,
+                     download_dir =  tempdir())
+      }else
+        tmp.data <- mydata
       wdpa_clean(tmp.data,
                  erase_overlaps = F,
-                 exclude_unesco = F)
+                 retain_status = NULL,
+                 snap_tolerance = my_snap_tolerance,
+                 simplify_tolerance = my_simplify_tolerance
+      )
     },
     error=function(cond) {
       message(paste("PLEASE NOTE: There was a problem processing", my_iso, ".Try manually to download and merge the data!"))
@@ -96,31 +159,101 @@ wdpa_kfw_spatial<-
 
 # check whether there is any country that was not processed
 which(!wdpa_kfw_countries%in%wdpa_kfw_spatial$ISO3)
-wdpa_kfw_countries[16]
-# -> corresponds to the NA value, so no problem
+# -> 16 corresponds to the NA value, so no problem
 
+
+
+# ----- check for empty geometries -----
+wdpa_kfw_spatial%>%
+  st_is_empty()%>%
+  table()
+
+which(st_is_empty(wdpa_kfw_spatial)==T)
+
+#extract the wdpa ids of missings
+wdpa_emptygeom_ids <-
+  wdpa_kfw_spatial %>%
+  filter(st_is_empty(.) == T)
+
+
+#save.image("../../datalake/mapme.protectedareas/processing/workspace_wdpa-kfw.Rdata")
+
+# ----- add polygons with empty geometries from original-----
+## load spatial database
+# wdpa_url<-"https://d1gam3xoknrgr2.cloudfront.net/current/WDPA_Apr2021_Public.zip"
+# link gathered from: https://d1gam3xoknrgr2.cloudfront.net/
+
+# download the current wdpa database as csv
+# download.file(wdpa_url, 
+#               "../../datalake/mapme.protectedareas/input/wdpa-kfw/wdpa_original_April2021/WDPA_Mar2021_Public.zip")
+
+# extract file contents
+# unzip("../../datalake/mapme.protectedareas/input/wdpa-kfw/wdpa_original_April2021/WDPA_Mar2021_Public.zip",
+#       exdir = "../../datalake/mapme.protectedareas/input/wdpa-kfw/wdpa_original_April2021/WDPA_Apr2021_Public")
+
+
+# delete old files
+# file.remove("../../datalake/mapme.protectedareas/input/wdpa-kfw/wdpa_original_April2021/WDPA_Mar2021_Public.zip")
+
+# load spatial database
+# wdpa_db_original<-
+#   read_sf("../../datalake/mapme.protectedareas/input/wdpa-kfw/wdpa_original_April2021/WDPA_Apr2021_Public/WDPA_Apr2021_Public.gdb/")
+# 
+# # filter for the polygons without empty geometries
+# wdpa_db_original <-
+#   wdpa_db_original %>%
+#   filter(WDPAID %in% wdpa_emptygeom_ids$WDPAID)
+# 
+# wdpa_db_original$WDPAID
+# write_sf(wdpa_db_original,
+#          "../../datalake/mapme.protectedareas/processing/wdpa_db_original_missings.gpkg")
+# 
+# # apply cleaning process
+# wdpa_get_and_preprocess_withoverlaps(fetchdata = F,
+#                                      mydata = wdpa_db_original)
+
+
+
+# remove invalid geometry entries
+
+# bind the cleaned polygons from the manually downloaded dataset
+
+
+# Final note: 
+  # there is one polygon that had no entry in the original public shapefile which is 900715 Jaragua - Bahoruco - Enriquillo
+
+# ----- save output data -----
 # join kfw data
+wdpa_kfw_db$wdpa_pid<-as.double(wdpa_kfw_db$wdpa_pid)
+
 wdpa_kfw_spatial<-
   full_join(wdpa_kfw_spatial,wdpa_kfw_db,by=c("WDPAID"="wdpa_pid"))
 
+## describe data in terms 
+# number of observations
+wdpa_kfw_spatial%>%
+  filter(!is.na(bmz_n_1))%>%
+  nrow()
+
+nrow(wdpa_kfw_db)
+## Note: For whatever weired reason there are two areas more in the spatial data than in the original tabular
+sort(table(wdpa_kfw_spatial$WDPAID),decreasing = T)
+# explanation. There are duplicates 
+wdpa_kfw_spatial%>%
+  filter(!is.na(bmz_n_1))%>%
+  st_drop_geometry()%>%
+  group_by(WDPAID) %>% 
+  filter(n()>1)%>% 
+  View()
+
+
+plot(wdpa_kfw_spatial[1])
+
+write_sf(wdpa_kfw_spatial,"data/wdpa_kfw_spatial_latinamerica_2021-04-22_allPAs.gpkg")
+
 # get countries where kfw is active
-wdpa_kfw_spatial_onlysupported <-
-  wdpa_kfw_spatial %>%
-  filter(!is.na(bmz_n_1)) 
+# wdpa_kfw_spatial_onlysupported <-
+#   wdpa_kfw_spatial %>%
+#   filter(!is.na(bmz_n_1)) 
 
-# save output data
-write_sf(wdpa_kfw_spatial,"data/wdpa_kfw_spatial_latinamerica_2021-02-01_allPAs.gpkg")
-
-colnames(wdpa_kfw_spatial)
-
-plot(wdpa_kfw_spatial_onlysupported["WDPAID"])
-
-write_sf(wdpa_kfw_spatial_onlysupported,"data/wdpa_kfw_spatial_latinamerica_2021-02-01_supportedPAs.gpkg")
-
-
-
-
-
-
-
-
+# write_sf(wdpa_kfw_spatial_onlysupported,"data/wdpa_kfw_spatial_latinamerica_2021-04-22_supportedPAs.gpkg")
