@@ -142,18 +142,14 @@ calculate_mangrove_extent <- function(y) {
   mangrove_subset$area_sqkm <- st_area(mangrove_subset)/1000000
   # load as dataframe 
   mangrove_data <- as_tibble(mangrove_subset)
-  # select only the WDPAID and area_sqkm column 
+  # rename the column to store value per year
+  names(mangrove_data)[names(mangrove_data) == "area_sqkm"] <- paste0("mangrove_area_sqkm_",y)
+  # select only the WDPAID and mangrove_area_sqkm column 
   mangrove_data_sorted <- mangrove_data %>%
-    select(WDPAID, area_sqkm)
-  # create dataframe to receive the results
-  df.mangrove <- data.frame(WDPAID=NA,
-                            paste("mangrove_area_sqkm_",y=NA)) # [not working from here] I want sth like this: mangrove_area_sqkm_1996 for one run
-                                                               # and mangrove_area_sqkm_2007 for another run; depending upon the argument passed
-  # rename columns
-  colnames(mangrove_data_sorted) <- colnames(df.mangrove)
+    select(WDPAID, paste0("mangrove_area_sqkm_",y))
   # pivot to long format
   mangrove_long <- pivot_longer(mangrove_data_sorted, 
-                              cols=paste("mangrove_area_sqkm_",y))
+                              cols=paste0("mangrove_area_sqkm_",y))
   # write results to disk
   write.csv(mangrove_long, 
             file=paste0("../../datalake/mapme.protectedareas/output/polygon/global_mangrove_watch/gmw_v2_long_supportedPAs_",y,".csv"),
