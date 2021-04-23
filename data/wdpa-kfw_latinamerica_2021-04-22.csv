@@ -360,12 +360,13 @@ NA,Juatinga,Reserva Ecológica Estadual,99.6,NA,NA,NA,Wald,200065086,NA,NA,NA,NA
 352053,Serra Do Rola Moça,Parque Estadual,41.02,NA,NA,NA,Wald,199867219,NA,NA,NA,NA,NA,NA,NA,NA,NA
 351912,Serra São José,Área de Proteção Ambiental,46.74,NA,NA,NA,Savanne,199867219,NA,NA,NA,NA,NA,NA,NA,NA,NA
 555511939,Serrania de los Yarguies,National Park,590.63,NA,NA,NA,Wald,201265685,NA,NA,NA,NA,NA,NA,NA,NA,NA
-41057,Shell Beach Protected Area,National Park,1203,NA,NA,NA,Küste,199865809,200865444,201167063,NA,NA,NA,NA,NA,NA,NA
+41057_B,Shell Beach Protected Area,National Park,1203,NA,NA,NA,Küste,199865809,NA,NA,NA,NA,NA,NA,NA,NA,NA
+41057_A,Shell Beach,National Park,1203,NA,NA,NA,Küste,200865444,201167063,NA,NA,NA,NA,NA,NA,NA,NA
 6675,Sierra de Bahoruco,Parque Nacional,1091.77,Jaragua - Bahoruco - Enriquillo,NA,NA,Wald,200565689,NA,NA,NA,NA,NA,NA,NA,NA,NA
 130,Sierra de la Macarena,National Park,6300,NA,NA,NA,Wald,201265685,NA,NA,NA,NA,NA,NA,NA,NA,NA
 67744,Sierra de las Minas,Reserva de Biósfera,2396.91,Sierra de las Minas,NA,NA,Wald,201768464,NA,NA,NA,NA,NA,NA,NA,NA,NA
 478140,Sierra de Neiba,Parque Nacional,183,NA,NA,NA,Wald,200565689,NA,NA,NA,NA,NA,NA,NA,NA,NA
-101416_B,Sierra del Abra Tanchipa,Área de Protección de Flora y Fauna,21.464,NA,NA,NA,Wald,201166156,201567957,NA,NA,NA,NA,NA,NA,NA,NA
+101416,Sierra del Abra Tanchipa,Área de Protección de Flora y Fauna,21.464,NA,NA,NA,Wald,201166156,201567957,NA,NA,NA,NA,NA,NA,NA,NA
 900668,Sierra Gorda,Reserva de la Biosfera,383.567,NA,NA,NA,Wald,201166156,201567957,NA,NA,NA,NA,NA,NA,NA,NA
 132,Sierra Nevada de Santa Marta,National Park,3830,Sierra Nevada de Santa Marta,NA,NA,Hochgebirge,201065143,NA,NA,NA,NA,NA,NA,NA,NA,NA
 478416,Silvestre Rio dos Frades,National Park,9,NA,NA,NA,Wald,209810961,NA,NA,NA,NA,NA,NA,NA,NA,NA
