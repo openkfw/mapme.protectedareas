@@ -211,18 +211,21 @@ wdpa_kfw_spatial%>%
 
 # ----- buffer results and save outputs  -----
 # create a layer with buffer areas
-wdpa_kfw_spatial_buffer10km<-st_buffer(wdpa_kfw_spatial,10000)
 wdpa_kfw_spatial_buffer5km<-st_buffer(wdpa_kfw_spatial,5000)
+wdpa_kfw_spatial_buffer10km<-st_buffer(wdpa_kfw_spatial,10000)
+wdpa_kfw_spatial_buffer15km<-st_buffer(wdpa_kfw_spatial,15000)
 
 # project to WGS84
 wdpa_kfw_spatial<-st_transform(wdpa_kfw_spatial,crs = 4326)
 wdpa_kfw_spatial_buffer5km<-st_transform(wdpa_kfw_spatial_buffer5km,crs = 4326)
 wdpa_kfw_spatial_buffer10km<-st_transform(wdpa_kfw_spatial_buffer10km,crs = 4326)
+wdpa_kfw_spatial_buffer15km<-st_transform(wdpa_kfw_spatial_buffer15km,crs = 4326)
 
 # write out
 write_sf(wdpa_kfw_spatial,"data/wdpa_kfw_spatial_latinamerica_2021-04-22_allPAs.gpkg")
 write_sf(wdpa_kfw_spatial_buffer5km,"data/wdpa_kfw_spatial_latinamerica_2021-04-22_allPAs_buffer5km.gpkg")
 write_sf(wdpa_kfw_spatial_buffer10km,"data/wdpa_kfw_spatial_latinamerica_2021-04-22_allPAs_buffer10km.gpkg")
+write_sf(wdpa_kfw_spatial_buffer15km,"data/wdpa_kfw_spatial_latinamerica_2021-04-22_allPAs_buffer15km.gpkg")
 
 # ----- ARQUIVED: add polygons with empty geometries from original-----
 ## load spatial database
