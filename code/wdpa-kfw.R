@@ -49,7 +49,7 @@ wdpa_kfw_db_missings <-
   wdpa_kfw_db %>%
   filter(!wdpa_kfw_db$wdpa_pid %in% wdpa_db$WDPA_PID)
 
-View(wdpa_kfw_db_missings)
+# View(wdpa_kfw_db_missings)
 
 ## --- fix wrong and missing WDPA IDs -----
 # Los Cobanos
@@ -59,15 +59,15 @@ wdpa_kfw_db <-
 
 # Sierra del Abra Tanchipa.
 # Note: 101416_B is in spatial data but not this csv list from WDPA
-wdpa_kfw_db <-
-  wdpa_kfw_db %>%
-  mutate(wdpa_pid = replace(wdpa_pid, wdpa_pid == "101416_B", "101416"))
+# wdpa_kfw_db <-
+#   wdpa_kfw_db %>%
+#   mutate(wdpa_pid = replace(wdpa_pid, wdpa_pid == "101416_B", "101416"))
 
 # Shell Beach PA. 
   # Note: 41057_A is in spatial data but not this csv list from WDPA
-wdpa_kfw_db <-
-  wdpa_kfw_db %>%
-  mutate(wdpa_pid = replace(wdpa_pid, wdpa_pid == "41057_A", "41057"))
+# wdpa_kfw_db <-
+#   wdpa_kfw_db %>%
+#   mutate(wdpa_pid = replace(wdpa_pid, wdpa_pid == "41057_A", "41057"))
 
 # Sistema de Islas, Islotes y Puntas Guaneras
 wdpa_kfw_db <-
@@ -82,17 +82,18 @@ wdpa_kfw_db <-
 
 # ----- check remaining errors and describe raw databse----- 
 # check for duplicates
-wdpa_kfw_db_tmp %>%
+wdpa_kfw_db %>%
   filter(duplicated(.[["wdpa_pid"]]))
 
 # check for missings
 wdpa_kfw_db %>%
-  filter(!wdpa_kfw_db$wdpa_pid %in% wdpa_db$WDPAID)
+  filter(!wdpa_kfw_db$wdpa_pid %in% wdpa_db$WDPA_PID)
 
 
 # ----- merge data to get countries labels-----
+wdpa_db$WDPA_PID<-as.character(wdpa_db$WDPA_PID)
 wdpa_join_db<-
-  full_join(wdpa_db,wdpa_kfw_db_join,by=c("WDPAID"="wdpa_pid"))
+  full_join(wdpa_db,wdpa_kfw_db,by=c("WDPA_PID"="wdpa_pid"))
 
 # get countries where kfw is active
 wdpa_kfw_countries <-
@@ -134,6 +135,7 @@ wdpa_get_and_preprocess_withoverlaps <- function(my_iso=NULL,
       wdpa_clean(tmp.data,
                  erase_overlaps = F,
                  retain_status = NULL,
+                 exclude_unesco = FALSE,
                  snap_tolerance = my_snap_tolerance,
                  simplify_tolerance = my_simplify_tolerance
       )
@@ -161,8 +163,6 @@ wdpa_kfw_spatial<-
 which(!wdpa_kfw_countries%in%wdpa_kfw_spatial$ISO3)
 # -> 16 corresponds to the NA value, so no problem
 
-
-
 # ----- check for empty geometries -----
 wdpa_kfw_spatial%>%
   st_is_empty()%>%
@@ -170,15 +170,61 @@ wdpa_kfw_spatial%>%
 
 which(st_is_empty(wdpa_kfw_spatial)==T)
 
-#extract the wdpa ids of missings
+# extract the wdpa ids of missings
 wdpa_emptygeom_ids <-
   wdpa_kfw_spatial %>%
   filter(st_is_empty(.) == T)
 
+# ----- clean data further -----
+# check and remove  exact duplicates
+wdpa_kfw_spatial <-
+  wdpa_kfw_spatial %>%
+  distinct()
 
-#save.image("../../datalake/mapme.protectedareas/processing/workspace_wdpa-kfw.Rdata")
 
-# ----- add polygons with empty geometries from original-----
+# ----- join data and analyze output
+# check if there are any data that could not be fetched
+table(wdpa_kfw_db$wdpa_pid%in%wdpa_kfw_spatial$WDPA_PID)
+# There are 8 PAs that do not have a correspondance in the spatial data. 
+# filter them out 
+missings_wdpa_pid<-
+  wdpa_kfw_db%>%
+  filter(!wdpa_kfw_db$wdpa_pid%in%wdpa_kfw_spatial$WDPA_PID)
+
+View(missings_wdpa_pid)
+
+## IMPORTANT NOTE: There are two PAs that cannot be found with a valid geometry via API (and download)
+# those are 
+  # Sierra del Abra Tanchipa (101416) and 
+  # Sistema de Islas, Islotes y Puntas Guaneras (555544090)
+  # Nevertheless they appear on the protectedplanet.net website. 
+colnames(wdpa_kfw_db)
+wdpa_kfw_db <- rename(wdpa_kfw_db,  WDPA_PID=wdpa_pid)
+
+wdpa_kfw_spatial<-left_join(wdpa_kfw_spatial,wdpa_kfw_db)
+
+# check the result
+wdpa_kfw_spatial%>%
+  filter(!is.na(bmz_n_1))
+
+# 398 areas could be attributed
+
+# ----- buffer results and save outputs  -----
+# create a layer with buffer areas
+wdpa_kfw_spatial_buffer10km<-st_buffer(wdpa_kfw_spatial,10000)
+wdpa_kfw_spatial_buffer5km<-st_buffer(wdpa_kfw_spatial,5000)
+
+# project to WGS84
+wdpa_kfw_spatial<-st_transform(wdpa_kfw_spatial,crs = 4326)
+wdpa_kfw_spatial_buffer5km<-st_transform(wdpa_kfw_spatial_buffer5km,crs = 4326)
+wdpa_kfw_spatial_buffer10km<-st_transform(wdpa_kfw_spatial_buffer10km,crs = 4326)
+
+# write out
+write_sf(wdpa_kfw_spatial,"data/wdpa_kfw_spatial_latinamerica_2021-04-22_allPAs.gpkg")
+write_sf(wdpa_kfw_spatial_buffer5km,"data/wdpa_kfw_spatial_latinamerica_2021-04-22_allPAs_buffer5km.gpkg")
+write_sf(wdpa_kfw_spatial_buffer10km,"data/wdpa_kfw_spatial_latinamerica_2021-04-22_allPAs_buffer10km.gpkg")
+
+# ----- ARQUIVED: add polygons with empty geometries from original-----
 ## load spatial database
 # wdpa_url<-"https://d1gam3xoknrgr2.cloudfront.net/current/WDPA_Apr2021_Public.zip"
 # link gathered from: https://d1gam3xoknrgr2.cloudfront.net/
@@ -195,14 +241,18 @@ wdpa_emptygeom_ids <-
 # delete old files
 # file.remove("../../datalake/mapme.protectedareas/input/wdpa-kfw/wdpa_original_April2021/WDPA_Mar2021_Public.zip")
 
-# load spatial database
+# # load spatial database
 # wdpa_db_original<-
 #   read_sf("../../datalake/mapme.protectedareas/input/wdpa-kfw/wdpa_original_April2021/WDPA_Apr2021_Public/WDPA_Apr2021_Public.gdb/")
 # 
 # # filter for the polygons without empty geometries
-# wdpa_db_original <-
-#   wdpa_db_original %>%
-#   filter(WDPAID %in% wdpa_emptygeom_ids$WDPAID)
+# wdpa_db_original %>%
+#   filter(WDPA_PID %in% missings_wdpa_pid$wdpa_pid)
+# 
+# table(missings_wdpa_pid$wdpa_pid %in% wdpa_db_original$WDPA_PID)
+# 
+# colnames(wdpa_db_original)
+# colnames(wdpa_kfw_spatial)
 # 
 # wdpa_db_original$WDPAID
 # write_sf(wdpa_db_original,
@@ -217,43 +267,3 @@ wdpa_emptygeom_ids <-
 # remove invalid geometry entries
 
 # bind the cleaned polygons from the manually downloaded dataset
-
-
-# Final note: 
-  # there is one polygon that had no entry in the original public shapefile which is 900715 Jaragua - Bahoruco - Enriquillo
-
-# ----- save output data -----
-# join kfw data
-wdpa_kfw_db$wdpa_pid<-as.double(wdpa_kfw_db$wdpa_pid)
-
-wdpa_kfw_spatial<-
-  full_join(wdpa_kfw_spatial,wdpa_kfw_db,by=c("WDPAID"="wdpa_pid"))
-
-## describe data in terms 
-# number of observations
-wdpa_kfw_spatial%>%
-  filter(!is.na(bmz_n_1))%>%
-  nrow()
-
-nrow(wdpa_kfw_db)
-## Note: For whatever weired reason there are two areas more in the spatial data than in the original tabular
-sort(table(wdpa_kfw_spatial$WDPAID),decreasing = T)
-# explanation. There are duplicates 
-wdpa_kfw_spatial%>%
-  filter(!is.na(bmz_n_1))%>%
-  st_drop_geometry()%>%
-  group_by(WDPAID) %>% 
-  filter(n()>1)%>% 
-  View()
-
-
-plot(wdpa_kfw_spatial[1])
-
-write_sf(wdpa_kfw_spatial,"data/wdpa_kfw_spatial_latinamerica_2021-04-22_allPAs.gpkg")
-
-# get countries where kfw is active
-# wdpa_kfw_spatial_onlysupported <-
-#   wdpa_kfw_spatial %>%
-#   filter(!is.na(bmz_n_1)) 
-
-# write_sf(wdpa_kfw_spatial_onlysupported,"data/wdpa_kfw_spatial_latinamerica_2021-04-22_supportedPAs.gpkg")
