@@ -34,3 +34,6 @@ vignettes/*.pdf
 # unnecessary html files
 README.html
 contributing.html
+
+# r environment library
+renv.lock
