@@ -1,0 +1,144 @@
+---
+title: "Mangrove Gain and Loss"
+author: "Johannes Schielein, Om Prakash Bhandari"
+date: "3/30/2021"
+output: workflowr::wflow_html
+---
+
+```{r setup, message=FALSE}
+# load required libraries
+library("terra")
+library("sf")
+library("wdpar")
+library("dplyr")
+library("knitr")
+
+starttime<-Sys.time() # mark the start time of this routine to calculate processing time at the end
+```
+
+At first you might want to load the source functions for this routine. 
+```{r loadlsource, include=TRUE}
+source("code/area_proj.R")
+```
+
+# Introduction
+
+Mangrove is tropical coastal vegetation and considered the most significant part of the marine ecosystem and provides a link between the sea and the land. Hence, considered one of the world's dominant coastal ecosystem. There have been subsequent changes in the extent of mangroves since decades. The changes might be in the form of gain or loss. Global Mangrove Watch is an open source platform offering remote sensing data and tools for monitoring mangroves around the globe. 
+The main purpose of this routine is to carry out analysis on the protected area level to see whether the extent of mangroves within definite PAs is increasing or decreasing. 
+
+### Datasource and Metadata Information
+
+- Dataset: Global Mangrove Watch - World Conservation Monitoring Centre (WCMC)[1]
+- Geographical Coverage: Global
+- Spatial Resolution: ~25 meter
+- Temporal Coverage: 1996-2016
+- Temporal Resolution: Periodic updates(1996, 2007-2010, 2015, 2016)
+- Data downloaded: 17th March, 2021
+- [Metadata Link]("https://data.unep-wcmc.org/pdfs/45/GMW_001_Metadata.pdf?1560444488")
+- [Download Link]("https://data.unep-wcmc.org/datasets/45")
+
+
+### Processing Workflow
+
+The processing routine:
+
+![](assets/workflows/gmw_area_routine.png)
+
+
+# Download and prepare Mangrove data
+
+Global mangrove watch provides the mangrove data for the years 1996 to 2016 with periodic updates in between. The datasets have been stored in the datalake as the geopackage. The stored datasets are downloaded directly from the Ocean Data Viewer as mentioned in the metadata above. 
+
+For this routine, we will first load the mangrove data for year 1996 to see the extent of mangrove for this particular year.
+
+```{r loadGmw, warning=FALSE, message=FALSE, include=TRUE}
+
+# load mangrove data for 1996
+m <- st_read("/home/ombhandari/shared/datalake/mapme.protectedareas/input/global_mangrove_watch/gmw-v2-1996-valid.gpkg")
+```
+
+# Download and prepare WDPA polygon
+
+For this analysis, we would take one polygon data from Brazil, which is closer to coastal region so that the extent of mangroves can be analyzed.
+
+
+
+```{r fetchWdpar, warning=FALSE, include=TRUE}
+
+# fetch the raw data from wdpar of country
+br <- wdpar::wdpa_fetch("BRA")
+# subset a wdpa polygon by it's wdpa id
+b <- br%>%
+  filter(WDPAID %in% 555637331)
+```
+
+
+The next immediate step would be to clean the fetched raw data with the functionality provided with routines from the `wdpar` package. Cleaning is done by the package following these steps:
+
+- exclude protected areas that are not yet implemented
+- exclude protected areas with limited conservation value
+- replace missing data codes (e.g. "0") with missing data values (i.e. NA)
+- replace protected areas represented as points with circular protected areas that correspond to their reported extent
+- repair any topological issues with the geometries
+
+```{r cleanWdpar, warning=FALSE, include=TRUE}
+
+# clean the data
+b <- wdpa_clean(
+  b,
+  erase_overlaps = FALSE)
+```
+
+Lets have a look at the selected polygon data.
+
+```{r wdpaMap, warning=FALSE, include=TRUE}
+
+plot(b[1])
+```
+
+
+# Perform Intersection
+
+After completing mangrove data and WDPA polygon preparation, we should now intersect the layers to crop out the desired extent from the global mangrove polygon. Before doing so, it is important to match the coordinate reference system of the polygons. For this, we will perform the coordinate transformation of the WDPA polygon to match with the CRS of mangrove data.
+
+```{r transform, warning=FALSE, include=TRUE}
+
+# reproject wdpa polygon to match mangrove data
+b <- st_transform(b, st_crs(m))
+```
+
+Now, we can apply `st_intersection` function to get the desired area of intersection between mangrove and wdpa polygon.
+
+```{r intersect, warning=FALSE, message=FALSE, include=TRUE}
+
+# apply intersection
+m_subset <- st_intersection(m, b)
+```
+
+# Compute mangrove area
+
+Now, we have got the intersection polygon. Next step would be to compute the mangrove area. First we have to adopt adequate projection system. We must choose the projection system which preserves the area of the polygon. We will use the function `area_proj`which takes bounding box of the polygon as input parameters and returns the `proj4string`, the projection system parameters in Lambert Azimuthal Equal Area projection.
+
+```{r areaComp, warning=FALSE, include=TRUE}
+
+# transform to laea using area_proj
+m_sub <- st_transform(m_subset, st_crs(area_proj(b)))
+# compute area in square km
+m_sub$area_sqkm <- st_area(m_sub)%>%
+  sum()/1000000
+m_sub$area_sqkm
+```
+So, from the result above we can see that the area of mangrove for the WDPA ID 555637331 for the year 1996 is 4898.962 square km. 
+Similarly, we can compute the mangrove area of the desired polygon/s following this routine.
+
+
+In the end we are going to have a look how long the rendering of this file took so that people get an idea about the processing speed of this routine.
+```{r time, warning=FALSE, include=TRUE}
+
+stoptime<-Sys.time()
+print(starttime-stoptime)
+```
+
+# References
+
+[1] Bunting P., Rosenqvist A., Lucas R., Rebelo L-M., Hilarides L., Thomas N., Hardy A., Itoh T., Shimada M. and Finlayson C.M. (2018). The Global Mangrove Watch – a New 2010 Global Baseline of Mangrove Extent. Remote Sensing 10(10): 1669. doi:10.3390/rs1010669.

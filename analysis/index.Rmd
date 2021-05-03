@@ -20,6 +20,12 @@ Chapters:
 
 - [How to contribute](contribute.html).
 
-- [Querrying data from DOPA Rest API](dopa-rest.html).
+- [Querying data from DOPA Rest API (DOPA/JRC)](dopa-rest.html).
 
-- [Net forest carbon flux (Harris et al. 2021)](carbon-flux.html).
+- Processing Individual Datasets
+
+  - [TEOW Ecoregions (WWF)](wwf_teow.html).
+
+  - [Net forest carbon flux (Harris et al. 2021)](carbon-flux.html).
+  
+  - [Mangrove Gain and Loss(GMW)](gmw-mangrove.html).
