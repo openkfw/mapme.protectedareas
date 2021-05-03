@@ -24,7 +24,7 @@ teow <-
 
 # load and reproject polygons
 pa_polygons_all <- 
-  read_sf("../../datalake/mapme.protectedareas/output/polygon/wdpa_kfw/wdpa_kfw_spatial_latinamerica_2021-02-01_supportedPAs.gpkg")
+  read_sf("../../datalake/mapme.protectedareas/output/polygon/wdpa_kfw/wdpa_kfw_spatial_latinamerica_2021-04-22_allPAs.gpkg")
 
 pa_polygons_all<-
   st_transform(pa_polygons_all, st_crs(teow))
@@ -55,7 +55,7 @@ calculate_teow_intersection_eco <- function(my_pa_polygon) {
     filter(str_detect(name, '^teow_intersect_sqkm'))
   # write output dataframe to disk
   write.csv(myData_final, 
-            file="../../datalake/mapme.protectedareas/output/polygon/teow/teow_long_supportedPAs_merged_eco.csv",
+            file="../../datalake/mapme.protectedareas/output/polygon/teow/teow_long_allPAs_merged_eco.csv",
             row.names = F)
 }
 
@@ -71,7 +71,7 @@ teow <-
 
 # load and reproject polygons
 pa_polygons_all <- 
-  read_sf("../../datalake/mapme.protectedareas/output/polygon/wdpa_kfw/wdpa_kfw_spatial_latinamerica_2021-02-01_supportedPAs.gpkg")
+  read_sf("../../datalake/mapme.protectedareas/output/polygon/wdpa_kfw/wdpa_kfw_spatial_latinamerica_2021-04-22_allPAs.gpkg")
 
 pa_polygons_all<-
   st_transform(pa_polygons_all, st_crs(teow))
@@ -109,7 +109,7 @@ calculate_teow_intersection_biome <- function(my_pa_polygon) {
     summarise(value=sum(as.numeric(value)))
   # write output dataframe to disk
   write.csv(myData_final, 
-            file="../../datalake/mapme.protectedareas/output/polygon/teow/teow_long_supportedPAs_merged_biome.csv",
+            file="../../datalake/mapme.protectedareas/output/polygon/teow/teow_long_allPAs_merged_biome.csv",
             row.names = F)
 }
 
@@ -123,7 +123,7 @@ calculate_teow_intersection_biome(pa_polygons_all)
 
 # load polygons
 pa_polygons_all <- 
-  read_sf("../../datalake/mapme.protectedareas/output/polygon/wdpa_kfw/wdpa_kfw_spatial_latinamerica_2021-02-01_supportedPAs.gpkg")
+  read_sf("../../datalake/mapme.protectedareas/output/polygon/wdpa_kfw/wdpa_kfw_spatial_latinamerica_2021-04-22_allPAs.gpkg")
 
 # create function
 calculate_mangrove_extent <- function(y) {
@@ -152,7 +152,7 @@ calculate_mangrove_extent <- function(y) {
                               cols=paste0("mangrove_area_sqkm_",y))
   # write results to disk
   write.csv(mangrove_long, 
-            file=paste0("../../datalake/mapme.protectedareas/output/polygon/global_mangrove_watch/gmw_v2_long_supportedPAs_",y,".csv"),
+            file=paste0("../../datalake/mapme.protectedareas/output/polygon/global_mangrove_watch/gmw_v2_long_allPAs_",y,".csv"),
             row.names = F)
 }
 
@@ -172,7 +172,7 @@ carbonflux_raster <-
 
 # load and reproject polygons  
 pa_polygons_all<-
-  read_sf("../../datalake/mapme.protectedareas/output/polygon/wdpa_kfw/wdpa_kfw_spatial_latinamerica_2021-02-01_supportedPAs.gpkg")
+  read_sf("../../datalake/mapme.protectedareas/output/polygon/wdpa_kfw/wdpa_kfw_spatial_latinamerica_2021-04-22_allPAs.gpkg")
 
 pa_polygons_all<-
   st_transform(pa_polygons_all, "+proj=longlat +datum=WGS84 +no_defs")
@@ -229,3 +229,7 @@ for (i in 2:nrow(pa_polygons_all)) {
   print(paste("Done processing line", i, sep=" "))
 }
 
+# write results to disk
+  write.csv(df_carbon_polygon, 
+            file="../../datalake/mapme.protectedareas/output/polygon/net_carbon_flux/carbon_balance_allPAs.csv",
+            row.names = F)
