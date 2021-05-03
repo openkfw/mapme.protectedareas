@@ -1,7 +1,8 @@
 # carbon-flux.R
 # Authors: Om Bhandari, Johannes Schielein
-# Purpose: This script contains function to create Query to the Net Forest Carbon Flux datasets from Global Forest Watch (GFW)
-library(raster)
+# Purpose: This script contains function to create Query to the Net Forest Carbon Flux datasets from Global Forest Watch (GFW) and download the raster...
+# ...of the desired grid coordinates
+library("terra")
 
 # (1) get_net_flux_carbon
 # provide Latitude and Longitude as arguments for the required grid
@@ -18,8 +19,8 @@ get_net_carbon_flux <- function(lat, lon) {
   download.file(url, destfile)
   # load in temporary raster and return it (result from last line is always returned in function in raster)
   # raster(paste0(tempdir(),"/carbon_flux_",lat,"_",lon,".tif"))
-  return(raster(paste0(mytempdir,"/carbon_flux_",lat,"_",lon,".tif")))
+  return(rast(paste0(mytempdir,"/carbon_flux_",lat,"_",lon,".tif")))
 }
 
 # example
-# get_net_carbon_flux("20S", "060W")
+# myRaster <- get_net_carbon_flux("20S", "060W")

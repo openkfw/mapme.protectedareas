@@ -188,6 +188,13 @@ wholedatabase%>%
   summarise(sum=sum(value))
 ```
 
+#### Naming coonvention of the data
+In order to adopt an unambiguous data storage strategy, it would be great to have standard naming convention for all the datasets that would be used as either in raw form or saved as processed form. The naming convention should follow following structure:
+
+*repository_data-name_raw/processed.extension
+*Example1: mapme.protectedareas_net-forest-carbon-flux-10N-060W_raw.tif
+*Example2: mapme.protectedareas_Terrestrial-Ecoregions-World_processed.shp
+
 #### Chained pre-processing
 This section will be written as soon as we have enough working pre-processing scripts to chain them. The idea will be to do something along the lines of sourcing several preprocessing scripts with `trycatch` to avoid interruption of chain processes. 
 
