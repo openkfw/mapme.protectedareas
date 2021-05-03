@@ -27,3 +27,5 @@ Chapters:
   - [TEOW Ecoregions (WWF)](wwf_teow.html).
 
   - [Net forest carbon flux (Harris et al. 2021)](carbon-flux.html).
+  
+  - [Mangrove Gain and Loss(GMW)](gmw-mangrove.html).
