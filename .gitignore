@@ -30,10 +30,12 @@ vignettes/*.pdf
 *.Rproj
 # data and scripts to process internal records
 /1_pre-processing/wdpa-kfw/data-from-internal_confidential/
-
 # unnecessary html files
 README.html
 contributing.html
 
 # r environment library
 renv.lock
+
+# mac folders
+.DS_Store

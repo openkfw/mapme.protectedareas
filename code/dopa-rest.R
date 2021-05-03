@@ -32,9 +32,12 @@ get_redlist_status <- function(wdpaid) {
   # create a column from wdpa id
   tmp.df$wdpa_id <- wdpaid
   # delete the temporary file
-  file.remove(paste0(tempdir(),"/redlist_status_",wdpaid,".csv"))
+  #file.remove(paste0(tempdir(),"/redlist_status_",wdpaid,".csv"))
   # append the results of the file to an existing dataframe/table and return results
-  return(rbind(df.redlist_status,tmp.df)[-1,])
+  ifelse(nrow(tmp.df)>0,
+         rbind(df.redlist_status,tmp.df)[-1,],
+         print("Error: No data found for this WDPAID"))
+  #return(rbind(df.redlist_status,tmp.df)[-1,])
 }
 
 # example
@@ -372,7 +375,7 @@ get_ecoregion_pa_normalized_ind <- function(ind, id) {
 # for other two services "get_wdpa_lc_esa" & "get_wdpa_lc_copernicus" -- reuires two more arguments i.e...
 # .. "agg" and "year" -- so global function cannot be applied. Simply opt for individual functions
 
-get_dopa <- function(topic, getQuery, wdpaid) {
+get_dopa <- function(wdpaid, topic, getQuery) {
   # create the url
   url <- paste0("https://dopa-services.jrc.ec.europa.eu/services/d6dopa40/",topic,"/",getQuery,"?format=csv&wdpaid=",wdpaid)
   # create string for temporary file
