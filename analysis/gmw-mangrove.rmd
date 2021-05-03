@@ -67,7 +67,7 @@ For this analysis, we would take one polygon data from Brazil, which is closer t
 
 # fetch the raw data from wdpar of country
 br <- wdpar::wdpa_fetch("BRA")
-# # subset a wdpa polygon by it's wdpa id
+# subset a wdpa polygon by it's wdpa id
 b <- br%>%
   filter(WDPAID %in% 555637331)
 ```
@@ -124,9 +124,9 @@ Now, we have got the intersection polygon. Next step would be to compute the man
 # transform to laea using area_proj
 m_sub <- st_transform(m_subset, st_crs(area_proj(b)))
 # compute area in square km
-area <- st_area(m_sub)%>%
+m_sub$area_sqkm <- st_area(m_sub)%>%
   sum()/1000000
-area
+m_sub$area_sqkm
 ```
 So, from the result above we can see that the area of mangrove for the WDPA ID 555637331 for the year 1996 is 4898.962 square km. 
 Similarly, we can compute the mangrove area of the desired polygon/s following this routine.
