@@ -1,7 +1,7 @@
 ---
 title: "MAPME Protected Areas report for KfW 2-Jahresbericht"
 author: "Johannes Schielein"
-date: "2021-03-18"
+date: "2021-05-04"
 output: workflowr::wflow_html
 editor_options:
   chunk_output_type: console
@@ -34,18 +34,24 @@ dopa_raw<-
 
 # load supported areas
 wdpa_kfw<-
-  read_sf("../../datalake/mapme.protectedareas/output/wdpa-kfw/wdpa_kfw_spatial_latinamerica_2021-02-01_supportedPAs.gpkg")
+  read_sf("data/wdpa_kfw_spatial_latinamerica_2021-04-22_allPAs.gpkg")
 
 # check how many PAs from the KfW portfolio can be found in the dopa dataset
-table(wdpa_kfw$WDPA_PID%in%dopa_raw$id)
-# Note: 372 PAs could be detected and 61 not. At this stage DOPA can therefore only serve to analyze 85% of KfW Portfolio. 
+table(wdpa_kfw$WDPAID%in%dopa_raw$id)
+
+# only for supported areas
+wdpa_kfw_treatment<-
+  wdpa_kfw%>%
+  filter(bmz_n_1>0)
+
+table(wdpa_kfw_treatment$WDPAID%in%dopa_raw$id) # 54 FALSE and 344 TRUE - 13% are not inside dopa
 
 # prepare data for join
 dopa_raw$id<-as.character(dopa_raw$id) 
 
 # join
 dopa_kfw<-
-  left_join(wdpa_kfw, dopa_raw, by=c("WDPA_PID" = "id"))
+  left_join(wdpa_kfw_treatment, dopa_raw, by=c("WDPA_PID" = "id"))
 
 # load ecosystems-data
 teow<-read_sf("../../datalake/mapme.protectedareas/input/teow/Terrestrial-Ecoregions-World.gpkg")
