@@ -1,0 +1,45 @@
+Package: wdpar
+Type: Package
+Version: 1.1.0.0
+Title: Interface to the World Database on Protected Areas
+Description: Fetch and clean data from the World Database on Protected
+    Areas (WDPA). Data is obtained from Protected Planet
+    <https://www.protectedplanet.net/en>.
+Authors@R: c(person(c('Jeffrey', 'O'), 'Hanson',
+    email='jeffrey.hanson@uqconnect.edu.au', role = c('aut', 'cre')))
+Imports: utils, tools, sp, assertthat (>= 0.2.0), progress (>= 1.2.0),
+        curl (>= 3.2), rappdirs (>= 0.3.1), httr (>= 1.3.1),
+        countrycode (>= 1.1.0), wdman (>= 0.2.4), RSelenium (>= 1.7.4),
+        xml2 (>= 1.2.0), cli (>= 1.0.1), lwgeom (>= 0.2-1), tibble (>=
+        2.1.3)
+Suggests: testthat (>= 2.0.1), knitr (>= 1.2.0), roxygen2 (>= 6.1.1),
+        rmarkdown (>= 1.10), ggmap (>= 2.6.1), ggplot2 (>= 3.1.0),
+        pingr (>= 1.1.2)
+Depends: R (>= 3.5.0), sf (>= 0.9-0)
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Language: en-US
+URL: https://prioritizr.github.io/wdpar/,
+        https://github.com/prioritizr/wdpar
+BugReports: https://github.com/prioritizr/wdpar/issues
+VignetteBuilder: knitr
+RoxygenNote: 7.1.1
+Collate: 'internal.R' 'geo.R' 'package.R' 'wdpa_clean.R' 'wdpa_url.R'
+        'wdpa_latest_version.R' 'wdpa_fetch.R' 'wdpa_read.R' 'zzz.R'
+Roxygen: list(markdown = TRUE)
+RemoteType: github
+RemoteHost: api.github.com
+RemoteRepo: wdpar
+RemoteUsername: prioritizr
+RemoteRef: HEAD
+RemoteSha: 9ab693c6db1aa39f4f733509de5ba75a1f0ddb4e
+GithubRepo: wdpar
+GithubUsername: prioritizr
+GithubRef: HEAD
+GithubSHA1: 9ab693c6db1aa39f4f733509de5ba75a1f0ddb4e
+NeedsCompilation: no
+Packaged: 2021-03-17 10:30:25 UTC; johannes
+Author: Jeffrey O Hanson [aut, cre]
+Maintainer: Jeffrey O Hanson <jeffrey.hanson@uqconnect.edu.au>
+Built: R 4.0.3; ; 2021-03-17 10:30:25 UTC; unix

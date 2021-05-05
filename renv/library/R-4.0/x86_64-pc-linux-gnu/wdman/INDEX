@@ -1,0 +1,6 @@
+chrome                  Start chrome driver
+gecko                   Start gecko driver
+iedriver                Start IE driver server
+phantomjs               Start phantomjs
+selenium                Start Selenium Server
+wdman                   wdman.

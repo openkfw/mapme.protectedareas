@@ -1,0 +1,41 @@
+Package: RSelenium
+Type: Package
+Title: R Bindings for 'Selenium WebDriver'
+Version: 1.7.7
+Authors@R: c(
+    person("John", "Harrison", , "johndharrison0@gmail.com",
+    role = "aut", comment = "original author"),
+    person("Ju Yeong", "Kim", , "jkim2345@fredhutch.org",
+    role = "cre", comment = "rOpenSci maintainer"))
+Description: Provides a set of R bindings for the 'Selenium 2.0 WebDriver'
+    (see <https://selenium.dev/documentation/en/>
+    for more information) using the 'JsonWireProtocol' (see
+    <https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol> for more
+    information). 'Selenium 2.0 WebDriver' allows driving a web browser
+    natively as a user would either locally or on a remote machine using
+    the Selenium server it marks a leap forward in terms of web browser
+    automation. Selenium automates web browsers (commonly referred to as
+    browsers). Using RSelenium you can automate browsers locally or
+    remotely.
+License: AGPL-3
+URL: http://docs.ropensci.org/RSelenium
+BugReports: http://github.com/ropensci/RSelenium/issues
+Additional_repositories: http://www.omegahat.net/R
+Depends: R (>= 3.0.0)
+Imports: XML, methods, caTools, tools, utils, openssl, httr, wdman(>=
+        0.2.2), binman
+Suggests: testthat, knitr, Rcompression, covr, rmarkdown
+VignetteBuilder: knitr
+LazyData: true
+Collate: 'RSelenium.R' 'errorHandler.R' 'remoteDriver.R' 'rsDriver.R'
+        'selKeys-data.R' 'util.R' 'webElement.R'
+Encoding: UTF-8
+RoxygenNote: 7.0.2
+NeedsCompilation: no
+Packaged: 2020-02-03 19:07:09 UTC; jkim
+Author: John Harrison [aut] (original author),
+  Ju Yeong Kim [cre] (rOpenSci maintainer)
+Maintainer: Ju Yeong Kim <jkim2345@fredhutch.org>
+Repository: CRAN
+Date/Publication: 2020-02-03 20:00:03 UTC
+Built: R 4.0.3; ; 2021-03-17 10:30:20 UTC; unix

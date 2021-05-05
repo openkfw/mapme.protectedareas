@@ -1,0 +1,17 @@
+name: bmproxy
+predlfunction:
+  "binman::predl_github_assets":
+    url: "https://api.github.com/repos/lightbody/browsermob-proxy/releases"
+    platform:
+    - generic
+    history: 3
+    appname: "bmproxy"
+    platformregex:
+    - "browsermob-proxy"
+    versionregex:
+    - "browsermob-proxy-(.*)$"
+    - "\\1"
+dlfunction:
+  "binman::download_files": []
+postdlfunction:
+  "binman::unziptar_dlfiles": []

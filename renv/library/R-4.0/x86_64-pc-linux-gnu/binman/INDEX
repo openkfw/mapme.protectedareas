@@ -1,0 +1,14 @@
+app_dir                 Get application directory
+assign_directory        Assign directory
+binman                  binman
+download_files          Download binaries
+list_versions           List app versions
+noproc_dlfiles          Do not post process
+predl_bitbucket_downloads
+                        Pre download bitbucket downloads
+predl_github_assets     Pre download Github assets
+predl_google_storage    Pre-Download Google Storage
+process_yaml            Process a yaml file
+rm_platform             Remove application platform
+rm_version              Remove application version
+unziptar_dlfiles        Unzip/Untar downloaded files

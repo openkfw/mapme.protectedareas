@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="John D Harrison" />
+
+<meta name="date" content="2020-10-02" />
+
+<title>binman: Basics</title>
+
+<script>// Hide empty <a> tag within highlighted CodeBlock for screen reader accessibility (see https://github.com/jgm/pandoc/issues/6352#issuecomment-626106786) -->
+// v0.0.1
+// Written by JooYoung Seo (jooyoung@psu.edu) and Atsushi Yasumoto on June 1st, 2020.
+
+document.addEventListener('DOMContentLoaded', function() {
+  const codeList = document.getElementsByClassName("sourceCode");
+  for (var i = 0; i < codeList.length; i++) {
+    var linkList = codeList[i].getElementsByTagName('a');
+    for (var j = 0; j < linkList.length; j++) {
+      if (linkList[j].innerHTML === "") {
+        linkList[j].setAttribute('aria-hidden', 'true');
+      }
+    }
+  }
+});
+</script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+      </style>
+
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">binman: Basics</h1>
+<h4 class="author">John D Harrison</h4>
+<h4 class="date">2020-10-02</h4>
+
+
+<div id="TOC">
+<ul>
+<li><a href="#introduction">Introduction</a><ul>
+<li><a href="#pre-download-function">Pre-Download Function</a></li>
+<li><a href="#download-function">Download Function</a></li>
+<li><a href="#post-download-function">Post-Download Function</a></li>
+<li><a href="#application-yaml-file">Application YAML file</a></li>
+</ul></li>
+<li><a href="#browser-mob-proxy-example">Browser Mob Proxy example</a><ul>
+<li><a href="#bmp-pre-download">BMP Pre-Download</a></li>
+<li><a href="#bmp-download">BMP Download</a></li>
+<li><a href="#bmp-post-download">BMP Post Download</a></li>
+<li><a href="#bmp-yaml">BMP YAML</a></li>
+</ul></li>
+</ul>
+</div>
+
+<p>The goal of this vignette is to describe the basic functionality of the <code>binman</code> package.</p>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p><code>binman</code> (Binary Manager) is an R package that allows the user to manage the downloading of third party binaries. The downloading of binaries is split into three parts: the pre-download, the download and the post-download. Each part of the download is controlled by an appropriate function: <strong>predlfunction</strong>, <strong>dlfunction</strong> and <strong>postdlfunction</strong> respectively.</p>
+<div id="pre-download-function" class="section level3">
+<h3>Pre-Download Function</h3>
+<p>The pre-download function should return up-to its final point a named list of data.frames. The name of each data.frame corresponds to a “platform”. Each individual data.frame should be composed of three columns namely “version”, “url” and “file”. This named list of data.frames can then be passed to the <code>assign_directory</code> function.</p>
+<pre><code>mypredl_fun &lt;- function(...){
+# code to return named list of data.frames
+  assign_directory(mynamedlist, &quot;myappname&quot;)
+}</code></pre>
+<div id="how-directories-are-assigned" class="section level4">
+<h4>How directories are assigned</h4>
+<p>Directories are assigned using the <code>rappdirs</code> package. See <code>rappdirs::user_data_dir</code> for more OS specific information.</p>
+</div>
+</div>
+<div id="download-function" class="section level3">
+<h3>Download Function</h3>
+<p>The download function should take as its primary input the output given by <code>assign_directory</code> that is a named list of data.frames with column names “version”, “url”, “file”, “dir” and “exists”.</p>
+<p>The download function should process the list downloading the “url” to the given directory “dir” assigning it the file-name “file”. Whether the download is attempted may be dictated on the value of the “exists” variable (For example an overwrite argument in the download function).</p>
+<p>The download function should return a single data.frame with columns “platform”, “file” and “processed”. The “platform” column indicates what platform the file downloaded relates to. The “file” column gives the full path to the downloaded file. The “processed” column indicates whether the file was downloaded/processed.</p>
+<pre><code>mydl_fun &lt;- function(dllist, ...){
+# dllist is output from a predlfunction with final output from assign_directory
+# CODE here to perform download  
+  data.frame(
+    platform = platform, 
+    file = file,
+    processed = processed,
+    stringsAsFactors = FALSE
+  )
+}</code></pre>
+</div>
+<div id="post-download-function" class="section level3">
+<h3>Post-Download Function</h3>
+<p>The post-download function takes as its primary input the output given by a “download function” that is a data.frame with column names “platform”, “file” and “processed”.</p>
+<p>The purpose of the post-download function is to process the downloaded files after the download. This could involve changing the file properties such as the mode, unzip/untar a downloaded zip/tar file etc.</p>
+</div>
+<div id="application-yaml-file" class="section level3">
+<h3>Application YAML file</h3>
+<p>The three functions mentioned previously are combined together to define a process for downloading the binary file. The user stipulates the required functions and arguments by way of a YAML format file. For example:</p>
+<pre><code>name: superduperapp
+predlfunction:
+  &quot;superduperapp::predl_superduper&quot;:
+    appname: &quot;superduperapp&quot;
+dlfunction:
+  &quot;superduperapp::download_superduper&quot;: []
+postdlfunction:
+  &quot;superduperapp::postdl_superduper&quot;: []</code></pre>
+<p>The defined YAML file is then processed by the <code>process_yaml</code> function. The YAML file needs to define the three required functions with any arguments and also define a name.</p>
+</div>
+</div>
+<div id="browser-mob-proxy-example" class="section level2">
+<h2>Browser Mob Proxy example</h2>
+<p>The following is an example of using binman to get the github assets from a project. The project is <a href="https://github.com/lightbody/browsermob-proxy/releases" class="uri">https://github.com/lightbody/browsermob-proxy/releases</a> . When a new version is released a zipped binary is added as an “asset”. A JSON representation of the project releases is available at <a href="https://api.github.com/repos/lightbody/browsermob-proxy/releases" class="uri">https://api.github.com/repos/lightbody/browsermob-proxy/releases</a>. We shall breakdown the process into its three functional parts.</p>
+<div id="bmp-pre-download" class="section level3">
+<h3>BMP Pre-Download</h3>
+<p>Firstly we note we have JSON data so we parse the JSON from the URL:</p>
+<pre><code>bmpURL &lt;- &quot;https://api.github.com/repos/lightbody/browsermob-proxy/releases&quot;
+bmpData &lt;- jsonlite::fromJSON(bmpURL)</code></pre>
+<p>This gives us a list of 10 releases. A github release (<a href="https://help.github.com/articles/creating-releases/" class="uri">https://help.github.com/articles/creating-releases/</a>) should have a version number.</p>
+<pre><code>version &lt;- bmpData[[&quot;tag_name&quot;]]
+&gt; version
+ [1] &quot;browsermob-proxy-2.1.2&quot;        &quot;browsermob-proxy-2.1.1&quot;       
+ [3] &quot;browsermob-proxy-2.1.0&quot;        &quot;browsermob-proxy-2.1.0-beta-6&quot;
+ [5] &quot;browsermob-proxy-2.1.0-beta-5&quot; &quot;browsermob-proxy-2.1.0-beta-4&quot;
+ [7] &quot;browsermob-proxy-2.1.0-beta-3&quot; &quot;browsermob-proxy-2.1.0-beta-2&quot;
+ [9] &quot;browsermob-proxy-2.1.0-beta-1&quot; &quot;browsermob-proxy-2.0.0&quot;       </code></pre>
+<p>This is our version data but we may want to tidy it up so:</p>
+<pre><code>versionregex &lt;- c(&quot;browsermob-proxy-(.*)$&quot;, &quot;\\1&quot;)
+version &lt;- gsub(versionregex[1], versionregex[2], version)
+&gt; version
+ [1] &quot;2.1.2&quot;        &quot;2.1.1&quot;        &quot;2.1.0&quot;        &quot;2.1.0-beta-6&quot; &quot;2.1.0-beta-5&quot;
+ [6] &quot;2.1.0-beta-4&quot; &quot;2.1.0-beta-3&quot; &quot;2.1.0-beta-2&quot; &quot;2.1.0-beta-1&quot; &quot;2.0.0&quot;       </code></pre>
+<p>Each release has “assets” associated with it (a zip file).</p>
+<pre><code>assets &lt;- bmpData[[&quot;assets&quot;]]
+&gt; length(assets)
+[1] 10</code></pre>
+<p>The assets will contain the other information we need for our pre-download function.</p>
+<p>From each assets item we would like the file-name:</p>
+<pre><code>bmpFiles &lt;- vapply(assets, &quot;[[&quot;, character(1), &quot;name&quot;)
+&gt; bmpFiles
+ [1] &quot;browsermob-proxy-2.1.2-bin.zip&quot;        &quot;browsermob-proxy-2.1.1-bin.zip&quot;       
+ [3] &quot;browsermob-proxy-2.1.0-bin.zip&quot;        &quot;browsermob-proxy-2.1.0-beta-6-bin.zip&quot;
+ [5] &quot;browsermob-proxy-2.1.0-beta-5-bin.zip&quot; &quot;browsermob-proxy-2.1.0-beta-4-bin.zip&quot;
+ [7] &quot;browsermob-proxy-2.1.0-beta-3-bin.zip&quot; &quot;browsermob-proxy-2.1.0-beta-2-bin.zip&quot;
+ [9] &quot;browsermob-proxy-2.1.0-beta-1-bin.zip&quot; &quot;browsermob-proxy-2.0.0-bin.zip&quot;       </code></pre>
+<p>and the URL for that file:</p>
+<pre><code>bmpURLs &lt;- vapply(assets, &quot;[[&quot;, character(1), &quot;browser_download_url&quot;)
+&gt; bmpURLs
+ [1] &quot;https://github.com/lightbody/browsermob-proxy/releases/download/browsermob-proxy-2.1.2/browsermob-proxy-2.1.2-bin.zip&quot;              
+ [2] &quot;https://github.com/lightbody/browsermob-proxy/releases/download/browsermob-proxy-2.1.1/browsermob-proxy-2.1.1-bin.zip&quot;              
+ [3] &quot;https://github.com/lightbody/browsermob-proxy/releases/download/browsermob-proxy-2.1.0/browsermob-proxy-2.1.0-bin.zip&quot;              
+ [4] &quot;https://github.com/lightbody/browsermob-proxy/releases/download/browsermob-proxy-2.1.0-beta-6/browsermob-proxy-2.1.0-beta-6-bin.zip&quot;
+ [5] &quot;https://github.com/lightbody/browsermob-proxy/releases/download/browsermob-proxy-2.1.0-beta-5/browsermob-proxy-2.1.0-beta-5-bin.zip&quot;
+ [6] &quot;https://github.com/lightbody/browsermob-proxy/releases/download/browsermob-proxy-2.1.0-beta-4/browsermob-proxy-2.1.0-beta-4-bin.zip&quot;
+ [7] &quot;https://github.com/lightbody/browsermob-proxy/releases/download/browsermob-proxy-2.1.0-beta-3/browsermob-proxy-2.1.0-beta-3-bin.zip&quot;
+ [8] &quot;https://github.com/lightbody/browsermob-proxy/releases/download/browsermob-proxy-2.1.0-beta-2/browsermob-proxy-2.1.0-beta-2-bin.zip&quot;
+ [9] &quot;https://github.com/lightbody/browsermob-proxy/releases/download/browsermob-proxy-2.1.0-beta-1/browsermob-proxy-2.1.0-beta-1-bin.zip&quot;
+[10] &quot;https://github.com/lightbody/browsermob-proxy/releases/download/browsermob-proxy-2.0.0/browsermob-proxy-2.0.0-bin.zip&quot; </code></pre>
+<p>In the case of BMP we have a single platform which we could denote “generic”. So we could pass the following:</p>
+<pre><code>dllist &lt;- list(
+  &quot;generic&quot; = data.frame(version = version,
+                         url = bmpURLs,
+                         file = bmpFiles,
+                         stringsAsFactors = FALSE)
+)</code></pre>
+<p>Then finally we pass this list to the <code>assign_directory</code> function:</p>
+<pre><code>predlOut &lt;- assign_directory(dllist, &quot;bmpApp&quot;)
+&gt; str(predlOut, max.level = 2)
+List of 1
+ $ generic:&#39;data.frame&#39;:    10 obs. of  5 variables:
+  ..$ version: chr [1:10] &quot;2.1.2&quot; &quot;2.1.1&quot; &quot;2.1.0&quot; &quot;2.1.0-beta-6&quot; ...
+  ..$ url    : chr [1:10] &quot;https://github.com/lightbody/browsermob-proxy/releases/download/browsermob-proxy-2.1.2/browsermob-proxy-2.1.2-bin.zip&quot; &quot;https://github.com/lightbody/browsermob-proxy/releases/download/browsermob-proxy-2.1.1/browsermob-proxy-2.1.1-bin.zip&quot; &quot;https://github.com/lightbody/browsermob-proxy/releases/download/browsermob-proxy-2.1.0/browsermob-proxy-2.1.0-bin.zip&quot; &quot;https://github.com/lightbody/browsermob-proxy/releases/download/browsermob-proxy-2.1.0-beta-6/browsermob-proxy-2.1.0-beta-6-bin&quot;| __truncated__ ...
+  ..$ file   : chr [1:10] &quot;browsermob-proxy-2.1.2-bin.zip&quot; &quot;browsermob-proxy-2.1.1-bin.zip&quot; &quot;browsermob-proxy-2.1.0-bin.zip&quot; &quot;browsermob-proxy-2.1.0-beta-6-bin.zip&quot; ...
+  ..$ dir    :List of 10
+  ..$ exists : logi [1:10] FALSE FALSE FALSE FALSE FALSE FALSE ...
+</code></pre>
+<p>In the <code>binman</code> package there is a function template for github asset type downloads:</p>
+<pre><code>dllist &lt;- predl_github_assets(
+  url = &quot;https://api.github.com/repos/lightbody/browsermob-proxy/releases&quot;,
+  history = 3L, 
+  platform = &quot;generic&quot;,
+  appname = &quot;bmproxy&quot;, 
+  platformregex = &quot;browsermob-proxy&quot;,
+  versionregex = c(&quot;browsermob-proxy-(.*)$&quot;, &quot;\\1&quot;)
+)
+</code></pre>
+<p>There are some extra arguments for generality but it basically performs the operations we outlined above.</p>
+</div>
+<div id="bmp-download" class="section level3">
+<h3>BMP Download</h3>
+<p>The download for BMP is straightforward:</p>
+<pre><code>&gt; dllist[[&quot;generic&quot;]][1,]
+  version
+1   2.1.2
+                                                                                                                    url
+1 https://github.com/lightbody/browsermob-proxy/releases/download/browsermob-proxy-2.1.2/browsermob-proxy-2.1.2-bin.zip
+                            file                                                  dir
+1 browsermob-proxy-2.1.2-bin.zip /home/john/.local/share/binman_bmproxy/generic/2.1.2
+  exists
+1  FALSE</code></pre>
+<p>For each platform (there is only one “generic” platform in this case) we want to loop over the data.frame downloading the data at “url” to the “file” in the “dir”. If it already “exists” we may not perform the download.</p>
+<p>In <code>binman</code> there is a simple template function for this:</p>
+<pre><code>dlfiles &lt;- download_files(dllist)</code></pre>
+<p>So we simply need to pass the list from the pre download function to this download function.</p>
+</div>
+<div id="bmp-post-download" class="section level3">
+<h3>BMP Post Download</h3>
+<p>The files we receive from the Browser mob Proxy project are zipped. As a post processing operation we would like to unzip these files. The result of unzipping the files is a directory structure. In this case we do not change the mode of the ultimate binary which is contained in this directory structure.</p>
+<p>Again <code>binman</code> has a simple template function to unzip/untar a downloaded file so we pass our output from the download to this:</p>
+<pre><code>dlres &lt;- unziptar_dlfiles(dlfiles)</code></pre>
+</div>
+<div id="bmp-yaml" class="section level3">
+<h3>BMP YAML</h3>
+<p>We can incorporate our three functional calls into a YAML file for the Browser Mob Proxy application as follows:</p>
+<pre><code>name: bmproxy
+predlfunction:
+  &quot;binman::predl_github_assets&quot;:
+    url: &quot;https://api.github.com/repos/lightbody/browsermob-proxy/releases&quot;
+    platform:
+    - generic
+    history: 3
+    appname: &quot;bmproxy&quot;
+    platformregex:
+    - &quot;browsermob-proxy&quot;
+    versionregex:
+    - &quot;browsermob-proxy-(.*)$&quot;
+    - &quot;\\1&quot;
+dlfunction:
+  &quot;binman::download_files&quot;: []
+postdlfunction:
+  &quot;binman::unziptar_dlfiles&quot;: []</code></pre>
+<p>We have saved this file in the <code>binman</code> package:</p>
+<pre><code>ymlfile &lt;- system.file(&quot;examples&quot;, &quot;yaml&quot;, &quot;bmproxy.yml&quot;, package=&quot;binman&quot;)</code></pre>
+<p>We can now use the <code>process-yaml</code> function to download the BMP binaries:</p>
+<pre><code>&gt; process_yaml(ymlfile)
+BEGIN: PREDOWNLOAD
+BEGIN: DOWNLOAD
+Creating directory: /home/john/.local/share/binman_bmproxy/generic/2.1.2
+Downloading binary: https://github.com/lightbody/browsermob-proxy/releases/download/browsermob-proxy-2.1.2/browsermob-proxy-2.1.2-...
+
+Creating directory: /home/john/.local/share/binman_bmproxy/generic/2.1.1
+Downloading binary: https://github.com/lightbody/browsermob-proxy/releases/download/browsermob-proxy-2.1.1/browsermob-proxy-2.1.1-...
+
+Creating directory: /home/john/.local/share/binman_bmproxy/generic/2.1.0
+Downloading binary: https://github.com/lightbody/browsermob-proxy/releases/download/browsermob-proxy-2.1.0/browsermob-proxy-2.1.0-...
+
+BEGIN: POSTDOWNLOAD</code></pre>
+<p>Looking at the resulting directory structure (this is for Linux the location of directories will be OS dependent):</p>
+<pre><code>john@ubuntu:~$ tree -d /home/john/.local/share/binman_bmproxy
+/home/john/.local/share/binman_bmproxy
+└── generic
+    ├── 2.1.0
+    │   └── browsermob-proxy-2.1.0
+    │       ├── bin
+    │       │   └── conf
+    │       ├── lib
+    │       └── ssl-support
+    ├── 2.1.1
+    │   └── browsermob-proxy-2.1.1
+    │       ├── bin
+    │       │   └── conf
+    │       ├── lib
+    │       └── ssl-support
+    └── 2.1.2
+        └── browsermob-proxy-2.1.2
+            ├── bin
+            │   └── conf
+            ├── lib
+            └── ssl-support</code></pre>
+<p>We see that <code>binman</code> has downloaded and unzipped the binaries to appropriate directories.</p>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
