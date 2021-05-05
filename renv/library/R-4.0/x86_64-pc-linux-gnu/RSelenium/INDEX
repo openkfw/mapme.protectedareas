@@ -1,0 +1,12 @@
+RSelenium-package       An R client for Selenium Remote Webdriver
+checkForServer          Check for Server binary
+errorHandler-class      CLASS errorHandler
+getChromeProfile        Get Chrome profile.
+getFirefoxProfile       Get Firefox profile.
+makeFirefoxProfile      Make Firefox profile.
+phantom                 Start a phantomjs binary in webdriver mode.
+remoteDriver-class      CLASS remoteDriver
+rsDriver                Start a selenium server and browser
+selKeys                 Selenium key mappings
+startServer             Start the standalone server.
+webElement-class        CLASS webElement

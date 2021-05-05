@@ -1,0 +1,512 @@
+left_join(wdpa_db,wdpa_kfw_db,by=c("WDPAID"="wdpa_pid"))
+wdpa_kfw_db<-outer_join(wdpa_db,wdpa_kfw_db,by=c("WDPAID"="wdpa_pid"))
+wdpa_join_db<-
+full_join(wdpa_db,wdpa_kfw_db,by=c("WDPAID"="wdpa_pid"))
+colnames(wdpa_join_db)
+table(is.na(bmz_n_1))
+table(is.na(wdpa_join_db$bmz_n_1))
+# test KfW data
+table(wdpa_kfw_db$wdpa_pid%in%wdpa_db$WDPAID)
+# get countries where kfw is active
+wdpa_join_db%>%
+filter(!is.na(bmz_n_1))
+# get countries where kfw is active
+wdpa_join_db%>%
+filter(!is.na(bmz_n_1))%>%
+table(ISO3)
+colnames(wdpa_join_db)
+# get countries where kfw is active
+wdpa_join_db%>%
+filter(!is.na(bmz_n_1))%>%
+table(.$ISO3)
+# get countries where kfw is active
+wdpa_join_db%>%
+filter(!is.na(bmz_n_1))%>%
+table(.,.$ISO3)
+# get countries where kfw is active
+wdpa_join_db%>%
+filter(!is.na(bmz_n_1))%>%
+unique(.,.$ISO3)
+colnames(wdpa_join_db)
+# get countries where kfw is active
+wdpa_join_db%>%
+filter(!is.na(bmz_n_1))%>%
+table(., .$IUCN_CAT)
+# get countries where kfw is active
+wdpa_join_db%>%
+#filter(!is.na(bmz_n_1))%>%
+table(., .$IUCN_CAT)
+# get countries where kfw is active
+wdpa_join_db%>%
+filter(!is.na(bmz_n_1))%>%
+with(table(IUCN_CAT))
+# get countries where kfw is active
+wdpa_join_db%>%
+filter(!is.na(bmz_n_1))%>%
+with(table(ISO3))
+colnames(wdpa_join_db)
+# get countries where kfw is active
+wdpa_join_db%>%
+filter(!is.na(bmz_n_1))%>%
+with(table(PARENT_ISO3))
+# get countries where kfw is active
+wdpa_join_db%>%
+filter(!is.na(bmz_n_1))%>%
+with(unique(ISO3))
+# get countries where kfw is active
+wdpa_join_db%>%
+filter(!is.na(bmz_n_1))%>%
+with(unique(ISO3))%>%
+filter(!is.na)
+# get countries where kfw is active
+wdpa_join_db%>%
+filter(!is.na(bmz_n_1))%>%
+with(unique(ISO3))%>%
+filter(!is.na(.))
+# get countries where kfw is active
+wdpa_kfw_countries <-
+wdpa_join_db %>%
+filter(!is.na(bmz_n_1)) %>%
+with(unique(ISO3))
+# ----- download and preprocess the polygon data -----
+library("devtools")
+install.packages("devtol")
+install.packages("devtools")
+# ----- download and preprocess the polygon data -----
+library("devtools")
+# we will use the latest wdpar version
+install_github("https://github.com/prioritizr/wdpar")
+library("wdpar")
+?wdpa_cleam
+?wdpa_clean
+wdpa_get_and_preprocess_withoverlaps <-
+function(my_iso) {
+tmp.data <-
+wdpa_fetch(my_iso,
+wait = FALSE,
+download_dir =  tempdir())
+tmp.data <-
+wdpa_clean(tmp.data,
+erase_overlaps = F,
+exclude_unesco = F)
+return(tmp.data)
+}
+wdpa_kfw_countries
+wdpa_kfw_countries[1]
+test<-
+wdpa_get_and_preprocess_withoverlaps(wdpa_kfw_countries[1])
+wdpa_kfw_countries[6]
+test<-
+wdpa_get_and_preprocess_withoverlaps(wdpa_kfw_countries[6])
+test
+wdpa_kfw_countries[c(6,8)]
+wdpa_kfw_spatial<-
+lapply(wdpa_kfw_countries[c(6,8)],
+FUN = wdpa_get_and_preprocess_withoverlaps)%>%
+bind_rows()
+plot(wdpa_kfw_spatial)
+# use the function on all countries and combine the results
+wdpa_kfw_spatial<-
+lapply(wdpa_kfw_countries,
+FUN = wdpa_get_and_preprocess_withoverlaps)%>%
+bind_rows()
+nrow(wdpa_kfw_spatial)
+wdpa_kfw_countries[7]
+wdpa_get_and_preprocess_withoverlaps[7]
+wdpa_get_and_preprocess_withoverlaps(wdpa_kfw_countries[7])
+wdpa_get_and_preprocess_withoverlaps <- function(my_iso) {
+out <- tryCatch(
+{ message(paste("Starting to process ", my_iso))
+tmp.data <-
+wdpa_fetch(my_iso,
+wait = TRUE,
+download_dir =  tempdir())
+wdpa_clean(tmp.data,
+erase_overlaps = F,
+exclude_unesco = F)
+},
+error=function(cond) {
+message(paste("There was a problem processing", my_iso))
+message("Here's the original error message:")
+message(cond)
+return(NA)
+},
+warning=function(cond) {
+message(paste("URL caused a warning:", url))
+message("Here's the original warning message:")
+message(cond)
+# Choose a return value in case of warning
+return(NULL)
+},
+finally={
+message(paste("Processed:", my_iso))
+}
+)
+return(out)
+}
+wdpa_get_and_preprocess_withoverlaps("GGG")
+wdpa_kfw_spatial
+wdpa_get_and_preprocess_withoverlaps <- function(my_iso) {
+out <- tryCatch(
+{ message(paste("Starting to process ", my_iso))
+tmp.data <-
+wdpa_fetch(my_iso,
+wait = TRUE,
+download_dir =  tempdir())
+wdpa_clean(tmp.data,
+erase_overlaps = F,
+exclude_unesco = F)
+},
+error=function(cond) {
+message(paste("There was a problem processing", my_iso))
+message("Here's the original error message:")
+message(cond)
+# return(NA)
+},
+warning=function(cond) {
+message(paste("URL caused a warning:", url))
+message("Here's the original warning message:")
+message(cond)
+# Choose a return value in case of warning
+return(NULL)
+},
+finally={
+message(paste("Processed:", my_iso))
+}
+)
+return(out)
+}
+wdpa_get_and_preprocess_withoverlaps("GGG")
+rbind(wdpa_kfw_spatial,wdpa_get_and_preprocess_withoverlaps("GGG"))
+wdpa_get_and_preprocess_withoverlaps <- function(my_iso) {
+out <- tryCatch(
+{ message(paste("Starting to process ", my_iso))
+tmp.data <-
+wdpa_fetch(my_iso,
+wait = TRUE,
+download_dir =  tempdir())
+wdpa_clean(tmp.data,
+erase_overlaps = F,
+exclude_unesco = F)
+},
+error=function(cond) {
+message(paste("PLEASE NOTE: There was a problem processing", my_iso, ".Try manually to download and bind the data"))
+message("Here's the original error message:")
+message(cond)
+# return(NA)
+},
+finally={
+message(paste("Processed:", my_iso))
+}
+)
+return(out)
+}
+rbind(wdpa_kfw_spatial,wdpa_get_and_preprocess_withoverlaps("GGG"))
+# use the function on all countries and combine the results
+wdpa_kfw_spatial<-
+lapply(wdpa_kfw_countries,
+FUN = wdpa_get_and_preprocess_withoverlaps)%>%
+bind_rows()
+# test whether all countries have been processes
+wdpa_kfw_spatial$ISO3%in%wdpa_kfw_countries
+# test whether all countries have been processes
+table(wdpa_kfw_countries%in%wdpa_kfw_spatial$ISO3)
+# test whether all countries have been processes
+!which(wdpa_kfw_countries%in%wdpa_kfw_spatial$ISO3)
+# test whether all countries have been processes
+which(wdpa_kfw_countries%in%wdpa_kfw_spatial$ISO3)
+# test whether all countries have been processes
+which(!wdpa_kfw_countries%in%wdpa_kfw_spatial$ISO3)
+wdpa_kfw_countries[16]
+# save output data
+write_sf("data/wdpa-kfw_latinamerica_2021-02-01_allPAs.gpkg")
+# save output data
+write_sf(wdpa_kfw_spatial,"data/wdpa_kfw_spatial_latinamerica_2021-02-01_allPAs.gpkg")
+colnames(wdpa_kfw_spatial)
+# join kfw data
+wdpa_kfw_spatial<-
+full_join(wdpa_kfw_spatial,wdpa_kfw_db,by=c("WDPAID"="wdpa_pid"))
+colnames(wdpa_kfw_spatial)
+# get countries where kfw is active
+wdpa_kfw_spatial_onlysupported <-
+wdpa_join_db %>%
+filter(!is.na(bmz_n_1))
+wdpa_kfw_spatial_onlysupported
+plot(wdpa_kfw_spatial_onlysupported[1])
+plot(wdpa_kfw_spatial_onlysupported[[1]])
+plot(wdpa_kfw_spatial_onlysupported)
+str(wdpa_kfw_spatial_onlysupported)
+str(wdpa_kfw_spatial)
+# get countries where kfw is active
+wdpa_kfw_spatial_onlysupported <-
+wdpa_kfw_spatial %>%
+filter(!is.na(bmz_n_1))
+plot(wdpa_kfw_spatial_onlysupported[1])
+wdpa_kfw_spatial_onlysupported
+plot(wdpa_kfw_spatial_onlysupported[[1]])
+plot(wdpa_kfw_spatial_onlysupported)
+plot(wdpa_kfw_spatial_onlysupported["WDPAID"])
+write_sf(wdpa_kfw_spatial_onlysupported,"data/wdpa_kfw_spatial_latinamerica_2021-02-01_supportedPAs.gpkg")
+dir.create("../../datalake/mapma.protectedareas_teow/")
+file.copy("data/Terrestrial_Ecoregions_World.shp",
+"../../datalake/mapma.protectedareas_teow/Terrestrial_Ecoregions_World.shp")
+file.copy("data/Terrestrial_Ecoregions_World.dbf",
+"../../datalake/mapma.protectedareas_teow/Terrestrial_Ecoregions_World.dbf")
+file.copy("data/Terrestrial_Ecoregions_World.prj",
+"../../datalake/mapma.protectedareas_teow/Terrestrial_Ecoregions_World.prj")
+file.copy("data/Terrestrial_Ecoregions_World.shx",
+"../../datalake/mapma.protectedareas_teow/Terrestrial_Ecoregions_World.shx")
+file.remove("data/Terrestrial_Ecoregions_World.shx")
+file.remove("data/Terrestrial_Ecoregions_World.shp")
+file.remove("data/Terrestrial_Ecoregions_World.prj")
+file.remove("data/Terrestrial_Ecoregions_World.dbf")
+file.remove("data/Terrestrial_Ecoregions_World.dbf")
+list.files("data/")
+install.packages("workflowr")
+library(workflowr)
+install.packages("httpuv")
+install.packages("git2r")
+install.packages("mapview")
+install.packages("leaflet")
+install.packages("png")
+install.packages("raster")
+renv::restore()
+renv::restore()
+install.packages("satellite")
+install.packages("leafem")
+install.packages("webshot")
+install.packages("leafpop")
+getwd()
+# load data
+teow<-read_sf("../../datalake/mapma.protectedareas_teow/Terrestrial_Ecoregions_World.shp")
+# load required libraries
+library("sf")
+library("dplyr")
+# load data
+teow<-read_sf("../../datalake/mapma.protectedareas_teow/Terrestrial_Ecoregions_World.shp")
+wdpa_kfw<-read_sf("data/wdpa_kfw_spatial_latinamerica_2021-02-01_supportedPAs.gpkg")
+wdpa_kfw
+st_crs(wdpa_kfw)
+st_crs(teow)
+source("code/area_proj.R")
+area_proj(wdpa_kfw)
+wdpa_kfw<-st_transform(wdpa_kfw,area_proj(wdpa_kfw))
+area_proj(wdpa_kfw)
+st_crs(wdpa_kfw)
+st_crs(wdpa_kfw)<-4326
+teow <-
+st_transform(teow,crs = st_crs(br_wdpa_subset))
+wdpa_kfw<-st_transform(wdpa_kfw,area_proj(wdpa_kfw))
+wdpa_kfw<-read_sf("data/wdpa_kfw_spatial_latinamerica_2021-02-01_supportedPAs.gpkg")
+wdpa_kfw<-st_transform(wdpa_kfw,crs = "+proj=laea +lon_0=-78.75 +lat_0=-9.45 +datum=WGS84 +units=m +no_defs")
+teow<-st_transform(teow,crs = "+proj=laea +lon_0=-78.75 +lat_0=-9.45 +datum=WGS84 +units=m +no_defs")
+# intersect
+teow_wdpa_intersection <-
+st_intersection(teow, wdpa_kfw)
+library(sf)
+wdpa<-read_sf("../../datalake/mapme.protectedareas/output/wdpa-kfw/wdpa_kfw_spatial_latinamerica_2021-02-01_supportedPAs.gpkg")
+colnames(wdpa)
+library(tidyverse)
+wdpa%>%
+pivot_longer(.,WDPAID,names_patter(bmz_))
+wdpa%>%
+pivot_longer(.,WDPAID,names_pattern(bmz_))
+wdpa%>%
+pivot_longer(.,WDPAID,names_pattern=bmz_)
+wdpa%>%
+pivot_longer(.,WDPAID,names_pattern="bmz_")
+wdpa%>%
+pivot_longer(.,names_pattern="bmz_")
+wdpa%>%
+pivot_longer(everything(),names_pattern="bmz_")
+wdpa%>%
+pivot_longer(everything(),names_pattern="bmz")
+wdpa%>%
+pivot_longer(everything(),names_to = "week",names_pattern="bmz")
+wdpa%>%
+select(,wdpa,starts_with("bmz"))
+wdpa%>%
+select(.,wdpa,starts_with("bmz"))
+wdpa%>%
+select(.,starts_with("bmz"))
+wdpa%>%
+select(.,starts_with("bmz"))
+pivot_longer(everything())
+wdpa%>%
+select(.,starts_with("bmz"))%>%
+pivot_longer(everything())
+wdpa%>%
+select(.,starts_with("bmz"))%>%
+st_drop_geometry()%>%
+pivot_longer(everything())
+wdpa%>%
+select(.,starts_with("bmz"))%>%
+st_drop_geometry()%>%
+pivot_longer(everything())%>%
+unique(.$value)
+bmz_ids<-
+wdpa%>%
+select(.,starts_with("bmz"))%>%
+st_drop_geometry()%>%
+pivot_longer(everything())
+unique(bmz_ids)
+unique(bmz_ids$value)
+df<-data.frame(wdpaid<-c(1:10),
+carbonflux_co2_balance<-c(21:30))
+df
+df<-tibble(wdpaid<-c(1:10),
+carbonflux_co2_balance<-c(21:30))
+df
+df<-tibble(wdpaid=c(1:10),
+carbonflux_co2_balance=c(21:30))
+df
+library(dplyr)
+pivot_longer(df)
+pivot_longer(df,cols = c(wdpaid,carbonflux_co2_balance))
+pivot_longer(df,cols = c(carbonflux_co2_balance))
+df<-tibble(wdpaid=c(1:10),
+carbonflux_co2_balance_2010=c(21:30),
+carbonflux_co2_balance_2020=c(21:30))
+df
+pivot_longer(df,cols = c(carbonflux_co2_balance_2010,carbonflux_co2_balance_2020))
+df_long<-
+pivot_longer(df,cols = c(carbonflux_co2_balance_2010,carbonflux_co2_balance_2020))
+df_long
+df_long%>%
+filter(name=carbonflux_co2_balance_2010 )
+df_long%>%
+filter(name==carbonflux_co2_balance_2010 )
+df_long%>%
+filter(name%in%carbonflux_co2_balance_2010 )
+df_long
+df_long%>%
+filter(name=="carbonflux_co2_balance_2010")
+df2<-tibble(wdpaid=c(1:10),
+teow_rainforest=c(21:30),
+teow_savannah=c(21:30))
+df2
+df_long2<-
+pivot_longer(df2,cols = c(carbonflux_co2_balance_2010,carbonflux_co2_balance_2020))
+df<-tibble(wdpaid=c(1:10),
+carbonflux_co2_balance_2010=c(21:30),
+carbonflux_co2_balance_2020=c(21:30))
+df2<-tibble(wdpaid=c(1:10),
+teow_rainforest=c(21:30),
+teow_savannah=c(21:30))
+library(dplyr)
+df_long<-
+pivot_longer(df,cols = c(carbonflux_co2_balance_2010,carbonflux_co2_balance_2020))
+df_long2<-
+pivot_longer(df2,cols = c(carbonflux_co2_balance_2010,carbonflux_co2_balance_2020))
+wholedatabase<-rbind(df_long,df_long2)
+df<-tibble(wdpaid=c(1:10),
+carbonflux_co2_balance_2010=c(21:30),
+carbonflux_co2_balance_2020=c(21:30))
+df2<-tibble(wdpaid=c(1:10),
+teow_rainforest=c(21:30),
+teow_savannah=c(21:30))
+library(dplyr)
+df_long<-
+pivot_longer(df,cols = c(carbonflux_co2_balance_2010,carbonflux_co2_balance_2020))
+df_long2<-
+pivot_longer(df2,cols = c(teow_rainforest,teow_savannah))
+wholedatabase<-rbind(df_long,df_long2)
+df_long%>%
+filter(name=="carbonflux_co2_balance_2010")
+wholedatabase
+View(wholedatabase)
+# example to calculate how much savannah is in our protected areas
+wholedatabase%>%
+filter(name=="teow_savannah")%>%
+sum(value)
+# example to calculate how much savannah is in our protected areas
+wholedatabase%>%
+filter(name=="teow_savannah")%>%
+sum(,value)
+# example to calculate how much savannah is in our protected areas
+wholedatabase%>%
+filter(name=="teow_savannah")%>%
+sum(.$value)
+wholedatabase%>%
+filter(name=="teow_savannah")%>%
+summarise(sum=sum(value))
+# example to calculate how much savannah is in our protected areas
+wholedatabase%>%
+filter(name==starts_with("teow"))%>%
+summarise(sum=sum(value))
+wholedatabase%>%
+filter(name==starts_with("teow"))
+# example to calculate how much savannah is in our protected areas
+wholedatabase%>%
+filter(name==c("teow_rainforest","teow_savannah"))%>%
+summarise(sum=sum(value))
+wholedatabase%>%
+filter(name==c("teow_rainforest","teow_savannah"))
+wholedatabase%>%
+filter(name==c("teow_rainforest","teow_savannah"))%>%
+group_by(name)%>%
+summarise(sum=sum(value))
+wholedatabase%>%
+filter(name==c("carbonflux_co2_balance_2010","carbonflux_co2_balance_2020"))%>%
+group_by(name)%>%
+summarise(sum=sum(value))
+list.files("../../datalake/mapme.protectedareas/input/net_carbon_flux/")
+library(dplyr)
+# create two examples for how output data could look like (classical tables in the "wide" format)
+df<-tibble(wdpaid=c(1:10),
+carbonflux_co2_balance_2010=c(21:30),
+carbonflux_co2_balance_2020=c(21:30))
+df2<-tibble(wdpaid=c(1:10),
+teow_rainforest=c(21:30),
+teow_savannah=c(21:30))
+#  have a look at them
+df
+df2
+# pivot the table to longer
+df_long<-
+pivot_longer(df,cols = c(carbonflux_co2_balance_2010,carbonflux_co2_balance_2020))
+df_long2<-
+pivot_longer(df2,cols = c(teow_rainforest,teow_savannah))
+# now we can bind both datasets
+wholedatabase<-rbind(df_long,df_long2)
+# and very easily use them for portfolio analysis.
+# example to calculate how much savannah is in our protected areas
+wholedatabase%>%
+filter(name==c("teow_rainforest","teow_savannah"))%>%
+group_by(name)%>%
+summarise(sum=sum(value))
+wholedatabase%>%
+filter(name==c("carbonflux_co2_balance_2010","carbonflux_co2_balance_2020"))%>%
+group_by(name)%>%
+summarise(sum=sum(value))
+library(dplyr)
+library(tidyr)
+library(dplyr)
+library(tidyr)
+# create two examples for how output data could look like (classical tables in the "wide" format)
+df<-tibble(wdpaid=c(1:10),
+carbonflux_co2_balance_2010=c(21:30),
+carbonflux_co2_balance_2020=c(21:30))
+df2<-tibble(wdpaid=c(1:10),
+teow_rainforest=c(21:30),
+teow_savannah=c(21:30))
+#  have a look at them
+df
+df2
+# pivot the table to longer
+df_long<-
+pivot_longer(df,cols = c(carbonflux_co2_balance_2010,carbonflux_co2_balance_2020))
+df_long2<-
+pivot_longer(df2,cols = c(teow_rainforest,teow_savannah))
+# now we can bind both datasets
+wholedatabase<-rbind(df_long,df_long2)
+# and very easily use them for portfolio analysis.
+# example to calculate how much savannah is in our protected areas
+wholedatabase%>%
+filter(name==c("teow_rainforest","teow_savannah"))%>%
+group_by(name)%>%
+summarise(sum=sum(value))
+wholedatabase%>%
+filter(name==c("carbonflux_co2_balance_2010","carbonflux_co2_balance_2020"))%>%
+group_by(name)%>%
+summarise(sum=sum(value))

@@ -1,0 +1,43 @@
+year <- sub("-.*", "", meta$Date)
+if (is.null(year) || identical(year, "") || isTRUE(length(year) == 0))
+  year <- format(Sys.Date(), "%Y")
+
+ndots <- length(gregexpr(".", meta$Version, fixed = TRUE)[[1]])
+if (ndots == 3) {
+  cite_url <- "https://github.com/prioritizr/wdpar"
+} else {
+  cite_url <- "https://CRAN.R-project.org/package=wdpar"
+}
+
+citHeader("To cite the wdpar package in publications, use:")
+
+citEntry(
+  entry = "Manual",
+  author = personList(person(c("Jeffrey", "O"), "Hanson")),
+  title = "wdpar: Interface to the World Database on Protected Areas",
+  year = year,
+  note = paste("R package version", meta$Version),
+  url = cite_url,
+  textVersion = paste0(
+     "Hanson JO (", year, ") wdpar: Interface to the World Database on ",
+     "Protected Areas. R package version ", meta$Version, ". ",
+     cite_url
+  )
+)
+
+citEntry(
+  entry = "Manual",
+  author = "UNEP-WCMC and IUCN",
+  title = "Protected Planet: The World Database on Protected Areas (WDPA)",
+  year = year,
+  publisher = "UNEP-WCMC and IUCN",
+  publisheraddress = "Cambridge, UK",
+  url = "https://www.protectedplanet.net/en",
+  textVersion = paste0(
+    "UNEP-WCMC and IUCN (", year, ") Protected Planet: The World Database on ",
+    "Protected Areas (WDPA), [insert month/year of the version downloaded], ",
+    "Cambridge, UK: UNEP-WCMC and IUCN. Available at: www.protectedplanet.net."
+  )
+)
+
+citFooter("Please cite both the World Database on Protected Areas data set and this package.\n\n")

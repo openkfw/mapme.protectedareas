@@ -1,0 +1,36 @@
+Package: wdman
+Type: Package
+Title: 'Webdriver'/'Selenium' Binary Manager
+Version: 0.2.5
+Authors@R: c(
+    person("John", "Harrison", , "johndharrison0@gmail.com",
+    role = "aut", comment = "original author"),
+    person("Ju Yeong", "Kim", , "jkim2345@fredhutch.org",
+    role = "cre", comment = "rOpenSci maintainer"))
+Description: There are a number of binary files associated with the
+    'Webdriver'/'Selenium' project (see <http://www.seleniumhq.org/download/>,
+    <https://sites.google.com/a/chromium.org/chromedriver/>,
+    <https://github.com/mozilla/geckodriver>,
+    <http://phantomjs.org/download.html> and
+    <https://github.com/SeleniumHQ/selenium/wiki/InternetExplorerDriver> for
+    more information). This package provides functions to download these
+    binaries and to manage processes involving them.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Depends: R (>= 3.2)
+Suggests: testthat, covr, knitr, rmarkdown
+Imports: binman, assertthat, processx, yaml, semver(>= 0.2.0), utils
+URL: https://docs.ropensci.org/wdman, https://github.com/ropensci/wdman
+URLNote: https://github.com/ropensci/wdman
+BugReports: https://github.com/ropensci/wdman/issues
+RoxygenNote: 7.0.2
+VignetteBuilder: knitr
+NeedsCompilation: no
+Packaged: 2020-01-31 21:54:18 UTC; jkim
+Author: John Harrison [aut] (original author),
+  Ju Yeong Kim [cre] (rOpenSci maintainer)
+Maintainer: Ju Yeong Kim <jkim2345@fredhutch.org>
+Repository: CRAN
+Date/Publication: 2020-01-31 22:30:02 UTC
+Built: R 4.0.3; ; 2021-03-17 10:30:17 UTC; unix
