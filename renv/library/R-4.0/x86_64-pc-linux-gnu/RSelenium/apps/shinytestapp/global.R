@@ -1,5 +1,0 @@
-library(ggplot2)
-#library(googleVis)
-library(scales)
-data(presidential)
-data(economics)
