@@ -14,7 +14,7 @@ sort(unique(db_teow$name))
   # 2. Overview of supported biomes (total area)
   # 3. How did our support for different biomes change over time? (total area)
 
-# 1. 
+# 1.1 ---- Total area treemaps
 # clean and prepare database
 db_teow_ecosystems <-
   db_teow %>%
@@ -29,25 +29,96 @@ db_teow_biomes <-
   filter(grepl('biome_intersect_sqkm_', name)) %>%
   filter(WDPAID %in% wdpa_kfw_treatment$WDPAID)
 
-# # plot for ecoregions with treemapify package
-# library("treemapify")
-# db_teow_ecosystems%>%
-#   group_by(name)%>%
-#   summarize(area_sqkm = sum(value)) %>%
-#   ggplot(., aes(area = area_sqkm, label=name)) +
-#   geom_treemap()+
-#   geom_treemap_text(fontface = "italic", colour = "white", place = "centre",
-#                     grow = TRUE)
+# get the corresponding names for biomes and ecoregions
+db_teow_complete<-
+  read_sf("~/shared/datalake/mapme.protectedareas/input/teow/Terrestrial-Ecoregions-World.gpkg")
+# drop the geometry
+db_teow_complete<-
+  st_drop_geometry(db_teow_complete)
+
+# join 
+db_fig <-
+  db_teow_ecosystems %>%
+  group_by(name) %>%
+  summarize(value = round(sum(value),digits = 0)) %>%
+  left_join(x = .,
+            y= select(db_teow_complete, ECO_NAME, BIOME_NAME),
+            by=c("name" = "ECO_NAME"))%>%
+  distinct(.)
+
+# create an auxiliary table to join biomes (necessary dataformat for the function to work)
+db_aux<-
+  db_fig%>%
+  group_by(BIOME_NAME)%>%
+  summarize(value = round(sum(value),digits = 0)) 
+
+# bind the two dataframes
+db_fig <- rbind(db_fig,
+                data.frame(
+                  name = db_aux$BIOME_NAME,
+                  value = db_aux$value,
+                  BIOME_NAME = ""
+                )) %>%
+  filter(!is.na(name))
+# plot the data
+plot_ly(
+  db_fig,
+  labels = ~ name,
+  parents = ~ BIOME_NAME,
+  values = ~ value,
+  type = "treemap",
+  hovertemplate = "Ecosystem: %{label}<br>Area in sqkm: %{value}<extra></extra>"
+)
 
 
 # treemap plot with plotly: 
 # see tutorial here https://plotly.com/r/treemaps/
+# and https://stackoverflow.com/questions/60066748/how-can-i-plotly-a-ggplot-treemap
+library("plotly")
 
 
+fig <-
+  db_teow_ecosystems %>%
+  group_by(name) %>%
+  summarize(value = round(sum(value),digits = 0)) %>%
+  left_join(x = .,
+            y= select(db_teow_complete, ECO_NAME, BIOME_NAME),
+            by=c("name" = "ECO_NAME"))%>%
+  distinct(.)%>%
+  plot_ly(
+    .,
+    labels = ~ name,
+    # ids = ~ BIOME_NAME,
+    parents = NA,
+    values = ~ value,
+    marker=list(colorscale='Greens'),
+    type = "treemap",
+    hovertemplate = "Ecosystem: %{label}<br>Area in sqkm: %{value}<extra></extra>"
+  )
+fig
 
+# 1.2 Total area tables and barplots
+# rearrange data
+db_fig <-
+  db_fig %>%
+  filter(!is.na(BIOME_NAME)) %>%
+  filter(BIOME_NAME != "")%>%
+  arrange(BIOME_NAME, value)
+# factorize the ecoregions name
+db_fig$name<-factor(db_fig$name, levels = db_fig$name)
+# plot
+ggplot(db_fig, aes(value, name, fill = BIOME_NAME)) +
+  geom_bar(stat = "identity")+
+  labs(y = "", x = "Supported ecoregion area in sqkm", fill = "") +
+  theme_classic()
 
+# string for calculating share of most relevant biome
+round(filter(.data=db_teow_biomes_kfw_summary,name=="Tropical & Subtropical Moist Broadleaf Forests")$area_sqkm/sum(db_teow_biomes_kfw_summary$area_sqkm),digits = 0) 
 
-
+# biomes numbers
+db_teow_biomes_kfw%>%
+  group_by(name)%>%
+  summarize(area_sqkm=sum(value))
 
 # ----- DOPA -----
 dopa_raw<-
