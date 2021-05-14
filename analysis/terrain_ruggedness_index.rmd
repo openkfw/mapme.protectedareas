@@ -1,0 +1,185 @@
+---
+title: "Terrain Ruggedness Index"
+author: "Johannes Schielein, Om Prakash Bhandari"
+date: "5/12/2021"
+output: workflowr::wflow_html
+---
+
+```{r setup, message=FALSE,warning=FALSE, include=TRUE}
+
+# load required libraries
+library("raster")
+library("elevatr")
+library("wdpar")
+library("rgdal")
+library("tidyverse")
+
+starttime<-Sys.time() # mark the start time of this routine to calculate processing time at the end
+```
+
+
+# Introduction
+
+Terrain Ruggedness Index is a measurement developed by Riley, et al. (1999). The elevation difference between the center pixel and its eight immediate pixels are squared and then averaged and its square root is taken to get the TRI value. The resulting value is then breakdown into seven different possible classes[1]:
+
+(1) 0 - 80 m  :- level surface
+(2) 81-116 m  :- nearly level surface
+(3) 117-161 m :- slightly rugged surface
+(4) 162-239 m :- intermediately rugged surface
+(5) 240-497 m :- moderately rugged surface
+(6) 498-958 m :- highly rugged surface
+(7) 959-4367 m:- extremely rugged surface
+
+To obtain this variable, first we need elevation data for our polygons of interest. For this, we are going to use the package `elevatr` developed by Hollister, et al. We will use the function `get_elev_raster` from this package which expects two arguments (i) sp-object (polygon of interest) and (ii) zoom level. The zoom level ranges from 0 to 15 in increasing order of spatial resolution, 0 being the least available resolution while 15 being the highest. For this analysis, we would chose `zoom level 12` as we get the spatial resolution of approx. 38.2 meters at 0° latitude.
+After getting the raster, we will compute TRI using `terrain` function offered by `raster` package.
+
+
+### Datasource and Metadata Information
+
+- Dataset:  - Zoom level 12 Elevation raster - SRTM [elevatr]
+- Geographical Coverage: Global
+- Spatial resolution: ~38.2 m
+- Temporal resolution: Latest Update [2021-01-21]
+- Unit: meters
+- Data accessed: 14th May, 2021
+- [Metadata Link]("https://github.com/tilezen/joerd/blob/master/docs/data-sources.md#what-is-the-ground-resolution")
+
+### Processing Workflow
+
+The purpose of this analysis is to determine whether the terrain surface of a particular protected area's polygon is leveled or rugged, if rugged then how much, by analyzing its numerical value. In order to obtain the result, we need to go through several steps of processing as shown in the routine workflow:
+
+![](assets/workflows/terrain_ruggedness_indicator_routine.jpg)
+
+# Download and Prepare WDPA Polygons
+
+We will try to get the country level polygon data from `wdpar` package. `wdpar` is a library to interface to the World Database on Protected Areas (WDPA). The library is used to monitor the performance of existing PAs and determine priority areas for the establishment of new PAs. We will use Venezuela - for other countries of your choice, simply provide the country name or the ISO name e.g. Gy for Guyana, COL for Colombia, BRA for Brazil.
+
+```{r fetchWdpar, warning=FALSE, include=TRUE}
+
+# fetch the raw data from wdpar of country
+vn_raw_pa_data <- wdpa_fetch("VEN")
+```
+
+Since there are multiple enlisted protected areas in Brazil, we want to compute zonal statistics only for the polygon data of:
+  - Cerro de María Lionza - wdpaid 307
+  
+For this, we have to subset the country level polygon data to the PA level.
+
+```{r subset, warning=FALSE, include=TRUE}
+
+# subset three wdpa polygons by their wdpa ids
+ven<-
+  vn_raw_pa_data%>%
+  filter(WDPAID %in% 307)
+# plot the sample polygon
+plot(ven[1])
+```
+
+
+# Download and Prepare elevation raster data
+
+Since we already prepared polygon data for our analysis, now will download and prepare elevation raster for selected polygons using `elevatr`.
+
+```{r elevatr, warning=FALSE, include=TRUE}
+
+# get elevation raster from package `elevatr` at zoom level 12
+elevation <- get_elev_raster(ven,
+                             z = 12)
+```
+
+# Crop the elevation raster
+
+As we completed raster and vector data preparation, the next step would be to clip the raster layer by the selected PA polygon both by its extent and mask layer.
+
+```{r cropRaster, warning=FALSE, include=TRUE}
+
+# crop raster using polygon extent
+elevation_cropped <- crop(elevation, ven)
+# plot the data - shows the raster after getting cropped by the extent of polygon
+plot(elevation_cropped)
+# crop raster using polygon mask
+elevation_masked <- mask(elevation_cropped, ven)
+# plot the data - shows the raster after getting cropped by the polygon mask
+plot(elevation_masked)
+```
+
+
+# Compute Terrain Ruggedness Index (TRI)
+
+The function `terrain` from `raster` package provides functionality to compute terrain ruggedness index for the desired polygons. We use `neighbors=8`, to specify the function to take immediate 8 neighbor cells for TRI computation. 
+
+```{r tri, warning=FALSE, include=TRUE}
+
+# compute terrain ruggedness index
+tri <- terrain(elevation_masked,
+               opt="TRI",
+               neighbors=8,
+               unit="degrees")
+```
+
+
+# Rasterize the polygon layer
+
+To compute the zonal statistics, it is necessary to rasterize the polygon layer. Doing so, values are transferred from the spatial objects to raster cells. We need to pass the extent layer and the mask layer to the rasterize function.
+
+```{r rasterize, warning=FALSE, include=TRUE}
+
+# rasterize
+r <- rasterize(ven, elevation_masked, ven$WDPAID)
+```
+
+
+# Compute Zonal Statistics
+
+A zonal statistics operation is one that calculates statistics on cell values of a raster (a value raster) within the zones defined by another dataset [ArcGIS definition]. For TRI, we will compute mean, median and standard deviation while for the elevation values, we will only compute its average value within the polygon.
+
+```{r zoneStats, warning=FALSE, include=TRUE}
+
+# zonal stats - mean value of TRI
+tri_mean <- zonal(tri, r, 'mean', na.rm=T)
+# zonal stats - median value of TRI
+tri_median <- zonal(tri, r, 'median', na.rm=T)
+# zonal stats - standard deviation of TRI values
+tri_sd <- zonal(tri, r, 'sd', na.rm=T)
+# zonal stats - mean elevation values
+elevation_mean <- zonal(elevation_masked, r, 'mean', na.rm=T)
+```
+
+Finally, we can create the data frame.
+```{r dataframe, warning=FALSE, include=TRUE}
+
+# create dataframe to receive results
+df.tri <- data.frame(WDPA_PID=ven$WDPAID,
+                           terrain_ruggedness_index_mean=tri_mean[ ,2],
+                           terrain_ruggedness_index_median=tri_median[ ,2],
+                           terrain_ruggedness_index_standard_deviation=tri_sd[ ,2],
+                           elevation_mean=elevation_mean[ ,2])
+# change the data frame to long table format
+df.tri_long <- pivot_longer(df.tri,
+                                  cols=c(terrain_ruggedness_index_mean,
+                                         terrain_ruggedness_index_median,
+                                         terrain_ruggedness_index_standard_deviation,
+                                         elevation_mean))
+```
+ 
+The results looking like this:
+```{r results, warning=FALSE, include=TRUE}
+
+# view the result
+df.tri_long
+```
+
+From the above result, we can say that the polygon which we used for our analysis have leveled surface since the mean value of TRI is around 5 meters and having average elevation of approx. 628 meters. In similar way, we can compute elevation for the desired region of interest and see whether it has leveled or rugged surface.
+
+
+In the end we are going to have a look how long the rendering of this file took so that people get an idea about the processing speed of this routine.
+
+```{r time, warning=FALSE, include=TRUE}
+
+stoptime<-Sys.time()
+print(starttime-stoptime)
+```
+
+### References
+
+[1] Riley, S. J., DeGloria, S. D., & Elliot, R. (1999). Index that quantifies topographic heterogeneity. intermountain Journal of sciences, 5(1-4), 23-27.
