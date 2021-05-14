@@ -29,3 +29,5 @@ Chapters:
   - [Net forest carbon flux (Harris et al. 2021)](carbon-flux.html).
   
   - [Mangrove Gain and Loss(GMW)](gmw-mangrove.html).
+  
+  - [Terrain Ruggedness Index](terrain_ruggedness_index.html).
