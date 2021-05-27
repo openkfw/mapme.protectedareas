@@ -1,0 +1,175 @@
+---
+title: "Copernicus Global Land Cover"
+author: "Johannes Schielein, Om Prakash Bhandari"
+date: "5/4/2021"
+output: workflowr::wflow_html
+---
+
+```{r setup, message=FALSE}
+
+# load required libraries
+library("terra")
+library("sf")
+library("wdpar")
+library("dplyr")
+library("rmarkdown") # only used for rendering tables  for this website
+
+starttime<-Sys.time() # mark the start time of this routine to calculate processing time at the end
+```
+
+At first you might want to load the source functions for this routine. 
+```{r loadlsource, warning=FALSE, message=FALSE, include=TRUE}
+
+source("code/copernicus-land-cover.R")
+```
+
+
+# Introduction
+
+The actual surface cover of ground is known as Land Cover. The land cover data shows us how much of the region is covered by forests, rivers, wetlands, barren land, or urban infrastructure thus allowing the observation of land cover dynamics over a period of time. There are many products available for the analysis of global land cover classes, however, the European Union's Earth Observation programme called as Copernicus provides high quality, readily available land cover products from year 2015 to 2019 free of cost for the public use.
+
+Here, in this analysis we are going to compute the area of land cover classes within the region of interest from the rasters downloaded from Copernicus Land Cover Viewer.
+
+
+### Datasource and Metadata Information
+
+- Dataset: Copernicus Global Land Cover - (Buchhorn et al. (2020))
+- Geographical Coverage: Global
+- Spatial resolution: 100 meter
+- Temporal Coverage: 2015-2019
+- Temporal resolution: Annual Updates
+- Unit: Map codes as values
+- Data downloaded: 23rd April, 2021
+- [Metadata Link]("https://lcviewer.vito.be/about")
+- [Download Link]("https://lcviewer.vito.be/download")
+
+### Processing Workflow
+
+The purpose of this analysis is to compute area of different land cover classes present in the polygon of interest. In order to get the results, we need to go through several steps of processing as shown in the routine workflow:
+
+![](assets/workflows/land_cover_area_routine.jpg)
+
+
+# Prepare land cover raster data
+
+The 20X20 gridded rasters were downloaded to cover the extent of Latin America for years 2015 to 2019. Later, for individual years, all the rasters were merged to get the single big raster for particular years. Here, we will load the big raster for the year 2015.
+
+```{r loadRaster, warning=FALSE, include=TRUE}
+
+# load raster land cover
+lc <- rast("../../datalake/mapme.protectedareas/input/copernicus_global_land_cover/2015/Latin_America_LC_2015.tif")
+# view raster details
+lc
+```
+
+
+# Download and Prepare WDPA Polygons
+
+For this analysis, we would choose one WDPA polygon from the country Venezuela. We can download the WDPA polygons from the package `wdpar` and then filter out the desired polygon using WDPAID with package `dplyr`.
+
+We will then reproject the downloaded polygon sample to WGS84 to match with the raster data. Since, we are using package `terra` for raster processing, so it is necessary to load the sample polygon as `spatVector`. 
+
+```{r fetchWdpar, warning=FALSE, include=TRUE}
+
+# load sample WDPA polygon from country: Venezuela
+ven <- wdpa_fetch("VEN")%>%
+  filter(WDPAID %in% 555705224)
+# reproject to the WGS84
+ven <- st_transform(ven, "+proj=longlat +datum=WGS84 +no_defs")
+# load as spatVector for terra compatiility
+ven_v <- vect(ven)
+# plot the PA polygon
+plot(ven[1])
+```
+
+
+# Crop the land cover raster
+
+Since we already loaded raster and polygon successfully to our workspace, we can now perform further processing that would be to clip the raster layer by the selected shapefile polygon both by its extent and mask layer. `Crop` returns the raster to its bounding box whereas `mask` returns the raster to defined vector polygon layer.
+
+```{r cropRaster, warning=FALSE, include=TRUE}
+
+# crop raster by polygon
+ven_crop <- terra::crop(lc, ven_v)
+# plot the cropped raster layer
+plot(ven_crop)
+# mask the raster by polygon 
+ven_mask <- terra::mask(ven_crop, ven_v)
+# plot the masked raster layer
+plot(ven_mask)
+```
+
+
+# Prepare data frame
+
+The next step would be to prepare the data frame. First, we would load the raster values from masked raster layer to the data frame named `df.ven`. Then, replace the column name containing raster values to `value` with the use of new data frame called `df.new`.
+
+```{r dfPrep1, warning=FALSE, include=TRUE}
+
+# raster values as dataframe
+df.ven <- as.data.frame(ven_mask)
+# new dataframe with value column
+df.new <- data.frame(value=NA)
+# rename column to match with new df
+colnames(df.ven) <- colnames(df.new)
+# check the columns with values of the prepared dataframe
+head(df.ven)
+```
+
+Similarly, we will prepare new data frame with only WDPAID to receive the final results.
+
+```{r dfPrep2, warning=FALSE, include=TRUE}
+
+# empty data frame to receive results
+df.final <- data.frame(WDPAID=555705224)
+```
+
+# Compute area of land cover classes
+
+To carry out the final and main step of this analysis i.e. to compute the area of land cover classes, `area` function from the package `terra` would be used. We first compute the area of the masked raster layer `ven_mask` in square kilometer (sqkm). Then, we calculate the area in sqkm for single row of the data frame `df.ven`.
+
+```{r areaComp, warning=FALSE, include=TRUE}
+
+# area of masked raster
+area_sqm <- terra::area(ven_mask)
+# in sqkm
+area_sqkm <- area_sqm/1000000
+# area per row of dataframe
+area_sqkm_per_cell <- area_sqkm/nrow(df.ven)
+```
+
+Finally, we call the function `lc_clases` from the sourced script `copernicus-land-cover.R` which takes the data frame `df.ven` as argument and returns another data frame `data.final` in long table format with the area of individual land cover classes.
+
+```{r lcComp, warning=FALSE, include=TRUE}
+
+# call the function lc_classes and receive the result
+df.final_long <- lc_classes(df.ven)
+# view the resulting data
+df.final_long
+```
+
+So, for a single polygon for the year 2015, we computed the area of each land cover classes present in the polygon. We can see that among 23 discrete classes, the polygon we used consists of eight different classes with open forest comprising the largest area of the polygon.
+
+
+In order to carry out land cover change analysis, we can load raster layer for another year of which we want to see the changes in the area of land cover classes and then finally subtract the area from the respective years.
+
+
+In the end we are going to have a look how long the rendering of this file took so that people get an idea about the processing speed of this routine.
+
+```{r time, warning=FALSE, include=TRUE}
+
+stoptime<-Sys.time()
+print(starttime-stoptime)
+```
+
+### References
+
+[1] Buchhorn, M. ; Smets, B. ; Bertels, L. ; De Roo, B. ; Lesiv, M. ; Tsendbazar, N. - E. ; Herold, M. ; Fritz, S. Copernicus Global Land Service: Land Cover 100m: collection 3: epoch 2019: Globe 2020. DOI 10.5281/zenodo.3939050
+
+[2] Buchhorn, M. ; Smets, B. ; Bertels, L. ; De Roo, B. ; Lesiv, M. ; Tsendbazar, N. - E. ; Herold, M. ; Fritz, S. Copernicus Global Land Service: Land Cover 100m: collection 3: epoch 2018: Globe 2020. DOI 10.5281/zenodo.3518038
+
+[3] Buchhorn, M. ; Smets, B. ; Bertels, L. ; De Roo, B. ; Lesiv, M. ; Tsendbazar, N. - E. ; Herold, M. ; Fritz, S. Copernicus Global Land Service: Land Cover 100m: collection 3: epoch 2017: Globe 2020. DOI 10.5281/zenodo.3518036
+
+[4]Buchhorn, M. ; Smets, B. ; Bertels, L. ; De Roo, B. ; Lesiv, M. ; Tsendbazar, N. - E. ; Herold, M. ; Fritz, S. Copernicus Global Land Service: Land Cover 100m: collection 3: epoch 2016: Globe 2020. DOI 10.5281/zenodo.3518026
+
+[5] Buchhorn, M. ; Smets, B. ; Bertels, L. ; De Roo, B. ; Lesiv, M. ; Tsendbazar, N. - E. ; Herold, M. ; Fritz, S. Copernicus Global Land Service: Land Cover 100m: collection 3: epoch 2015: Globe 2020. DOI 10.5281/zenodo.3939038
