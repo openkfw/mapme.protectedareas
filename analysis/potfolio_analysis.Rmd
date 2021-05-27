@@ -1,7 +1,7 @@
 ---
-title: "MAPME Protected Areas report for KfW 2-Jahresbericht"
+title: "KfW Protected Areas Portfolio Analysis"
 author: "Johannes Schielein"
-date: "2021-03-18"
+date: "2021-05-04"
 output: workflowr::wflow_html
 editor_options:
   chunk_output_type: console
@@ -16,52 +16,39 @@ library("sf")
 library("leaflet")
 library("RColorBrewer")
 library("plotly")
+library("ggthemes")
 ```
 
-```{r preprocess, message = FALSE, warning = FALSE, include = FALSE}
-## read in data, clean and join relevant variables 
-# get a clean list of column names
-dopa_raw<-
-  read_excel("../../datalake/mapme.protectedareas/input/dopa/dopa_4-0/dopa_v4-0.xlsx",
-             sheet = "Protected Areas",
-             skip = 4,
-             col_names = T, na = "#N/A")
-#clean column names
-dopa_raw<-
-  clean_names(dopa_raw)
-
-# Note: for a more detailed description on the variable names please open the original excel sheet
-
-# load supported areas
+```{r database_creation, message = FALSE, warning = FALSE, include = FALSE}
+##  Protected areas
 wdpa_kfw<-
-  read_sf("../../datalake/mapme.protectedareas/output/wdpa-kfw/wdpa_kfw_spatial_latinamerica_2021-02-01_supportedPAs.gpkg")
+  read_sf("data/wdpa_kfw_spatial_latinamerica_2021-04-22_allPAs.gpkg")
 
-# check how many PAs from the KfW portfolio can be found in the dopa dataset
-table(wdpa_kfw$WDPA_PID%in%dopa_raw$id)
-# Note: 372 PAs could be detected and 61 not. At this stage DOPA can therefore only serve to analyze 85% of KfW Portfolio. 
+#  Filter for supported areas
+wdpa_kfw_treatment<-
+  wdpa_kfw%>%
+  filter(bmz_n_1>0)
 
-# prepare data for join
-dopa_raw$id<-as.character(dopa_raw$id) 
+## ---- TEOW ----
+db_teow<-rbind(read_csv("~/shared/datalake/mapme.protectedareas/output/polygon/teow/teow_long_allPAs_merged_biome.csv"),
+               read_csv("~/shared/datalake/mapme.protectedareas/output/polygon/teow/teow_long_allPAs_merged_eco.csv"))
 
-# join
-dopa_kfw<-
-  left_join(wdpa_kfw, dopa_raw, by=c("WDPA_PID" = "id"))
+## ---- GLOBAL MANGROVE WATCH ---
 
-# load ecosystems-data
-teow<-read_sf("../../datalake/mapme.protectedareas/input/teow/Terrestrial-Ecoregions-World.gpkg")
+
 ```
 
 ## Introduction
-Conservation finance is an important field in the KfW development bank. The evaluation department, together with operational departments tries to learn more about our conservation projects by using internal data as well as open geodata to assess the relevance and effectiveness of our projects in Latin-america. The main impact goals of our conservation financing efforts can be summarized under three broad topics: 
+Conservation finance is an important field in the KfW development bank with considerable investment into Protected Areas (Short PAs). The evaluation department, together with operational departments tries to learn more about our conservation projects by using our project documentation as well as open geo-datasets to assess the relevance and effectiveness of supported areas in Latin America. The main impact goals of our conservation financing efforts can be summarized under three broad topics: 
 
 1. Conservation of biological diversity
 2. Mitigation of global climate change e.g by reducing deforestation
-3. Improvement of livelihoods of the local population that uses the natural ressources
+3. Improvement of livelihoods of the local population that uses the natural resources
 
-Conservation finance has increased in importance for German development cooperation and considerably more financial resources had been spent in Latin-america since 2004. 
+Conservation finance has increased in importance for German development cooperation and considerably more financial resources had been spent in Latin America since 2004. 
 
 ```{r financeplot, echo=FALSE, message=FALSE, warning=FALSE}
-kfw_finance<-read_csv("../../datalake/mapme.protectedareas/input/wdpa-kfw/data-from-internal_confidential/mapme.protectedareas_kfw-finance_complete-2021-03-17.csv")
+kfw_finance<-read_csv("~/shared/datalake/mapme.protectedareas/input/kfw/mapme.protectedareas_kfw-finance_complete-2021-03-17.csv")
 
 finance_plot <-
   kfw_finance %>%
@@ -78,23 +65,23 @@ finance_plot <-
 ggplotly(finance_plot)
 
 ```
-We machted our Latinamerica portfolio with the *World Database on Protected Areas - WDPA* (IUCN) and used data from the  *Digital Observatory for Protected Areas Explorer DOPA* (EU/JRC) to make a first assessment of our portfolio. Our database currently comprises `r nrow(dopa_kfw)` PAs in latinamerica (only) which are situated in `r length(unique(dopa_kfw$ISO3))` different countries. Those areas can be broadly categorized into `r table(dopa_kfw$MARINE)[[3]]` terrestrial, `r table(dopa_kfw$MARINE)[[1]]` marine, and `r table(dopa_kfw$MARINE)[[2]]` partial marine/terrestrial protected areass. They cover a total surface of `r round(sum(st_area(dopa_kfw))/(10^12),digits=3)` Mio. km^2^ which is about `r round(sum(st_area(dopa_kfw))/(10^9)/357.581,digits=1)` times the size of Germany. 
+We machted our Latin America portfolio with the *World Database on Protected Areas - WDPA* (IUCN) and used data from the multiple different open data-sources to make an assessment of our portfolio and evaluate the impacts of our projects. Our database currently comprises `r nrow(wdpa_kfw_treatment)` PAs in Latin America which are situated in `r length(unique(wdpa_kfw_treatment$ISO3))` different countries. Those areas can be broadly categorized into `r table(wdpa_kfw_treatment$MARINE)[[3]]` terrestrial, `r table(wdpa_kfw_treatment$MARINE)[[1]]` marine, and `r table(wdpa_kfw_treatment$MARINE)[[2]]` partial marine/terrestrial protected areas. They cover a total surface of `r round(sum(st_area(wdpa_kfw_treatment))/(10^12),digits=3)` Mio. km^2^ which is about `r round(sum(st_area(wdpa_kfw_treatment))/(10^9)/357.581,digits=1)` times the size of Germany. 
 
 ```{r firstmap, echo=FALSE, warning=FALSE}
-dopa_kfw_centroid<-dopa_kfw %>%
+wdpa_kfw_treatment_centroid<-wdpa_kfw_treatment %>%
   filter(!is.na(MARINE))%>%
   st_centroid()
 
 # create colorramp
 pal <- colorFactor(
   palette = c("darkblue","orange","darkgreen"),
-  domain = dopa_kfw_centroid$MARINE
+  domain = wdpa_kfw_treatment_centroid$MARINE
 )
 
 # add map
-dopa_kfw_centroid<-st_transform(st_centroid(dopa_kfw),crs = 4326)
+wdpa_kfw_treatment_centroid<-st_transform(st_centroid(wdpa_kfw_treatment_centroid),crs = 4326)
 my_map <-
-  leaflet(data = dopa_kfw_centroid) %>%
+  leaflet(data = wdpa_kfw_treatment_centroid) %>%
   addProviderTiles(providers$CartoDB.Positron) %>%
   addCircles(opacity = 0.9,color = ~pal(MARINE))%>%
   addLegend("bottomright", pal = pal, values = ~MARINE,
@@ -104,51 +91,99 @@ my_map <-
 my_map
 
 ```
-The conservation of natural forests is one of the main policy goals of our financial support. In total KfW's financial support contributed to the protection of a forest area which extents over `r round(sum(dopa_kfw$tree_cover_km2,na.rm=T)/10^6, digits=3)` Mio km^2^ or `r round(sum(dopa_kfw$tree_cover_km2,na.rm=T)/357581, digits=1)` times the size of Germany. Most of the supported forests are situated in the Amazon basin where we cooperate with the governments of Bolivia, Brazil, Colombia, Ecuador and Peru. 
 
-Geodata can also tell us a bit about the relevance of conserving forests to mitigate global climate change. The following chart shows us, for example, how much carbon is stored in the vegetation and soils for supported protected areas. Conservation finance can help to keep this carbon in place that might be otherwise released to the atmosphere due to deforestation and forest degradation. 
 
-```{r carbonplot, echo=FALSE, warning=FALSE}
-biomass_long <-
-  dopa_kfw %>%
-  select(ISO3, total_mg_66, total_mg_71, total_mg_76) %>%
-  st_drop_geometry() %>%
-  pivot_longer(.,
-               c(total_mg_66, total_mg_71,total_mg_76),
-               names_to = "Carbon",
-               values_to = "tonnes")
+## Ecoregions and Biomes
+```{r teow_prepare_data, message = FALSE, warning = FALSE, include = FALSE}
+# clean and prepare database
+db_teow_ecosystems <-
+  db_teow %>%
+  filter(grepl('teow_intersect_sqkm_', name))
 
-biomass_long$Carbon<-gsub("total_mg_66","Soil Organic Carbon",biomass_long$Carbon)
-biomass_long$Carbon<-gsub("total_mg_71","Below Ground Carbon",biomass_long$Carbon)
-biomass_long$Carbon<-gsub("total_mg_76","Above Ground Carbon",biomass_long$Carbon)
+db_teow_biomes <-
+  db_teow %>%
+  filter(grepl('biome_intersect_sqkm_', name))
 
-# group other countries
-biomass_long$ISO3<-ifelse(biomass_long$ISO3=="BRA","Brazil","Other Countries")
+# clean and prepare database for KfW areas only
+db_teow_ecosystems_kfw <-
+  db_teow %>%
+  filter(grepl('teow_intersect_sqkm_', name)) %>%
+  filter(WDPAID %in% wdpa_kfw_treatment$WDPAID)
 
-carbon_plot <-
-  na.omit(biomass_long) %>%
-  ggplot() +
-  geom_bar(aes(ISO3,
-               round(tonnes / 10 ^ 9, digits = 2),
-               fill = Carbon), stat = "identity") +
-  labs(y = "Stored Carbon", x = "", fill = "") +
-  theme_classic()
-ggplotly(carbon_plot)
+db_teow_biomes_kfw <-
+  db_teow %>%
+  filter(grepl('biome_intersect_sqkm_', name)) %>%
+  filter(WDPAID %in% wdpa_kfw_treatment$WDPAID)
 
-# save the plot outside
-ggsave(
-  filename = "output/plots/portfolio_analysis-carbo_plot.eps",
-  plot = carbon_plot,
-  width = 10,
-  height = 8,
-  units = "cm"
-)
+# clean the names
+db_teow_ecosystems_kfw$name<-
+  gsub("teow_intersect_sqkm_","",db_teow_ecosystems_kfw$name)
+
+db_teow_biomes_kfw$name<-
+  gsub("biome_intersect_sqkm_","",db_teow_biomes_kfw$name)
+
+# create a treemap visualization of the supported ecoregions data
+# get the corresponding names for biomes and ecoregions
+db_teow_complete<-
+  read_sf("~/shared/datalake/mapme.protectedareas/input/teow/Terrestrial-Ecoregions-World.gpkg")
+# drop the geometry
+db_teow_complete<-
+  st_drop_geometry(db_teow_complete)
+
+# create a joined table for the figure  
+db_fig_ecoregion <-
+  db_teow_ecosystems_kfw %>%
+  group_by(name) %>%
+  summarize(value = round(sum(value),digits = 0)) %>%
+  left_join(x = .,
+            y= select(db_teow_complete, ECO_NAME, BIOME_NAME),
+            by=c("name" = "ECO_NAME"))%>%
+  distinct(.)
+
+# create summary table 
+db_teow_biomes_kfw_summary <-
+  db_teow_biomes_kfw %>%
+  group_by(name) %>%
+  summarize(area_sqkm = sum(value))
 
 ```
+Conservation planning needs careful consideration on how to allocate limited financial resources in order to preserve the most relevant, remaining natural landscapes. In order to put money to work where it is most urgently needed, targeted ares should be high in biodiversity and endemism, as well as ecosystem functionality (and the degree to which they are threatened). Therefore, we need to use an adequate conceptual model that characterizes different natural areas in terms of biodiversity and ecosystem functionality. This will allow us to see how our financial resources are allocated among distinctive biotas and if we have an overall bias towards specific ecosystems while other relevant areas slip our attention. 
 
-As we can see the protected areas network in Latin America stores `r round((sum(biomass_long$tonnes,na.rm = T))/10^9,digits=2)` Gigatons of carbon that, if released completely to the atmosphere, would generate emissions which correspond to `r round(sum(biomass_long$tonnes,na.rm = T)*3.67/739000000,digits=0)` times the annual GHG emissions of Germany. Most of this carbon is stored in Brazil which is by far the largest country on the continent with the biggest network of protected areass. With the creation of this database and the use of open geodata we hope to be able to learn more about the effectiveness of our projects to reduce deforestation, the loss of biological diversity and to improve the livelihoods of people worldwide living in and around protected areas. 
+To that end we utilize the *Terrestrial Ecoregions of the World (TEOW)* classification system from Olson et al..^[REF - Olson et al: https://academic.oup.com/bioscience/article/51/11/933/227116] The *TEOW* system is based on biogeographic knowledge from thousands of experts and designed with the purpose of conservation planning in mind. It differentiates between 867 ecoregions which are nested in 14 large biomes. Ecoregions are defined as *relatively large units of land containing a distinct assemblage of natural communities and species, with boundaries that approximate the original extent of natural communities prior to major land-use change* (Olson et al.). Each ecoregion is part of a terrestrial biome which is a major ecosystem division that shares a common climate, vegetation type (e.g. tundra or forest), soiltype and wildlife. 
+
+KfW supports PAs that cover `r length(unique(db_teow_ecosystems_kfw$name))` different ecosystems and `r length(unique(db_teow_biomes$name))` biomes. This corresponds to `r round(length(unique(db_teow_ecosystems_kfw$name))/length(unique(db_teow_ecosystems$name))*100,digits=0)`% of all terrestrial ecoregions in our `r length(unique(wdpa_kfw_treatment$ISO3))` partnering countries. This relatively high share indicates a broad diversification of the investment portfolio. Nevertheless we should compare total area size of supported ecoregions to get a more adequate representation of the utilized funds. The graphic below allows us to see the actual numbers for each ecoregion grouped by larger biomes. 
 
 
+```{r teow_biomes_treemap, echo=FALSE, warning=FALSE, fig.height=15, fig.width=8}
+
+# plot
+db_fig_ecoregion<-
+db_fig_ecoregion %>%
+  filter(!is.na(BIOME_NAME)) %>%
+  filter(BIOME_NAME != "")%>%
+  arrange(BIOME_NAME, value)
+
+# factorize the ecoregions name
+db_fig_ecoregion$name <- 
+  factor(db_fig_ecoregion$name,
+  levels = db_fig_ecoregion$name)
+
+ecoregion_plot <-
+  db_fig_ecoregion %>%
+  rename(Ecoregion = name,
+         Area = value,
+         Biome = BIOME_NAME) %>%
+  ggplot(., aes(Area, Ecoregion, fill = Biome)) +
+  geom_bar(stat = "identity") +
+  labs(y = "", x = "Supported ecoregion area in sqkm", fill = "") +
+  theme_bw() +
+  scale_fill_stata()
+ggplotly(ecoregion_plot,tooltip = c("Biome","Area"))%>% 
+  layout(legend = list(orientation = "h", x=-0.3, y = 1.15))
+```
+We can clearly see that our support is heavily concentrated in tropical and subtropical moist broadleaf forest areas. This biome alone makes up `r round(filter(.data=db_teow_biomes_kfw_summary,name=="Tropical & Subtropical Moist Broadleaf Forests")$area_sqkm/sum(db_teow_biomes_kfw_summary$area_sqkm)*100,digits = 0)`% of the total supported areas. Most of these areas are concentrated in the Amazon Basin. Nevertheless, we see that within this huge biome very different ecoregions are supported to differing degrees as well. 
+
+**Note**: It seems here that e.g. very few mountaineous regions are supported, relatively few mangrove areas and few Savannas. It would be interesting if there are any global priorities discussed currently in terms of biomes or ecoregions. 
 
 ```{r}
 
@@ -165,12 +200,33 @@ As we can see the protected areas network in Latin America stores `r round((sum(
 ```
 
 
-```{r}
+## Appendix 
+```{r teow_ecoregions_treemap, echo=FALSE, warning=FALSE}
 
+
+# create an auxiliary table to join biomes (necessary dataformat for the function to work)
+db_aux<-
+  db_fig_ecoregion%>%
+  group_by(BIOME_NAME)%>%
+  summarize(value = round(sum(value),digits = 0)) 
+
+# bind the two dataframes
+db_fig_ecoregion <- rbind(db_fig_ecoregion,
+                data.frame(
+                  name = db_aux$BIOME_NAME,
+                  value = db_aux$value,
+                  BIOME_NAME = ""
+                )) %>%
+  filter(!is.na(name))
+# plot the data
+fig <-
+  plot_ly(
+    db_fig_ecoregion,
+    labels = ~ name,
+    parents = ~ BIOME_NAME,
+    values = ~ value,
+    type = "treemap",
+    hovertemplate = "Ecosystem: %{label}<br>Area in sqkm: %{value}<extra></extra>"
+  )
+fig
 ```
-
-
-```{r}
-
-```
-

@@ -23,4 +23,4 @@ area_proj <- function(x) {
          " +y_0=", 
          rng_y,
          " +a=6371007.181 +b=6371007.181 +units=m +no_defs")
-}
+
