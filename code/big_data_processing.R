@@ -27,9 +27,9 @@ library(stringr)
 library(elevatr)
 library(raster)
 library(rgdal)
-
-
-
+library(remotes)
+remotes::install_github("mapme-initiative/mapme.forest")
+library(mapme.forest)
 
 
 
