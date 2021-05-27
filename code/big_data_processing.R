@@ -15,6 +15,9 @@ library(dplyr)
 library(tidyr)
 library(tidyverse)
 library(stringr)
+library(elevatr)
+library(raster)
+library(rgdal)
 
 
 # Terrestrial Ecoregions of the World (Ecoregion) ------------------------------
@@ -183,12 +186,15 @@ calculate_carbon_by_polygon <- function(my_pa_polygon) {
       # crop carbon balance raster based on polygon
       my_pa_polygon_vectorized_crop <- terra::crop(carbonflux_raster, 
                                                    my_pa_polygon_vectorized)
+      # mask carbon balance raster to its polygon
+      my_pa_polygon_vectorized_mask <- terra::mask(my_pa_polygon_vectorized_crop, 
+                                                   my_pa_polygon_vectorized)
       # rasterize polygon based on extent of the cropped carbon raster
       pa_polygon_raster <- terra::rasterize(my_pa_polygon_vectorized, 
-                                            my_pa_polygon_vectorized_crop, 
+                                            my_pa_polygon_vectorized_mask, 
                                             my_pa_polygon_vectorized$WDPAID)
       # calculate zonal statistics: here total cabon balance
-      zstats <- terra::zonal(my_pa_polygon_vectorized_crop, 
+      zstats <- terra::zonal(my_pa_polygon_vectorized_mask, 
                              pa_polygon_raster, 
                              fun='sum', 
                              na.rm=T)
@@ -455,7 +461,7 @@ calculate_pop_count <- function(y, my_pa_polygon) {
   wdpa_pid <- my_pa_polygon$WDPA_PID%>%
     as.numeric()
   # rasterize polygon based on extent of the cropped population count raster
-  pa_polygon_raster <- terra::rasterize(my_pa_polygon, my_pa_polygon_crop, wdpa_pid)
+  pa_polygon_raster <- terra::rasterize(my_pa_polygon, my_pa_polygon_mask, wdpa_pid)
   # calculate zonal statistics: here total number of people within a polygon
   zstats <- terra::zonal(my_pa_polygon_mask, 
                          pa_polygon_raster, 
@@ -645,9 +651,92 @@ for (i in 2000:2020) {
 l <- list.files("../../datalake/mapme.protectedareas/output/polygon/world_pop/", full.names = T)
 
 r <- rbind(read.csv(l[1]), read.csv(l[2]), read.csv(l[3]), read.csv(l[4]), read.csv(l[5]), read.csv(l[6]), read.csv(l[7]), read.csv(l[8]),
-       read.csv(l[9]), read.csv(l[10]), read.csv(l[11]), read.csv(l[12]), read.csv(l[13]), read.csv(l[14]), read.csv(l[15]), read.csv(l[16]),
-       read.csv(l[17]), read.csv(l[18]), read.csv(l[19]), read.csv(l[20]), read.csv(l[21]))
+           read.csv(l[9]), read.csv(l[10]), read.csv(l[11]), read.csv(l[12]), read.csv(l[13]), read.csv(l[14]), read.csv(l[15]), read.csv(l[16]),
+           read.csv(l[17]), read.csv(l[18]), read.csv(l[19]), read.csv(l[20]), read.csv(l[21]))
 
 write.csv(r, 
           file="../../datalake/mapme.protectedareas/output/polygon/world_pop/world_pop_per_wdpaid.csv",
+          row.names = F)
+
+
+
+
+
+
+# Terrain Ruggedness Index -----------------------------------------------------
+
+# load PA polygons
+p <- 
+  readOGR("../../datalake/mapme.protectedareas/output/polygon/wdpa_kfw/wdpa_kfw_spatial_latinamerica_2021-04-22_allPAs.gpkg")
+
+# create function to get TRI values
+get_tri <- function(my_pa_polygon) {
+  
+  tryCatch(
+    {
+      
+      # get elevation raster at zoom level 12
+      elevation <- get_elev_raster(my_pa_polygon,
+                                   z=12)
+      # crop the elevation raster
+      elevation_cropped <- crop(elevation,
+                                my_pa_polygon)
+      # mask the elevation raster by polygon
+      elevation_masked <- mask(elevation_cropped,
+                               my_pa_polygon)
+      # compute TRI
+      tri <- terrain(elevation_masked,
+                     opt="TRI",
+                     unit="degrees",
+                     neighbors=8)
+      # get wdpa_piid from the polygon
+      wdpapid <- as.numeric(my_pa_polygon$WDPA_PID)
+      # rasterize the polygon
+      r <- rasterize(my_pa_polygon,
+                     elevation_masked,
+                     wdpapid)
+      # compute zonal stats for TRI
+      ## mean
+      tri_mean <- zonal(tri, r, 'mean', na.rm=T)
+      ## median
+      tri_median <- zonal(tri, r, 'median', na.rm=T)
+      ## standard deviation
+      tri_sd <- zonal(tri, r, 'sd', na.rm=T)
+      # compute mean elevation values
+      elevation_mean <- zonal(elevation_masked, r, 'mean', na.rm=T)
+      # create data frame to receive results
+      df.tri <- data.frame(WDPA_PID=wdpapid,
+                           terrain_ruggedness_index_mean=tri_mean[ ,2],
+                           terrain_ruggedness_index_median=tri_median[ ,2],
+                           terrain_ruggedness_index_standard_deviation=tri_sd[ ,2],
+                           elevation_mean=elevation_mean[ ,2])
+      # pivot to long table format
+      df.tri_long <- pivot_longer(df.tri,
+                                  cols=c(terrain_ruggedness_index_mean,
+                                         terrain_ruggedness_index_median,
+                                         terrain_ruggedness_index_standard_deviation,
+                                         elevation_mean))
+    },
+    error = function(e) {
+      message('Error in this line!')
+    }
+  )
+}
+
+# receive result for one polygon
+df.tri <- get_tri(p[1, ])
+
+# process for all the polygons and all years and bind the results 
+
+for (i in 2) {
+  
+  df.tri <- 
+    rbind(df.tri,
+          get_tri(p[i, ]))
+  print(paste("Done processing line", i, sep=" "))
+}
+
+# write results to disk
+write.csv(df.tri, 
+          file="../../datalake/mapme.protectedareas/output/polygon/terrain_ruggedness_index/terrain_ruggedness_index.csv",
           row.names = F)
