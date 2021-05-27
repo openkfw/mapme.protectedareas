@@ -2,6 +2,15 @@
 # Authors: Johannes Schielein, Om Prakash Bhandari
 # Purpose: This script contains several chunks dedicated to process each variables for whole kfw wdpa polygons.
 
+# Contents ------------------------------------------------------- Line Number
+
+# Terrestrial Ecoregions of the World (Ecoregion) ---------------- 40
+# Terrestrial Ecoregions of the World (Biome) -------------------- 90
+# Mangrove Gain and Loss ----------------------------------------- 150
+# Copernicus Global Land Cover ----------------------------------- 270
+# World Pop Population Count ------------------------------------- 480
+# Terrain Ruggedness Index --------------------------------------- 710
+# Global Forest Watch (Area, Loss, CO2) -------------------------- 800
 
 
 # Source Scripts ---------------------------------------------------------------
@@ -18,6 +27,14 @@ library(stringr)
 library(elevatr)
 library(raster)
 library(rgdal)
+
+
+
+
+
+
+
+
 
 
 # Terrestrial Ecoregions of the World (Ecoregion) ------------------------------
@@ -64,6 +81,9 @@ calculate_teow_intersection_eco <- function(my_pa_polygon) {
 }
 
 calculate_teow_intersection_eco(pa_polygons_all)
+
+
+
 
 
 
@@ -118,6 +138,13 @@ calculate_teow_intersection_biome <- function(my_pa_polygon) {
 }
 
 calculate_teow_intersection_biome(pa_polygons_all)
+
+
+
+
+
+
+
 
 
 # Mangrove Gain and Loss -------------------------------------------------------
@@ -235,6 +262,8 @@ for (i in 2:nrow(pa_polygons_all)) {
 write.csv(df_carbon_polygon, 
           file="../../datalake/mapme.protectedareas/output/polygon/net_carbon_flux/carbon_balance_allPAs.csv",
           row.names = F)
+
+
 
 
 
@@ -434,6 +463,15 @@ write.csv(df.final_long,
 # Similarly, we can follow this routine to get the output for the year 2016 - 2019
 # by simply replacing the raster in terra object `lc` with desired year raster and 
 # replacing the column names ending with `2015` by the desired year
+
+
+
+
+
+
+
+
+
 
 
 
@@ -663,6 +701,12 @@ write.csv(r,
 
 
 
+
+
+
+
+
+
 # Terrain Ruggedness Index -----------------------------------------------------
 
 # load PA polygons
@@ -739,4 +783,75 @@ for (i in 2) {
 # write results to disk
 write.csv(df.tri, 
           file="../../datalake/mapme.protectedareas/output/polygon/terrain_ruggedness_index/terrain_ruggedness_index.csv",
+          row.names = F)
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Global Forest Watch (Area, Loss, CO2) -----------------------------------------------------------------------------------
+
+# get the file paths to the raster files
+treeCover = "../../datalake/mapme.protectedareas/input/global_forest_watch/treecover2000.tif"
+lossYear = "../../datalake/mapme.protectedareas/input/global_forest_watch/lossyear.tif"
+co2Layer = ".../../datalake/mapme.protectedareas/input/global_forest_watch/co2_emission_.tif"
+
+# read the region of interest
+roi = st_read("../../datalake/mapme.protectedareas/input/wdpa_kfw/wdpa_kfw_spatial_latinamerica_2021-04-22_allPAs.gpkg")
+roi <- st_transform(roi, "+proj=longlat +datum=WGS84 +no_defs")
+
+grass = "/usr/lib/grass78"
+
+roi_stats = statsGRASS(grass = grass, 
+                       addon_base = "./data-raw/addons", 
+                       areas = roi, 
+                       tree_cover = treeCover, 
+                       tree_loss = lossYear, 
+                       tree_co2 = co2Layer, 
+                       idcol =  "WDPA_PID", 
+                       thresholdClump = 6, 
+                       thresholdCover = 10, 
+                       years = 2001:2020, 
+                       saveRaster = T,
+                       outdir = "../../datalake/mapme.protectedareas/processing/global_forest_watch/")
+
+# write zonal statistics to disk as csv
+write.csv(roi_stats,
+          file = "../../datalake/mapme.protectedareas/output/polygon/global_forest_watch/roi_stats.csv",
+          rrow.names = F)
+
+# receive the results as long table format (area, loss, co2)
+# load the csv
+g <- read_csv("../../datalake/mapme.protectedareas/output/polygon/global_forest_watch/roi_stats.csv")
+# subset only needed columns
+wdpa_pid <- g[2]
+g_area <- g[50:70]
+g_loss <- g[71:91]
+g_co2 <- g[92:112]
+
+# bind all columns together
+g_bind <- cbind(wdpa_pid, g_area, g_loss, g_co2)
+# remove the rows with NA values
+g_bind_final <- g_bind[complete.cases(g_bind), ]
+# pivot to longer format
+g_bind_long <- pivot_longer(g_bind_final,
+                            cols = c("area_2000", "area_2001", "area_2002", "area_2003", "area_2004", "area_2005", "area_2006", "area_2007",
+                                     "area_2008", "area_2009", "area_2010", "area_2011", "area_2012", "area_2013", "area_2014", "area_2015",
+                                     "area_2016", "area_2017", "area_2018", "area_2019", "area_2020", "loss_2000", "loss_2001", "loss_2002",
+                                     "loss_2003", "loss_2004", "loss_2005", "loss_2006", "loss_2007", "loss_2008", "loss_2009", "loss_2010",
+                                     "loss_2011", "loss_2012", "loss_2013", "loss_2014", "loss_2015", "loss_2016", "loss_2017", "loss_2018",
+                                     "loss_2019", "loss_2020", "co2_2000", "co2_2001", "co2_2002", "co2_2003", "co2_2004", "co2_2005",
+                                     "co2_2006", "co2_2007", "co2_2008", "co2_2009", "co2_2010", "co2_2011", "co2_2012", "co2_2013",
+                                     "co2_2014","co2_2015", "co2_2016", "co2_2017", "co2_2018", "co2_2019", "co2_2020"))
+# write long format result to disk
+write.csv(g_bind_long,
+          file = "../../datalake/mapme.protectedareas/output/polygon/global_forest_watch/zonal_statistics_long.csv",
           row.names = F)
