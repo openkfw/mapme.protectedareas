@@ -15,6 +15,9 @@ library(dplyr)
 library(tidyr)
 library(tidyverse)
 library(stringr)
+library(elevatr)
+library(raster)
+library(rgdal)
 
 
 # Terrestrial Ecoregions of the World (Ecoregion) ------------------------------
@@ -37,7 +40,7 @@ calculate_teow_intersection_eco <- function(my_pa_polygon) {
   teow <- st_make_valid(teow)
   # intersect teow with pa polygons
   teow_intersect <- st_intersection(teow,
-                                      my_pa_polygon)
+                                    my_pa_polygon)
   # reproject to LAEA projection
   teow_intersect_proj <- st_transform(teow_intersect, area_proj(my_pa_polygon))
   # calculate area of the intersected portion
@@ -147,7 +150,7 @@ calculate_mangrove_extent <- function(y) {
     select(WDPAID, paste0("mangrove_area_sqkm_",y))
   # pivot to long format
   mangrove_long <- pivot_longer(mangrove_data_sorted, 
-                              cols=paste0("mangrove_area_sqkm_",y))
+                                cols=paste0("mangrove_area_sqkm_",y))
   # write results to disk
   write.csv(mangrove_long, 
             file=paste0("../../datalake/mapme.protectedareas/output/polygon/global_mangrove_watch/gmw_v2_long_allPAs_",y,".csv"),
@@ -183,12 +186,15 @@ calculate_carbon_by_polygon <- function(my_pa_polygon) {
       # crop carbon balance raster based on polygon
       my_pa_polygon_vectorized_crop <- terra::crop(carbonflux_raster, 
                                                    my_pa_polygon_vectorized)
+      # mask carbon balance raster to its polygon
+      my_pa_polygon_vectorized_mask <- terra::mask(my_pa_polygon_vectorized_crop, 
+                                                   my_pa_polygon_vectorized)
       # rasterize polygon based on extent of the cropped carbon raster
       pa_polygon_raster <- terra::rasterize(my_pa_polygon_vectorized, 
-                                            my_pa_polygon_vectorized_crop, 
+                                            my_pa_polygon_vectorized_mask, 
                                             my_pa_polygon_vectorized$WDPAID)
       # calculate zonal statistics: here total cabon balance
-      zstats <- terra::zonal(my_pa_polygon_vectorized_crop, 
+      zstats <- terra::zonal(my_pa_polygon_vectorized_mask, 
                              pa_polygon_raster, 
                              fun='sum', 
                              na.rm=T)
@@ -226,11 +232,11 @@ for (i in 2:nrow(pa_polygons_all)) {
 }
 
 # write results to disk
-  write.csv(df_carbon_polygon, 
-            file="../../datalake/mapme.protectedareas/output/polygon/net_carbon_flux/carbon_balance_allPAs.csv",
-            row.names = F)
+write.csv(df_carbon_polygon, 
+          file="../../datalake/mapme.protectedareas/output/polygon/net_carbon_flux/carbon_balance_allPAs.csv",
+          row.names = F)
 
-  
+
 
 # Copernicus Global Land Cover -------------------------------------------------
 
@@ -428,3 +434,309 @@ write.csv(df.final_long,
 # Similarly, we can follow this routine to get the output for the year 2016 - 2019
 # by simply replacing the raster in terra object `lc` with desired year raster and 
 # replacing the column names ending with `2015` by the desired year
+
+
+
+
+
+# World Pop Population Count ---------------------------------------------------
+
+# load polygon
+p <- 
+  vect("../../datalake/mapme.protectedareas/output/polygon/wdpa_kfw/wdpa_kfw_spatial_latinamerica_2021-04-22_allPAs.gpkg")
+
+calculate_pop_count <- function(y, my_pa_polygon) {
+  
+  
+  # load worldpop global mosaic raster
+  pop <- 
+    rast(paste0("../../datalake/mapme.protectedareas/input/world_pop/global_mosaic",y,".tif"))
+  # crop population count raster based on polygon
+  my_pa_polygon_crop <- terra::crop(pop,
+                                    my_pa_polygon)
+  # mask the population count raster
+  my_pa_polygon_mask <- terra::mask(my_pa_polygon_crop,
+                                    my_pa_polygon)
+  # take numeric wdpa_pid
+  wdpa_pid <- my_pa_polygon$WDPA_PID%>%
+    as.numeric()
+  # rasterize polygon based on extent of the cropped population count raster
+  pa_polygon_raster <- terra::rasterize(my_pa_polygon, my_pa_polygon_mask, wdpa_pid)
+  # calculate zonal statistics: here total number of people within a polygon
+  zstats <- terra::zonal(my_pa_polygon_mask, 
+                         pa_polygon_raster, 
+                         fun='sum', 
+                         na.rm=T)
+  if (y == 2000) {
+    
+    # create dataframe from results
+    df.zstats <- data.frame(WDPAID=NA,
+                            population_count_2000=NA)
+    # rename columns
+    colnames(zstats) <- colnames(df.zstats)
+    # pivot to long format
+    zstats_long <- pivot_longer(zstats, 
+                                cols=population_count_2000)
+  } else if (y == 2001) {
+    
+    df.zstats <- data.frame(WDPAID=NA,
+                            population_count_2001=NA)
+    colnames(zstats) <- colnames(df.zstats)
+    zstats_long <- pivot_longer(zstats, 
+                                cols=population_count_2001)
+  } else if (y == 2002) {
+    
+    df.zstats <- data.frame(WDPAID=NA,
+                            population_count_2002=NA)
+    colnames(zstats) <- colnames(df.zstats)
+    zstats_long <- pivot_longer(zstats, 
+                                cols=population_count_2002)
+  } else if (y == 2003) {
+    
+    df.zstats <- data.frame(WDPAID=NA,
+                            population_count_2003=NA)
+    colnames(zstats) <- colnames(df.zstats)
+    zstats_long <- pivot_longer(zstats, 
+                                cols=population_count_2003)
+  } else if (y == 2004) {
+    
+    df.zstats <- data.frame(WDPAID=NA,
+                            population_count_2004=NA)
+    colnames(zstats) <- colnames(df.zstats)
+    zstats_long <- pivot_longer(zstats, 
+                                cols=population_count_2004)
+  } else if (y == 2005) {
+    
+    df.zstats <- data.frame(WDPAID=NA,
+                            population_count_2005=NA)
+    colnames(zstats) <- colnames(df.zstats)
+    zstats_long <- pivot_longer(zstats, 
+                                cols=population_count_2005)
+  } else if (y == 2006) {
+    
+    df.zstats <- data.frame(WDPAID=NA,
+                            population_count_2006=NA)
+    colnames(zstats) <- colnames(df.zstats)
+    zstats_long <- pivot_longer(zstats, 
+                                cols=population_count_2006)
+  } else if (y == 2007) {
+    
+    df.zstats <- data.frame(WDPAID=NA,
+                            population_count_2007=NA)
+    colnames(zstats) <- colnames(df.zstats)
+    zstats_long <- pivot_longer(zstats, 
+                                cols=population_count_2007)
+  } else if (y == 2008) {
+    
+    df.zstats <- data.frame(WDPAID=NA,
+                            population_count_2008=NA)
+    colnames(zstats) <- colnames(df.zstats)
+    zstats_long <- pivot_longer(zstats, 
+                                cols=population_count_2008)
+  } else if (y == 2009) {
+    
+    df.zstats <- data.frame(WDPAID=NA,
+                            population_count_2009=NA)
+    colnames(zstats) <- colnames(df.zstats)
+    zstats_long <- pivot_longer(zstats, 
+                                cols=population_count_2009)
+  } else if (y == 2010) {
+    
+    df.zstats <- data.frame(WDPAID=NA,
+                            population_count_2010=NA)
+    colnames(zstats) <- colnames(df.zstats)
+    zstats_long <- pivot_longer(zstats, 
+                                cols=population_count_2010)
+  } else if (y == 2011) {
+    
+    df.zstats <- data.frame(WDPAID=NA,
+                            population_count_2011=NA)
+    colnames(zstats) <- colnames(df.zstats)
+    zstats_long <- pivot_longer(zstats, 
+                                cols=population_count_2011)
+  } else if (y == 2012) {
+    
+    df.zstats <- data.frame(WDPAID=NA,
+                            population_count_2012=NA)
+    colnames(zstats) <- colnames(df.zstats)
+    zstats_long <- pivot_longer(zstats, 
+                                cols=population_count_2012)
+  } else if (y == 2013) {
+    
+    df.zstats <- data.frame(WDPAID=NA,
+                            population_count_2013=NA)
+    colnames(zstats) <- colnames(df.zstats)
+    zstats_long <- pivot_longer(zstats, 
+                                cols=population_count_2013)
+  } else if (y == 2014) {
+    
+    df.zstats <- data.frame(WDPAID=NA,
+                            population_count_2014=NA)
+    colnames(zstats) <- colnames(df.zstats)
+    zstats_long <- pivot_longer(zstats, 
+                                cols=population_count_2014)
+  } else if (y == 2015) {
+    
+    df.zstats <- data.frame(WDPAID=NA,
+                            population_count_2015=NA)
+    colnames(zstats) <- colnames(df.zstats)
+    zstats_long <- pivot_longer(zstats, 
+                                cols=population_count_2015)
+  } else if (y == 2016) {
+    
+    df.zstats <- data.frame(WDPAID=NA,
+                            population_count_2016=NA)
+    colnames(zstats) <- colnames(df.zstats)
+    zstats_long <- pivot_longer(zstats, 
+                                cols=population_count_2016)
+  } else if (y == 2017) {
+    
+    df.zstats <- data.frame(WDPAID=NA,
+                            population_count_2017=NA)
+    colnames(zstats) <- colnames(df.zstats)
+    zstats_long <- pivot_longer(zstats, 
+                                cols=population_count_2017)
+  } else if (y == 2018) {
+    
+    df.zstats <- data.frame(WDPAID=NA,
+                            population_count_2018=NA)
+    colnames(zstats) <- colnames(df.zstats)
+    zstats_long <- pivot_longer(zstats, 
+                                cols=population_count_2018)
+  } else if (y == 2019) {
+    
+    df.zstats <- data.frame(WDPAID=NA,
+                            population_count_2019=NA)
+    colnames(zstats) <- colnames(df.zstats)
+    zstats_long <- pivot_longer(zstats, 
+                                cols=population_count_2019)
+  } else {
+    
+    df.zstats <- data.frame(WDPAID=NA,
+                            population_count_2020=NA)
+    colnames(zstats) <- colnames(df.zstats)
+    zstats_long <- pivot_longer(zstats, 
+                                cols=population_count_2020)
+  }
+  # delete temporary files
+  delfiles <- dir(path=tempdir() ,pattern="spat_*")
+  file.remove(file.path(tempdir(), delfiles))
+  # return results
+  return(zstats_long)
+}
+
+
+# process for all the polygons and all years and bind the results 
+
+for (i in 2000:2020) {
+  
+  # create a dataframe to receive results processing first polygon
+  df_world_pop <- calculate_pop_count(i, p[1, ])
+  
+  for (j in 2:nrow(p)) {
+    
+    df_world_pop <- 
+      rbind(df_world_pop,
+            calculate_pop_count(i, p[j, ]))
+    print(paste("Done processing line", j, sep=" "))
+  }
+  write.csv(df_world_pop,
+            file=paste0("../../datalake/mapme.protectedareas/output/polygon/world_pop/world_pop_per_wdpaid_",i,".csv"),
+            row.names = F)
+  print(paste("Done processing for year:", i, sep=" "))
+}
+
+# rbind all output
+
+l <- list.files("../../datalake/mapme.protectedareas/output/polygon/world_pop/", full.names = T)
+
+r <- rbind(read.csv(l[1]), read.csv(l[2]), read.csv(l[3]), read.csv(l[4]), read.csv(l[5]), read.csv(l[6]), read.csv(l[7]), read.csv(l[8]),
+           read.csv(l[9]), read.csv(l[10]), read.csv(l[11]), read.csv(l[12]), read.csv(l[13]), read.csv(l[14]), read.csv(l[15]), read.csv(l[16]),
+           read.csv(l[17]), read.csv(l[18]), read.csv(l[19]), read.csv(l[20]), read.csv(l[21]))
+
+write.csv(r, 
+          file="../../datalake/mapme.protectedareas/output/polygon/world_pop/world_pop_per_wdpaid.csv",
+          row.names = F)
+
+
+
+
+
+
+# Terrain Ruggedness Index -----------------------------------------------------
+
+# load PA polygons
+p <- 
+  readOGR("../../datalake/mapme.protectedareas/output/polygon/wdpa_kfw/wdpa_kfw_spatial_latinamerica_2021-04-22_allPAs.gpkg")
+
+# create function to get TRI values
+get_tri <- function(my_pa_polygon) {
+  
+  tryCatch(
+    {
+      
+      # get elevation raster at zoom level 12
+      elevation <- get_elev_raster(my_pa_polygon,
+                                   z=12)
+      # crop the elevation raster
+      elevation_cropped <- crop(elevation,
+                                my_pa_polygon)
+      # mask the elevation raster by polygon
+      elevation_masked <- mask(elevation_cropped,
+                               my_pa_polygon)
+      # compute TRI
+      tri <- terrain(elevation_masked,
+                     opt="TRI",
+                     unit="degrees",
+                     neighbors=8)
+      # get wdpa_piid from the polygon
+      wdpapid <- as.numeric(my_pa_polygon$WDPA_PID)
+      # rasterize the polygon
+      r <- rasterize(my_pa_polygon,
+                     elevation_masked,
+                     wdpapid)
+      # compute zonal stats for TRI
+      ## mean
+      tri_mean <- zonal(tri, r, 'mean', na.rm=T)
+      ## median
+      tri_median <- zonal(tri, r, 'median', na.rm=T)
+      ## standard deviation
+      tri_sd <- zonal(tri, r, 'sd', na.rm=T)
+      # compute mean elevation values
+      elevation_mean <- zonal(elevation_masked, r, 'mean', na.rm=T)
+      # create data frame to receive results
+      df.tri <- data.frame(WDPA_PID=wdpapid,
+                           terrain_ruggedness_index_mean=tri_mean[ ,2],
+                           terrain_ruggedness_index_median=tri_median[ ,2],
+                           terrain_ruggedness_index_standard_deviation=tri_sd[ ,2],
+                           elevation_mean=elevation_mean[ ,2])
+      # pivot to long table format
+      df.tri_long <- pivot_longer(df.tri,
+                                  cols=c(terrain_ruggedness_index_mean,
+                                         terrain_ruggedness_index_median,
+                                         terrain_ruggedness_index_standard_deviation,
+                                         elevation_mean))
+    },
+    error = function(e) {
+      message('Error in this line!')
+    }
+  )
+}
+
+# receive result for one polygon
+df.tri <- get_tri(p[1, ])
+
+# process for all the polygons and all years and bind the results 
+
+for (i in 2) {
+  
+  df.tri <- 
+    rbind(df.tri,
+          get_tri(p[i, ]))
+  print(paste("Done processing line", i, sep=" "))
+}
+
+# write results to disk
+write.csv(df.tri, 
+          file="../../datalake/mapme.protectedareas/output/polygon/terrain_ruggedness_index/terrain_ruggedness_index.csv",
+          row.names = F)
