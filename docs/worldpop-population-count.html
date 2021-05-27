@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Johannes Schielein, Om Prakash Bhandari" />
+
+
+<title>Population Count</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">mapme.protectedareas</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Population Count</h1>
+<h4 class="author">Johannes Schielein, Om Prakash Bhandari</h4>
+<h4 class="date">5/13/2021</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2021-05-14
+</p>
+<p>
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 1
+</p>
+<p>
+<strong>Knit directory:</strong> <code>mapme.protectedareas/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.6.2). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges"> <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted changes </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguncommittedchanges" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The R Markdown is untracked by Git. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20210305code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(20210305)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20210305code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20210305)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastreeb40b319718bc2f14109cb90afeb4e1d9987f36c5targetblankb40b319a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/openkfw/mapme.protectedareas/tree/b40b319718bc2f14109cb90afeb4e1d9987f36c5" target="_blank">b40b319</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastreeb40b319718bc2f14109cb90afeb4e1d9987f36c5targetblankb40b319a" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version <a href="https://github.com/openkfw/mapme.protectedareas/tree/b40b319718bc2f14109cb90afeb4e1d9987f36c5" target="_blank">b40b319</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rproj.user/
+
+Untracked files:
+    Untracked:  analysis/worldpop-population-count.rmd
+
+Unstaged changes:
+    Modified:   analysis/index.Rmd
+    Deleted:    analysis/index.html
+    Modified:   code/big_data_processing.R
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+<p>
+There are no past versions. Publish this analysis with <code>wflow_publish()</code> to start tracking its development.
+</p>
+<hr>
+</div>
+</div>
+</div>
+<pre class="r"><code># load required libraries
+library(&quot;sf&quot;)
+library(&quot;terra&quot;)
+library(&quot;wdpar&quot;)
+library(&quot;tidyverse&quot;)
+
+starttime&lt;-Sys.time() # mark the start time of this routine to calculate processing time at the end</code></pre>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>Anthropogenic disturbance to the protected areas is a well-known issue to all environmentalists and those working on the conservation of protected areas. To analyze the effect of human population pressure towards the protected areas, it is of utmost importance to get the idea of the number of the human population residing within the protected areas and in the vicinity of those areas. A figure demonstrating the human population and the change on those figures throughout the years assist in making an empirical analysis of the human population pressure to the protected areas. For this, it is necessary to get the most reliable and high-quality datasets. WorldPop, which was initiated in 2013, offers easy access to spatial demographic datasets, claiming to use peer-reviewed and fully transparent methods to create global mosaics for the years 2000 to 2020, which we will use here in this analysis.</p>
+<div id="datasource-and-metadata-information" class="section level3">
+<h3>Datasource and Metadata Information</h3>
+<ul>
+<li>Dataset: - WorldPop Unconstrained Global Mosaics</li>
+<li>Geographical Coverage: Global</li>
+<li>Spatial resolution: 1Km</li>
+<li>Temporal Coverage: 2000-2020</li>
+<li>Temporal resolution: Annual Updates</li>
+<li>Unit: number of people per grid cell</li>
+<li>Data downloaded: 5th May, 2021</li>
+<li><a href="%22https://www.worldpop.org/geodata/listing?id=64%22">Metadata Link</a></li>
+<li><a href="%22https://www.worldpop.org/geodata/listing?id=64%22">Download Link</a></li>
+</ul>
+</div>
+<div id="processing-workflow" class="section level3">
+<h3>Processing Workflow</h3>
+<p>The purpose of this analysis is to compute the number of people residing in a particular protected area’s polygon of interest. In order to obtain the result, we need to go through several steps of processing as shown in the routine workflow:</p>
+<p><img src="assets/workflows/worldpop_population_count_routine.jpg" /></p>
+</div>
+</div>
+<div id="prepare-population-count-raster" class="section level1">
+<h1>Prepare population count raster</h1>
+<p>Among all the available global rasters for years 2000 to 2020 were downloaded, for this routine, we would only use for a particular year i.e. 2000.</p>
+<pre class="r"><code># load raster land cover
+pop &lt;- rast(&quot;/home/rstudio/shared/datalake/mapme.protectedareas/input/world_pop/global_mosaic2000.tif&quot;)
+# plot raster
+plot(pop)</code></pre>
+<p><img src="figure/worldpop-population-count.rmd/loadRaster-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="prepare-wdpa-polygon" class="section level1">
+<h1>Prepare WDPA Polygon</h1>
+<p>Since we already prepared raster data for our analysis. Now, we will try to get the country level polygon data from <code>wdpar</code> package. <code>wdpar</code> is a library to interface to the World Database on Protected Areas (WDPA). The library is used to monitor the performance of existing PAs and determine priority areas for the establishment of new PAs. We will use Brazil - for other countries of your choice, simply provide the country name or the ISO name e.g. Gy for Guyana, COL for Colombia.</p>
+<pre class="r"><code># fetch the raw data from wdpar of country
+br_raw_pa_data &lt;- wdpa_fetch(&quot;BRA&quot;)</code></pre>
+<p>Since there are multiple enlisted protected areas in Brazil, we want to compute zonal statistics only for the polygon data of: - Reserva Biologica Do Rio Trombetas - wdpaid 43 - Reserva Extrativista Rio Cajari - wdpaid 31776 and - Estacao Ecologica Do Jari - wdpaid 4891</p>
+<p>For this, we have to subset the country level polygon data to the PA level.</p>
+<pre class="r"><code># subset three wdpa polygons by their wdpa ids
+bra&lt;-
+  br_raw_pa_data%&gt;%
+  filter(WDPAID %in% c(43, 31776, 4891))
+# plot the sample polygon
+plot(bra[1])</code></pre>
+<p><img src="figure/worldpop-population-count.rmd/subset-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="crop-the-population-count-raster" class="section level1">
+<h1>Crop the population count raster</h1>
+<p>As we completed raster and vector data preparation, the next step would be to clip the raster layer by the selected PA polygon both by its extent and mask layer.</p>
+<pre class="r"><code># convert object bra to spatVector object
+bra_v &lt;- as(bra, &quot;Spatial&quot;)%&gt;%
+  vect()
+# crop raster using polygon extent
+myCrop &lt;- terra::crop(pop, bra_v)
+# plot the data - shows the raster after getting cropped by the extent of polygon
+plot(myCrop)</code></pre>
+<p><img src="figure/worldpop-population-count.rmd/cropRaster-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># crop raster using polygon mask
+myMask &lt;- mask(myCrop, bra_v)
+# plot the data - shows the raster after getting cropped by the polygon mask
+plot(myMask)</code></pre>
+<p><img src="figure/worldpop-population-count.rmd/cropRaster-2.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="rasterize-the-polygon-layer" class="section level1">
+<h1>Rasterize the polygon layer</h1>
+<p>To compute the zonal statistics, it is necessary to rasterize the polygon layer. Doing so, values are transferred from the spatial objects to raster cells. We need to pass the extent layer and the mask layer to the rasterize function.</p>
+<pre class="r"><code># rasterize
+r &lt;- rasterize(bra_v, myMask, bra_v$WDPAID, background=NA, update=FALSE, touches=is.lines(bra_v), cover=FALSE)</code></pre>
+</div>
+<div id="compute-zonal-statistics" class="section level1">
+<h1>Compute zonal statistics</h1>
+<p>A zonal statistics operation is one that calculates statistics on cell values of a raster (a value raster) within the zones defined by another dataset [ArcGIS definition].</p>
+<pre class="r"><code># zonal stats
+zstats &lt;- zonal(myMask, r, fun=&#39;sum&#39;, na.rm=T)
+zstats</code></pre>
+<pre><code>   zone global_mosaic2000
+1    43          703.6494
+2  4891           12.0065
+3 31776         2908.8636</code></pre>
+<p>From the result of zonal statistics, we can see the number of people residing in the protected areas with WDPAIDs 43, 4891 and 31776. In a similar way, we can also compute the number of people in a particular region of interest for the desired year and analyze whether the population is following increasing or decreasing trend which helps scientific community to understand the demographic effects towards the protected regions.</p>
+<p>In the end we are going to have a look how long the rendering of this file took so that people get an idea about the processing speed of this routine.</p>
+<pre class="r"><code>stoptime&lt;-Sys.time()
+print(starttime-stoptime)</code></pre>
+<pre><code>Time difference of -5.410514 secs</code></pre>
+<div id="references" class="section level3">
+<h3>References</h3>
+<p>[1] Worldpop.org. 2021. WorldPop. [online] Available at: <a href="https://www.worldpop.org/" class="uri">https://www.worldpop.org/</a> [Accessed 14 May 2021].</p>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.0.0 (2020-04-24)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 18.04.5 LTS
+
+Matrix products: default
+BLAS/LAPACK: /usr/lib/x86_64-linux-gnu/libopenblasp-r0.2.20.so
+
+locale:
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+ [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=C             
+ [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] forcats_0.5.0   stringr_1.4.0   dplyr_1.0.5     purrr_0.3.4    
+ [5] readr_1.3.1     tidyr_1.1.3     tibble_3.1.1    ggplot2_3.3.1  
+ [9] tidyverse_1.3.0 wdpar_1.3.0.1   terra_0.6-9     sf_0.9-3       
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_1.0.6         countrycode_1.2.0  lubridate_1.7.8    lattice_0.20-41   
+ [5] class_7.3-16       assertthat_0.2.1   rprojroot_1.3-2    digest_0.6.27     
+ [9] utf8_1.2.1         cellranger_1.1.0   R6_2.5.0           backports_1.2.1   
+[13] reprex_0.3.0       evaluate_0.14      e1071_1.7-3        httr_1.4.1        
+[17] pillar_1.6.0       rlang_0.4.11       curl_4.3           readxl_1.3.1      
+[21] rstudioapi_0.13    raster_3.1-5       blob_1.2.1         rmarkdown_2.2     
+[25] rgdal_1.5-8        munsell_0.5.0      broom_0.7.6        compiler_4.0.0    
+[29] httpuv_1.6.0       modelr_0.1.8       xfun_0.22          pkgconfig_2.0.3   
+[33] htmltools_0.5.1.1  tidyselect_1.1.1   workflowr_1.6.2    codetools_0.2-16  
+[37] fansi_0.4.2        withr_2.4.2        crayon_1.4.1       dbplyr_1.4.4      
+[41] later_1.2.0        rappdirs_0.3.3     grid_4.0.0         jsonlite_1.7.2    
+[45] gtable_0.3.0       lifecycle_1.0.0    DBI_1.1.0          git2r_0.27.1      
+[49] magrittr_2.0.1     units_0.6-6        scales_1.1.1       KernSmooth_2.23-16
+[53] cli_2.5.0          stringi_1.5.3      fs_1.5.0           promises_1.2.0.1  
+[57] sp_1.4-2           xml2_1.3.2         ellipsis_0.3.2     generics_0.1.0    
+[61] vctrs_0.3.8        tools_4.0.0        glue_1.4.2         hms_0.5.3         
+[65] yaml_2.2.1         colorspace_2.0-0   rvest_0.3.5        classInt_0.4-3    
+[69] knitr_1.28         haven_2.3.1       </code></pre>
+</div>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
