@@ -6,6 +6,7 @@
 # Net Carbon flux ---------- 270
 # Global Forest Watch ------ 320
 # TEOW --------------------- 340
+# Accessibility ------------ 370
 
 # load all required libraries
 
@@ -17,7 +18,6 @@ library(raster)
 library(remotes)
 remotes::install_github("mapme-initiative/mapme.forest")
 library(mapme.forest)
-
 
 
 
@@ -352,3 +352,43 @@ unzip(zipfile = "../../datalake/mapme.protectedareas/input/teow/teow_global.zip"
 teow <- read_sf("../../datalake/mapme.protectedareas/input/teow/Terrestrial_Ecoregions_World.shp")
 # write to disk as geopackage
 st_write(teow, "../../datalake/mapme.protectedareas/input/teow/Terrestrial_Ecoregions_World.gpkg")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Accessibility to cities ------------------------------------------------------------------------------------------------------------------
+
+# population: 50k to 100k
+# create URL
+url <- paste0("https://ndownloader.figshare.com/files/14189825")
+# destination file to download the zip file
+destfile <- paste0("../../datalake/mapme.protectedareas/input/accessibility_to_cities/2015/acc_50k_100k.tif")
+# download command
+download.file(url, destfile)
+
+# population: 100k to 200k
+# create URL
+url <- paste0("https://ndownloader.figshare.com/files/14189819")
+# destination file to download the zip file
+destfile <- paste0("../../datalake/mapme.protectedareas/input/accessibility_to_cities/2015/acc_50k_100k.tif")
+# download command
+download.file(url, destfile)
+
+# population: 20k to 50k
+# create URL
+url <- paste0("https://ndownloader.figshare.com/files/14189831")
+# destination file to download the zip file
+destfile <- paste0("../../datalake/mapme.protectedareas/input/accessibility_to_cities/2015/acc_50k_100k.tif")
+# download command
+download.file(url, destfile)
