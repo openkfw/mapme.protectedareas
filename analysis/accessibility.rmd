@@ -1,0 +1,175 @@
+---
+title: "Travel time to major cities"
+author: "Johannes Schielein, Om Prakash Bhandari"
+date: "6/4/2021"
+output: workflowr::wflow_html
+---
+
+
+```{r setup, message=FALSE,warning=FALSE, include=TRUE}
+
+# load required libraries
+library("sf")
+library("terra")
+library("wdpar")
+library("tidyverse")
+
+starttime<-Sys.time() # mark the start time of this routine to calculate processing time at the end
+```
+
+
+
+# Introduction
+
+The term "accessibility" refers to the ability to reach promptly or to be able to attain something easily. Thus, accessibility is the ease with which larger cities can be reached from a certain location, in our case, from the protected areas. Accessibility is one of the most important factors to influence the likelihood of an area being exploited or converted for commercial purposes. Higher the accessibility to protected areas, higher the chances of anthropogenic disturbances to the ecosystem. So, it is of utmost importance to find out how much travel time could it take to reach the vicinity of a particular protected area.
+
+For this analysis, we'll look at a few protected areas and determine the minimum travel time to nearby cities, thus accessibility to the cities.
+
+### Datasource and Metadata Information
+
+- Dataset: Travel Time to Cities and Ports 2015 (Weiß et al. (2018))
+- Geographical Coverage: Global
+- Spatial resolution: 1 kilometer
+- Temporal Coverage: 2015
+- Unit: minutes
+- Data downloaded: 8th June, 2021
+- [Metadata Link]("https://figshare.com/articles/dataset/Travel_time_to_cities_and_ports_in_the_year_2015/7638134/3?file=14189855")
+- [Download Link]("https://doi.org/10.6084/m9.figshare.7638134.v3")
+
+### Processing Workflow
+
+The purpose of this analysis is to compute minimum travel time from the protected area of interest to the nearby cities. For this, following processing routine is followed:
+
+![](assets/workflows/accessibility_to_cities_routine.jpg)
+
+# Download and Prepare WDPA Polygons
+
+For this analysis, we would try to get the country level polygon data from `wdpar` package. `wdpar` is a library to interface to the World Database on Protected Areas (WDPA). The library is used to monitor the performance of existing PAs and determine priority areas for the establishment of new PAs. We will use Brazil - for other countries of your choice, simply provide the country name or the ISO name e.g. Gy for Guyana, COL for Colombia.
+
+```{r fetchWdpar, warning=FALSE, include=TRUE}
+
+# fetch the raw data from wdpar of country
+br_wdpa_raw <- 
+  wdpa_fetch("Brazil")
+```
+
+Since there are more than 3000 enlisted protected areas in Brazil, we want to compute zonal statistics only for the polygon data of:
+  - Reserva Biologica Do Rio Trombetas - wdpaid 43,
+	- Reserva Extrativista Rio Cajari - wdpaid 31776, and
+	- Estacao Ecologica Do Jari - wdpaid 4891
+
+For this, we have to subset the country level polygon data to the pa level.
+
+```{r subset, warning=FALSE, include=TRUE}
+
+# subset three wdpa polygons by their wdpa ids
+br_wdpa_subset <-
+  br_wdpa_raw%>%
+  filter(WDPAID %in% c(43,4891,31776))
+```
+
+The next immediate step would be to clean the fetched raw data with the functionality provided with routines from the `wdpar` package. Cleaning is done by the package following this steps:
+
+- exclude protected areas that are not yet implemented
+- exclude protected areas with limited conservation value
+- replace missing data codes (e.g. "0") with missing data values (i.e. NA)
+- replace protected areas represented as points with circular protected areas that correspond to their reported extent
+- repair any topological issues with the geometries
+
+```{r cleanWdpar, warning=FALSE, include=TRUE}
+
+# clean the data
+br_wdpa_subset <- wdpa_clean(
+  br_wdpa_subset, 
+  erase_overlaps = F
+  )
+# reproject to the WGS84
+br_wdpa_subset <- st_transform(br_wdpa_subset, "+proj=longlat +datum=WGS84 +no_defs")
+# spatvector for terra compatibility
+br_wdpa_subset_v <- vect(br_wdpa_subset)
+# we can plot the data to see the three selected polygons
+plot(br_wdpa_subset_v)
+```
+
+# Prepare accessibility raster data
+
+The raster datasets are available to download for 12 different layers for the year 2015, based on the different sets of urban areas defined by their population. Here, we are going to load the raster layer for the population range 50k to 100k using package `terra`. 
+
+```{r loadRaster, warning=FALSE, include=TRUE}
+
+# load accessibility raster
+acc_rast <- rast("../../datalake/mapme.protectedareas/input/accessibility_to_cities/2015/acc_50k_100k.tif")
+# view raster details
+acc_rast
+```
+
+### Crop the elevation raster
+
+As we completed raster and vector data preparation, the next step would be to clip the raster layer by the selected protected areas polygon both by its extent and mask layer. If we clip by extent, it does clipping the raster by its bounding box. However, using `mask` function returns the raster to defined vector polygon layer, which is a must for zonal statistics computation.
+
+
+```{r cropRaster, warning=FALSE, include=TRUE}
+
+# crop raster by polygon
+acc_rast_crop <- 
+        terra::crop(acc_rast,
+                    br_wdpa_subset_v)
+# plot the cropped raster layer
+plot(acc_rast_crop)
+# mask the raster by polygon 
+acc_rast_mask <- 
+        terra::mask(acc_rast_crop,
+                    br_wdpa_subset_v)
+# plot the masked raster layer
+plot(acc_rast_mask)
+```
+
+# Rasterize the polygon layer
+
+To compute the zonal statistics, it is necessary to rasterize the polygon layer. Doing so, values are transferred from the spatial objects to raster cells. We need to pass the extent layer and the mask layer to the rasterize function.
+
+
+``` {r rasterize, warning=FALSE, include=TRUE}
+
+# rasterize the polygon
+br_subset_rast <-terra::rasterize(br_wdpa_subset_v,
+                                  acc_rast_mask,
+                                  br_wdpa_subset_v$WDPAID)
+```
+
+
+# Compute Zonal Statistics - travel time to nearby cities
+
+A zonal statistics operation is one that calculates statistics on cell values of a raster (a value raster) within the zones defined by another dataset [ArcGIS definition]. Here, we are interested on only to compute the minimum travel time to the cities, so, we would use function `min` for `zonal` operation. 
+
+
+```{r zoneStats, warning=FALSE, include=TRUE}
+
+# zonal stats
+zstats <- terra::zonal(acc_rast_mask,
+                       br_subset_rast,
+                       fun='min',
+                       na.rm=T)
+# create dataframe to receive the result
+df.zstats <- data.frame(WDPAID=NA,
+                        travel_time_to_nearby_cities_min=NA)
+# rename column to match with dataframe
+colnames(zstats) <- colnames(df.zstats)
+# view the data
+rbind(df.zstats,zstats)[-1,]
+```
+
+From the zonal statistics result, we can see that to travel to the nearby cities from these regions, it takes more than 10 hours. Hence, we can say that these protected areas are not easily accessible.
+
+
+In the end we are going to have a look how long the rendering of this file took to get an idea about the processing speed of this routine.
+
+```{r time, warning=FALSE, include=TRUE}
+
+stoptime<-Sys.time()
+print(starttime-stoptime)
+```
+
+### References
+
+[1] Weiss, D. J., Nelson, A., Gibson, H. S., Temperley, W., Peedell, S., Lieber, A., ... & Gething, P. W. (2018). A global map of travel time to cities to assess inequalities in accessibility in 2015. Nature, 553(7688), 333-336.
