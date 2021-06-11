@@ -123,13 +123,13 @@ get_copernicus_land_cover <- function(y, g) {
     
   } else {
     
-    # create url
-    url <- paste0("https://s3-eu-west-1.amazonaws.com/vito.landcover.global/v3.0.1/",y,"/",g,"/",g,"_PROBAV_LC100_global_v3.0.1_",y,"-conso_Discrete-Classification-map_EPSG-4326.tif")
-    # create string for temporary file
-    destfile <- paste0("../../datalake/mapme.protectedareas/input/copernicus_global_land_cover/",y,"/",g,".tif")
-    # download the file and save it to tempfolder
-    download.file(url, destfile)
-    print("download completed!")
+  # create url
+  url <- paste0("https://s3-eu-west-1.amazonaws.com/vito.landcover.global/v3.0.1/",y,"/",g,"/",g,"_PROBAV_LC100_global_v3.0.1_",y,"-conso_Discrete-Classification-map_EPSG-4326.tif")
+  # create string for temporary file
+  destfile <- paste0("../../datalake/mapme.protectedareas/input/copernicus_global_land_cover/",y,"/",g,".tif")
+  # download the file and save it to tempfolder
+  download.file(url, destfile)
+  print("download completed!")
   }
 }
 
@@ -156,7 +156,7 @@ merge_lc <- function(y) {
   # merge all the rasters and write to disk
   m <- merge(rast(r[1]), rast(r[2]), rast(r[3]), rast(r[4]), rast(r[5]), rast(r[6]), rast(r[7]), rast(r[8]), rast(r[9]), 
              rast(r[10]), rast(r[11]), rast(r[12]), rast(r[13]), rast(r[14]), rast(r[15]), rast(r[16]), rast(r[17]),
-             filename=paste0("../../datalake/mapme.protectedareas/input/copernicus_global_land_cover/",y,"/Latin_America_LC_",y,".tif")))
+            filename=paste0("../../datalake/mapme.protectedareas/input/copernicus_global_land_cover/",y,"/Latin_America_LC_",y,".tif")))
 }
 
 # merge rasters per year
@@ -208,30 +208,30 @@ get_global_mangrove_watch <- function(y) {
     )
   } else {
     
-    tryCatch(
-      {
-        # create url
-        url <- paste0("https://wcmc.io/GMW_",y)
-        # create string for temporary file
-        destfile <- paste0("../../datalake/mapme.protectedareas/input/global_mangrove_watch/global-mangrove-watch-",y,".zip")
-        # download the file and save it to temp folder
-        download.file(url, destfile)
-        # unzip
-        unzip(zipfile = paste0("../../datalake/mapme.protectedareas/input/global_mangrove_watch/global-mangrove-watch-",y,".zip"), 
-              exdir = ("../../datalake/input/global-mangrove-watch/"))
-        # load shapefile
-        m <- st_read(paste0("../../datalake/mapme.protectedareas/input/global_mangrove_watch/GMW_001_GlobalMangroveWatch_",y,"/01_Data/GMW_",y,"_v2.shp"))
-        # write as geopackage
-        st_write(m, paste0("../../datalake/mapme.protectedareas/input/global_mangrove_watch/global-mangrove-watch-",y,".gpkg"))
-        # delete unnecessary files
-        unlink(paste0("../../datalake/mapme.protectedareas/input/global_mangrove_watch/GMW_001_GlobalMangroveWatch_",y), recursive = T)
-        unlink(paste0("../../datalake/mapme.protectedareas/input/global_mangrove_watch/global-mangrove-watch-",y,".zip"))
-      },
-      error = function(e) {
-        message('Error in this line!')
-      }
-    )
-  }
+  tryCatch(
+    {
+      # create url
+      url <- paste0("https://wcmc.io/GMW_",y)
+      # create string for temporary file
+      destfile <- paste0("../../datalake/mapme.protectedareas/input/global_mangrove_watch/global-mangrove-watch-",y,".zip")
+      # download the file and save it to temp folder
+      download.file(url, destfile)
+      # unzip
+      unzip(zipfile = paste0("../../datalake/mapme.protectedareas/input/global_mangrove_watch/global-mangrove-watch-",y,".zip"), 
+            exdir = ("../../datalake/input/global-mangrove-watch/"))
+      # load shapefile
+      m <- st_read(paste0("../../datalake/mapme.protectedareas/input/global_mangrove_watch/GMW_001_GlobalMangroveWatch_",y,"/01_Data/GMW_",y,"_v2.shp"))
+      # write as geopackage
+      st_write(m, paste0("../../datalake/mapme.protectedareas/input/global_mangrove_watch/global-mangrove-watch-",y,".gpkg"))
+      # delete unnecessary files
+      unlink(paste0("../../datalake/mapme.protectedareas/input/global_mangrove_watch/GMW_001_GlobalMangroveWatch_",y), recursive = T)
+      unlink(paste0("../../datalake/mapme.protectedareas/input/global_mangrove_watch/global-mangrove-watch-",y,".zip"))
+    },
+    error = function(e) {
+      message('Error in this line!')
+    }
+  )
+}
 }
 
 # download global mangrove geopackage for the following years 
