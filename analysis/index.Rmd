@@ -30,4 +30,10 @@ Chapters:
   
   - [Mangrove Gain and Loss(GMW)](gmw-mangrove.html).
   
+  - [WorldPop Population Count](worldpop-population-count.html)
+
+  - [Copernicus Global Land Cover](copernicus-land-cover.html).
+
+  - [Terrain Ruggedness Index](terrain_ruggedness_index.html).
+  
   - [Accessibility to Cities (Weiss et al. 2018)](accessibility.html).
