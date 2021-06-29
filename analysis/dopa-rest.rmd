@@ -1,31 +1,37 @@
 ---
 title: "Dopa REST Services"
-author: "J Schielein, OP Bhandari"
+author: "Johannes Schielein, Om Prakash Bhandari"
 date: "3/1/2021"
-output: html_document
+output: workflowr::wflow_html
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_knit$set(root.dir = '../')
-# sys.source("code/dopa-rest.R", envir = knitr::knit_global())
+
+# load required libraries
+library(wdpar)
 library(knitr)
+library(dplyr)
 library(rmarkdown)
 ```
 
-### Introduction
+# Introduction
 
 The Digital Observatory for Protected Areas (DOPA) is an initiative from the Joint Research Centre (JRC) of the European Commission. It is database and a [web-based information system](https://dopa.jrc.ec.europa.eu/) on Protected Areas (PAs) providing information on the global level. DOPA processes maintains several datasets that characterize PAs according to e.g. biodiversity and land use wich can be accessed through REST API. The script `dopa-rest.R` provides different functions to access the datasets and download them temporary in CSV format to then create a dataframe for further uste in R. Please not that all the functions work with the Unique Identifier of Protected Areas according to the [IUCN/WDPA](https://www.protectedplanet.net/), where you can also identify the WDPA ID of your area of interest. 
 
+# Functions
 
-The functions listed in the `dopa-rest.R` are:
-`get_redlist_status`, `redlist_list`, `wdpalevel_centroid`, `water_stats`, `all_indicators`, `landcover_change`,  `landcover_esa`,  `lcc_percent`,  `landcover_copernicus`, `normalizedind_country`, `normalizedind_ecoregion` and `get_dopa`.
+The functions listed in the script `dopa-rest.R` are:</br>
+`get_redlist_status`, `get_species_list`, `get_wdpa_level_centroid`, `get_water_stats`, `get_multiple_indicators`, `get_lcc_esa`,  `get_landcover_esa`,  `get_lcc_esa_percent`,  `get_landcover_copernicus`, `get_country_pa_normalized_ind`, `get_ecoregion_pa_normalized_ind` and `get_dopa`.
 
 At first you might want to load the source functions for this routine. 
 ```{r loadlsource, include=TRUE}
+
 source("code/dopa-rest.R")
 ```
 
-### Get IUCN Redlist Status
+Now, we will go through every functions on how to use them to access DOPA variables.
+
+### (1) Get IUCN Redlist Status
 `get_redlist_status` takes the WDPA Identifier (wdpaid) as an argument. The function returns statistics (counts species, by class and by IUCN categories) for species (Corals, Sharks & Rays, Amphibians, Birds, Mammals) in the given PA as well as their status according to the redlist at the moment in time, when the data was processed by DOPA (for more information visit the DOPA website). The data is calculated as an intersection of species habitats with WDPA.
 
 Some information on this dataset:
@@ -35,7 +41,7 @@ Some information on this dataset:
 - Spatial Resolution: 5 km 
 - Temporal Coverage: 1964-2020 
 - Temporal Resolution: Biannual updates
-- [Metadata Link]("http://cmsdocs.s3.amazonaws.com/RedListGuidelines.pdf") 
+- [Metadata Link]("http://cmsdocs.s3.amazonaws.com/RedListGuidelines.pdf")
 
 
 How to use the function? 
@@ -44,22 +50,23 @@ How to use the function?
       
 ```{r warning=FALSE}
 
-#This code generates species status' statistics for the PA with wdpaid 146 and shows it in a paged table for the markdown.
+# the script generates species status' statistics for the PA with wdpaid 146
 df_redlist_status<-
     get_redlist_status(wdpaid = 146)
 ```
 
 With the results table looking like this:
-
 ```{r warning=FALSE, echo=FALSE}
+
 # show table in Rmarkdown
 paged_table(df_redlist_status)
 ```
 
 
-You can also process several areas at once using the plyr package
+You can also process several areas at once using the `dplyr` package.
+
 ```{r warning=FALSE}
-library(dplyr)
+
 df_redlist_status<-
   lapply(c(146,147), 
        FUN = get_redlist_status)%>% 
@@ -67,17 +74,51 @@ df_redlist_status<-
 ```
 
 With the results table looking like this:
-
 ```{r warning=FALSE, echo=FALSE}
+
 # show table in Rmarkdown
 paged_table(df_redlist_status)
 ```
 
-If you want to combine this data with georeferenced information from WDPA to create maps you might consider using the `wdpar` package from CRAN that creates an interface to WDPA or you might want to download the data manually and join it in R. In the following we show an example on how to use the `wdpar` package. You will first need to download the data for the country where your PA is located, then preprocess/clean the data, and then merge it. 
+If you want to combine this data with georeferenced information from WDPA to create maps you might consider using the `wdpar` package from CRAN that creates an interface to WDPA or you might want to download the data manually and join it in R. In the following we show an example on how to use the `wdpar` package. You will first need to download the data for the country where your PA is located, then preprocess/clean the data,if necessary.
+
+Lets have a look on how `wdpar` package works.
+
+```{r wdpar, warning=FALSE, include=TRUE}
+
+# get PA polygon for country Brazil
+brazil <- 
+  wdpar::wdpa_fetch("BRA")
+```
+
+Since there are more than 3000 enlisted protected areas in Brazil, we want to compute zonal statistics only for the polygon data of:
+  - Reserva Biologica Do Rio Trombetas - wdpaid 43
+	
+For this, we have to subset the country level polygon data to the pa level.
+
+```{r subset, warning=FALSE, include=TRUE}
+
+# subset wdpa polygon by its wdpa id
+brazil_subset <- 
+  brazil%>%
+  filter(WDPAID %in% 43)
+```
+
+Now, using the polygon, we can also access the DOPA variables like this:
+```{r warning=FALSE}
+
+# the script generates species status' statistics for the PA with wdpaid 43
+df_redlist_status<-
+    get_redlist_status(brazil_subset$WDPAID[1])
+
+# the result table
+paged_table(df_redlist_status)
+```
 
 
-### Get species list
-2. `get_species_list` takes wdpaid as argument. It returns a list of species (Corals, Sharks & Rays, Amphibians, Birds, Mammals) which habitat areas intersect with the Protected Area according to data from IUCN.
+
+### (2) Get IUCN Redlist species list
+`get_species_list` takes wdpaid as argument. It returns a list of species (Corals, Sharks & Rays, Amphibians, Birds, Mammals) which habitat areas intersect with the Protected Area according to data from IUCN.
 
 Some information on this dataset:
 
@@ -94,40 +135,42 @@ How to use the function?
 - Example usage:
       
 ```{r warning=FALSE}
-#This code generates species lists for the PA with wdpaid 63645
-source("code/dopa-rest.R")
-df_species<-get_species_list(63645)
-```
-With the results table looking like this:
 
-```{r warning=FALSE, echo=FALSE}
-# show table in Rmarkdown
+# the script generates species lists for the PA with wdpaid 63645
+df_species<-
+  get_species_list(63645)
+
+# With the results table looking like this:
 paged_table(df_species)
 ```
 
-### Get centroid
-The function `wdpalevel_centroid` takes wdpaid as argument and returns the centroid of the WDPA poylgon (x,y) in EPSG 4326 (Lat Long WGS84). For polygon PAs centroids are calculated with the function ST_PointOnSurface, which returns a point guaranteed to lie on the surface.
+
+
+### (3) Get WDPA level centroid
+The function `get_wdpa_level_centroid` takes wdpaid as argument and returns the centroid of the WDPA poylgon (x,y) in EPSG 4326 (Lat Long WGS84). For polygon PAs centroids are calculated with the function ST_PointOnSurface, which returns a point guaranteed to lie on the surface.
 
 How to use the function? 
 - Pass the wdpaid of the protected area to generate it's point coordinates; for polygon to generate centroid coordinates 
 - Example usage:
       
 ```{r warning=FALSE}
-#This code generates the point coordinates for the PA with wdpaid 555528898
+# the script generates the point coordinates for the PA with wdpaid 555528898
 df_wdpa_level_centroid<-
   get_wdpa_level_centroid(555528898)
 ```
-With the results table looking like this:
 
+With the results table looking like this:
 ```{r warning=FALSE, echo=FALSE}
-# show table in Rmarkdown
+
+# show table in paged table format
 paged_table(df_wdpa_level_centroid)
 ```
 
 
-### Get water surface area 
-4. The function `get_water_stats` takes wdpaid as argument. 
-    Returns information on the current surface area of permanent and seasonal water, and the net change over the period 1984-2015.
+
+### (4) Get inland water statistics
+The function `get_water_stats` takes wdpaid as argument. 
+Returns information on the current surface area of permanent and seasonal water, and the net change over the period 1984-2015.
 
 
 - Data source: Global Surface Water Explorer 
@@ -141,17 +184,21 @@ paged_table(df_wdpa_level_centroid)
 You can use the function in the same way as the functions before by providing a WDPA ID to download the data for a specific area. 
       
 ```{r warning=FALSE}
-#This code generates the water statistics for the PA with wdpaid 671
+
+# the script generates the water statistics for the PA with wdpaid 671
 df_water_stats<-
   get_water_stats(671)
 ```
+
 with the results table looking like this:
 ```{r warning=FALSE, echo=FALSE}
 # show table in Rmarkdown
 paged_table(df_water_stats)
 ```
 
-### Get multiple indicators
+
+
+### (5) Get multiple indicators
 The function `get_multiple_indicators` takes wdpaid as argument and returns several indicators for the PAs. As always you just have to provide the WDPA ID.
       
 ```{r warning=FALSE}
@@ -167,8 +214,10 @@ paged_table(df_multiple_indicators)
 ```
 
 
-### Get landcover change from ESA
-The function `get_landcover_esa` takes wdpaid as argument and returns absolute cover of ESA LC CCI classes (aggregated by level 1: 4 classes) which changed within first and last epoch i.e. 1995 & 2015 for a given PA
+### (6) Get landcover change from ESA
+The function `get_lcc_esa` takes wdpaid as argument and returns absolute cover of ESA LC CCI classes (aggregated by level 1: 4 classes) which changed within first and last epoch i.e. 1995 & 2015 for a given PA. 
+
+Aggregation level defines the level of classification details. For eg. aggregation level 0 will have more detailed classes (forests divided into open, closed, etc.) whereas aggregation level 2 will have only the class forest without further detailed classification. Thus, number of classes decreases with the increase in aggregation level.
 
 - Data source: ESA CCI Land Cover 
 - Spatial Coverage:  Global 
@@ -179,28 +228,27 @@ The function `get_landcover_esa` takes wdpaid as argument and returns absolute c
 
 How to use the function? 
 - Pass the wdpaid of the area to generate landcover change statistics between 1995 & 2015 
-- Pass the year for the statistics end
-- Pass aggregation level
-*TODO*: Explain shortly what the aggregation levels are 
+- Example usage:
       
 ```{r warning=FALSE}
-#This code generates the absolute landcover change of ESA Land Cover classes for the PA with wdpaid 32671 between 1995 & 2015
+
+# the script generates the absolute landcover change of ESA Land Cover classes for the PA with wdpaid 32671 between 1995 & 2015
 df_landcover_esa<-
-  get_landcover_esa(32671,year = 2000,agg=0)
+  get_lcc_esa(32671)
 ```
+
 with the resulting table looking like this:
 ```{r warning=FALSE, echo=FALSE}
+
 # show table in Rmarkdown
-paged_table(df_multiple_indicators)
+paged_table(df_landcover_esa)
 ```
 
 
-### Get laddcover ESA
-TODO: HOW IS THIS DIFFERENT FROM THE ONE ABOVE? I guess the one above with change should be probabla `get_lcc_esa` right? So you would also need to adapt the description. 
 
-
-7. `landcover_esa` takes wdpaid, year (1995,2000,2005,2010,2015), and aggregation level (0,1,2,3) as arguments. 
-    Returns percentage and absolute cover of different ESA CCI LC classes for a given WDPA Aggregation levels 0 (original ESA LC classes), 1, 2 and 3 are available.
+### (7) Get ESA Land Cover statistics
+`get_landcover_esa` takes wdpaid, year (1995,2000,2005,2010,2015), and aggregation level (0,1,2,3) as arguments. 
+Returns percentage and absolute cover of different ESA CCI LC classes for a given WDPA Aggregation levels 0 (original ESA LC classes), 1, 2 and 3 are available.
 
 - Data source: ESA CCI Land Cover 
 - Spatial Coverage:  Global 
@@ -211,19 +259,24 @@ TODO: HOW IS THIS DIFFERENT FROM THE ONE ABOVE? I guess the one above with chang
 
 
 *How to use the function?*
-- Pass the wdpaid of the area to generate ESA landcover statistics for that PA 
+- Pass the wdpaid of the area to generate ESA landcover statistics for the particular PA 
 - Pass the desired year
 - Pass the desired aggregation level
 - Example usage:
       
 ```{r warning=FALSE}
-#This code generates percentage and absolute cover of ESA Land Cover classes for the PA with wdpaid 32671 for the year 2015 and at 0 aggregation level
-paged_table(get_landcover_esa(32671, 2015, 0))
+
+# the script generates percentage and absolute cover of ESA Land Cover classes for the PA with wdpaid 32671 for the year 2015 and at 0 aggregation level
+paged_table(get_landcover_esa(32671,
+                              2015,
+                              0))
 ```
 
-### Get absolute landcover ESA
-8. `lcc_percent` takes wdpaid as argument. 
-    Returns percentage and absolute cover of ESA LC CCI classes which changed within first and last epoch for a given WDPA.
+
+
+### (8) Get ESA Land Cover change percentage
+`get_lcc_esa_percent` takes wdpaid as argument. 
+Returns percentage and absolute cover of ESA LC CCI classes which changed within first and last epoch for a given WDPA.
 
 
     Data source: ESA CCI Land Cover 
@@ -239,87 +292,114 @@ paged_table(get_landcover_esa(32671, 2015, 0))
       - Example usage:
       
 ```{r warning=FALSE}
-#This code generates percentage and absolute cover of ESA Land Cover classes which changed between 1995 & 2015 for the PA with wdpaid 32671
+
+# the script generates percentage and absolute cover of ESA Land Cover classes which changed between 1995 & 2015 for the PA with wdpaid 32671
 paged_table(get_lcc_esa_percent(32671))
 ```
 
-### Get landcover COPERNICUS
-9. `landcover_copernicus` takes wdpaid and aggregation level (0,2) as arguments. 
-    Returns percentage and absolute cover of Copernicus Land Cover classes for a given WDPA aggregation levels 0 (original Copernicus LC classes) and 2 (DOPA) are available.
 
 
-    Data source: Copernicus Global Land Cover 
-    Spatial Coverage:  Global 
-    Spatial Resolution: 100 m 
-    Temporal Coverage: 2015-2019 
-    Temporal Resolution: Annual updates  
-    [Metadata Link]("https://lcviewer.vito.be/about")
+### (9) Get landcover COPERNICUS
+`get_landcover_copernicus` takes wdpaid and aggregation level (0,2) as arguments. 
+Returns percentage and absolute cover of Copernicus Land Cover classes for a given WDPA aggregation levels 0 (original Copernicus LC classes) and 2 (DOPA) are available.
 
 
-    How to use the function? 
+Data source: Copernicus Global Land Cover 
+Spatial Coverage:  Global 
+Spatial Resolution: 100 m 
+Temporal Coverage: 2015-2019 
+Temporal Resolution: Annual updates  
+[Metadata Link]("https://lcviewer.vito.be/about")
+
+
+How to use the function? 
       - Pass the wdpaid of the area to generate Copernicus landcover statistics for that PA 
       - Example usage:
       
 ```{r warning=FALSE}
-#This code generates percentage and absolute cover of Copernicus Land Cover classes for the PA with wdpaid 32671 and 2 aggregation level
-paged_table(get_landcover_copernicus(32671, 2))
+
+# the script generates percentage and absolute cover of Copernicus Land Cover classes for the PA with wdpaid 32671 and 0 aggregation level
+paged_table(get_landcover_copernicus(32671,
+                                     0))
 ```
 
 
-### Get country stats
-10. `normalizedind_country` takes an indicator as argument, one among the listed many in `all_indicators`. 
-    Returns, for protected area in country, absolute, normalized and average value of the selected indicator, and ranking within the country.
+### (10) Get country level normalized indicators
+`get_country_pa_normalized_ind` takes an indicator as one argument, one among the listed many in `get_multiple_indicators` and country ISO code as another. 
+Returns, for protected area in country, absolute, normalized and average value of the selected indicator, and ranking within the country.
 
-
-    How to use the function? 
+How to use the function? 
       - Pass the indicator's name to generate the associated normalized values at the country level 
+      - Pass the ISO code of country
       - Example usage:
       
 ```{r warning=FALSE}
-#This code generates normalized agriculture indicators at the country level
-paged_table(get_country_pa_normalized_ind("agri_ind_pa"))
+
+# the script generates normalized agriculture indicators at the country level
+df_norm <- 
+  get_country_pa_normalized_ind("agri_ind_pa", "VEN")
+
+# with results table
+paged_table(df_norm)
 ```
 
-### Get ecoregion stats
-11. `normalizedind_ecoregion` takes an indicator as argument, one among the listed many in `all_indicators` and ecoregion id as arguments. 
-    Returns, for protected area in ecoregion, absolute, normalized and average value of the selected indicator, and ranking within the ecoregion.
 
 
-    How to use the function? 
+### (11) Get ecoregion level normalized indicators
+`get_ecoregion_pa_normalized_ind` takes an indicator as argument, one among the listed many in `get_multiple_indicators` and ecoregion id as arguments. 
+Returns, for protected area in ecoregion, absolute, normalized and average value of the selected indicator, and ranking within the ecoregion.
+
+
+How to use the function? 
       - Pass the indicator's name to generate the associated normalized values at the ecoregion level 
       - Pass the desired ecoregion id 
       - Example usage:
       
 ```{r warning=FALSE}
-#This code generates normalized agriculture indicators at the ecoregion level for the ecoregion with ecoregionid 16
-paged_table(get_ecoregion_pa_normalized_ind("agri_ind_pa", 16))
+
+# the script generates normalized agriculture indicators at the ecoregion level for the ecoregion with ecoregionid 16
+paged_table(get_ecoregion_pa_normalized_ind("agri_ind_pa",
+                                            16))
 ```
 
-### Flexible DOPA Query
-12. `get_dopa` is a global function and takes topic, getQuery and wdpaid as arguments. 
-    Topics include: "protected_sites", "species", "water", "landcover"  
-    getQuery include "get_wdpa_level_centroid", "get_pa_water_stats", "get_pa_redlist_status", "get_pa_redlist_list", "get_wdpa_all_inds", "get_wdpa_lcc_esa", "get_wdpa_lcc_esa_percent"
-     
-    Returns the desired variables in CSV format.
 
 
-    How to use the function? 
+### (12) Flexible DOPA Query
+With `get_dopa` we can get the results for the seven different getQueries for which there are seven different functions created above.
+Since, topic and getQuery should come in sequence. Here I have listed the getQueries and their respective topic to use.
+(a) species
+             - get_pa_redlist_status
+             - get_pa_redlist_list
+
+(b) water
+             - get_pa_water_stats
+
+(c) protected_sites
+             - get_wdpa_level_centroid
+             - get_wdpa_all_inds
+
+(d) landcover
+             - get_wdpa_lcc_esa
+             - get_wdpa_lcc_esa_percent
+
+Returns the desired variables in CSV format.
+
+How to use the function? 
       - Pass the topic's name associated with getQuery parameter 
       - Pass the desired getQuery parameter  
       - Pass the wdpaid to generate variables within the desired PA
       - Example usage:
       
 ```{r warning=FALSE}
-#This code generates redlist status of species for the PA with wdpaid 146
-paged_table(get_dopa("species", "get_pa_redlist_status", 146))
+
+# the script generates redlist status of species for the PA with wdpaid 146
+paged_table(get_dopa("species",
+                     "get_pa_redlist_status",
+                     146))
 ```
 
 
-### Methods
 
-```{r}
+## References
 
-```
-
-
-### References
+DOPA Explorer. (2021). DOPA Explorer. https://dopa-explorer.jrc.ec.europa.eu/dopa_explorer

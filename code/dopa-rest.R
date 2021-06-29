@@ -4,7 +4,9 @@
 # Note: Please make sure you are registered with DOPA and have the required authorization for using REST Services (non commercial usage only)
 
 # load latest PA polygon -------------------------------------------------------
-p <- read_sf("/home/rstudio/shared/datalake/mapme.protectedareas/output/polygon/wdpa_kfw/wdpa_kfw_spatial_latinamerica_2021-04-22_allPAs.gpkg")
+library(sf)
+p <- 
+  read_sf("../../datalake/mapme.protectedareas/input/wdpa_kfw/wdpa_kfw_spatial_latinamerica_2021-04-22_allPAs.gpkg")
 
 # Introduction to functions ----------------------------------------------------
 
@@ -45,35 +47,35 @@ p <- read_sf("/home/rstudio/shared/datalake/mapme.protectedareas/output/polygon/
 get_redlist_status <- function(wdpaid) {
   tryCatch(
     {
-  # create the url
-  url <- paste0("https://dopa-services.jrc.ec.europa.eu/services/d6dopa40/species/get_pa_redlist_status?format=csv&wdpaid=",wdpaid)
-  # create empty dataframe to receive results
-  df.redlist_status<-data.frame(class=NA,
-                                total_species=NA,
-                                threatened=NA,
-                                critically_endangered=NA,
-                                endangered=NA,
-                                vulnerable=NA,
-                                near_threatened=NA,
-                                least_concern=NA,
-                                data_deficient=NA,
-                                wdpa_id=NA)
-  # create string for temporary file - string should be in temp folder
-  destfile <- paste0(tempdir(),"/redlist_status_",wdpaid,".csv")
-  # download the file
-  download.file(url, destfile)
-  # read in temporary csv
-  tmp.df <- read.csv(paste0(tempdir(),"/redlist_status_",wdpaid,".csv"),sep="|")
-  # create a column from wdpa id
-  tmp.df$wdpa_id <- wdpaid
-  # delete the temporary file
-  file.remove(paste0(tempdir(),"/redlist_status_",wdpaid,".csv"))
-  # append the results of the file to an existing dataframe/table and return results
-  return(rbind(df.redlist_status,tmp.df)[-1,])
+      # create the url
+      url <- paste0("https://dopa-services.jrc.ec.europa.eu/services/d6dopa40/species/get_pa_redlist_status?format=csv&wdpaid=",wdpaid)
+      # create empty dataframe to receive results
+      df.redlist_status<-data.frame(class=NA,
+                                    total_species=NA,
+                                    threatened=NA,
+                                    critically_endangered=NA,
+                                    endangered=NA,
+                                    vulnerable=NA,
+                                    near_threatened=NA,
+                                    least_concern=NA,
+                                    data_deficient=NA,
+                                    wdpa_id=NA)
+      # create string for temporary file - string should be in temp folder
+      destfile <- paste0(tempdir(),"/redlist_status_",wdpaid,".csv")
+      # download the file
+      download.file(url, destfile)
+      # read in temporary csv
+      tmp.df <- read.csv(paste0(tempdir(),"/redlist_status_",wdpaid,".csv"),sep="|")
+      # create a column from wdpa id
+      tmp.df$wdpa_id <- wdpaid
+      # delete the temporary file
+      file.remove(paste0(tempdir(),"/redlist_status_",wdpaid,".csv"))
+      # append the results of the file to an existing dataframe/table and return results
+      return(rbind(df.redlist_status,tmp.df)[-1,])
     },
-  error = function(e) {
-    message('Error in this line!')
-  }
+    error = function(e) {
+      message('Error in this line!')
+    }
   )
 }
 
@@ -83,13 +85,15 @@ get_redlist_status <- function(wdpaid) {
 # # process other polygons
 # for (i in 2:nrow(p)) {
 #   
-#   df_redlist_status <- 
+#   df_redlist_status <-
 #     rbind(df_redlist_status,
 #           get_redlist_status(p[i, ]$WDPAID))
 #   print(paste("Done processing line", i, sep=" "))
 # }
 # 
-# write.csv(df_redlist_status, file = "/home/rstudio/shared/datalake/mapme.protectedareas/output/polygon/dopa-rest/redlist_status.csv", row.names = F)
+# write.csv(df_redlist_status,
+#           file = "../../datalake/mapme.protectedareas/output/polygon/dopa_rest/allPAs/supportedPAs/redlist_status.csv",
+#           row.names = F)
 
 
 # (2) get_species_list ---------------------------------------------------------
@@ -101,36 +105,36 @@ get_species_list <- function(wdpaid) {
   
   tryCatch(
     {
-  # create the url
-  url <- paste0("https://dopa-services.jrc.ec.europa.eu/services/d6dopa40/species/get_pa_redlist_list?format=csv&wdpaid=",wdpaid)
-  # create empty dataframe to receive results
-  df.redlist_list<-data.frame(iucn_species_id=NA,
-                              taxon=NA,
-                              kingdom=NA,
-                              phylum=NA,
-                              class=NA,
-                              order=NA,
-                              family=NA,
-                              code=NA,
-                              wdpa_id=NA)
-  # create string for temporary file - PLEASE ADAPT TO TEMPDIR - SEE ABOVE
-  destfile <- paste0(tempdir(),"/redlist_list_",wdpaid,".csv")
-  # download the file
-  download.file(url, destfile)
-  # read in temporary csv
-  tmp.df <- read.csv(paste0(tempdir(),"/redlist_list_",wdpaid,".csv"),sep="|")
-  # create a column from wdpa id
-  tmp.df$wdpa_id <- wdpaid
-  # rename the columns to match the example dataset
-  colnames(tmp.df) <- colnames(df.redlist_list)
-  # delete the temporary file
-  file.remove(paste0(tempdir(),"/redlist_list_",wdpaid,".csv"))
-  # append the results of the file to an existing dataframe/table and return results
-  return(rbind(df.redlist_list,tmp.df)[-1,])
+      # create the url
+      url <- paste0("https://dopa-services.jrc.ec.europa.eu/services/d6dopa40/species/get_pa_redlist_list?format=csv&wdpaid=",wdpaid)
+      # create empty dataframe to receive results
+      df.redlist_list<-data.frame(iucn_species_id=NA,
+                                  taxon=NA,
+                                  kingdom=NA,
+                                  phylum=NA,
+                                  class=NA,
+                                  order=NA,
+                                  family=NA,
+                                  code=NA,
+                                  wdpa_id=NA)
+      # create string for temporary file - PLEASE ADAPT TO TEMPDIR - SEE ABOVE
+      destfile <- paste0(tempdir(),"/redlist_list_",wdpaid,".csv")
+      # download the file
+      download.file(url, destfile)
+      # read in temporary csv
+      tmp.df <- read.csv(paste0(tempdir(),"/redlist_list_",wdpaid,".csv"),sep="|")
+      # create a column from wdpa id
+      tmp.df$wdpa_id <- wdpaid
+      # rename the columns to match the example dataset
+      colnames(tmp.df) <- colnames(df.redlist_list)
+      # delete the temporary file
+      file.remove(paste0(tempdir(),"/redlist_list_",wdpaid,".csv"))
+      # append the results of the file to an existing dataframe/table and return results
+      return(rbind(df.redlist_list,tmp.df)[-1,])
     },
-  error = function(e) {
-    message('Error in this line!')
-  }
+    error = function(e) {
+      message('Error in this line!')
+    }
   )
 }
 
@@ -140,13 +144,15 @@ get_species_list <- function(wdpaid) {
 # # process other polygons
 # for (i in 2:nrow(p)) {
 #   
-#   df_species_list <- 
+#   df_species_list <-
 #     rbind(df_species_list,
 #           get_species_list(p[i, ]$WDPAID))
 #   print(paste("Done processing line", i, sep=" "))
 # }
 # 
-# write.csv(df_species_list, file = "/home/rstudio/shared/datalake/mapme.protectedareas/output/polygon/dopa-rest/species_list.csv", row.names = F)
+# write.csv(df_species_list,
+#           file = "../../datalake/mapme.protectedareas/output/polygon/dopa_rest/allPAs/species_list.csv",
+#           row.names = F)
 
 
 
@@ -160,29 +166,29 @@ get_wdpa_level_centroid <- function(wdpaid) {
   
   tryCatch(
     {
-  # create the url
-  url <- paste0("https://dopa-services.jrc.ec.europa.eu/services/d6dopa40/protected_sites/get_wdpa_level_centroid?format=csv&wdpaid=",wdpaid)
-  # create empty dataframe to receive results
-  df.wdpa_level_centroid <- data.frame(wdpaid=NA,
-                                       wdpa_pid=NA,
-                                       name=NA,
-                                       iso3=NA,
-                                       x=NA,
-                                       y=NA)
-  # create string for temporary file
-  destfile <- paste0(tempdir(),"/wdpa_level_centroid_",wdpaid,".csv")
-  # download the file
-  download.file(url, destfile)
-  # read in temporary csv
-  tmp.df <- read.csv(paste0(tempdir(),"/wdpa_level_centroid_",wdpaid,".csv"),sep="|")
-  # delete the temporary file
-  file.remove(paste0(tempdir(),"/wdpa_level_centroid_",wdpaid,".csv"))
-  # append the results of the file to an existing dataframe/table and return results
-  return(rbind(df.wdpa_level_centroid,tmp.df)[-1,])
+      # create the url
+      url <- paste0("https://dopa-services.jrc.ec.europa.eu/services/d6geo/protected_sites/get_wdpa_level_centroid?format=csv&wdpaid=",wdpaid)
+      # create empty dataframe to receive results
+      df.wdpa_level_centroid <- data.frame(wdpaid=NA,
+                                           wdpa_pid=NA,
+                                           name=NA,
+                                           iso3=NA,
+                                           x=NA,
+                                           y=NA)
+      # create string for temporary file
+      destfile <- paste0(tempdir(),"/wdpa_level_centroid_",wdpaid,".csv")
+      # download the file
+      download.file(url, destfile)
+      # read in temporary csv
+      tmp.df <- read.csv(paste0(tempdir(),"/wdpa_level_centroid_",wdpaid,".csv"),sep="|")
+      # delete the temporary file
+      file.remove(paste0(tempdir(),"/wdpa_level_centroid_",wdpaid,".csv"))
+      # append the results of the file to an existing dataframe/table and return results
+      return(rbind(df.wdpa_level_centroid,tmp.df)[-1,])
     },
-  error = function(e) {
-    message('Error in this line!')
-  }
+    error = function(e) {
+      message('Error in this line!')
+    }
   )
 }
 
@@ -192,13 +198,15 @@ get_wdpa_level_centroid <- function(wdpaid) {
 # # process other polygons
 # for (i in 2:nrow(p)) {
 #   
-#   df_centroid <- 
+#   df_centroid <-
 #     rbind(df_centroid,
 #           get_wdpa_level_centroid(p[i, ]$WDPAID))
 #   print(paste("Done processing line", i, sep=" "))
 # }
 # 
-# write.csv(df_centroid, file = "/home/rstudio/shared/datalake/mapme.protectedareas/output/polygon/dopa-rest/wdpa_level_centroid.csv", row.names = F)
+# write.csv(df_centroid,
+#           file = "../../datalake/mapme.protectedareas/output/polygon/dopa_rest/allPAs/wdpa_level_centroid.csv",
+#           row.names = F)
 
 
 
@@ -245,13 +253,15 @@ get_water_stats <- function(wdpaid) {
 # # process other polygons
 # for (i in 2:nrow(p)) {
 #   
-#   df_water <- 
+#   df_water <-
 #     rbind(df_water,
 #           get_water_stats(p[i, ]$WDPAID))
 #   print(paste("Done processing line", i, sep=" "))
 # }
 # 
-# write.csv(df_water, file = "/home/rstudio/shared/datalake/mapme.protectedareas/output/polygon/dopa-rest/water_stats.csv", row.names = F)
+# write.csv(df_water,
+#           file = "../../datalake/mapme.protectedareas/output/polygon/dopa_rest/allPAs/water_stats.csv",
+#           row.names = F)
 
 
 
@@ -296,13 +306,15 @@ get_lcc_esa <- function(wdpaid) {
 # # process other polygons
 # for (i in 2:nrow(p)) {
 #   
-#   df_lcc_esa <- 
+#   df_lcc_esa <-
 #     rbind(df_lcc_esa,
 #           get_lcc_esa(p[i, ]$WDPAID))
 #   print(paste("Done processing line", i, sep=" "))
 # }
 # 
-# write.csv(df_lcc_esa, file = "/home/rstudio/shared/datalake/mapme.protectedareas/output/polygon/dopa-rest/landcover_change_esa.csv", row.names = F)
+# write.csv(df_lcc_esa,
+#           file = "../../datalake/mapme.protectedareas/output/polygon/dopa_rest/allPAs/landcover_change_esa.csv",
+#           row.names = F)
 
 
 
@@ -378,13 +390,15 @@ get_multiple_indicators <- function(wdpaid) {
 # # process other polygons
 # for (i in 2:nrow(p)) {
 #   
-#   df_multiple_indicators <- 
+#   df_multiple_indicators <-
 #     rbind(df_multiple_indicators,
 #           get_multiple_indicators(p[i, ]$WDPAID))
 #   print(paste("Done processing line", i, sep=" "))
 # }
 # 
-# write.csv(df_multiple_indicators, file = "/home/rstudio/shared/datalake/mapme.protectedareas/output/polygon/dopa-rest/multiple_indicators.csv", row.names = F)
+# write.csv(df_multiple_indicators,
+#           file = "../../datalake/mapme.protectedareas/output/polygon/dopa_rest/allPAs/multiple_indicators.csv",
+#           row.names = F)
 
 
 
@@ -523,13 +537,15 @@ get_landcover_copernicus <- function(wdpaid, agg) {
 # # process other polygons
 # for (i in 2:nrow(p)) {
 #   
-#   df_copernicus <- 
+#   df_copernicus <-
 #     rbind(df_copernicus,
 #           get_landcover_copernicus(p[i, ]$WDPAID, 0))
 #   print(paste("Done processing line", i, sep=" "))
 # }
 # 
-# write.csv(df_copernicus, file = "/home/rstudio/shared/datalake/mapme.protectedareas/output/polygon/dopa-rest/landcover_copernicus.csv", row.names = F)
+# write.csv(df_copernicus,
+#           file = "../../datalake/mapme.protectedareas/output/polygon/dopa_rest/supportedPAs/landcover_copernicus.csv",
+#           row.names = F)
 
 
 
