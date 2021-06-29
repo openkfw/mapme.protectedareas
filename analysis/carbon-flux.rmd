@@ -12,7 +12,7 @@ library("terra")
 library("sf")
 library("wdpar")
 library("dplyr")
-library("rmarkdown") # only used for rendering tables  for this website
+library("rmarkdown") # only used for rendering tables for this website
 
 starttime<-Sys.time() # mark the start time of this routine to calculate processing time at the end
 ```
@@ -36,8 +36,8 @@ Forest Carbon Emissions are greenhouse gas emissions that originate from forest 
 - Temporal resolution: Annual Updates
 - Unit: megagrams CO2 emissions/ha
 - Data downloaded: 5th March, 2021
-- [Metadata Link]("https://www.arcgis.com/home/item.html?id=211f218e70284507a8761fbea099945e")
-- [Download Link]("https://data.globalforestwatch.org/datasets/net-forest-carbon-flux/data")
+- [Metadata Link]("https://data.globalforestwatch.org/datasets/gfw::forest-greenhouse-gas-net-flux/about")
+- [Download Link]("https://data.globalforestwatch.org/datasets/66eafb4f16f9478c828c3225d26b4989/explore?location=8.142295%2C0.000000%2C2.60")
 
 ### Processing Workflow
 
@@ -48,62 +48,6 @@ To calculate zonal statistics for net forest carbon flux that changed between 20
 
 ![](assets/workflows/carbon_flux_zonal_stats.png)
 
-
-# Download and prepare raster data
-
-### Using API
-
-The script `carbon-flux.R` contains the function to download the raster file of the desired grid.
-
-How to use the function?
-
-- call the function `get_net_carbon_flux` by passing (lat, lon) arguments as string for eg. ("10S", "050W") or ("10N", "020E")
-- check the coordinates of your desired area and find out the grid under which interval of latitude and longitude does it fall
-- or simply visit the [GFW Dataset Portal](https://data.globalforestwatch.org/datasets/net-forest-carbon-flux/data) to verify chosen grid coordinates
-- Note: If in case you choose to compute zonal statistics for larger polygon level or for many polygon levels, then one raster data might not be enough for your computation. Then you must download multiple raster files so as to cover the polygon extent and merge them later simply using `merge` function.
-
-
-```{r callFunction, warning=FALSE, include=TRUE}
-options(timeout=180) # sets timeout for downloads to 180seconds
-# call the function to download raster for a part of the country Brazil where we want to compute zonal statistics
-# Note: raster value is 'Mg_CO2_ha-1'
-myRaster <- 
-  get_net_carbon_flux("00N", "060W")
-```
-
-After successfully running this function, you can see that the raster file is downloaded and stored in the temporary directory of R and is loaded to the working directory as the layer name `myRaster` as class object 'SpatRaster'.
-
-```{r loadRaster, warning=FALSE, include=TRUE}
-
-# view raster metadata
-myRaster
-# plot the raster
-plot(myRaster)
-```
-
-### Using Archived File
-
-The entire processing routine can be implemented using archived raster file which are stored in datalake. The only difference will be, we load the raster from datalake rather than downloading the raster by calling the function `get_net_carbon_flux`. Doing so will eliminate the possible connection issues to the data server and will speed up the processing routine. 
-Also, using single raster for Latin America will remove the complications in finding the adequate grid.
-
-```{r loadArchivedRast, warning=FALSE, include=TRUE}
-
-# load net forest carbon flux raster for whole LA
-myRaster_ar <- rast("../../datalake/mapme.protectedareas/input/net_carbon_flux/LA.tif")
-```
-
-
-Now the raster file is loaded to the working directory as the layer name `myRaster_ar` as class object 'SpatRaster'.
-
-```{r viewArchivedRast, warning=FALSE, include=TRUE}
-
-# view raster metadata
-myRaster_ar
-# plot the raster
-plot(myRaster_ar)
-```
-
-Note: For this routine, we are using `myRaster_ar`, the archived one.
 
 # Download and prepare WDPA polygons
 
@@ -147,11 +91,97 @@ br_wdpa_subset <- wdpa_clean(
   erase_overlaps = F
   )
 # SpatialPolygonsDataFrame for sf compatibility
-br_wdpa_subset_sf <- st_as_sf(br_wdpa_subset)
-# we can plot the data to see the three selected polygons
+br_wdpa_subset_sf <- 
+  st_as_sf(br_wdpa_subset)
+# transform to WGS84
+br_wdpa_subset_sf <- st_transform(br_wdpa_subset_sf,
+                                  "+proj=longlat +datum=WGS84 +no_defs")
+# we can plot the polygon data to see the three selected polygons
 plot(br_wdpa_subset_sf[1])
 ```
 
+
+# Download and prepare raster data
+
+### Using API
+
+The script `carbon-flux.R` contains the function to download the raster file of the desired grid.
+
+How to use the function?
+
+- call the function `get_net_carbon_flux` by passing (lat, lon) arguments as string for eg. ("10S_050W") or ("10N_020E")
+- check the coordinates of your desired area and find out the grid under which interval of latitude and longitude does it fall
+- or simply visit the [GFW Dataset Portal](https://data.globalforestwatch.org/datasets/66eafb4f16f9478c828c3225d26b4989/explore?location=8.142295%2C0.000000%2C2.60) to verify chosen grid coordinates
+- Note: If in case you choose to compute zonal statistics for larger polygon level or for many polygon levels, then one raster data might not be enough for your computation. Then you must download multiple raster files so as to cover the polygon extent and merge them later simply using `merge` function.
+
+
+```{r callFunction, warning=FALSE, include=TRUE}
+
+options(timeout=180) # sets timeout for downloads to 180seconds
+# call the function to download raster for a part of the country Brazil where we want to compute zonal statistics
+# Note: raster value is 'Mg_CO2_ha-1'
+myRaster <- 
+  get_net_carbon_flux("00N_060W")
+```
+
+After successfully running this function, you can see that the raster file is downloaded and stored in the temporary directory of R and is loaded to the working directory as the layer name `myRaster` as class object 'SpatRaster'.
+
+```{r loadRaster, warning=FALSE, include=TRUE}
+
+# view raster metadata
+myRaster
+# plot the raster
+plot(myRaster)
+```
+
+### Using Archived File
+
+The entire processing routine can be implemented using archived raster file which are stored in datalake. The only difference will be, we load the raster from datalake rather than downloading the raster by calling the function `get_net_carbon_flux`. Doing so will eliminate the possible connection issues to the data server and will speed up the processing routine. 
+
+Simply, to save further processing time and to avoid complexities, we would use the index shapefiles to load the particular raster which intersects with the PA polygon.
+For this, we load the index shapefiles generated for the carbon flux rasters.
+```{r indexShp, warning=FALSE, include=TRUE}
+
+# load index shapefile
+index <- 
+  read_sf("../../datalake/mapme.protectedareas/processing/net_carbon_flux/raster_index/raster_index.shp")
+# transform to wgs84
+index <- st_transform(index,
+                      "+proj=longlat +datum=WGS84 +no_defs")
+```
+
+Lets have a look at how does the index polygon looks like:
+```{r plotIndex, warning=FALSE}
+
+plot(index)
+```
+
+From the plot, we can see that the index polygon covers the entire Latin America on 10*10 grids. In order to load the required rasters, we need to intersect the index polygon and the WDPA polygon.
+
+```{r cropIndex, warning=FALSE, include=TRUE}
+
+# crop the index with wdpa polygon
+br_crop <- st_crop(index,
+                   br_wdpa_subset_sf)
+# check the number of rasters having intersection with the polygon
+n <- nrow(br_crop)
+n
+```
+
+Hence, the polygon we selected intersects only with the one carbon flux raster.
+
+Now the raster file is loaded to the working directory as the layer name `myRaster_ar` as class object 'SpatRaster'.
+
+```{r viewArchivedRast, warning=FALSE, include=TRUE}
+
+# view raster metadata
+myRaster_ar <- 
+  rast(br_crop$location)
+# plot the raster
+plot(myRaster_ar)
+```
+
+Note: For this routine, we are using `myRaster_ar`, the archived one.
 
 
 # Crop the Carbon Flux Raster
@@ -160,16 +190,17 @@ As we completed raster and vector data preparation, the next step would be to cl
 
 ```{r cropRaster, warning=FALSE, include=TRUE}
 
-# extent preparation
-myExtent <- st_transform(br_wdpa_subset_sf, "+proj=longlat +datum=WGS84 +no_defs")
-# SpatVector for `terra` compatibility
-myExtent_v <- vect(myExtent)
+# extent preparation; SpatVector for `terra` compatibility
+myExtent <- 
+  vect(br_wdpa_subset_sf)
 # crop raster using polygon extent
-myCrop <- terra::crop(myRaster_ar, myExtent_v)
+myCrop <- terra::crop(myRaster_ar,
+                      myExtent)
 # plot the data - shows the raster after getting cropped by the extent of polygon
 plot(myCrop)
 # crop raster using polygon mask
-myMask <- terra::mask(myCrop, myExtent_v)
+myMask <- terra::mask(myCrop,
+                      myExtent)
 # plot the data - shows the raster after getting cropped by the polygon mask
 plot(myMask)
 ```
@@ -183,7 +214,7 @@ To compute the zonal statistics, it is necessary to rasterize the polygon layer.
 ```{r rasterize, warning=FALSE, include=TRUE}
 
 # rasterize
-r <- terra::rasterize(myExtent_v, myMask, myExtent_v$WDPAID, background=NA, update=FALSE, touches=is.lines(myExtent_v), cover=FALSE)
+r <- terra::rasterize(myExtent, myMask, myExtent$WDPAID, background=NA, update=FALSE, touches=is.lines(myExtent), cover=FALSE)
 ```
 
 
@@ -208,9 +239,13 @@ By mathematical definition, net forest carbon flux is the difference between ave
 
 For all the three polygons we considered, we got the negative result. That means forests in these three Protected Areas act as the net sinks of carbon.
 
+**Note: If the polygon of interest intersects with multiple rasters, we have two methods to get the zonal statistics: **<br/> <br/>
+*1. load all rasters - merge them into one single raster using `terra:merge` - follow the processing routine - compute zonal statistics* <br/> <br/>
+*2. load individual raster - follow the processing routine - get zonal stats for individual rasters - aggregate the results* <br/> <br/>
 
-In the end we are going to have a look how long the rendering of this file took so that people get an idea about the processing speed of this routine.
+In the end we are going to have a look how long the rendering of this file took so that we can get an idea about the processing speed of this routine.
 ```{r time, warning=FALSE, include=TRUE}
+
 stoptime<-Sys.time()
 print(starttime-stoptime)
 ```
