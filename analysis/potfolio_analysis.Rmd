@@ -17,6 +17,7 @@ library("leaflet")
 library("RColorBrewer")
 library("plotly")
 library("ggthemes")
+library("htmltools")
 ```
 
 ```{r database_creation, message = FALSE, warning = FALSE, include = FALSE}
@@ -48,7 +49,7 @@ Conservation finance is an important field in the KfW development bank with cons
 Conservation finance has increased in importance for German development cooperation and considerably more financial resources had been spent in Latin America since 2004. 
 
 ```{r financeplot, echo=FALSE, message=FALSE, warning=FALSE}
-kfw_finance<-read_csv("~/shared/datalake/mapme.protectedareas/input/kfw/mapme.protectedareas_kfw-finance_complete-2021-03-17.csv")
+kfw_finance<-read_csv("~/shared/datalake/mapme.protectedareas/input/kfw_finance/mapme.protectedareas_kfw-finance_complete-2021-03-17.csv")
 
 finance_plot <-
   kfw_finance %>%
@@ -77,17 +78,33 @@ pal <- colorFactor(
   palette = c("darkblue","orange","darkgreen"),
   domain = wdpa_kfw_treatment_centroid$MARINE
 )
+# create colorramp2
+pal2 <- colorFactor(
+  palette = c("darkblue","orange","darkgreen"),
+  domain = wdpa_kfw_treatment_centroid$bmz_n_1
+)
 
 # add map
 wdpa_kfw_treatment_centroid<-st_transform(st_centroid(wdpa_kfw_treatment_centroid),crs = 4326)
 my_map <-
-  leaflet(data = wdpa_kfw_treatment_centroid) %>%
-  addProviderTiles(providers$CartoDB.Positron) %>%
-  addCircles(opacity = 0.9,color = ~pal(MARINE))%>%
-  addLegend("bottomright", pal = pal, values = ~MARINE,
+  leaflet() %>%
+  addTiles(group = "OpenStreetMap") %>%
+  # addProviderTiles(providers$Stamen.Toner, group = "Toner")%>%
+  # addProviderTiles(providers$CartoDB.Positron, group="CartoDB") %>%
+  addProviderTiles(providers$Esri.WorldImagery, group="Satellite") %>%
+  addProviderTiles(providers$Esri.WorldShadedRelief, group="Topography") %>%
+  addCircles(data = wdpa_kfw_treatment_centroid, opacity = 0.9,color = ~pal(MARINE), group = "Type",label = ~htmlEscape(NAME))%>%
+  addCircles(data = wdpa_kfw_treatment_centroid, opacity = 0.9,color = ~pal2(bmz_n_1),group = "Project-Nr.")%>%
+  addPolygons(data = wdpa_kfw_treatment,opacity = 0.9,color = ~pal(MARINE), group = "Type (Polygons)",label = ~htmlEscape(NAME))%>%
+  addLayersControl(
+    baseGroups = c("OpenStreetMap","Satellite","Topography"), #"Toner", "CartoDB"
+    # overlayGroups = c("Type","Project-Nr."),
+    overlayGroups = c("Type","Type (Polygons)","Project-Nr."),
+    options = layersControlOptions(collapsed = FALSE))%>%
+  hideGroup(group = c("Type (Polygons)","Project-Nr."))%>%
+  addLegend("bottomright", data = wdpa_kfw_treatment_centroid,pal = pal, values = ~MARINE,
     title = "Area Types",
-    opacity = 1
-  )
+    opacity = 1)
 my_map
 
 ```
@@ -108,12 +125,12 @@ db_teow_biomes <-
 db_teow_ecosystems_kfw <-
   db_teow %>%
   filter(grepl('teow_intersect_sqkm_', name)) %>%
-  filter(WDPAID %in% wdpa_kfw_treatment$WDPAID)
+  filter(WDPA_PID %in% wdpa_kfw_treatment$WDPAID)
 
 db_teow_biomes_kfw <-
   db_teow %>%
   filter(grepl('biome_intersect_sqkm_', name)) %>%
-  filter(WDPAID %in% wdpa_kfw_treatment$WDPAID)
+  filter(WDPA_PID %in% wdpa_kfw_treatment$WDPAID)
 
 # clean the names
 db_teow_ecosystems_kfw$name<-
@@ -154,7 +171,7 @@ To that end we utilize the *Terrestrial Ecoregions of the World (TEOW)* classifi
 KfW supports PAs that cover `r length(unique(db_teow_ecosystems_kfw$name))` different ecosystems and `r length(unique(db_teow_biomes$name))` biomes. This corresponds to `r round(length(unique(db_teow_ecosystems_kfw$name))/length(unique(db_teow_ecosystems$name))*100,digits=0)`% of all terrestrial ecoregions in our `r length(unique(wdpa_kfw_treatment$ISO3))` partnering countries. This relatively high share indicates a broad diversification of the investment portfolio. Nevertheless we should compare total area size of supported ecoregions to get a more adequate representation of the utilized funds. The graphic below allows us to see the actual numbers for each ecoregion grouped by larger biomes. 
 
 
-```{r teow_biomes_treemap, echo=FALSE, warning=FALSE, fig.height=15, fig.width=8}
+```{r teow_biomes_barplot, echo=FALSE, message = FALSE,  warning=FALSE, fig.height=15, fig.width=8}
 
 # plot
 db_fig_ecoregion<-
@@ -185,20 +202,243 @@ We can clearly see that our support is heavily concentrated in tropical and subt
 
 **Note**: It seems here that e.g. very few mountaineous regions are supported, relatively few mangrove areas and few Savannas. It would be interesting if there are any global priorities discussed currently in terms of biomes or ecoregions. 
 
-```{r}
+## Ecosystem Services
+### Carbon Storage
+Geodata can also tell us a bit about the relevance of conserving forests to mitigate global climate change. The following chart shows us, for example, estimations on how much carbon is stored in the soils as well as in the belowground and aboveground biomass inside supported protected areas. Conservation finance can help to keep this carbon in place that might be otherwise released to the atmosphere due to deforestation and forest degradation. 
+```{r dopa_carbonstorage, echo=FALSE, warning=FALSE, message = FALSE}
 
+db_dopa <- 
+  read_csv("/datadrive/datalake/mapme.protectedareas/output/polygon/dopa_rest/dopa_updated_results/multiple_indicators.csv")
+
+biomass_long <-
+  db_dopa %>%
+  select(iso3, agb_tot_c_mg, bgb_tot_c_mg, gsoc_tot_c_mg) %>%
+  pivot_longer(.,
+               c(agb_tot_c_mg, bgb_tot_c_mg, gsoc_tot_c_mg),
+               names_to = "carbon",
+               values_to = "value")
+
+biomass_long$carbon<-gsub("agb_tot_c_mg","Soil Organic Carbon",biomass_long$carbon)
+biomass_long$carbon<-gsub("bgb_tot_c_mg","Below Ground Carbon",biomass_long$carbon)
+biomass_long$carbon<-gsub("gsoc_tot_c_mg","Above Ground Carbon",biomass_long$carbon)
+
+carbon_plot <-
+  na.omit(biomass_long) %>%
+  # summarize per carbon type
+  group_by(carbon,iso3) %>%
+  summarize(value = round(sum(value / 10 ^ 9),digits = 2)) %>% #  convert to gigatons
+  ggplot() +
+  geom_bar(aes(iso3,
+               value, 
+               group = carbon,
+               fill = carbon), 
+           stat = "identity") +
+  labs(y = "Stored Carbon (Gigatons)", x = "", fill = "") +
+  scale_fill_tableau()+
+  theme_classic()
+
+ggplotly(carbon_plot)
+```
+As we can see the protected areas network in Latin America stores `r round((sum(biomass_long$value,na.rm = T))/10^9,digits=2)` Gigatons of carbon that, if released completely to the atmosphere, would generate emissions which correspond to `r round(sum(biomass_long$value,na.rm = T)*3.67/739000000,digits=0)` times the annual GHG emissions of Germany. Most of this carbon is stored in Brazil which is by far the largest country on the continent with the biggest network of protected areas.
+
+### Habitat and Species
+
+PAs supported through KfW cover the habitat of several species that are threatened with extinction according to the *IUCN Red List of Threatened Species*. 
+
+```{r species_plot, echo=FALSE, warning=FALSE, message=FALSE, fig.width=8}
+db_redlist <- 
+  read_csv("/datadrive/datalake/mapme.protectedareas/output/polygon/dopa_rest/dopa_updated_results/redlist_status.csv")
+
+# create dataset for plot
+db_redlist_iucn_status <-
+  db_redlist %>%
+  # filter and reshape
+  select(-wdpa_pid, -total_species, -endemic, -threatened_endemic) %>%
+  pivot_longer(!class, names_to = "status", values_to = "count") %>%
+  # aggregate
+  group_by(class, status) %>%
+  summarize(value = round(sum(count),
+                          digits = 0))
+# reformat categories and factorize
+redlist_categories<-c("data deficient",
+                      "least concerned",
+                      "near threatened", 
+                      "threatened",
+                      "vulnerable", 
+                      "endangered", 
+                      "critically endangered")
+redlist_categories<-rev(redlist_categories)
+
+db_redlist_iucn_status$status<-gsub("_"," ",db_redlist_iucn_status$status)
+db_redlist_iucn_status$status<-factor(db_redlist_iucn_status$status,
+                                      levels = redlist_categories)
+# plot only threatened
+redlist_plot <-
+  db_redlist_iucn_status %>%
+  filter(!status %in% c("data deficient", "least concerned")) %>%
+  ggplot(.,
+         aes(class, value, fill = status)) +
+  geom_bar(stat = "identity", position = "stack") +
+  labs(y = "Nr. of Species", x = "Class", fill = "") +
+  scale_fill_brewer(palette = "YlOrRd", direction = -1) +
+  scale_y_continuous(
+    labels = function(x)
+      format(x, big.mark = ",", scientific = FALSE)
+  ) +
+  theme_classic()+
+  theme(axis.text.x = element_text(angle = 45)) 
+ggplotly(redlist_plot)
 ```
 
 
-```{r}
+## Threads and Landcover Change
+
+```{r threads_and_landcover_datapreparation, echo=FALSE, warning=FALSE, message=FALSE}
+# Import dataset with information on wdpa
+wdpa_info <- read_sf("data/wdpa_kfw_spatial_latinamerica_2021-04-22_allPAs.gpkg")
+wdpa_info <- st_drop_geometry(wdpa_info)
+wdpa_info <- wdpa_info %>%
+  rename('wdpa_pid' = 'WDPA_PID') %>%
+  mutate(wdpa_pid = as.character(wdpa_pid))
+
+
+# Information on categories:
+# https://www.iucn.org/theme/protected-areas/about/protected-area-categories
+
+wdpa_accessibility <- read_csv("../../datalake/mapme.protectedareas/output/polygon/accessibility_to_cities/travel_time_to_nearby_cities_2000.csv")
+wdpa_accessibility <- wdpa_accessibility %>%
+  rename('wdpa_pid' = 'WDPA_PID') %>%
+  rename('travel_time_to_nearby_cities_min' = 'value') %>%
+  mutate(wdpa_pid = as.character(wdpa_pid)) %>%
+  select(wdpa_pid,travel_time_to_nearby_cities_min)
+
+
+wdpa_kfw_latinamerica <- read_csv("data/wdpa-kfw_latinamerica_2021-04-22.csv")
+kfw_finance_complete <- read_csv("/datadrive/datalake/mapme.protectedareas/input/kfw_finance/mapme.protectedareas_kfw-finance_complete-2021-03-17.csv")
+kfw_finance_aggregated <- read_csv("/datadrive/datalake/mapme.protectedareas/input/kfw_finance/mapme.protectedareas_kfw-finance-2021-03-17.csv")
+gfw_zonalstats <- read_csv("/datadrive/datalake/mapme.protectedareas/output/polygon/global_forest_watch/zonal_statistics_supported_gfw_long.csv")
+
+
+# new df with WDPA_ID and BMZ_no
+merge1 <- wdpa_kfw_latinamerica %>%
+  select(wdpa_pid, bmz_n_1) %>%
+  rename('bmz_no'=starts_with("bmz"))
+
+merge2 <- wdpa_kfw_latinamerica %>%
+  select(wdpa_pid, bmz_n_2) %>%
+  rename('bmz_no'=starts_with("bmz"))
+
+merge3 <- wdpa_kfw_latinamerica %>%
+  select(wdpa_pid, bmz_n_3) %>%
+  rename('bmz_no'=starts_with("bmz"))
+
+merge4 <- wdpa_kfw_latinamerica %>%
+  select(wdpa_pid, bmz_n_4) %>%
+  rename('bmz_no'=starts_with("bmz"))
+
+merge5 <- wdpa_kfw_latinamerica %>%
+  select(wdpa_pid, bmz_n_5) %>%
+  rename('bmz_no'=starts_with("bmz"))
+
+# df with WDPA_ID and BMZ_No (multiple entries for a single wdpa_id possible!)
+merged_wdpa_bmz <- mget(ls(pattern="^merge")) %>%
+  bind_rows() %>%
+  na.omit()
+
+# merge with gfw data
+gfw_zonalstats <- gfw_zonalstats %>%
+  rename('wdpa_pid'='WDPA_PID') %>%
+  mutate(wdpa_pid = as.character(wdpa_pid))
+
+gfw_zonalstats_with_bmzno <- left_join(merged_wdpa_bmz, gfw_zonalstats, 
+                                       by=c("wdpa_pid"))
+
+
+# merge with kfw finance data
+kfw_finance_aggregated <- kfw_finance_aggregated %>%
+  rename('bmz_no'=starts_with("bmz"))
+
+kfw_finance_with_wdpa <- left_join(merged_wdpa_bmz, kfw_finance_aggregated,
+                                   by=c('bmz_no'))
+
+# merge kfw finance data and gfw
+
+gfw_kfw <- full_join(gfw_zonalstats_with_bmzno, kfw_finance_aggregated,
+                     by=c('bmz_no'))
+
+area_2000_values <- gfw_zonalstats %>%
+  filter(name=='area_2000') %>%
+  mutate(name = NULL) %>%
+  rename('start_value' = 'value')
+
+gfw_kfw_area_pct <- left_join(gfw_kfw, area_2000_values,
+                              by=c('wdpa_pid')) %>%
+  filter(str_detect(name, 'area')) %>%
+  mutate(area_pct = value/start_value) %>%
+  drop_na(wdpa_pid)
+
+# area relative to project start
+gfw_kfw_area_pct_relyear <- gfw_kfw_area_pct %>%
+  mutate(area_year = as.numeric(substr(name,6,10)),
+         rel_year = area_year - first_year)
+
+
+# Merge with IUCN Categories
+
+gfw_kfw_area_pct_relyear_IUCN <- left_join(gfw_kfw_area_pct_relyear,wdpa_info,
+                                           by=c('wdpa_pid')) %>%
+  select(wdpa_pid, bmz_no, area_pct, area_year, rel_year, IUCN_CAT)
+
+
+# Merge with Accesibility
+
+gfw_kfw_area_pct_relyear_access <- left_join(gfw_kfw_area_pct_relyear, wdpa_accessibility,
+                                             by=c('wdpa_pid')) %>%
+  select(wdpa_pid, bmz_no, area_pct, area_year, rel_year, travel_time_to_nearby_cities_min)
 
 ```
+Forestcover loss and area usage rights can be correlated. In the following we will assess whether there is an apparent association between forestcover loss and different usage categories according to the usage criteria from IUCN. The plots show the trends before and after project start (horizontal lines). Shown are relative losses compared to the baseline year 2000. I.e. the total forestcover area that was still available in 2000 corresponds to 100% in the plots. 
 
+**IUCN Categories are as follows**:
 
-```{r}
+  + **Ia Strict Nature Reserve**: Category Ia are strictly protected areas set aside to protect biodiversity and also possibly geological/geomorphical features, where human visitation, use and impacts are strictly controlled and limited to ensure protection of the conservation values. Such protected areas can serve as indispensable reference areas for scientific research and monitoring.  
 
+  + **Ib Wilderness Area**: Category Ib protected areas are usually large unmodified or slightly modified areas, retaining their natural character and influence without permanent or significant human habitation, which are protected and managed so as to preserve their natural condition. 
+
+  + **II National Park**: Category II protected areas are large natural or near natural areas set aside to protect large-scale ecological processes, along with the complement of species and ecosystems characteristic of the area, which also provide a foundation for environmentally and culturally compatible, spiritual, scientific, educational, recreational, and visitor opportunities. 
+
+  + **III Natural Monument or Feature**: Category III protected areas are set aside to protect a specific natural monument, which can be a landform, sea mount, submarine cavern, geological feature such as a cave or even a living feature such as an ancient grove. They are generally quite small protected areas and often have high visitor value. 
+
+  + **IV Habitat/Species Management Area**: Category IV protected areas aim to protect particular species or habitats and management reflects this priority. Many Category IV protected areas will need regular, active interventions to address the requirements of particular species or to maintain habitats, but this is not a requirement of the category. 
+
+  + **V Protected Landscape/ Seascape**: A protected area where the interaction of people and nature over time has produced an area of distinct character with significant, ecological, biological, cultural and scenic value: and where safeguarding the integrity of this interaction is vital to protecting and sustaining the area and its associated nature conservation and other values.
+
+  + **VI Protected area with sustainable use of natural resources**: Category VI protected areas conserve ecosystems and habitats together with associated cultural values and traditional natural resource management systems. They are generally large, with most of the area in a natural condition, where a proportion is under sustainable natural resource management and where low-level non-industrial use of natural resources compatible with nature conservation is seen as one of the main aims of the area. 
+  
+  
+```{r threads_and_landcover_fclplot_iucn, echo=FALSE, warning=FALSE, message=FALSE, fig.width=8,fig.height=16}
+p4 <- gfw_kfw_area_pct_relyear_IUCN %>%
+  ggplot()+
+  geom_line(aes(x = rel_year, 
+                y = area_pct, 
+                group=interaction(wdpa_pid, bmz_no), 
+                color=IUCN_CAT,
+                text = paste('Forstcover (% of 2000): ', round(area_pct,digits=2),
+                                              '<br>WDPA-ID.BMZ-Number:', interaction(wdpa_pid, bmz_no), 
+                                              '<br>"IUCN Category":', IUCN_CAT)
+                ))+
+  theme(axis.text.x=element_text(angle = 90, hjust = 0))+
+  geom_vline(xintercept = 0,
+             linetype = 'dotted',
+             color = 'red')+
+  ylim(0.75,1)+
+  facet_wrap(~ bmz_no, nrow = 8)+
+  labs(y = "", x = "", fill = "") +
+  scale_colour_manual(values=brewer.pal(n = 10,name = "Paired"),
+                      name="IUCN Categories")
+ggplotly(p4,tooltip = "text")%>% 
+  layout(legend = list(orientation = "h", x=-0.3, y = 1.15))
 ```
-
 
 ## Appendix 
 ```{r teow_ecoregions_treemap, echo=FALSE, warning=FALSE}
