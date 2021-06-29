@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task SYSTEM "grass-addons.dtd">
+<addons version="7">
+    <task name="r.area">
+        <binary>
+            <file>/datadrive/johannes/mapme.protectedareas/data-raw/addons/bin/r.area</file>
+            <file>/datadrive/johannes/mapme.protectedareas/data-raw/addons/docs/html/r.area.html</file>
+            <file>/datadrive/johannes/mapme.protectedareas/data-raw/addons/docs/man/man1/r.area.1</file>
+        </binary>
+        <modules>
+            <module>r.area</module>
+        </modules>
+        <libgis revision="2020-12-22T15:55:09+00:00" />
+    </task>
+</addons>

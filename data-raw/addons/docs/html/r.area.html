@@ -1,0 +1,111 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.area - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="file:///usr/lib/grass78/docs/html/index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.area</b></em>  - Calculates area of clumped areas and remove areas smaller or greater than given threshold.
+<h2>KEYWORDS</h2>
+<a href="file:///usr/lib/grass78/docs/html/raster.html">raster</a>, <a href="file:///usr/lib/grass78/docs/html/topic_statistics.html">statistics</a>, <a href="file:///usr/lib/grass78/docs/html/keywords.html#area">area</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.area</b><br></div>
+<b>r.area --help</b><br>
+<div id="synopsis"><b>r.area</b> [-<b>b</b>] <b>input</b>=<em>name</em> <b>output</b>=<em>name</em>  [<b>lesser</b>=<em>integer</em>]   [<b>greater</b>=<em>integer</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-b</b></dt>
+<dd>Binary output</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of cell category map, e.g., maps created with r.clump</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of output raster with categories representing area size (in cells)</dd>
+
+<dt><b>lesser</b>=<em>integer</em></dt>
+<dd>Remove areas with number of cells lower than given value (0 for none):</dd>
+<dd>Default: <em>0</em></dd>
+
+<dt><b>greater</b>=<em>integer</em></dt>
+<dd>Remove areas with number of cells greater than given value (-1 for none):</dd>
+<dd>Default: <em>-1</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#note" class="toc">NOTE</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+<p>Module r.area reclassifies raster areas (created typically with <a href="https://grass.osgeo.org/grass-stable/manuals/r.clump.html">r.clump</a>)
+to values representing their size (in cells).
+Additionally, it can be used to remove areas smaller or greater than a treshold.
+</p>
+
+<h2><a name="note">NOTE</a></h2>
+<p>If areas belonging to a certain category are not continuous
+every area belonging to the same category has the same area value.
+	
+<h2><a name="see-also">SEE ALSO</a></h2>
+<em>
+<a href="https://grass.osgeo.org/grass-stable/manuals/r.clump.html">r.clump</a>,
+<a href="https://grass.osgeo.org/grass-stable/manuals/r.mapcalc.html">r.mapcalc</a>,
+<a href="https://grass.osgeo.org/grass-stable/manuals/r.reclass.area.html">r.reclass.area</a>
+</em>
+
+
+<h2><a name="author">AUTHOR</a></h2>
+Jarek  Jasiewicz
+
+<h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass-addons/tree/master/grass7/raster/r.area">r.area source code</a> (<a href="https://github.com/OSGeo/grass-addons/tree/master/grass7/raster/r.area">history</a>)</p>
+<hr class="header">
+<p>
+<a href="file:///usr/lib/grass78/docs/html/index.html">Main index</a> |
+<a href="file:///usr/lib/grass78/docs/html/raster.html">Raster index</a> |
+<a href="file:///usr/lib/grass78/docs/html/topics.html">Topics index</a> |
+<a href="file:///usr/lib/grass78/docs/html/keywords.html">Keywords index</a> |
+<a href="file:///usr/lib/grass78/docs/html/graphical_index.html">Graphical index</a> |
+<a href="file:///usr/lib/grass78/docs/html/full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>
