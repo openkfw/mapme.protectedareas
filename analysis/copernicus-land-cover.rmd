@@ -50,19 +50,6 @@ The purpose of this analysis is to compute area of different land cover classes 
 ![](assets/workflows/land_cover_area_routine.jpg)
 
 
-# Prepare land cover raster data
-
-The 20X20 gridded rasters were downloaded to cover the extent of Latin America for years 2015 to 2019. Later, for individual years, all the rasters were merged to get the single big raster for particular years. Here, we will load the big raster for the year 2015.
-
-```{r loadRaster, warning=FALSE, include=TRUE}
-
-# load raster land cover
-lc <- rast("../../datalake/mapme.protectedareas/input/copernicus_global_land_cover/2015/Latin_America_LC_2015.tif")
-# view raster details
-lc
-```
-
-
 # Download and Prepare WDPA Polygons
 
 For this analysis, we would choose one WDPA polygon from the country Venezuela. We can download the WDPA polygons from the package `wdpar` and then filter out the desired polygon using WDPAID with package `dplyr`.
@@ -75,11 +62,64 @@ We will then reproject the downloaded polygon sample to WGS84 to match with the 
 ven <- wdpa_fetch("VEN")%>%
   filter(WDPAID %in% 555705224)
 # reproject to the WGS84
-ven <- st_transform(ven, "+proj=longlat +datum=WGS84 +no_defs")
+ven <- st_transform(ven,
+                    "+proj=longlat +datum=WGS84 +no_defs")
 # load as spatVector for terra compatiility
-ven_v <- vect(ven)
+ven_v <- 
+  vect(ven)
 # plot the PA polygon
 plot(ven[1])
+```
+
+
+
+# Prepare land cover raster data
+
+The 20X20 gridded copernicus global land cover rasters were downloaded to cover the extent of Latin America for years 2015 to 2019. For this analysis section, we will be processing land cover statistics for the year 2015.
+
+As we already prepared the polygon data, we need to load the rasters which intersects with our polygon of interest. To make the thing easier, we used function `gdaltindex` from package `gdalUtils` to get the index shapefiles of the land cover rasters, which are stored in datalake. Thus, we are going to crop the index polygon with our PA polygon of interest.
+
+```{r indexShp, warning=FALSE, include=TRUE}
+
+# load index shapefile for the year 2015
+index <- 
+  read_sf("../../datalake/mapme.protectedareas/processing/copernicus_land_cover/raster_index/raster_index_2015.shp")
+# transform to wgs84
+index <- st_transform(index,
+                      "+proj=longlat +datum=WGS84 +no_defs")
+```
+
+Lets have a look at how does the index polygon looks like:
+```{r plotIndex, warning=FALSE}
+
+plot(index)
+```
+
+From the plot, we can see that the index polygon covers the entire Latin America on 20*20 grids. In order to load the required rasters, we need to intersect the index polygon and the WDPA polygon.
+
+```{r cropIndex, warning=FALSE, include=TRUE}
+
+# crop the index with wdpa polygon
+ven_crop <- st_crop(index,
+                    ven)
+# check the number of rasters having intersection with the polygon
+n <- nrow(ven_crop)
+n
+```
+
+Hence, the polygon we selected intersects only with the one land cover raster.
+
+**Note:** We are using two object types of same polygon i.e. `ven` which is `sf` object and is used when applying sf function `st_crop` and another one is `ven_v` which is `terra` object and will be used while performing `crop` and `mask` functions from the package `terra`.
+
+Now the raster file is loaded to the working directory as the layer name `lc` as class object 'SpatRaster'.
+
+```{r viewArchivedRast, warning=FALSE, include=TRUE}
+
+# view raster metadata
+lc <- 
+  rast(ven_crop$location)
+# plot the raster
+plot(lc)
 ```
 
 
@@ -90,11 +130,13 @@ Since we already loaded raster and polygon successfully to our workspace, we can
 ```{r cropRaster, warning=FALSE, include=TRUE}
 
 # crop raster by polygon
-ven_crop <- terra::crop(lc, ven_v)
+ven_crop <- terra::crop(lc,
+                        ven_v)
 # plot the cropped raster layer
 plot(ven_crop)
 # mask the raster by polygon 
-ven_mask <- terra::mask(ven_crop, ven_v)
+ven_mask <- terra::mask(ven_crop,
+                        ven_v)
 # plot the masked raster layer
 plot(ven_mask)
 ```
@@ -107,11 +149,13 @@ The next step would be to prepare the data frame. First, we would load the raste
 ```{r dfPrep1, warning=FALSE, include=TRUE}
 
 # raster values as dataframe
-df.ven <- as.data.frame(ven_mask)
+df.ven <- 
+  as.data.frame(ven_mask)
 # new dataframe with value column
 df.new <- data.frame(value=NA)
 # rename column to match with new df
-colnames(df.ven) <- colnames(df.new)
+colnames(df.ven) <- 
+  colnames(df.new)
 # check the columns with values of the prepared dataframe
 head(df.ven)
 ```
@@ -121,37 +165,45 @@ Similarly, we will prepare new data frame with only WDPAID to receive the final 
 ```{r dfPrep2, warning=FALSE, include=TRUE}
 
 # empty data frame to receive results
-df.final <- data.frame(WDPAID=555705224)
+df.final <- 
+  data.frame(WDPAID=555705224)
 ```
 
 # Compute area of land cover classes
 
-To carry out the final and main step of this analysis i.e. to compute the area of land cover classes, `area` function from the package `terra` would be used. We first compute the area of the masked raster layer `ven_mask` in square kilometer (sqkm). Then, we calculate the area in sqkm for single row of the data frame `df.ven`.
+To carry out the final and main step of this analysis i.e. to compute the area of land cover classes, `expanse` function from the package `terra` would be used. We first compute the area of the masked raster layer `ven_mask` in square kilometer (sqkm). Then, we calculate the area in sqkm for single row of the data frame `df.ven`.
 
 ```{r areaComp, warning=FALSE, include=TRUE}
 
-# area of masked raster
-area_sqm <- terra::area(ven_mask)
-# in sqkm
-area_sqkm <- area_sqm/1000000
+# area of masked raster in km
+area_sqkm <- terra::expanse(ven_mask,
+                            unit="km")
 # area per row of dataframe
-area_sqkm_per_cell <- area_sqkm/nrow(df.ven)
+area_sqkm_per_cell <- 
+  area_sqkm/nrow(df.ven)
 ```
 
 Finally, we call the function `lc_clases` from the sourced script `copernicus-land-cover.R` which takes the data frame `df.ven` as argument and returns another data frame `data.final` in long table format with the area of individual land cover classes.
 
 ```{r lcComp, warning=FALSE, include=TRUE}
 
-# call the function lc_classes and receive the result
-df.final_long <- lc_classes(df.ven)
+# call the function lc_classes and receive the result for year 2019
+df.final_2015 <- lc_classes(df.ven,
+                            2015)
 # view the resulting data
-df.final_long
+paged_table(df.final_2015)
 ```
 
 So, for a single polygon for the year 2015, we computed the area of each land cover classes present in the polygon. We can see that among 23 discrete classes, the polygon we used consists of eight different classes with open forest comprising the largest area of the polygon.
 
+Similarly, to compute the land cover statistics for the year 2019, follow these steps: <br/>
+**load index polygon for year 2019 - crop index polygon with pa polygon - load the respective rasters - follow the routine**
 
 In order to carry out land cover change analysis, we can load raster layer for another year of which we want to see the changes in the area of land cover classes and then finally subtract the area from the respective years.
+
+**Note: If the polygon of interest intersects with multiple rasters, we have two methods to get the land cover statistics: **<br/>
+*1. load all rasters - merge them into one single raster using `terra:merge` - follow the processing routine - compute land cover statistics* <br/>
+*2. load individual raster - follow the processing routine - get land cover stats for individual rasters - aggregate the results* <br/> <br/>
 
 
 In the end we are going to have a look how long the rendering of this file took so that people get an idea about the processing speed of this routine.
