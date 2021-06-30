@@ -12,7 +12,7 @@ navbar:
   right:
   - icon: fa-github
     text: Source code
-    href: https://github.com/Jo-Schie/mapme.protectedareas
+    href: https://github.com/openkfw/mapme.protectedareas
 output:
   workflowr::wflow_html:
     toc: yes
