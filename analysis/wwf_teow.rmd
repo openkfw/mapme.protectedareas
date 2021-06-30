@@ -9,9 +9,9 @@ output: html_document
 
 # load required libraries
 library("sf")
+library("terra")
 library("wdpar")
 library("dplyr")
-library("mapview") # usef for interactive maps in this website. not essential for analysis
 library("rmarkdown") # only used for rendering tables  for this website
 
 starttime<-Sys.time() # mark the starttime of this routine to calculate processing time at the end
@@ -20,7 +20,8 @@ starttime<-Sys.time() # mark the starttime of this routine to calculate processi
 
 # Introduction
 
-Terrestrial Ecoregions of the World (TEOW) is a biogeographic regionalization of the Earth's terrestrial biodiversity. The biogeographic units are ecoregions, which are defined as relatively large units of land or inland water containing a distinct assemblage of natural communities sharing a large majority of species, dynamics, and environmental conditions. There are 867 terrestrial ecoregions, classified into 14 different biomes such as forests, grasslands, or deserts. Ecoregions represent the original distribution of distinct assemblages of species and communities.Visit [Link]("https://www.worldwildlife.org/publications/terrestrial-ecoregions-of-the-world") for more information on TEOW from WWF.
+Terrestrial Ecoregions of the World (TEOW) is a biogeographic regionalization of the Earth's terrestrial biodiversity. The biogeographic units are ecoregions, which are defined as relatively large units of land or inland water containing a distinct assemblage of natural communities sharing a large majority of species, dynamics, and environmental conditions. There are 867 terrestrial ecoregions, classified into 14 different terrestrial biomes such as forests, grasslands, or deserts. Ecoregions represent the original distribution of distinct assemblages of species and communities. The biome is more concrete aggregation of the organisms classified according to their adaptation to the environment in which they exist. <br/>
+Visit [Link]("https://www.worldwildlife.org/publications/terrestrial-ecoregions-of-the-world") for more information on TEOW from WWF.
 
 ### Datasource and Metadata Information
 
@@ -30,7 +31,7 @@ Terrestrial Ecoregions of the World (TEOW) is a biogeographic regionalization of
 - Temporal Resolution: Cross-sectional
 - Unit: hectare
 - Data downloaded: 15th March, 2021
-- [Metadata Link]("https://stuff.mit.edu/afs/athena/course/11/11.951/ecoplan/data/ecoregions/wwf_terr_ecos.htm")
+- [Metadata Link]("https://globil-panda.opendata.arcgis.com/datasets/panda::terrestrial-ecoregions-world/about")
 - [Download Link]("https://globil-panda.opendata.arcgis.com/datasets/terrestrial-ecoregions-world")
 
 
@@ -44,11 +45,13 @@ To carry out this analysis, we will follow this processing routine:
 
 # Download and prepare WDPA polygons 
 
-First of all, we will try to get the country level polygon data from `wdpar` package. `wdpar` is a library to interface to the World Database on Protected Areas (WDPA). The library is used to monitor the performance of existing PAs and determine priority areas for the establishment of new PAs. We will use Brazil - for other countries of your choice, simply provide the country name or the ISO3 name e.g. Gy for Guyana, COL for Colombia
+First of all, we will try to get the country level polygon data from `wdpar` package. `wdpar` is a library to interface to the World Database on Protected Areas (WDPA). The library is used to monitor the performance of existing PAs and determine priority areas for the establishment of new PAs. We will use Brazil - for other countries of your choice, simply provide the country name or the ISO3 name e.g. GY for Guyana, COL for Colombia
 
 ```{r fetchWdpar, warning=FALSE, include=TRUE}
-# fetch the raw data from wdpar of country
-br_wdpa_raw <- wdpa_fetch("Brazil")
+
+# fetch the raw data from wdpar of country Brazil
+br_wdpa_raw <- 
+  wdpa_fetch("Brazil")
 ```
 
 Since there are more than 3000 enlisted protected areas in Brazil, we will demonstrate this routine using only three wdpa polygons:
@@ -64,52 +67,43 @@ For this, we have to subset the country level polygon data to the PAs level.
 br_wdpa_subset<-
   br_wdpa_raw%>%
   filter(WDPAID %in% c(43,4891,31776))
+# plot the selected polygons
+plot(br_wdpa_subset[1])
 ```
 
-The next immediate step is  to clean the fetched raw data with the functionality provided with routines from the `wdpar` package. Cleaning is done by the package following this steps:
 
-- exclude protected areas that are not yet implemented
-- exclude protected areas that are UNESCO reserves
-- removing points with no reported area:
-- replace missing data codes (e.g. "0") with missing data values (i.e. NA)
-- replace protected areas represented as points with circular protected areas that correspond to their reported extent
-- repair any topological issues with the geometries
-- (erase overlapping areas) -> which might be important for area reporting on country level but is not done in our context here
+# Prepare TEOW polygons
 
-For more information see the package documentation of `wdpar`. In the end of this step we will project the data back to WGS84 for the intersection.
-
-```{r cleanWdpar, warning=FALSE, include=TRUE}
-# clean the data
-br_wdpa_subset <- wdpa_clean(
-  br_wdpa_subset, 
-  erase_overlaps = F
-  )
-# we can create an interactive map to see the three selected polygons
-mapView(br_wdpa_subset)
-```
-  
-Since, we prepared WDPA polygon data for our analysis, we now load the TEOW global shapefile layer from archived file.
+Since, we prepared WDPA polygon data for our analysis, we now load the TEOW global geopackage layer from archived file. Here we are using the validated geopackage from TEOW. The function `st_make_valid` removes the invalid geometry within the polygons, which was already applied to our teow geopackage, so no need to use this function in this analysis.
 
 ```{r loadTeow, warning=FALSE, include=TRUE}
 
-# load TEOW global polygons
+# load TEOW global polygons as spatVector
 teow <- 
-  read_sf(paste("data/Terrestrial_Ecoregions_World.shp", sep=""))
-
+  vect("../../datalake/mapme.protectedareas/input/teow/Terrestrial_Ecoregions_World_validated.gpkg")
+# plot the teow polygon
+plot(teow)
 ```
 
 # Intersect TEOW and WDPA Polygon layer
 
-To analyse how much of wdpa area is within which part of the ecoregion, intersection function is applied. `st_intersection` allows us to see that result. To be able to apply st_intersection, the polygon layers should be provided as an object with the `sf` class. To carry out intersection function, coordinate reference system of both the polygons should be harmonized. For this, we use `st_transform` to achieve this. We than compare the number of polygons in both the original and the resulting WDPA layer to see whether our process split up any  polygon from the intersection
+To analyse how much of wdpa area is within which part of the ecoregion, it is necessary to carry out intersection of the polygons. For this, the function `st_intersection` from `sf` is applied. To be able to apply st_intersection, the polygon layers should be provided as an object with the `sf` class. To carry out intersection function, coordinate reference system of both the polygons should be harmonized. We then compare the number of polygons in both the original and the resulting WDPA layer to see whether our process split up any polygon from the intersection.
+
+**Note** We first loaded the teow polygon as `spatVector` so that there won't be issue with missing CRS. But, to be able to apply `st_intersection` it is necessary to convert `spatVector` object to the `sf` object
 
 ```{r intersect, warning=FALSE, include=TRUE}
 
-# reproject teow to match WDPA
-teow <-
-  st_transform(teow,crs = st_crs(br_wdpa_subset))
+# convert from terra object to sf object 
+teow <- 
+  st_as_sf(teow)
 # apply intersection
 teow_wdpa_intersection <- 
-  st_intersection(teow, br_wdpa_subset)
+  st_intersection(teow,
+                  br_wdpa_subset)
+# plot the biome - intersected polygon
+plot(teow_wdpa_intersection[20])
+# plot the ecoregion - intersected polygon
+plot(teow_wdpa_intersection[5])
 # compare the number of polygons in both layers 
 nrow(br_wdpa_subset)
 nrow(teow_wdpa_intersection)
@@ -119,7 +113,7 @@ We can see that there is one intersection in the research area i.e that we now h
 
 # Calculate Areas
 
-Since, we already achieved the intersection, now we want to extract the actual area of intersection between wdpa polygons and teow polygons.
+Since, we already carry out the intersection, now we want to extract the actual area of intersection between wdpa polygons and teow polygons.
 
 ```{r extract, warning=FALSE, include=TRUE}
 
@@ -127,19 +121,24 @@ Since, we already achieved the intersection, now we want to extract the actual a
 teow_wdpa_intersection$teow_intersect_sqkm <- 
   st_area(teow_wdpa_intersection)/1000000
 # tibble - turns existing object to tibble dataframe from library `dplyr`
-myData <- as_tibble(teow_wdpa_intersection)
+myData <- 
+  as_tibble(teow_wdpa_intersection)
 # select only necessary columns from the intersected polygon
 myData_f <- myData %>% 
-  select(WDPAID, BIOME_NAME, ECO_NAME, teow_intersect_sqkm)
+  select(WDPAID,
+         BIOME_NAME,
+         ECO_NAME,
+         teow_intersect_sqkm)
 ```
-With the results looking like this
 
+With the results looking like this
 ``````{r tableshow, warning=FALSE, echo=FALSE}
+
 paged_table(myData_f)
 ```
 
 
-In the end we are going to have a look how long the rendering of this file took so that people get an idea about the processing speed of this routine.
+In the end we are going to have a look how long the rendering of this file took so that we could get an idea about the processing speed of this routine.
 
 ```{r time, warning=FALSE, include=TRUE}
 stoptime<-Sys.time()
