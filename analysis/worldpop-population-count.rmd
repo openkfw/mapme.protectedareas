@@ -45,8 +45,9 @@ Among all the available global rasters for years 2000 to 2020 were downloaded, f
 
 ```{r loadRaster, warning=FALSE, include=TRUE}
 
-# load raster land cover
-pop <- rast("/home/rstudio/shared/datalake/mapme.protectedareas/input/world_pop/global_mosaic2000.tif")
+# load global mosaic - population count raster
+pop <- 
+  rast("../../datalake/mapme.protectedareas/input/world_pop/global_mosaic2000.tif")
 # plot raster
 plot(pop)
 ```
@@ -58,11 +59,11 @@ Since we already prepared raster data for our analysis. Now, we will try to get 
 ```{r fetchWdpar, warning=FALSE, include=TRUE}
 
 # fetch the raw data from wdpar of country
-br_raw_pa_data <- wdpa_fetch("BRA")
+br_raw_pa_data <- 
+  wdpa_fetch("BRA")
 ```
 
 Since there are multiple enlisted protected areas in Brazil, we want to compute zonal statistics only for the polygon data of:
-  - Reserva Biologica Do Rio Trombetas - wdpaid 43
   - Reserva Extrativista Rio Cajari - wdpaid 31776 and
   - Estacao Ecologica Do Jari - wdpaid 4891
 
@@ -70,12 +71,12 @@ For this, we have to subset the country level polygon data to the PA level.
 
 ```{r subset, warning=FALSE, include=TRUE}
 
-# subset three wdpa polygons by their wdpa ids
-bra<-
+# subset the wdpa polygons by their wdpa ids
+brazil <- 
   br_raw_pa_data%>%
-  filter(WDPAID %in% c(43, 31776, 4891))
+  filter(WDPAID %in% c(31776, 4891))
 # plot the sample polygon
-plot(bra[1])
+plot(brazil[1])
 ```
 
 
@@ -85,15 +86,17 @@ As we completed raster and vector data preparation, the next step would be to cl
 
 ```{r cropRaster, warning=FALSE, include=TRUE}
 
-# convert object bra to spatVector object
-bra_v <- as(bra, "Spatial")%>%
+# convert object brazil to spatVector object
+bra_v <- as(brazil, "Spatial")%>%
   vect()
 # crop raster using polygon extent
-myCrop <- terra::crop(pop, bra_v)
+myCrop <- terra::crop(pop,
+                      bra_v)
 # plot the data - shows the raster after getting cropped by the extent of polygon
 plot(myCrop)
 # crop raster using polygon mask
-myMask <- mask(myCrop, bra_v)
+myMask <- mask(myCrop,
+               bra_v)
 # plot the data - shows the raster after getting cropped by the polygon mask
 plot(myMask)
 ```
@@ -106,7 +109,11 @@ To compute the zonal statistics, it is necessary to rasterize the polygon layer.
 ```{r rasterize, warning=FALSE, include=TRUE}
 
 # rasterize
-r <- rasterize(bra_v, myMask, bra_v$WDPAID, background=NA, update=FALSE, touches=is.lines(bra_v), cover=FALSE)
+r <- rasterize(bra_v,
+               myMask,
+               bra_v$WDPAID)
+# view the rasterized polygon
+plot(r)
 ```
 
 
@@ -118,12 +125,12 @@ A zonal statistics operation is one that calculates statistics on cell values of
 
 # zonal stats
 zstats <- zonal(myMask, r, fun='sum', na.rm=T)
+# view the results
 zstats
 ```
 
 
-From the result of zonal statistics, we can see the number of people residing in the protected areas with WDPAIDs 43, 4891 and 31776. In a similar way, we can also compute the number of people in a particular region of interest for the desired year and analyze whether the population is following increasing or decreasing trend which helps scientific community to understand the demographic effects towards the protected regions.
-
+From the result of zonal statistics, we can see the number of people residing in the protected areas with WDPAIDs 4891 and 31776. In a similar way, we can also compute the number of people in a particular region of interest for the desired year and analyze whether the population is following increasing or decreasing trend which helps scientific community to understand the demographic effects towards the protected regions.
 
 
 In the end we are going to have a look how long the rendering of this file took so that people get an idea about the processing speed of this routine.
