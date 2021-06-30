@@ -369,26 +369,33 @@ st_write(teow, "../../datalake/mapme.protectedareas/input/teow/Terrestrial_Ecore
 
 # Accessibility to cities ------------------------------------------------------------------------------------------------------------------
 
-# population: 50k to 100k
-# create URL
-url <- paste0("https://ndownloader.figshare.com/files/14189825")
-# destination file to download the zip file
-destfile <- paste0("../../datalake/mapme.protectedareas/input/accessibility_to_cities/2015/acc_50k_100k.tif")
-# download command
-download.file(url, destfile)
+# function to access accessibility rasters for different population layers
+get_accessibility <- function(range, index) {
+  
+  tryCatch(
+    {
+      # create URL
+      url <- paste0("https://ndownloader.figshare.com/files/",index)
+      # destination file to download the zip file
+      destfile <- paste0("../../datalake/mapme.protectedareas/input/accessibility_to_cities/2015/acc_",range,".tif")
+      # download command
+      download.file(url, destfile)
+    },
+    error = function(e) {
+      message('Error in this line!')
+    }
+  )
+}
 
-# population: 100k to 200k
-# create URL
-url <- paste0("https://ndownloader.figshare.com/files/14189819")
-# destination file to download the zip file
-destfile <- paste0("../../datalake/mapme.protectedareas/input/accessibility_to_cities/2015/acc_50k_100k.tif")
-# download command
-download.file(url, destfile)
-
-# population: 20k to 50k
-# create URL
-url <- paste0("https://ndownloader.figshare.com/files/14189831")
-# destination file to download the zip file
-destfile <- paste0("../../datalake/mapme.protectedareas/input/accessibility_to_cities/2015/acc_50k_100k.tif")
-# download command
-download.file(url, destfile)
+# call the function with required population range and its particular index number in the download file
+get_accessibility("5k_10k", 14189840)
+get_accessibility("10k_20k", 14189837)
+get_accessibility("20k_50k", 14189831)
+get_accessibility("50k_100k", 14189825)
+get_accessibility("100k_200k", 14189819)
+get_accessibility("200k_500k", 14189816)
+get_accessibility("500k_1mio", 14189810)
+get_accessibility("1mio_5mio", 14189807)
+get_accessibility("50k_50mio", 14189849)
+get_accessibility("5k_110mio", 14189852)
+get_accessibility("20k_110mio", 14189843)
