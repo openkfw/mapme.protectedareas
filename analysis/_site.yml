@@ -1,5 +1,5 @@
 name: mapme.protectedareas
-output_dir: ../public
+output_dir: ../docs
 navbar:
   title: mapme.protectedareas
   left:
@@ -10,9 +10,9 @@ navbar:
   - text: License
     href: license.html
   right:
-  - icon: fa-gitlab
+  - icon: fa-github
     text: Source code
-    href: https://gitlab.com/Jo-Schie/mapme.protectedareas
+    href: https://github.com/Jo-Schie/mapme.protectedareas-website
 output:
   workflowr::wflow_html:
     toc: yes
