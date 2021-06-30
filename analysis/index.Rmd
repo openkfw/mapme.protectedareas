@@ -37,3 +37,5 @@ Chapters:
   - [Terrain Ruggedness Index](terrain_ruggedness_index.html).
   
   - [Accessibility to Cities (Weiss et al. 2018)](accessibility.html).
+  
+  - [Global Forest Watch (mapme.forest)](gfw.html)
