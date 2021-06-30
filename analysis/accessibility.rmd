@@ -84,9 +84,11 @@ br_wdpa_subset <- wdpa_clean(
   erase_overlaps = F
   )
 # reproject to the WGS84
-br_wdpa_subset <- st_transform(br_wdpa_subset, "+proj=longlat +datum=WGS84 +no_defs")
+br_wdpa_subset <- st_transform(br_wdpa_subset,
+                               "+proj=longlat +datum=WGS84 +no_defs")
 # spatvector for terra compatibility
-br_wdpa_subset_v <- vect(br_wdpa_subset)
+br_wdpa_subset_v <- 
+  vect(br_wdpa_subset)
 # we can plot the data to see the three selected polygons
 plot(br_wdpa_subset_v)
 ```
@@ -98,7 +100,8 @@ The raster datasets are available to download for 12 different layers for the ye
 ```{r loadRaster, warning=FALSE, include=TRUE}
 
 # load accessibility raster
-acc_rast <- rast("../../datalake/mapme.protectedareas/input/accessibility_to_cities/2015/acc_50k_100k.tif")
+acc_rast <- 
+  rast("../../datalake/mapme.protectedareas/input/accessibility_to_cities/2015/acc_50k_100k.tif")
 # view raster details
 acc_rast
 ```
@@ -135,6 +138,8 @@ To compute the zonal statistics, it is necessary to rasterize the polygon layer.
 br_subset_rast <-terra::rasterize(br_wdpa_subset_v,
                                   acc_rast_mask,
                                   br_wdpa_subset_v$WDPAID)
+# plot the rasterized polygon
+plot(br_subset_rast)
 ```
 
 
