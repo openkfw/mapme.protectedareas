@@ -26,6 +26,8 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
 <link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
 <!-- Add a small amount of space between sections. -->
@@ -377,7 +379,13 @@ div.tocify {
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://gitlab.com/Jo-Schie/mapme-protectedareas">
+    <span class="fas fa-gitlab"></span>
+     
+    Source code
+  </a>
+</li>
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -396,7 +404,7 @@ div.tocify {
 
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
-<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 </button>
 </p>
 <div id="workflowr-report" class="collapse">
@@ -405,7 +413,7 @@ div.tocify {
 <a data-toggle="tab" href="#summary">Summary</a>
 </li>
 <li>
-<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> </a>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -417,7 +425,7 @@ div.tocify {
 <strong>Last updated:</strong> 2021-06-30
 </p>
 <p>
-<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 1
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
 </p>
 <p>
 <strong>Knit directory:</strong> <code>mapme.protectedareas/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
@@ -433,12 +441,12 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges"> <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted changes </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguncommittedchanges" class="panel-collapse collapse">
+<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown file has unstaged changes. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
 </div>
 </div>
 </div>
@@ -505,26 +513,28 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastree671c256c56038796ce39f69da3239f5acbb44a1btargetblank671c256a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/openkfw/mapme.protectedareas/tree/671c256c56038796ce39f69da3239f5acbb44a1b" target="_blank">671c256</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgitlabcomJoSchiemapmeprotectedareastree8bd1321518a72544c147f747f0b80d4412c966cftargetblank8bd1321a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://gitlab.com/Jo-Schie/mapme-protectedareas/tree/8bd1321518a72544c147f747f0b80d4412c966cf" target="_blank">8bd1321</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastree671c256c56038796ce39f69da3239f5acbb44a1btargetblank671c256a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgitlabcomJoSchiemapmeprotectedareastree8bd1321518a72544c147f747f0b80d4412c966cftargetblank8bd1321a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/openkfw/mapme.protectedareas/tree/671c256c56038796ce39f69da3239f5acbb44a1b" target="_blank">671c256</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://gitlab.com/Jo-Schie/mapme-protectedareas/tree/8bd1321518a72544c147f747f0b80d4412c966cf" target="_blank">8bd1321</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 </p>
 <pre><code>
 Ignored files:
+    Ignored:    .RData
+    Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-
-Unstaged changes:
-    Modified:   analysis/worldpop-population-count.rmd
+    Ignored:    data-raw/addons/docs/rest/
+    Ignored:    data-raw/addons/etc/
+    Ignored:    data-raw/addons/scripts/
 
 </code></pre>
 <p>
@@ -539,7 +549,7 @@ Note that any generated files, e.g. HTML, png, CSS, etc., are not included in t
 <div id="versions" class="tab-pane fade">
 
 <p>
-These are the previous versions of the repository in which changes were made to the R Markdown (<code>analysis/worldpop-population-count.rmd</code>) and HTML (<code>docs/worldpop-population-count.html</code>) files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view the files as they were in that past version.
+These are the previous versions of the repository in which changes were made to the R Markdown (<code>analysis/worldpop-population-count.rmd</code>) and HTML (<code>public/worldpop-population-count.html</code>) files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view the files as they were in that past version.
 </p>
 <div class="table-responsive">
 <table class="table table-condensed table-hover">
@@ -568,16 +578,50 @@ Message
 html
 </td>
 <td>
-<a href="https://rawcdn.githack.com/openkfw/mapme.protectedareas/1501982cca6c4b92cfa1725f90b64e3cbe94783d/docs/worldpop-population-count.html" target="_blank">1501982</a>
+<a href="https://glcdn.githack.com/Jo-Schie/mapme-protectedareas/raw/8bd1321518a72544c147f747f0b80d4412c966cf/public/worldpop-population-count.html" target="_blank">8bd1321</a>
 </td>
 <td>
-Ohm-Np
+Johannes Schielein
 </td>
 <td>
-2021-05-14
+2021-06-30
 </td>
 <td>
-minor updates index/docs
+Host with GitLab.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://glcdn.githack.com/Jo-Schie/mapme-protectedareas/raw/3a39ee392a1bc62f5b354d990e24f937829e4b5b/public/worldpop-population-count.html" target="_blank">3a39ee3</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-06-30
+</td>
+<td>
+Host with GitHub.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://glcdn.githack.com/Jo-Schie/mapme-protectedareas/raw/ae67dca8cb8d1d0d8e383a78f6f4139a91e4f448/public/worldpop-population-count.html" target="_blank">ae67dca</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-06-30
+</td>
+<td>
+Host with GitLab.
 </td>
 </tr>
 <tr>
@@ -585,7 +629,24 @@ minor updates index/docs
 Rmd
 </td>
 <td>
-<a href="https://github.com/openkfw/mapme.protectedareas/blob/ab80285bf7697129f710921bf9ef50b5a6d67577/analysis/worldpop-population-count.rmd" target="_blank">ab80285</a>
+<a href="https://gitlab.com/Jo-Schie/mapme-protectedareas/blob/84b88247075c6cae87ddd31fc9dbcdfc304f9a81/analysis/worldpop-population-count.rmd" target="_blank">84b8824</a>
+</td>
+<td>
+Om Bandhari
+</td>
+<td>
+2021-06-30
+</td>
+<td>
+update rmd analysis
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://gitlab.com/Jo-Schie/mapme-protectedareas/blob/ab80285bf7697129f710921bf9ef50b5a6d67577/analysis/worldpop-population-count.rmd" target="_blank">ab80285</a>
 </td>
 <td>
 Ohm-Np
@@ -667,13 +728,35 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/openkfw/mapme.protectedareas/blob/1501982cca6c4b92cfa1725f90b64e3cbe94783d/docs/figure/worldpop-population-count.rmd/loadRaster-1.png" target="_blank">1501982</a>
+<a href="https://gitlab.com/Jo-Schie/mapme-protectedareas/blob/8bd1321518a72544c147f747f0b80d4412c966cf/public/figure/worldpop-population-count.rmd/loadRaster-1.png" target="_blank">8bd1321</a>
 </td>
 <td>
-Ohm-Np
+Johannes Schielein
 </td>
 <td>
-2021-05-14
+2021-06-30
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://gitlab.com/Jo-Schie/mapme-protectedareas/blob/3a39ee392a1bc62f5b354d990e24f937829e4b5b/public/figure/worldpop-population-count.rmd/loadRaster-1.png" target="_blank">3a39ee3</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-06-30
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://gitlab.com/Jo-Schie/mapme-protectedareas/blob/ae67dca8cb8d1d0d8e383a78f6f4139a91e4f448/public/figure/worldpop-population-count.rmd/loadRaster-1.png" target="_blank">ae67dca</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-06-30
 </td>
 </tr>
 </tbody>
@@ -720,13 +803,35 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/openkfw/mapme.protectedareas/blob/1501982cca6c4b92cfa1725f90b64e3cbe94783d/docs/figure/worldpop-population-count.rmd/subset-1.png" target="_blank">1501982</a>
+<a href="https://gitlab.com/Jo-Schie/mapme-protectedareas/blob/8bd1321518a72544c147f747f0b80d4412c966cf/public/figure/worldpop-population-count.rmd/subset-1.png" target="_blank">8bd1321</a>
 </td>
 <td>
-Ohm-Np
+Johannes Schielein
 </td>
 <td>
-2021-05-14
+2021-06-30
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://gitlab.com/Jo-Schie/mapme-protectedareas/blob/3a39ee392a1bc62f5b354d990e24f937829e4b5b/public/figure/worldpop-population-count.rmd/subset-1.png" target="_blank">3a39ee3</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-06-30
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://gitlab.com/Jo-Schie/mapme-protectedareas/blob/ae67dca8cb8d1d0d8e383a78f6f4139a91e4f448/public/figure/worldpop-population-count.rmd/subset-1.png" target="_blank">ae67dca</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-06-30
 </td>
 </tr>
 </tbody>
@@ -770,13 +875,35 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/openkfw/mapme.protectedareas/blob/1501982cca6c4b92cfa1725f90b64e3cbe94783d/docs/figure/worldpop-population-count.rmd/cropRaster-1.png" target="_blank">1501982</a>
+<a href="https://gitlab.com/Jo-Schie/mapme-protectedareas/blob/8bd1321518a72544c147f747f0b80d4412c966cf/public/figure/worldpop-population-count.rmd/cropRaster-1.png" target="_blank">8bd1321</a>
 </td>
 <td>
-Ohm-Np
+Johannes Schielein
 </td>
 <td>
-2021-05-14
+2021-06-30
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://gitlab.com/Jo-Schie/mapme-protectedareas/blob/3a39ee392a1bc62f5b354d990e24f937829e4b5b/public/figure/worldpop-population-count.rmd/cropRaster-1.png" target="_blank">3a39ee3</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-06-30
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://gitlab.com/Jo-Schie/mapme-protectedareas/blob/ae67dca8cb8d1d0d8e383a78f6f4139a91e4f448/public/figure/worldpop-population-count.rmd/cropRaster-1.png" target="_blank">ae67dca</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-06-30
 </td>
 </tr>
 </tbody>
@@ -813,13 +940,35 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/openkfw/mapme.protectedareas/blob/1501982cca6c4b92cfa1725f90b64e3cbe94783d/docs/figure/worldpop-population-count.rmd/cropRaster-2.png" target="_blank">1501982</a>
+<a href="https://gitlab.com/Jo-Schie/mapme-protectedareas/blob/8bd1321518a72544c147f747f0b80d4412c966cf/public/figure/worldpop-population-count.rmd/cropRaster-2.png" target="_blank">8bd1321</a>
 </td>
 <td>
-Ohm-Np
+Johannes Schielein
 </td>
 <td>
-2021-05-14
+2021-06-30
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://gitlab.com/Jo-Schie/mapme-protectedareas/blob/3a39ee392a1bc62f5b354d990e24f937829e4b5b/public/figure/worldpop-population-count.rmd/cropRaster-2.png" target="_blank">3a39ee3</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-06-30
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://gitlab.com/Jo-Schie/mapme-protectedareas/blob/ae67dca8cb8d1d0d8e383a78f6f4139a91e4f448/public/figure/worldpop-population-count.rmd/cropRaster-2.png" target="_blank">ae67dca</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-06-30
 </td>
 </tr>
 </tbody>
@@ -837,6 +986,65 @@ r &lt;- rasterize(bra_v,
 # view the rasterized polygon
 plot(r)</code></pre>
 <p><img src="figure/worldpop-population-count.rmd/rasterize-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-rasterize-1">
+Past versions of rasterize-1.png
+</button>
+</p>
+<div id="fig-rasterize-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://gitlab.com/Jo-Schie/mapme-protectedareas/blob/8bd1321518a72544c147f747f0b80d4412c966cf/public/figure/worldpop-population-count.rmd/rasterize-1.png" target="_blank">8bd1321</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-06-30
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://gitlab.com/Jo-Schie/mapme-protectedareas/blob/3a39ee392a1bc62f5b354d990e24f937829e4b5b/public/figure/worldpop-population-count.rmd/rasterize-1.png" target="_blank">3a39ee3</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-06-30
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://gitlab.com/Jo-Schie/mapme-protectedareas/blob/ae67dca8cb8d1d0d8e383a78f6f4139a91e4f448/public/figure/worldpop-population-count.rmd/rasterize-1.png" target="_blank">ae67dca</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-06-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="compute-zonal-statistics" class="section level1">
 <h1>Compute zonal statistics</h1>
@@ -852,7 +1060,7 @@ zstats</code></pre>
 <p>In the end we are going to have a look how long the rendering of this file took so that people get an idea about the processing speed of this routine.</p>
 <pre class="r"><code>stoptime&lt;-Sys.time()
 print(starttime-stoptime)</code></pre>
-<pre><code>Time difference of -16.99352 secs</code></pre>
+<pre><code>Time difference of -5.015776 secs</code></pre>
 <div id="references" class="section level3">
 <h3>References</h3>
 <p>[1] Worldpop.org. 2021. WorldPop. [online] Available at: <a href="https://www.worldpop.org/" class="uri">https://www.worldpop.org/</a> [Accessed 14 May 2021].</p>
@@ -883,31 +1091,28 @@ attached base packages:
 
 other attached packages:
  [1] forcats_0.5.1   stringr_1.4.0   dplyr_1.0.6     purrr_0.3.4    
- [5] readr_1.4.0     tidyr_1.1.3     tibble_3.1.2    ggplot2_3.3.4  
- [9] tidyverse_1.3.1 wdpar_1.0.6     terra_1.2-15    sf_1.0-0       
+ [5] readr_1.4.0     tidyr_1.1.3     tibble_3.1.1    ggplot2_3.3.4  
+ [9] tidyverse_1.3.1 wdpar_1.0.6     terra_1.2-15    sf_0.9-8       
 
 loaded via a namespace (and not attached):
- [1] bitops_1.0-6       fs_1.5.0           lubridate_1.7.10   httr_1.4.2        
- [5] rprojroot_2.0.2    tools_3.6.3        backports_1.2.1    rgdal_1.5-23      
- [9] utf8_1.2.1         R6_2.5.0           KernSmooth_2.23-20 DBI_1.1.1         
-[13] colorspace_2.0-1   raster_3.4-10      withr_2.4.2        sp_1.4-5          
-[17] tidyselect_1.1.1   processx_3.5.2     curl_4.3.1         compiler_3.6.3    
-[21] git2r_0.28.0       cli_2.5.0          rvest_1.0.0        xml2_1.3.2        
-[25] caTools_1.18.1     scales_1.1.1       classInt_0.4-3     askpass_1.1       
-[29] proxy_0.4-26       rappdirs_0.3.3     digest_0.6.27      rmarkdown_2.6     
-[33] wdman_0.2.5        pkgconfig_2.0.3    htmltools_0.5.1.1  dbplyr_2.1.1      
-[37] rlang_0.4.11       readxl_1.3.1       rstudioapi_0.13    generics_0.1.0    
-[41] jsonlite_1.7.2     magrittr_2.0.1     Rcpp_1.0.6         munsell_0.5.0     
-[45] fansi_0.5.0        lifecycle_1.0.0    stringi_1.6.2      whisker_0.4       
-[49] yaml_2.2.1         grid_3.6.3         promises_1.2.0.1   crayon_1.4.1      
-[53] semver_0.2.0       lattice_0.20-44    haven_2.3.1        hms_1.0.0         
-[57] knitr_1.30         ps_1.5.0           pillar_1.6.1       codetools_0.2-18  
-[61] reprex_2.0.0       XML_3.99-0.3       glue_1.4.2         evaluate_0.14     
-[65] modelr_0.1.8       vctrs_0.3.8        httpuv_1.6.1       cellranger_1.1.0  
-[69] gtable_0.3.0       openssl_1.4.4      assertthat_0.2.1   xfun_0.20         
-[73] binman_0.1.2       broom_0.7.6        countrycode_1.2.0  e1071_1.7-7       
-[77] later_1.2.0        class_7.3-19       RSelenium_1.7.7    workflowr_1.6.2   
-[81] units_0.7-2        ellipsis_0.3.2    </code></pre>
+ [1] httr_1.4.2         jsonlite_1.7.2     modelr_0.1.8       assertthat_0.2.1  
+ [5] countrycode_1.2.0  sp_1.4-5           cellranger_1.1.0   yaml_2.2.1        
+ [9] pillar_1.6.0       backports_1.2.1    lattice_0.20-44    glue_1.4.2        
+[13] digest_0.6.27      promises_1.2.0.1   rvest_1.0.0        colorspace_2.0-1  
+[17] htmltools_0.5.1.1  httpuv_1.6.1       pkgconfig_2.0.3    broom_0.7.6       
+[21] raster_3.4-10      haven_2.3.1        scales_1.1.1       whisker_0.4       
+[25] later_1.2.0        git2r_0.28.0       proxy_0.4-26       generics_0.1.0    
+[29] ellipsis_0.3.2     withr_2.4.2        cli_2.5.0          magrittr_2.0.1    
+[33] crayon_1.4.1       readxl_1.3.1       evaluate_0.14      fs_1.5.0          
+[37] fansi_0.5.0        xml2_1.3.2         class_7.3-19       tools_3.6.3       
+[41] hms_1.0.0          lifecycle_1.0.0    munsell_0.5.0      reprex_2.0.0      
+[45] compiler_3.6.3     e1071_1.7-7        rlang_0.4.11       classInt_0.4-3    
+[49] units_0.7-1        grid_3.6.3         rstudioapi_0.13    rappdirs_0.3.3    
+[53] rmarkdown_2.6      gtable_0.3.0       codetools_0.2-18   DBI_1.1.1         
+[57] curl_4.3.1         R6_2.5.0           lubridate_1.7.10   knitr_1.30        
+[61] rgdal_1.5-23       utf8_1.2.1         workflowr_1.6.2    rprojroot_2.0.2   
+[65] KernSmooth_2.23-20 stringi_1.6.2      Rcpp_1.0.6         vctrs_0.3.8       
+[69] dbplyr_2.1.1       tidyselect_1.1.1   xfun_0.20         </code></pre>
 </div>
 </div>
 </div>

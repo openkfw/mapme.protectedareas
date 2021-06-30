@@ -20,21 +20,14 @@
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
-<style>h1 {font-size: 34px;}
-       h1.title {font-size: 38px;}
-       h2 {font-size: 30px;}
-       h3 {font-size: 24px;}
-       h4 {font-size: 18px;}
-       h5 {font-size: 16px;}
-       h6 {font-size: 12px;}
-       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
-       pre:not([class]) { background-color: white }</style>
 <script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
 <link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
 <!-- Add a small amount of space between sections. -->
@@ -54,6 +47,11 @@ div.section {
     </style>
 
 <style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
 <script type="text/javascript">
 if (window.hljs) {
   hljs.configure({languages: []});
@@ -66,6 +64,32 @@ if (window.hljs) {
 
 
 
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
 
 
 
@@ -76,6 +100,10 @@ if (window.hljs) {
   max-width: 940px;
   margin-left: auto;
   margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
 }
 img {
   max-width:100%;
@@ -92,13 +120,40 @@ button.code-folding-btn:focus {
 summary {
   display: list-item;
 }
-pre code {
-  padding: 0;
-}
 </style>
 
 
 <style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
 .dropdown-submenu {
   position: relative;
 }
@@ -126,7 +181,7 @@ pre code {
   margin-right: -10px;
 }
 .dropdown-submenu:hover>a:after {
-  border-left-color: #adb5bd;
+  border-left-color: #ffffff;
 }
 .dropdown-submenu.pull-left {
   float: none;
@@ -138,7 +193,7 @@ pre code {
 }
 </style>
 
-<script type="text/javascript">
+<script>
 // manage active state of menu based on current page
 $(document).ready(function () {
   // active menu anchor
@@ -149,23 +204,10 @@ $(document).ready(function () {
   var menuAnchor = $('a[href="' + href + '"]');
 
   // mark it active
-  menuAnchor.tab('show');
+  menuAnchor.parent().addClass('active');
 
   // if it's got a parent navbar menu mark it active as well
   menuAnchor.closest('li.dropdown').addClass('active');
-
-  // Navbar adjustments
-  var navHeight = $(".navbar").first().height() + 15;
-  var style = document.createElement('style');
-  var pt = "padding-top: " + navHeight + "px; ";
-  var mt = "margin-top: -" + navHeight + "px; ";
-  var css = "";
-  // offset scroll position for anchor links (for fixed navbar)
-  for (var i = 1; i <= 6; i++) {
-    css += ".section h" + i + "{ " + pt + mt + "}\n";
-  }
-  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
-  document.head.appendChild(style);
 });
 </script>
 
@@ -177,6 +219,7 @@ $(document).ready(function () {
   max-height: 500px;
   min-height: 44px;
   overflow-y: auto;
+  background: white;
   border: 1px solid #ddd;
   border-radius: 4px;
 }
@@ -302,13 +345,13 @@ div.tocify {
 
 
 <!-- setup 3col/9col grid for toc_float and main content  -->
-<div class="row">
-<div class="col-sm-12 col-md-4 col-lg-3">
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
 <div id="TOC" class="tocify">
 </div>
 </div>
 
-<div class="toc-content col-sm-12 col-md-8 col-lg-9">
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
 
 
 
@@ -336,13 +379,19 @@ div.tocify {
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://gitlab.com/Jo-Schie/mapme-protectedareas">
+    <span class="fas fa-gitlab"></span>
+     
+    Source code
+  </a>
+</li>
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
 
-<div id="header">
+<div class="fluid-row" id="header">
 
 
 
@@ -355,7 +404,7 @@ div.tocify {
 
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
-<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 </button>
 </p>
 <div id="workflowr-report" class="collapse">
@@ -364,7 +413,7 @@ div.tocify {
 <a data-toggle="tab" href="#summary">Summary</a>
 </li>
 <li>
-<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> </a>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -373,10 +422,10 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2021-04-06
+<strong>Last updated:</strong> 2021-06-30
 </p>
 <p>
-<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 1
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
 </p>
 <p>
 <strong>Knit directory:</strong> <code>mapme.protectedareas/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
@@ -392,12 +441,12 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges"> <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted changes </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguncommittedchanges" class="panel-collapse collapse">
+<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown is untracked by Git. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
 </div>
 </div>
 </div>
@@ -421,7 +470,7 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 </div>
 <div id="strongSeedstrongcodesetseed20210305code" class="panel-collapse collapse">
 <div class="panel-body">
-<p>The command <code>set.seed(20210305)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+<p>The command <code>set.seed(20210305)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
 </div>
 </div>
 </div>
@@ -464,16 +513,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastree94214467576145b416822352cf94190d6a1df0b7targetblank9421446a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/openkfw/mapme.protectedareas/tree/94214467576145b416822352cf94190d6a1df0b7" target="_blank">9421446</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgitlabcomJoSchiemapmeprotectedareastree8bd1321518a72544c147f747f0b80d4412c966cftargetblank8bd1321a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://gitlab.com/Jo-Schie/mapme-protectedareas/tree/8bd1321518a72544c147f747f0b80d4412c966cf" target="_blank">8bd1321</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastree94214467576145b416822352cf94190d6a1df0b7targetblank9421446a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgitlabcomJoSchiemapmeprotectedareastree8bd1321518a72544c147f747f0b80d4412c966cftargetblank8bd1321a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/openkfw/mapme.protectedareas/tree/94214467576145b416822352cf94190d6a1df0b7" target="_blank">9421446</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://gitlab.com/Jo-Schie/mapme-protectedareas/tree/8bd1321518a72544c147f747f0b80d4412c966cf" target="_blank">8bd1321</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -483,12 +532,9 @@ Ignored files:
     Ignored:    .RData
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-    Ignored:    mapme.protectedareas.Rproj
-    Ignored:    renv/library/
-    Ignored:    renv/staging/
-
-Untracked files:
-    Untracked:  analysis/gmw-mangrove.rmd
+    Ignored:    data-raw/addons/docs/rest/
+    Ignored:    data-raw/addons/etc/
+    Ignored:    data-raw/addons/scripts/
 
 </code></pre>
 <p>
@@ -501,9 +547,120 @@ Note that any generated files, e.g. HTML, png, CSS, etc., are not included in t
 <hr>
 </div>
 <div id="versions" class="tab-pane fade">
+
 <p>
-There are no past versions. Publish this analysis with <code>wflow_publish()</code> to start tracking its development.
+These are the previous versions of the repository in which changes were made to the R Markdown (<code>analysis/gmw-mangrove.rmd</code>) and HTML (<code>public/gmw-mangrove.html</code>) files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view the files as they were in that past version.
 </p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://glcdn.githack.com/Jo-Schie/mapme-protectedareas/raw/8bd1321518a72544c147f747f0b80d4412c966cf/public/gmw-mangrove.html" target="_blank">8bd1321</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-06-30
+</td>
+<td>
+Host with GitLab.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://glcdn.githack.com/Jo-Schie/mapme-protectedareas/raw/3a39ee392a1bc62f5b354d990e24f937829e4b5b/public/gmw-mangrove.html" target="_blank">3a39ee3</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-06-30
+</td>
+<td>
+Host with GitHub.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://glcdn.githack.com/Jo-Schie/mapme-protectedareas/raw/ae67dca8cb8d1d0d8e383a78f6f4139a91e4f448/public/gmw-mangrove.html" target="_blank">ae67dca</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-06-30
+</td>
+<td>
+Host with GitLab.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://gitlab.com/Jo-Schie/mapme-protectedareas/blob/cde4ff44ad3ee4a62e53aa88890d3bcf1b6d111c/analysis/gmw-mangrove.rmd" target="_blank">cde4ff4</a>
+</td>
+<td>
+GitHub
+</td>
+<td>
+2021-05-03
+</td>
+<td>
+Update gmw-mangrove.rmd
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://gitlab.com/Jo-Schie/mapme-protectedareas/blob/3befd2274b7e9f02556c5e24db03b57de93908ac/analysis/gmw-mangrove.rmd" target="_blank">3befd22</a>
+</td>
+<td>
+ombhandari
+</td>
+<td>
+2021-04-06
+</td>
+<td>
+update mangrove rmd
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 <hr>
 </div>
 </div>
@@ -546,8 +703,8 @@ starttime&lt;-Sys.time() # mark the start time of this routine to calculate proc
 <p>For this routine, we will first load the mangrove data for year 1996 to see the extent of mangrove for this particular year.</p>
 <pre class="r"><code># load mangrove data for 1996
 m &lt;- st_read(&quot;/home/ombhandari/shared/datalake/mapme.protectedareas/input/global_mangrove_watch/gmw-v2-1996-valid.gpkg&quot;)</code></pre>
-<pre><code>Reading layer `gmw-v2-1996-valid&#39; from data source `/home/rstudio/shared/datalake/mapme.protectedareas/input/global_mangrove_watch/gmw-v2-1996-valid.gpkg&#39; using driver `GPKG&#39;
-Simple feature collection with 700904 features and 2 fields
+<pre><code>Reading layer `global-mangrove-watch-2007-valid&#39; from data source `/datadrive/datalake/mapme.protectedareas/input/global_mangrove_watch/gmw-v2-1996-valid.gpkg&#39; using driver `GPKG&#39;
+Simple feature collection with 595270 features and 2 fields
 Geometry type: POLYGON
 Dimension:     XY
 Bounding box:  xmin: -175.3396 ymin: -38.85667 xmax: 179.9796 ymax: 33.79933
@@ -558,14 +715,14 @@ Geodetic CRS:  WGS 84</code></pre>
 <p>For this analysis, we would take one polygon data from Brazil, which is closer to coastal region so that the extent of mangroves can be analyzed.</p>
 <pre class="r"><code># fetch the raw data from wdpar of country
 br &lt;- wdpar::wdpa_fetch(&quot;BRA&quot;)
-# # subset a wdpa polygon by it&#39;s wdpa id
+# subset a wdpa polygon by it&#39;s wdpa id
 b &lt;- br%&gt;%
   filter(WDPAID %in% 555637331)</code></pre>
 <p>The next immediate step would be to clean the fetched raw data with the functionality provided with routines from the <code>wdpar</code> package. Cleaning is done by the package following these steps:</p>
 <ul>
 <li>exclude protected areas that are not yet implemented</li>
 <li>exclude protected areas with limited conservation value</li>
-<li>replace missing data codes (e.g. “0”) with missing data values (i.e. NA)</li>
+<li>replace missing data codes (e.g. “0”) with missing data values (i.e. NA)</li>
 <li>replace protected areas represented as points with circular protected areas that correspond to their reported extent</li>
 <li>repair any topological issues with the geometries</li>
 </ul>
@@ -576,6 +733,65 @@ b &lt;- wdpa_clean(
 <p>Lets have a look at the selected polygon data.</p>
 <pre class="r"><code>plot(b[1])</code></pre>
 <p><img src="figure/gmw-mangrove.rmd/wdpaMap-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-wdpaMap-1">
+Past versions of wdpaMap-1.png
+</button>
+</p>
+<div id="fig-wdpaMap-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://gitlab.com/Jo-Schie/mapme-protectedareas/blob/8bd1321518a72544c147f747f0b80d4412c966cf/public/figure/gmw-mangrove.rmd/wdpaMap-1.png" target="_blank">8bd1321</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-06-30
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://gitlab.com/Jo-Schie/mapme-protectedareas/blob/3a39ee392a1bc62f5b354d990e24f937829e4b5b/public/figure/gmw-mangrove.rmd/wdpaMap-1.png" target="_blank">3a39ee3</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-06-30
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://gitlab.com/Jo-Schie/mapme-protectedareas/blob/ae67dca8cb8d1d0d8e383a78f6f4139a91e4f448/public/figure/gmw-mangrove.rmd/wdpaMap-1.png" target="_blank">ae67dca</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-06-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="perform-intersection" class="section level1">
 <h1>Perform Intersection</h1>
@@ -592,15 +808,1549 @@ m_subset &lt;- st_intersection(m, b)</code></pre>
 <pre class="r"><code># transform to laea using area_proj
 m_sub &lt;- st_transform(m_subset, st_crs(area_proj(b)))
 # compute area in square km
-area &lt;- st_area(m_sub)%&gt;%
+m_sub$area_sqkm &lt;- st_area(m_sub)%&gt;%
   sum()/1000000
-area</code></pre>
-<pre><code>4898.962 [m^2]</code></pre>
+m_sub$area_sqkm</code></pre>
+<pre><code>Units: [m^2]
+    [1] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+    [9] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+   [17] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+   [25] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+   [33] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+   [41] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+   [49] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+   [57] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+   [65] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+   [73] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+   [81] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+   [89] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+   [97] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [105] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [113] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [121] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [129] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [137] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [145] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [153] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [161] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [169] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [177] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [185] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [193] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [201] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [209] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [217] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [225] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [233] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [241] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [249] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [257] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [265] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [273] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [281] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [289] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [297] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [305] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [313] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [321] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [329] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [337] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [345] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [353] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [361] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [369] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [377] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [385] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [393] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [401] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [409] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [417] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [425] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [433] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [441] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [449] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [457] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [465] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [473] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [481] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [489] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [497] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [505] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [513] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [521] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [529] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [537] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [545] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [553] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [561] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [569] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [577] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [585] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [593] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [601] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [609] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [617] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [625] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [633] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [641] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [649] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [657] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [665] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [673] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [681] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [689] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [697] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [705] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [713] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [721] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [729] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [737] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [745] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [753] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [761] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [769] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [777] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [785] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [793] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [801] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [809] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [817] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [825] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [833] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [841] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [849] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [857] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [865] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [873] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [881] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [889] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [897] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [905] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [913] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [921] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [929] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [937] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [945] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [953] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [961] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [969] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [977] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [985] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+  [993] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1001] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1009] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1017] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1025] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1033] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1041] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1049] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1057] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1065] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1073] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1081] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1089] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1097] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1105] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1113] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1121] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1129] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1137] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1145] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1153] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1161] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1169] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1177] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1185] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1193] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1201] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1209] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1217] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1225] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1233] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1241] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1249] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1257] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1265] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1273] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1281] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1289] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1297] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1305] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1313] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1321] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1329] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1337] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1345] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1353] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1361] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1369] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1377] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1385] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1393] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1401] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1409] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1417] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1425] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1433] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1441] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1449] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1457] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1465] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1473] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1481] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1489] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1497] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1505] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1513] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1521] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1529] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1537] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1545] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1553] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1561] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1569] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1577] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1585] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1593] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1601] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1609] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1617] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1625] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1633] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1641] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1649] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1657] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1665] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1673] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1681] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1689] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1697] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1705] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1713] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1721] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1729] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1737] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1745] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1753] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1761] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1769] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1777] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1785] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1793] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1801] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1809] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1817] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1825] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1833] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1841] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1849] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1857] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1865] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1873] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1881] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1889] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1897] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1905] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1913] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1921] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1929] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1937] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1945] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1953] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1961] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1969] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1977] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1985] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [1993] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2001] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2009] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2017] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2025] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2033] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2041] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2049] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2057] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2065] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2073] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2081] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2089] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2097] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2105] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2113] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2121] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2129] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2137] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2145] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2153] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2161] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2169] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2177] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2185] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2193] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2201] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2209] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2217] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2225] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2233] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2241] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2249] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2257] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2265] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2273] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2281] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2289] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2297] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2305] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2313] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2321] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2329] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2337] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2345] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2353] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2361] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2369] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2377] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2385] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2393] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2401] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2409] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2417] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2425] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2433] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2441] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2449] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2457] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2465] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2473] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2481] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2489] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2497] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2505] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2513] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2521] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2529] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2537] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2545] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2553] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2561] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2569] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2577] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2585] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2593] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2601] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2609] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2617] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2625] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2633] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2641] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2649] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2657] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2665] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2673] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2681] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2689] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2697] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2705] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2713] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2721] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2729] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2737] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2745] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2753] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2761] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2769] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2777] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2785] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2793] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2801] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2809] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2817] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2825] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2833] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2841] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2849] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2857] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2865] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2873] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2881] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2889] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2897] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2905] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2913] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2921] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2929] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2937] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2945] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2953] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2961] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2969] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2977] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2985] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [2993] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3001] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3009] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3017] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3025] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3033] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3041] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3049] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3057] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3065] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3073] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3081] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3089] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3097] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3105] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3113] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3121] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3129] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3137] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3145] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3153] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3161] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3169] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3177] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3185] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3193] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3201] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3209] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3217] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3225] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3233] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3241] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3249] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3257] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3265] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3273] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3281] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3289] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3297] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3305] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3313] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3321] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3329] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3337] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3345] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3353] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3361] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3369] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3377] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3385] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3393] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3401] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3409] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3417] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3425] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3433] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3441] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3449] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3457] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3465] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3473] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3481] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3489] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3497] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3505] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3513] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3521] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3529] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3537] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3545] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3553] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3561] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3569] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3577] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3585] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3593] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3601] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3609] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3617] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3625] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3633] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3641] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3649] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3657] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3665] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3673] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3681] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3689] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3697] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3705] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3713] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3721] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3729] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3737] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3745] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3753] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3761] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3769] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3777] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3785] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3793] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3801] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3809] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3817] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3825] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3833] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3841] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3849] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3857] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3865] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3873] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3881] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3889] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3897] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3905] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3913] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3921] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3929] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3937] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3945] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3953] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3961] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3969] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3977] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3985] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [3993] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4001] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4009] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4017] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4025] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4033] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4041] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4049] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4057] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4065] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4073] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4081] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4089] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4097] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4105] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4113] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4121] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4129] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4137] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4145] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4153] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4161] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4169] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4177] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4185] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4193] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4201] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4209] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4217] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4225] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4233] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4241] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4249] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4257] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4265] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4273] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4281] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4289] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4297] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4305] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4313] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4321] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4329] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4337] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4345] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4353] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4361] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4369] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4377] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4385] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4393] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4401] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4409] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4417] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4425] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4433] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4441] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4449] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4457] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4465] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4473] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4481] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4489] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4497] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4505] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4513] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4521] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4529] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4537] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4545] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4553] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4561] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4569] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4577] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4585] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4593] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4601] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4609] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4617] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4625] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4633] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4641] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4649] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4657] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4665] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4673] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4681] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4689] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4697] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4705] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4713] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4721] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4729] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4737] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4745] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4753] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4761] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4769] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4777] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4785] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4793] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4801] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4809] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4817] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4825] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4833] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4841] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4849] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4857] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4865] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4873] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4881] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4889] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4897] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4905] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4913] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4921] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4929] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4937] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4945] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4953] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4961] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4969] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4977] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4985] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [4993] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5001] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5009] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5017] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5025] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5033] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5041] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5049] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5057] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5065] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5073] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5081] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5089] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5097] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5105] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5113] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5121] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5129] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5137] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5145] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5153] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5161] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5169] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5177] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5185] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5193] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5201] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5209] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5217] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5225] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5233] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5241] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5249] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5257] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5265] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5273] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5281] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5289] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5297] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5305] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5313] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5321] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5329] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5337] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5345] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5353] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5361] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5369] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5377] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5385] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5393] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5401] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5409] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5417] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5425] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5433] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5441] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5449] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5457] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5465] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5473] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5481] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5489] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5497] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5505] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5513] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5521] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5529] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5537] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5545] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5553] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5561] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5569] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5577] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5585] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5593] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5601] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5609] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5617] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5625] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5633] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5641] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5649] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5657] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5665] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5673] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5681] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5689] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5697] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5705] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5713] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5721] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5729] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5737] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5745] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5753] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5761] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5769] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5777] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5785] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5793] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5801] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5809] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5817] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5825] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5833] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5841] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5849] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5857] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5865] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5873] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5881] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5889] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5897] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5905] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5913] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5921] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5929] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5937] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5945] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5953] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5961] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5969] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5977] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5985] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [5993] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6001] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6009] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6017] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6025] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6033] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6041] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6049] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6057] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6065] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6073] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6081] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6089] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6097] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6105] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6113] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6121] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6129] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6137] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6145] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6153] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6161] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6169] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6177] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6185] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6193] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6201] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6209] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6217] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6225] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6233] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6241] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6249] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6257] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6265] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6273] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6281] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6289] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6297] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6305] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6313] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6321] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6329] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6337] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6345] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6353] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6361] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6369] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6377] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6385] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6393] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6401] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6409] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6417] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6425] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6433] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6441] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6449] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6457] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6465] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6473] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6481] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6489] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6497] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6505] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6513] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6521] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6529] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6537] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6545] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6553] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6561] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6569] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6577] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6585] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6593] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6601] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6609] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6617] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6625] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6633] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6641] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6649] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6657] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6665] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6673] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6681] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6689] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6697] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6705] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6713] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6721] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6729] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6737] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6745] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6753] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6761] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6769] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6777] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6785] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6793] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6801] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6809] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6817] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6825] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6833] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6841] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6849] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6857] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6865] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6873] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6881] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6889] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6897] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6905] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6913] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6921] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6929] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6937] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6945] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6953] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6961] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6969] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6977] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6985] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [6993] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7001] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7009] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7017] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7025] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7033] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7041] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7049] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7057] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7065] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7073] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7081] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7089] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7097] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7105] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7113] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7121] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7129] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7137] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7145] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7153] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7161] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7169] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7177] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7185] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7193] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7201] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7209] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7217] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7225] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7233] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7241] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7249] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7257] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7265] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7273] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7281] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7289] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7297] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7305] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7313] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7321] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7329] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7337] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7345] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7353] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7361] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7369] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7377] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7385] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7393] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7401] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7409] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7417] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7425] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7433] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7441] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7449] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7457] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7465] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7473] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7481] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7489] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7497] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7505] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7513] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7521] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7529] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7537] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7545] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7553] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7561] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7569] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7577] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7585] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7593] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7601] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7609] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7617] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7625] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7633] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7641] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7649] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7657] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7665] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7673] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7681] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7689] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7697] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7705] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7713] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7721] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7729] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7737] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7745] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7753] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7761] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7769] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7777] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7785] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7793] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7801] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7809] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7817] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7825] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7833] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7841] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7849] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7857] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7865] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7873] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7881] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7889] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7897] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7905] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7913] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7921] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7929] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7937] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7945] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7953] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7961] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7969] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7977] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7985] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [7993] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8001] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8009] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8017] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8025] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8033] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8041] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8049] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8057] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8065] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8073] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8081] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8089] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8097] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8105] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8113] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8121] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8129] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8137] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8145] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8153] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8161] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8169] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8177] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8185] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8193] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8201] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8209] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8217] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8225] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8233] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8241] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8249] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8257] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8265] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8273] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8281] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8289] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8297] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8305] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8313] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8321] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8329] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8337] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8345] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8353] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8361] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8369] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8377] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8385] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8393] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8401] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8409] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8417] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8425] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8433] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8441] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8449] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8457] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8465] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8473] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8481] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8489] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8497] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8505] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8513] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8521] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8529] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8537] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8545] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8553] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8561] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8569] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8577] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8585] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8593] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8601] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8609] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8617] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8625] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8633] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8641] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8649] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8657] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8665] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8673] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8681] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8689] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8697] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8705] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8713] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8721] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8729] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8737] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8745] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8753] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8761] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8769] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8777] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8785] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8793] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8801] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8809] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8817] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8825] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8833] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8841] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8849] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8857] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8865] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8873] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8881] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8889] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8897] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8905] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8913] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8921] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8929] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8937] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8945] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8953] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8961] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8969] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8977] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8985] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [8993] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9001] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9009] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9017] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9025] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9033] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9041] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9049] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9057] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9065] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9073] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9081] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9089] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9097] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9105] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9113] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9121] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9129] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9137] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9145] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9153] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9161] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9169] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9177] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9185] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9193] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9201] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9209] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9217] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9225] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9233] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9241] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9249] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9257] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9265] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9273] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9281] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9289] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9297] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9305] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9313] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9321] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9329] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9337] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9345] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9353] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9361] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9369] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9377] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9385] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9393] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9401] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9409] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9417] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9425] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9433] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9441] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9449] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9457] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9465] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9473] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9481] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9489] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9497] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9505] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9513] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9521] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9529] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9537] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9545] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9553] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9561] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9569] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9577] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9585] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9593] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9601] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9609] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9617] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9625] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9633] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9641] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9649] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9657] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9665] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9673] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9681] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9689] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9697] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9705] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9713] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9721] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9729] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9737] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9745] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9753] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9761] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9769] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9777] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9785] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9793] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9801] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9809] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9817] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9825] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9833] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9841] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9849] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9857] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9865] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9873] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9881] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9889] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9897] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9905] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9913] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9921] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9929] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9937] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9945] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9953] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9961] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9969] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9977] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9985] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+ [9993] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10001] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10009] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10017] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10025] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10033] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10041] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10049] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10057] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10065] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10073] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10081] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10089] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10097] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10105] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10113] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10121] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10129] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10137] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10145] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10153] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10161] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10169] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10177] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10185] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10193] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10201] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10209] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10217] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10225] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10233] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10241] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10249] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10257] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10265] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10273] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10281] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10289] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10297] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10305] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10313] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10321] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10329] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10337] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10345] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10353] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10361] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10369] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10377] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10385] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10393] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10401] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10409] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10417] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10425] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10433] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10441] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10449] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10457] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10465] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10473] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10481] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10489] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10497] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10505] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10513] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10521] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10529] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10537] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10545] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10553] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10561] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10569] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10577] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10585] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10593] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10601] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10609] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10617] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10625] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10633] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10641] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10649] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10657] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10665] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10673] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10681] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10689] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10697] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10705] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10713] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10721] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10729] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10737] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10745] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10753] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10761] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10769] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10777] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10785] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10793] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10801] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10809] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10817] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10825] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10833] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10841] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10849] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10857] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10865] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10873] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10881] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10889] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10897] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10905] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10913] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10921] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10929] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10937] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10945] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10953] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10961] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10969] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10977] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10985] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[10993] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11001] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11009] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11017] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11025] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11033] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11041] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11049] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11057] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11065] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11073] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11081] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11089] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11097] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11105] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11113] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11121] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11129] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11137] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11145] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11153] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11161] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11169] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11177] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11185] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11193] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11201] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11209] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11217] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11225] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11233] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11241] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11249] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11257] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11265] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11273] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11281] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11289] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11297] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11305] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11313] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11321] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11329] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11337] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11345] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11353] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11361] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11369] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11377] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11385] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11393] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11401] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11409] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11417] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11425] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11433] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11441] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11449] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11457] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11465] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11473] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11481] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11489] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11497] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11505] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11513] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11521] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11529] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11537] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11545] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11553] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11561] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11569] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11577] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11585] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11593] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11601] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11609] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11617] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11625] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11633] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11641] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11649] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11657] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11665] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11673] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11681] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11689] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11697] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11705] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11713] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11721] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11729] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11737] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11745] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11753] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11761] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11769] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11777] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11785] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11793] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11801] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11809] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11817] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11825] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11833] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11841] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11849] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11857] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11865] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11873] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11881] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11889] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11897] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11905] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11913] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11921] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11929] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11937] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11945] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11953] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11961] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11969] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11977] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11985] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[11993] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[12001] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[12009] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[12017] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[12025] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[12033] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[12041] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[12049] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[12057] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[12065] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[12073] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[12081] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[12089] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[12097] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[12105] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[12113] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[12121] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[12129] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[12137] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[12145] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[12153] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[12161] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[12169] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[12177] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[12185] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[12193] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[12201] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[12209] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[12217] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[12225] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[12233] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[12241] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[12249] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[12257] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603
+[12265] 4783.603 4783.603 4783.603 4783.603 4783.603 4783.603</code></pre>
 <p>So, from the result above we can see that the area of mangrove for the WDPA ID 555637331 for the year 1996 is 4898.962 square km. Similarly, we can compute the mangrove area of the desired polygon/s following this routine.</p>
 <p>In the end we are going to have a look how long the rendering of this file took so that people get an idea about the processing speed of this routine.</p>
 <pre class="r"><code>stoptime&lt;-Sys.time()
 print(starttime-stoptime)</code></pre>
-<pre><code>Time difference of -12.37195 mins</code></pre>
+<pre><code>Time difference of -10.10568 mins</code></pre>
 </div>
 <div id="references" class="section level1">
 <h1>References</h1>
@@ -613,43 +2363,41 @@ print(starttime-stoptime)</code></pre>
 </p>
 <div id="workflowr-sessioninfo" class="collapse">
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 4.0.3 (2020-10-10)
+<pre><code>R version 3.6.3 (2020-02-29)
 Platform: x86_64-pc-linux-gnu (64-bit)
-Running under: Ubuntu 20.04 LTS
+Running under: Ubuntu 18.04.5 LTS
 
 Matrix products: default
-BLAS/LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.8.so
+BLAS:   /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.7.1
+LAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.7.1
 
 locale:
- [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
- [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
- [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=C             
- [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
- [9] LC_ADDRESS=C               LC_TELEPHONE=C            
-[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+ [1] LC_CTYPE=C.UTF-8       LC_NUMERIC=C           LC_TIME=C.UTF-8       
+ [4] LC_COLLATE=C.UTF-8     LC_MONETARY=C.UTF-8    LC_MESSAGES=C.UTF-8   
+ [7] LC_PAPER=C.UTF-8       LC_NAME=C              LC_ADDRESS=C          
+[10] LC_TELEPHONE=C         LC_MEASUREMENT=C.UTF-8 LC_IDENTIFICATION=C   
 
 attached base packages:
-[1] stats     graphics  grDevices datasets  utils     methods   base     
+[1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] knitr_1.31      dplyr_1.0.5     wdpar_1.0.6     sf_0.9-8       
-[5] terra_1.1-4     workflowr_1.6.2
+[1] knitr_1.30   dplyr_1.0.6  wdpar_1.0.6  sf_0.9-8     terra_1.2-15
 
 loaded via a namespace (and not attached):
- [1] tidyselect_1.1.0   xfun_0.22          purrr_0.3.4        lattice_0.20-41   
- [5] vctrs_0.3.7        generics_0.1.0     htmltools_0.5.1.1  yaml_2.2.1        
- [9] utf8_1.2.1         rlang_0.4.10       e1071_1.7-6        later_1.1.0.1     
-[13] pillar_1.5.1       glue_1.4.2         DBI_1.1.1          rappdirs_0.3.3    
-[17] sp_1.4-5           lifecycle_1.0.0    stringr_1.4.0      raster_3.4-5      
-[21] codetools_0.2-16   evaluate_0.14      httpuv_1.5.5       curl_4.3          
-[25] class_7.3-17       fansi_0.4.2        highr_0.8          Rcpp_1.0.6        
-[29] KernSmooth_2.23-17 renv_0.13.0        promises_1.2.0.1   classInt_0.4-3    
-[33] lwgeom_0.2-5       countrycode_1.2.0  fs_1.5.0           digest_0.6.27     
-[37] stringi_1.5.3      grid_4.0.3         rprojroot_2.0.2    tools_4.0.3       
-[41] magrittr_2.0.1     proxy_0.4-25       tibble_3.1.0       crayon_1.4.1      
-[45] pkgconfig_2.0.3    ellipsis_0.3.1     assertthat_0.2.1   rmarkdown_2.7     
+ [1] tidyselect_1.1.1   xfun_0.20          purrr_0.3.4        lattice_0.20-44   
+ [5] vctrs_0.3.8        generics_0.1.0     htmltools_0.5.1.1  yaml_2.2.1        
+ [9] utf8_1.2.1         rlang_0.4.11       e1071_1.7-7        later_1.2.0       
+[13] pillar_1.6.0       glue_1.4.2         DBI_1.1.1          rappdirs_0.3.3    
+[17] sp_1.4-5           lifecycle_1.0.0    stringr_1.4.0      workflowr_1.6.2   
+[21] raster_3.4-10      codetools_0.2-18   evaluate_0.14      httpuv_1.6.1      
+[25] curl_4.3.1         class_7.3-19       fansi_0.5.0        Rcpp_1.0.6        
+[29] KernSmooth_2.23-20 promises_1.2.0.1   classInt_0.4-3     lwgeom_0.2-6      
+[33] countrycode_1.2.0  fs_1.5.0           digest_0.6.27      stringi_1.6.2     
+[37] grid_3.6.3         rprojroot_2.0.2    tools_3.6.3        magrittr_2.0.1    
+[41] proxy_0.4-26       tibble_3.1.1       crayon_1.4.1       whisker_0.4       
+[45] pkgconfig_2.0.3    ellipsis_0.3.2     assertthat_0.2.1   rmarkdown_2.6     
 [49] httr_1.4.2         R6_2.5.0           units_0.7-1        git2r_0.28.0      
-[53] compiler_4.0.3    </code></pre>
+[53] compiler_3.6.3    </code></pre>
 </div>
 </div>
 
@@ -694,7 +2442,7 @@ $(document).ready(function () {
 
 $(document).ready(function () {
   $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open');
+    $(this).parent().toggleClass('nav-tabs-open')
   });
 });
 </script>
