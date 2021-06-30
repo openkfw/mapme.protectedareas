@@ -57,7 +57,8 @@ We will try to get the country level polygon data from `wdpar` package. `wdpar` 
 ```{r fetchWdpar, warning=FALSE, include=TRUE}
 
 # fetch the raw data from wdpar of country
-vn_raw_pa_data <- wdpa_fetch("VEN")
+vn_raw_pa_data <- 
+  wdpa_fetch("VEN")
 ```
 
 Since there are multiple enlisted protected areas in Brazil, we want to compute zonal statistics only for the polygon data of:
@@ -94,11 +95,13 @@ As we completed raster and vector data preparation, the next step would be to cl
 ```{r cropRaster, warning=FALSE, include=TRUE}
 
 # crop raster using polygon extent
-elevation_cropped <- crop(elevation, ven)
+elevation_cropped <- crop(elevation,
+                          ven)
 # plot the data - shows the raster after getting cropped by the extent of polygon
 plot(elevation_cropped)
 # crop raster using polygon mask
-elevation_masked <- mask(elevation_cropped, ven)
+elevation_masked <- mask(elevation_cropped,
+                         ven)
 # plot the data - shows the raster after getting cropped by the polygon mask
 plot(elevation_masked)
 ```
@@ -125,7 +128,9 @@ To compute the zonal statistics, it is necessary to rasterize the polygon layer.
 ```{r rasterize, warning=FALSE, include=TRUE}
 
 # rasterize
-r <- rasterize(ven, elevation_masked, ven$WDPAID)
+r <- rasterize(ven,
+               elevation_masked,
+               ven$WDPAID)
 ```
 
 
@@ -172,7 +177,7 @@ df.tri_long
 From the above result, we can say that the polygon which we used for our analysis have leveled surface since the mean value of TRI is around 5 meters and having average elevation of approx. 628 meters. In similar way, we can compute elevation for the desired region of interest and see whether it has leveled or rugged surface.
 
 
-In the end we are going to have a look how long the rendering of this file took so that people get an idea about the processing speed of this routine.
+In the end we are going to have a look how long the rendering of this file took so that we could get an idea about the processing speed of this routine.
 
 ```{r time, warning=FALSE, include=TRUE}
 
