@@ -38,4 +38,4 @@ Chapters:
   
   - [Accessibility to Cities (Weiss et al. 2018)](accessibility.html).
 
-- [Processing Individual Datasets](potfolio_analysis.html)
+- [Processing Individual Datasets](portfolio_analysis.html)
