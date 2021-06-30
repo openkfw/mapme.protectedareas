@@ -1,0 +1,158 @@
+---
+title: "Global Forest Watch"
+author: "Johannes Schielein, Om Prakash Bhandari"
+date: "6/16/2021"
+output: workflowr::wflow_html
+---
+
+```{r setup, message=FALSE, warning=FALSE}
+
+# load required libraries
+#remotes::install_github("mapme-initiative/mapme.forest")
+library("mapme.forest")
+library("sf")
+library("terra")
+library("wdpar")
+library("dplyr")
+library("rmarkdown") # only used for rendering tables for this website
+
+starttime<-Sys.time() # mark the start time of this routine to calculate processing time at the end
+```
+
+# Introduction
+
+Maps for Planning, Monitoring and Evaluation (MAPME) is a joint initiative by KfW, MapTailor Geospatial Consulting GbR, and Agence Française de Développement (AFD). MAPME is an open framework that develops and promotes open source data and tools for the relevant project management stages.
+It consists of the following core components: 
+(i) Good practice guidance that describes workflows for using remote sensing data and products for planning, monitoring and evaluation
+(ii) Project-related support with remote sensing analyses. Open source code and tools provided via open code repositories
+(iii) User-tailored trainings.
+More information can be found on the [MAPME project homepage](https://mapme-initiative.org/).
+
+In this analysis section, we are going to download and analyse Global Forest Watch datasets using [`mapme.forest` package](https://mapme-initiative.github.io/mapme.forest/).
+
+Global Forest Watch makes available global data products produced by Hansen et al (2018) by examining Landsat satellite data to characterize global forest extent, annual loss, and gain. 
+
+We can find following data layers in the GFW data set:
+
+`Treecover2000`: This layer gives the tree canopy cover for year 2000, defined as canopy closure for all vegetation taller than 5m in height, measured in percentage ranging from 0 to 100 percent.
+
+`Loss`: This layer gives the tree cover loss during the study period, defined as a complete stand-replacement disturbance (i.e., a change from a forest to non-forest state).
+
+`Gain`: Tree cover gain summarized during the period 2000–2012, defined as the inverse of the information contained in the ‘Loss’ layer (a non-forest to forest change entirely within the study period).
+
+`Lossyear`: Year of gross tree cover loss event. Tree cover loss during the study period, defined as a stand-replacement disturbance, or a change from a forest to non-forest state. Encoded as either 0 (no loss) or else a value in the range 1–20, representing loss detected primarily in the year 2001–2020.
+
+# Processing workflow
+
+The purpose of this analysis is to compute tree cover, loss year and co2 emission from the global forest watch rasters. For this, following processing routine is followed:
+
+![](assets/workflows/gfw_routine.jpg)
+
+
+# Download and prepare wdpa polygons
+
+For this analysis, we would choose one WDPA polygon from the country Brazil. We can download the WDPA polygons from the package `wdpar` and then filter out the desired polygon using WDPAID with package `dplyr`. We will then reproject the downloaded polygon sample to WGS84.
+
+```{r fetchWdpar, warning=FALSE, include=TRUE}
+
+# load sample WDPA polygon from country: Brazil
+br <- wdpa_fetch("BRA")%>%
+  filter(WDPAID %in% 16078)
+# reproject to the WGS84
+br <- st_transform(br,
+                   "+proj=longlat +datum=WGS84 +no_defs")
+# plot the polygon
+plot(br[1])
+```
+
+# Download and prepare raster data
+
+From the package `mapme.forest` we will now download the global forest watch rasters for the year 2020 (which is the latest update) using function `downloadGFW`. The script below download the three rasters i.e. tree cover 2000, loss year, and CO2 emission.
+
+```{r downloadGFW, warning=FALSE, include=TRUE}
+
+# download GFW data for the area of interest (latest rasters)
+raster_files = downloadfGFW(shape = br,
+                            basename = "",
+                            dataset = "GFC-2020-v1.8",
+                            outdir = paste0(tempdir(),"/global_forest_watch/"),
+                            keepTmpFiles = F)
+# plot tree cover
+plot(rast(paste0(tempdir(),"/global_forest_watch/_treecover2000.tif")))
+# plot loss year
+plot(rast(paste0(tempdir(),"/global_forest_watch/_lossyear.tif")))
+# plot co2 emission
+plot(rast(paste0(tempdir(),"/global_forest_watch/_co2_emission_.tif")))
+```
+
+# Compute zonal statistics
+
+Now, we have already prepared polygon and raster data, we will compute zonal statistics using function `statsGRASS` from package `mapme.forest`.
+
+First of all, we should get path to those downloaded rasters in the temporary directory.
+
+```{r getPath, warning=FALSE, include=TRUE}
+
+# get the file paths to the raster files
+treeCover = paste0(tempdir(),"/global_forest_watch/_treecover2000.tif")
+lossYear = paste0(tempdir(),"/global_forest_watch/_lossyear.tif")
+co2Layer = paste0(tempdir(),"/global_forest_watch/_co2_emission_.tif")
+```
+
+
+Since the function `statsGRASS` is based on GRASS, we should provide path to the working installation of GRASS GIS version >=7.0.0. 
+
+```{r grass, warning=FALSE, include=TRUE}
+
+grass = "/usr/lib/grass78"
+```
+
+The function `statsGRASS` requires few arguments:
+
+- @grass: path to the grass 
+- @addon_base: loads `r.area` addon, if not found, installs automatically
+- @areas: polygon of interest
+- @idcol: unique value of zone
+- @thresholdClump: threshold value of forest areas to be considered in pixels
+- @thresholdCover: percentage of canopy cover (value differs with forest definition )
+- @saveRaster: If T, saves raster for given zone else does not.
+
+```{r zonalStats, warning=FALSE, message=FALSE, include=TRUE}
+
+zonal_stats = statsGRASS(grass = grass, 
+                       addon_base = "./data-raw/addons", 
+                       areas = br, 
+                       tree_cover = treeCover, 
+                       tree_loss = lossYear, 
+                       tree_co2 = co2Layer, 
+                       idcol =  "WDPA_PID", 
+                       thresholdClump = 6, 
+                       thresholdCover = 10, 
+                       years = 2001:2020, 
+                       saveRaster = F)
+```
+
+
+Now, we can have a look at the zonal statistics result.
+
+```{r viewResult, warning=FALSE, message=FALSE, include=TRUE}
+
+# view area statistics from year 2000 to 2020
+paged_table(zonal_stats[30:50])
+
+# view area loss statistics from year 2000 to 2020
+paged_table(zonal_stats[51:71])
+
+# view CO2 emission statistics from year 2000 to 2020
+paged_table(zonal_stats[72:92])
+```
+
+
+In the end we are going to have a look how long the rendering of this file took to get an idea about the processing speed of this routine.
+
+```{r time, warning=FALSE, include=TRUE}
+
+stoptime<-Sys.time()
+print(starttime-stoptime)
+```
+
