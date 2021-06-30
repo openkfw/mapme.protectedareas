@@ -27,8 +27,8 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
-<script src="site_libs/anchor-sections-1.0/anchor-sections.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
 <link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
 <!-- Add a small amount of space between sections. -->
@@ -91,6 +91,7 @@ h6 {
   text-align: left;
 }
 </style>
+
 
 
 
@@ -379,7 +380,13 @@ div.tocify {
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://gitlab.com/Jo-Schie/mapme-protectedareas">
+    <span class="fas fa-gitlab"></span>
+     
+    Source code
+  </a>
+</li>
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -398,7 +405,7 @@ div.tocify {
 
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
-<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 </button>
 </p>
 <div id="workflowr-report" class="collapse">
@@ -407,7 +414,7 @@ div.tocify {
 <a data-toggle="tab" href="#summary">Summary</a>
 </li>
 <li>
-<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> </a>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -416,10 +423,10 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2021-03-05
+<strong>Last updated:</strong> 2021-06-30
 </p>
 <p>
-<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 1
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
 </p>
 <p>
 <strong>Knit directory:</strong> <code>mapme.protectedareas/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
@@ -435,12 +442,12 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges"> <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted changes </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguncommittedchanges" class="panel-collapse collapse">
+<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown is untracked by Git. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
 </div>
 </div>
 </div>
@@ -464,7 +471,7 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 </div>
 <div id="strongSeedstrongcodesetseed20210305code" class="panel-collapse collapse">
 <div class="panel-body">
-<p>The command <code>set.seed(20210305)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+<p>The command <code>set.seed(20210305)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
 </div>
 </div>
 </div>
@@ -507,32 +514,28 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastree28fb9d5e564b2c1ca2772917a21ee57f03326665targetblank28fb9d5a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/openkfw/mapme.protectedareas/tree/28fb9d5e564b2c1ca2772917a21ee57f03326665" target="_blank">28fb9d5</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgitlabcomJoSchiemapmeprotectedareastree8bd1321518a72544c147f747f0b80d4412c966cftargetblank8bd1321a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://gitlab.com/Jo-Schie/mapme-protectedareas/tree/8bd1321518a72544c147f747f0b80d4412c966cf" target="_blank">8bd1321</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastree28fb9d5e564b2c1ca2772917a21ee57f03326665targetblank28fb9d5a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgitlabcomJoSchiemapmeprotectedareastree8bd1321518a72544c147f747f0b80d4412c966cftargetblank8bd1321a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/openkfw/mapme.protectedareas/tree/28fb9d5e564b2c1ca2772917a21ee57f03326665" target="_blank">28fb9d5</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://gitlab.com/Jo-Schie/mapme-protectedareas/tree/8bd1321518a72544c147f747f0b80d4412c966cf" target="_blank">8bd1321</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 </p>
 <pre><code>
 Ignored files:
+    Ignored:    .RData
+    Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-    Ignored:    mapme.protectedareas.Rproj
-    Ignored:    renv/library/
-    Ignored:    renv/local/
-
-Untracked files:
-    Untracked:  analysis/shiny-test.Rmd
-
-Unstaged changes:
-    Modified:   analysis/index.Rmd
+    Ignored:    data-raw/addons/docs/rest/
+    Ignored:    data-raw/addons/etc/
+    Ignored:    data-raw/addons/scripts/
 
 </code></pre>
 <p>
@@ -545,9 +548,103 @@ Note that any generated files, e.g. HTML, png, CSS, etc., are not included in t
 <hr>
 </div>
 <div id="versions" class="tab-pane fade">
+
 <p>
-There are no past versions. Publish this analysis with <code>wflow_publish()</code> to start tracking its development.
+These are the previous versions of the repository in which changes were made to the R Markdown (<code>analysis/shiny-test.Rmd</code>) and HTML (<code>public/shiny-test.html</code>) files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view the files as they were in that past version.
 </p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://glcdn.githack.com/Jo-Schie/mapme-protectedareas/raw/8bd1321518a72544c147f747f0b80d4412c966cf/public/shiny-test.html" target="_blank">8bd1321</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-06-30
+</td>
+<td>
+Host with GitLab.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://glcdn.githack.com/Jo-Schie/mapme-protectedareas/raw/3a39ee392a1bc62f5b354d990e24f937829e4b5b/public/shiny-test.html" target="_blank">3a39ee3</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-06-30
+</td>
+<td>
+Host with GitHub.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://glcdn.githack.com/Jo-Schie/mapme-protectedareas/raw/ae67dca8cb8d1d0d8e383a78f6f4139a91e4f448/public/shiny-test.html" target="_blank">ae67dca</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-06-30
+</td>
+<td>
+Host with GitLab.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://gitlab.com/Jo-Schie/mapme-protectedareas/blob/84652b19192f7b0fccf821200c63f349594a975f/analysis/shiny-test.Rmd" target="_blank">84652b1</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-03-05
+</td>
+<td>
+shiny test
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 <hr>
 </div>
 </div>
@@ -566,29 +663,33 @@ There are no past versions. Publish this analysis with <code>wflow_publish()</co
 </p>
 <div id="workflowr-sessioninfo" class="collapse">
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 4.0.3 (2020-10-10)
-Platform: x86_64-apple-darwin17.0 (64-bit)
-Running under: macOS Big Sur 10.16
+<pre><code>R version 3.6.3 (2020-02-29)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 18.04.5 LTS
 
 Matrix products: default
-BLAS:   /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRblas.dylib
-LAPACK: /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRlapack.dylib
+BLAS:   /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.7.1
+LAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.7.1
 
 locale:
-[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+ [1] LC_CTYPE=C.UTF-8       LC_NUMERIC=C           LC_TIME=C.UTF-8       
+ [4] LC_COLLATE=C.UTF-8     LC_MONETARY=C.UTF-8    LC_MESSAGES=C.UTF-8   
+ [7] LC_PAPER=C.UTF-8       LC_NAME=C              LC_ADDRESS=C          
+[10] LC_TELEPHONE=C         LC_MEASUREMENT=C.UTF-8 LC_IDENTIFICATION=C   
 
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 loaded via a namespace (and not attached):
- [1] Rcpp_1.0.6      rstudioapi_0.13 knitr_1.30      magrittr_2.0.1 
- [5] workflowr_1.6.2 R6_2.5.0        rlang_0.4.9     highr_0.8      
- [9] stringr_1.4.0   tools_4.0.3     xfun_0.19       git2r_0.27.1   
-[13] htmltools_0.5.0 ellipsis_0.3.1  yaml_2.2.1      digest_0.6.27  
-[17] rprojroot_2.0.2 tibble_3.0.4    lifecycle_0.2.0 crayon_1.3.4   
-[21] later_1.1.0.1   vctrs_0.3.5     promises_1.1.1  fs_1.5.0       
-[25] glue_1.4.2      evaluate_0.14   rmarkdown_2.5   stringi_1.5.3  
-[29] compiler_4.0.3  pillar_1.4.7    httpuv_1.5.4    pkgconfig_2.0.3</code></pre>
+ [1] Rcpp_1.0.6        whisker_0.4       knitr_1.30        magrittr_2.0.1   
+ [5] workflowr_1.6.2   R6_2.5.0          rlang_0.4.11      fansi_0.5.0      
+ [9] highr_0.8         stringr_1.4.0     tools_3.6.3       xfun_0.20        
+[13] utf8_1.2.1        git2r_0.28.0      htmltools_0.5.1.1 ellipsis_0.3.2   
+[17] rprojroot_2.0.2   yaml_2.2.1        digest_0.6.27     tibble_3.1.1     
+[21] lifecycle_1.0.0   crayon_1.4.1      later_1.2.0       vctrs_0.3.8      
+[25] fs_1.5.0          promises_1.2.0.1  glue_1.4.2        evaluate_0.14    
+[29] rmarkdown_2.6     stringi_1.6.2     compiler_3.6.3    pillar_1.6.0     
+[33] httpuv_1.6.1      pkgconfig_2.0.3  </code></pre>
 </div>
 </div>
 

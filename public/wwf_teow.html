@@ -28,6 +28,8 @@
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 <link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
 <script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
 <link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
 <!-- Add a small amount of space between sections. -->
@@ -379,7 +381,13 @@ div.tocify {
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://gitlab.com/Jo-Schie/mapme-protectedareas">
+    <span class="fas fa-gitlab"></span>
+     
+    Source code
+  </a>
+</li>
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -398,7 +406,7 @@ div.tocify {
 
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
-<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 </button>
 </p>
 <div id="workflowr-report" class="collapse">
@@ -407,7 +415,7 @@ div.tocify {
 <a data-toggle="tab" href="#summary">Summary</a>
 </li>
 <li>
-<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> </a>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -419,7 +427,7 @@ div.tocify {
 <strong>Last updated:</strong> 2021-06-30
 </p>
 <p>
-<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 1
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
 </p>
 <p>
 <strong>Knit directory:</strong> <code>mapme.protectedareas/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
@@ -435,12 +443,12 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges"> <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted changes </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguncommittedchanges" class="panel-collapse collapse">
+<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown file has unstaged changes. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
 </div>
 </div>
 </div>
@@ -507,26 +515,28 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastreee7aade9f96b0fa3061e71024e326b48cce9c6a4ctargetblanke7aade9a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/openkfw/mapme.protectedareas/tree/e7aade9f96b0fa3061e71024e326b48cce9c6a4c" target="_blank">e7aade9</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgitlabcomJoSchiemapmeprotectedareastree8bd1321518a72544c147f747f0b80d4412c966cftargetblank8bd1321a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://gitlab.com/Jo-Schie/mapme-protectedareas/tree/8bd1321518a72544c147f747f0b80d4412c966cf" target="_blank">8bd1321</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastreee7aade9f96b0fa3061e71024e326b48cce9c6a4ctargetblanke7aade9a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgitlabcomJoSchiemapmeprotectedareastree8bd1321518a72544c147f747f0b80d4412c966cftargetblank8bd1321a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/openkfw/mapme.protectedareas/tree/e7aade9f96b0fa3061e71024e326b48cce9c6a4c" target="_blank">e7aade9</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://gitlab.com/Jo-Schie/mapme-protectedareas/tree/8bd1321518a72544c147f747f0b80d4412c966cf" target="_blank">8bd1321</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 </p>
 <pre><code>
 Ignored files:
+    Ignored:    .RData
+    Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-
-Unstaged changes:
-    Modified:   analysis/wwf_teow.rmd
+    Ignored:    data-raw/addons/docs/rest/
+    Ignored:    data-raw/addons/etc/
+    Ignored:    data-raw/addons/scripts/
 
 </code></pre>
 <p>
@@ -541,7 +551,7 @@ Note that any generated files, e.g. HTML, png, CSS, etc., are not included in t
 <div id="versions" class="tab-pane fade">
 
 <p>
-These are the previous versions of the repository in which changes were made to the R Markdown (<code>analysis/wwf_teow.rmd</code>) and HTML (<code>docs/wwf_teow.html</code>) files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view the files as they were in that past version.
+These are the previous versions of the repository in which changes were made to the R Markdown (<code>analysis/wwf_teow.rmd</code>) and HTML (<code>public/wwf_teow.html</code>) files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view the files as they were in that past version.
 </p>
 <div class="table-responsive">
 <table class="table table-condensed table-hover">
@@ -567,10 +577,78 @@ Message
 <tbody>
 <tr>
 <td>
+html
+</td>
+<td>
+<a href="https://glcdn.githack.com/Jo-Schie/mapme-protectedareas/raw/8bd1321518a72544c147f747f0b80d4412c966cf/public/wwf_teow.html" target="_blank">8bd1321</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-06-30
+</td>
+<td>
+Host with GitLab.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://glcdn.githack.com/Jo-Schie/mapme-protectedareas/raw/3a39ee392a1bc62f5b354d990e24f937829e4b5b/public/wwf_teow.html" target="_blank">3a39ee3</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-06-30
+</td>
+<td>
+Host with GitHub.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://glcdn.githack.com/Jo-Schie/mapme-protectedareas/raw/ae67dca8cb8d1d0d8e383a78f6f4139a91e4f448/public/wwf_teow.html" target="_blank">ae67dca</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-06-30
+</td>
+<td>
+Host with GitLab.
+</td>
+</tr>
+<tr>
+<td>
 Rmd
 </td>
 <td>
-<a href="https://github.com/openkfw/mapme.protectedareas/blob/6637f1d0d1ac365167608862a57609b8393a9904/analysis/wwf_teow.rmd" target="_blank">6637f1d</a>
+<a href="https://gitlab.com/Jo-Schie/mapme-protectedareas/blob/29a12719251b230448e0069fdc98eafa749ee853/analysis/wwf_teow.rmd" target="_blank">29a1271</a>
+</td>
+<td>
+Om Bandhari
+</td>
+<td>
+2021-06-30
+</td>
+<td>
+update teow rmd analysis
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://gitlab.com/Jo-Schie/mapme-protectedareas/blob/6637f1d0d1ac365167608862a57609b8393a9904/analysis/wwf_teow.rmd" target="_blank">6637f1d</a>
 </td>
 <td>
 Johannes Schielein
@@ -584,44 +662,10 @@ updates to the the wwf routine
 </tr>
 <tr>
 <td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/openkfw/mapme.protectedareas/6637f1d0d1ac365167608862a57609b8393a9904/docs/wwf_teow.html" target="_blank">6637f1d</a>
-</td>
-<td>
-Johannes Schielein
-</td>
-<td>
-2021-03-16
-</td>
-<td>
-updates to the the wwf routine
-</td>
-</tr>
-<tr>
-<td>
 Rmd
 </td>
 <td>
-<a href="https://github.com/openkfw/mapme.protectedareas/blob/45f3a67b723a7dfdc4ca84fa615614ebe09ad144/analysis/wwf_teow.rmd" target="_blank">45f3a67</a>
-</td>
-<td>
-Ohm-Np
-</td>
-<td>
-2021-03-16
-</td>
-<td>
-add biomes name column &amp; slight modifications
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/openkfw/mapme.protectedareas/45f3a67b723a7dfdc4ca84fa615614ebe09ad144/docs/wwf_teow.html" target="_blank">45f3a67</a>
+<a href="https://gitlab.com/Jo-Schie/mapme-protectedareas/blob/45f3a67b723a7dfdc4ca84fa615614ebe09ad144/analysis/wwf_teow.rmd" target="_blank">45f3a67</a>
 </td>
 <td>
 Ohm-Np
@@ -638,24 +682,7 @@ add biomes name column &amp; slight modifications
 Rmd
 </td>
 <td>
-<a href="https://github.com/openkfw/mapme.protectedareas/blob/0a7f686a324bfb4e45238b1122895188f14261a4/analysis/wwf_teow.rmd" target="_blank">0a7f686</a>
-</td>
-<td>
-Johannes Schielein
-</td>
-<td>
-2021-03-15
-</td>
-<td>
-updated teow workflow
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/openkfw/mapme.protectedareas/0a7f686a324bfb4e45238b1122895188f14261a4/docs/wwf_teow.html" target="_blank">0a7f686</a>
+<a href="https://gitlab.com/Jo-Schie/mapme-protectedareas/blob/0a7f686a324bfb4e45238b1122895188f14261a4/analysis/wwf_teow.rmd" target="_blank">0a7f686</a>
 </td>
 <td>
 Johannes Schielein
@@ -672,7 +699,7 @@ updated teow workflow
 Rmd
 </td>
 <td>
-<a href="https://github.com/openkfw/mapme.protectedareas/blob/c93be45e3933f035608c90f00961c0721f5d50ea/analysis/wwf_teow.rmd" target="_blank">c93be45</a>
+<a href="https://gitlab.com/Jo-Schie/mapme-protectedareas/blob/c93be45e3933f035608c90f00961c0721f5d50ea/analysis/wwf_teow.rmd" target="_blank">c93be45</a>
 </td>
 <td>
 Johannes Schielein
@@ -689,24 +716,7 @@ update to teow routine
 Rmd
 </td>
 <td>
-<a href="https://github.com/openkfw/mapme.protectedareas/blob/b548133f0d48001b076f62fd357d98832a14aa54/analysis/wwf_teow.rmd" target="_blank">b548133</a>
-</td>
-<td>
-Ohm-Np
-</td>
-<td>
-2021-03-15
-</td>
-<td>
-create wwf teow rmd
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/openkfw/mapme.protectedareas/b548133f0d48001b076f62fd357d98832a14aa54/docs/wwf_teow.html" target="_blank">b548133</a>
+<a href="https://gitlab.com/Jo-Schie/mapme-protectedareas/blob/b548133f0d48001b076f62fd357d98832a14aa54/analysis/wwf_teow.rmd" target="_blank">b548133</a>
 </td>
 <td>
 Ohm-Np
@@ -771,6 +781,65 @@ br_wdpa_subset&lt;-
 # plot the selected polygons
 plot(br_wdpa_subset[1])</code></pre>
 <p><img src="figure/wwf_teow.rmd/subset-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-subset-1">
+Past versions of subset-1.png
+</button>
+</p>
+<div id="fig-subset-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://gitlab.com/Jo-Schie/mapme-protectedareas/blob/8bd1321518a72544c147f747f0b80d4412c966cf/public/figure/wwf_teow.rmd/subset-1.png" target="_blank">8bd1321</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-06-30
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://gitlab.com/Jo-Schie/mapme-protectedareas/blob/3a39ee392a1bc62f5b354d990e24f937829e4b5b/public/figure/wwf_teow.rmd/subset-1.png" target="_blank">3a39ee3</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-06-30
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://gitlab.com/Jo-Schie/mapme-protectedareas/blob/ae67dca8cb8d1d0d8e383a78f6f4139a91e4f448/public/figure/wwf_teow.rmd/subset-1.png" target="_blank">ae67dca</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-06-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="prepare-teow-polygons" class="section level1">
 <h1>Prepare TEOW polygons</h1>
@@ -781,6 +850,65 @@ teow &lt;-
 # plot the teow polygon
 plot(teow)</code></pre>
 <p><img src="figure/wwf_teow.rmd/loadTeow-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-loadTeow-1">
+Past versions of loadTeow-1.png
+</button>
+</p>
+<div id="fig-loadTeow-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://gitlab.com/Jo-Schie/mapme-protectedareas/blob/8bd1321518a72544c147f747f0b80d4412c966cf/public/figure/wwf_teow.rmd/loadTeow-1.png" target="_blank">8bd1321</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-06-30
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://gitlab.com/Jo-Schie/mapme-protectedareas/blob/3a39ee392a1bc62f5b354d990e24f937829e4b5b/public/figure/wwf_teow.rmd/loadTeow-1.png" target="_blank">3a39ee3</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-06-30
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://gitlab.com/Jo-Schie/mapme-protectedareas/blob/ae67dca8cb8d1d0d8e383a78f6f4139a91e4f448/public/figure/wwf_teow.rmd/loadTeow-1.png" target="_blank">ae67dca</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-06-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="intersect-teow-and-wdpa-polygon-layer" class="section level1">
 <h1>Intersect TEOW and WDPA Polygon layer</h1>
@@ -792,8 +920,9 @@ teow &lt;-
 # apply intersection
 teow_wdpa_intersection &lt;- 
   st_intersection(teow,
-                  br_wdpa_subset)
-# plot the biome - intersected polygon
+                  br_wdpa_subset)</code></pre>
+<pre><code>although coordinates are longitude/latitude, st_intersection assumes that they are planar</code></pre>
+<pre class="r"><code># plot the biome - intersected polygon
 plot(teow_wdpa_intersection[20])</code></pre>
 <p><img src="figure/wwf_teow.rmd/intersect-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
@@ -820,46 +949,35 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/openkfw/mapme.protectedareas/blob/6637f1d0d1ac365167608862a57609b8393a9904/docs/figure/wwf_teow.rmd/intersect-1.png" target="_blank">6637f1d</a>
+<a href="https://gitlab.com/Jo-Schie/mapme-protectedareas/blob/8bd1321518a72544c147f747f0b80d4412c966cf/public/figure/wwf_teow.rmd/intersect-1.png" target="_blank">8bd1321</a>
 </td>
 <td>
 Johannes Schielein
 </td>
 <td>
-2021-03-16
+2021-06-30
 </td>
 </tr>
 <tr>
 <td>
-<a href="https://github.com/openkfw/mapme.protectedareas/blob/45f3a67b723a7dfdc4ca84fa615614ebe09ad144/docs/figure/wwf_teow.rmd/intersect-1.png" target="_blank">45f3a67</a>
-</td>
-<td>
-Ohm-Np
-</td>
-<td>
-2021-03-16
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/openkfw/mapme.protectedareas/blob/0a7f686a324bfb4e45238b1122895188f14261a4/docs/figure/wwf_teow.rmd/intersect-1.png" target="_blank">0a7f686</a>
+<a href="https://gitlab.com/Jo-Schie/mapme-protectedareas/blob/3a39ee392a1bc62f5b354d990e24f937829e4b5b/public/figure/wwf_teow.rmd/intersect-1.png" target="_blank">3a39ee3</a>
 </td>
 <td>
 Johannes Schielein
 </td>
 <td>
-2021-03-15
+2021-06-30
 </td>
 </tr>
 <tr>
 <td>
-<a href="https://github.com/openkfw/mapme.protectedareas/blob/b548133f0d48001b076f62fd357d98832a14aa54/docs/figure/wwf_teow.rmd/intersect-1.png" target="_blank">b548133</a>
+<a href="https://gitlab.com/Jo-Schie/mapme-protectedareas/blob/ae67dca8cb8d1d0d8e383a78f6f4139a91e4f448/public/figure/wwf_teow.rmd/intersect-1.png" target="_blank">ae67dca</a>
 </td>
 <td>
-Ohm-Np
+Johannes Schielein
 </td>
 <td>
-2021-03-15
+2021-06-30
 </td>
 </tr>
 </tbody>
@@ -869,6 +987,65 @@ Ohm-Np
 <pre class="r"><code># plot the ecoregion - intersected polygon
 plot(teow_wdpa_intersection[5])</code></pre>
 <p><img src="figure/wwf_teow.rmd/intersect-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-intersect-2">
+Past versions of intersect-2.png
+</button>
+</p>
+<div id="fig-intersect-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://gitlab.com/Jo-Schie/mapme-protectedareas/blob/8bd1321518a72544c147f747f0b80d4412c966cf/public/figure/wwf_teow.rmd/intersect-2.png" target="_blank">8bd1321</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-06-30
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://gitlab.com/Jo-Schie/mapme-protectedareas/blob/3a39ee392a1bc62f5b354d990e24f937829e4b5b/public/figure/wwf_teow.rmd/intersect-2.png" target="_blank">3a39ee3</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-06-30
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://gitlab.com/Jo-Schie/mapme-protectedareas/blob/ae67dca8cb8d1d0d8e383a78f6f4139a91e4f448/public/figure/wwf_teow.rmd/intersect-2.png" target="_blank">ae67dca</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-06-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># compare the number of polygons in both layers 
 nrow(br_wdpa_subset)</code></pre>
 <pre><code>[1] 3</code></pre>
@@ -894,13 +1071,13 @@ myData_f &lt;- myData %&gt;%
 With the results looking like this
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["WDPAID"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["BIOME_NAME"],"name":[2],"type":["chr"],"align":["left"]},{"label":["ECO_NAME"],"name":[3],"type":["chr"],"align":["left"]},{"label":["teow_intersect_sqkm"],"name":[4],"type":["units"],"align":["right"]}],"data":[{"1":"43","2":"Tropical & Subtropical Moist Broadleaf Forests","3":"Cuban moist forests","4":"4095.865 [m^2]"},{"1":"43","2":"Mangroves","3":"Bahamian-Antillean mangroves","4":"2321.485 [m^2]"},{"1":"43","2":"Mangroves","3":"Bahamian-Antillean mangroves","4":"3909.048 [m^2]"},{"1":"43","2":"Tropical & Subtropical Moist Broadleaf Forests","3":"Central American montane forests","4":"1438.860 [m^2]"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["WDPAID"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["BIOME_NAME"],"name":[2],"type":["chr"],"align":["left"]},{"label":["ECO_NAME"],"name":[3],"type":["chr"],"align":["left"]},{"label":["teow_intersect_sqkm"],"name":[4],"type":["units"],"align":["right"]}],"data":[{"1":"43","2":"Tropical & Subtropical Moist Broadleaf Forests","3":"Uatuma-Trombetas moist forests","4":"4077.575 [m^2]"},{"1":"4891","2":"Tropical & Subtropical Moist Broadleaf Forests","3":"Uatuma-Trombetas moist forests","4":"2311.108 [m^2]"},{"1":"31776","2":"Tropical & Subtropical Moist Broadleaf Forests","3":"Uatuma-Trombetas moist forests","4":"3891.578 [m^2]"},{"1":"31776","2":"Tropical & Subtropical Moist Broadleaf Forests","3":"Marajó varzeá","4":"1432.431 [m^2]"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 <p>In the end we are going to have a look how long the rendering of this file took so that we could get an idea about the processing speed of this routine.</p>
 <pre class="r"><code>stoptime&lt;-Sys.time()
 print(starttime-stoptime)</code></pre>
-<pre><code>Time difference of -3.853733 mins</code></pre>
+<pre><code>Time difference of -41.0542 secs</code></pre>
 </div>
 <div id="references" class="section level1">
 <h1>References</h1>
@@ -931,26 +1108,23 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] rmarkdown_2.6 dplyr_1.0.6   wdpar_1.0.6   terra_1.2-15  sf_1.0-0     
+[1] rmarkdown_2.6 dplyr_1.0.6   wdpar_1.0.6   terra_1.2-15  sf_0.9-8     
 
 loaded via a namespace (and not attached):
- [1] Rcpp_1.0.6         countrycode_1.2.0  lattice_0.20-44    binman_0.1.2      
- [5] class_7.3-19       ps_1.5.0           assertthat_0.2.1   rprojroot_2.0.2   
- [9] digest_0.6.27      utf8_1.2.1         R6_2.5.0           evaluate_0.14     
-[13] e1071_1.7-7        httr_1.4.2         pillar_1.6.1       rlang_0.4.11      
-[17] curl_4.3.1         whisker_0.4        raster_3.4-10      RSelenium_1.7.7   
-[21] wdman_0.2.5        stringr_1.4.0      proxy_0.4-26       compiler_3.6.3    
-[25] httpuv_1.6.1       xfun_0.20          pkgconfig_2.0.3    askpass_1.1       
-[29] htmltools_0.5.1.1  openssl_1.4.4      tidyselect_1.1.1   tibble_3.1.2      
-[33] workflowr_1.6.2    codetools_0.2-18   XML_3.99-0.3       fansi_0.5.0       
-[37] crayon_1.4.1       later_1.2.0        wk_0.4.1           bitops_1.0-6      
-[41] rappdirs_0.3.3     grid_3.6.3         jsonlite_1.7.2     lifecycle_1.0.0   
-[45] DBI_1.1.1          git2r_0.28.0       magrittr_2.0.1     semver_0.2.0      
-[49] units_0.7-2        KernSmooth_2.23-20 stringi_1.6.2      fs_1.5.0          
-[53] promises_1.2.0.1   sp_1.4-5           xml2_1.3.2         ellipsis_0.3.2    
-[57] generics_0.1.0     vctrs_0.3.8        s2_1.0.5           tools_3.6.3       
-[61] glue_1.4.2         purrr_0.3.4        processx_3.5.2     yaml_2.2.1        
-[65] caTools_1.18.1     classInt_0.4-3     knitr_1.30        </code></pre>
+ [1] tidyselect_1.1.1   xfun_0.20          purrr_0.3.4        lattice_0.20-44   
+ [5] vctrs_0.3.8        generics_0.1.0     htmltools_0.5.1.1  yaml_2.2.1        
+ [9] utf8_1.2.1         rlang_0.4.11       e1071_1.7-7        later_1.2.0       
+[13] pillar_1.6.0       glue_1.4.2         DBI_1.1.1          rappdirs_0.3.3    
+[17] sp_1.4-5           lifecycle_1.0.0    stringr_1.4.0      workflowr_1.6.2   
+[21] raster_3.4-10      codetools_0.2-18   evaluate_0.14      knitr_1.30        
+[25] httpuv_1.6.1       curl_4.3.1         class_7.3-19       fansi_0.5.0       
+[29] Rcpp_1.0.6         KernSmooth_2.23-20 promises_1.2.0.1   classInt_0.4-3    
+[33] lwgeom_0.2-6       jsonlite_1.7.2     countrycode_1.2.0  fs_1.5.0          
+[37] digest_0.6.27      stringi_1.6.2      grid_3.6.3         rprojroot_2.0.2   
+[41] tools_3.6.3        magrittr_2.0.1     proxy_0.4-26       tibble_3.1.1      
+[45] crayon_1.4.1       whisker_0.4        pkgconfig_2.0.3    ellipsis_0.3.2    
+[49] assertthat_0.2.1   httr_1.4.2         R6_2.5.0           units_0.7-1       
+[53] git2r_0.28.0       compiler_3.6.3    </code></pre>
 </div>
 </div>
 

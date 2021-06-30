@@ -27,8 +27,8 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
-<script src="site_libs/anchor-sections-1.0/anchor-sections.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
 <link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
 <!-- Add a small amount of space between sections. -->
@@ -91,6 +91,7 @@ h6 {
   text-align: left;
 }
 </style>
+
 
 
 
@@ -379,7 +380,13 @@ div.tocify {
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://gitlab.com/Jo-Schie/mapme-protectedareas">
+    <span class="fas fa-gitlab"></span>
+     
+    Source code
+  </a>
+</li>
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -398,7 +405,7 @@ div.tocify {
 
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
-<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 </button>
 </p>
 <div id="workflowr-report" class="collapse">
@@ -407,7 +414,7 @@ div.tocify {
 <a data-toggle="tab" href="#summary">Summary</a>
 </li>
 <li>
-<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> </a>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -416,10 +423,10 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2021-03-12
+<strong>Last updated:</strong> 2021-06-30
 </p>
 <p>
-<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 1
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
 </p>
 <p>
 <strong>Knit directory:</strong> <code>mapme.protectedareas/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
@@ -435,12 +442,12 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges"> <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted changes </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguncommittedchanges" class="panel-collapse collapse">
+<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown is untracked by Git. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
 </div>
 </div>
 </div>
@@ -464,7 +471,7 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 </div>
 <div id="strongSeedstrongcodesetseed20210305code" class="panel-collapse collapse">
 <div class="panel-body">
-<p>The command <code>set.seed(20210305)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+<p>The command <code>set.seed(20210305)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
 </div>
 </div>
 </div>
@@ -507,37 +514,28 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastree9cf92e0de79510ed420995d8f3716d1e76c2d13atargetblank9cf92e0a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/openkfw/mapme.protectedareas/tree/9cf92e0de79510ed420995d8f3716d1e76c2d13a" target="_blank">9cf92e0</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgitlabcomJoSchiemapmeprotectedareastree8bd1321518a72544c147f747f0b80d4412c966cftargetblank8bd1321a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://gitlab.com/Jo-Schie/mapme-protectedareas/tree/8bd1321518a72544c147f747f0b80d4412c966cf" target="_blank">8bd1321</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastree9cf92e0de79510ed420995d8f3716d1e76c2d13atargetblank9cf92e0a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgitlabcomJoSchiemapmeprotectedareastree8bd1321518a72544c147f747f0b80d4412c966cftargetblank8bd1321a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/openkfw/mapme.protectedareas/tree/9cf92e0de79510ed420995d8f3716d1e76c2d13a" target="_blank">9cf92e0</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://gitlab.com/Jo-Schie/mapme-protectedareas/tree/8bd1321518a72544c147f747f0b80d4412c966cf" target="_blank">8bd1321</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 </p>
 <pre><code>
 Ignored files:
+    Ignored:    .RData
+    Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-    Ignored:    analysis/README.html
-    Ignored:    contributing.html
-    Ignored:    mapme.protectedareas.Rproj
-    Ignored:    renv/library/
-    Ignored:    renv/local/
-    Ignored:    renv/staging/
-
-Untracked files:
-    Untracked:  analysis/README.Rmd
-    Untracked:  analysis/contribute.Rmd
-
-Unstaged changes:
-    Modified:   .DS_Store
-    Modified:   analysis/index.Rmd
+    Ignored:    data-raw/addons/docs/rest/
+    Ignored:    data-raw/addons/etc/
+    Ignored:    data-raw/addons/scripts/
 
 </code></pre>
 <p>
@@ -550,9 +548,103 @@ Note that any generated files, e.g. HTML, png, CSS, etc., are not included in t
 <hr>
 </div>
 <div id="versions" class="tab-pane fade">
+
 <p>
-There are no past versions. Publish this analysis with <code>wflow_publish()</code> to start tracking its development.
+These are the previous versions of the repository in which changes were made to the R Markdown (<code>analysis/contribute.Rmd</code>) and HTML (<code>public/contribute.html</code>) files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view the files as they were in that past version.
 </p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://glcdn.githack.com/Jo-Schie/mapme-protectedareas/raw/8bd1321518a72544c147f747f0b80d4412c966cf/public/contribute.html" target="_blank">8bd1321</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-06-30
+</td>
+<td>
+Host with GitLab.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://glcdn.githack.com/Jo-Schie/mapme-protectedareas/raw/3a39ee392a1bc62f5b354d990e24f937829e4b5b/public/contribute.html" target="_blank">3a39ee3</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-06-30
+</td>
+<td>
+Host with GitHub.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://glcdn.githack.com/Jo-Schie/mapme-protectedareas/raw/ae67dca8cb8d1d0d8e383a78f6f4139a91e4f448/public/contribute.html" target="_blank">ae67dca</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-06-30
+</td>
+<td>
+Host with GitLab.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://gitlab.com/Jo-Schie/mapme-protectedareas/blob/e9e6d98be2fae4a8f0249bea5b66622c8b94e6b0/analysis/contribute.Rmd" target="_blank">e9e6d98</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-03-12
+</td>
+<td>
+updated the website to be rendered.
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 <hr>
 </div>
 </div>
@@ -560,21 +652,33 @@ There are no past versions. Publish this analysis with <code>wflow_publish()</co
 <p>This file includes information on how to use this repository and create good contributions. We also use a code of conduct for open source projects adapted from the Contributor Covenant homepage. You can find this conduct in the file CoC.md.</p>
 <div id="how-can-i-use-this-repository" class="section level2">
 <h2>How can I use this repository?</h2>
-<p>Put here information on the usage (later).</p>
+<p>There are two different ways to use this repository. The quickest way is to just follow the tutorial scripts and manually install whatever libraries are required in the scripts. This should work most of the times, however, for there might be changes to some of the utilized libraries in this repository in the future, so some of the functions from the tutorials here might not be reproducible anymore because the code might be outdated. If this is so you can use all the “old” libraries that come as part of this repository as well. Just follow the steps in the next paragraph if you want to copy the whole repository to your local machine and use exactly the same libraries that where utilized to create the scripts.</p>
+<p>This repository uses <code>renv</code> package to allow for version control. To use this repository on your local machine you can do the following</p>
+<ol style="list-style-type: decimal">
+<li>Forge the repository to your own github</li>
+<li>Create a new version control project in Rstudio and link this project to your forged repository on github</li>
+<li>pull the main branch</li>
+<li>install the <code>renv</code> package on your local machine</li>
+<li>Run <code>renv::restore()</code>. This should reinstall all necessary libraries for this repository on your local machine.</li>
+<li>Run the codes from the tutorial scripts to your liking.</li>
+</ol>
 </div>
 <div id="how-can-i-contribute" class="section level2">
 <h2>How can I contribute?</h2>
 <ol style="list-style-type: decimal">
 <li><a href="#reporting-bugs-and-suggesting-enhancements">Reporting Bugs &amp; Suggesting Enhancements</a></li>
-<li><a href="#remarks-on-contributing-code">Contributing Code</a></li>
+<li><a href="#contributing-code">Contributing Code</a></li>
 <li><a href="#issues-and-prioritization">Issues and Prioritization</a></li>
 </ol>
-<div id="reporting-bugs-and-suggesting-enhancements" class="section level3">
-<h3>Reporting Bugs And Suggesting Enhancements</h3>
+</div>
+<div id="reporting-bugs-and-suggesting-enhancements" class="section level2">
+<h2>Reporting Bugs And Suggesting Enhancements</h2>
 <p>Add here information on where and how to report bugs and add suggestions (later)</p>
 </div>
-<div id="remarks-on-contributing-code" class="section level3">
-<h3>Remarks on Contributing Code</h3>
+<div id="contributing-code" class="section level2">
+<h2>Contributing Code</h2>
+<div id="general-remarks-on-contributing-code" class="section level3">
+<h3>General Remarks on Contributing Code</h3>
 <p>In order to ensure reproducibility, proper documentation and open-source code is key. In addition to making all routines public, we also have a strong focus on the proper <strong>documentation of utilized methods</strong>. Here are the necessary steps contributors should do to make a contribution to this repository.</p>
 <ol style="list-style-type: decimal">
 <li><strong>Read this contrib file</strong>. It contains most of the relevant information to get started.</li>
@@ -585,8 +689,8 @@ There are no past versions. Publish this analysis with <code>wflow_publish()</co
 <li>This repository uses the <a href="https://style.tidyverse.org/">tidyverse Styleguide</a> for creating commits in R. Please have a look at it, if you are not familiar.</li>
 <li>This repository tries to follow the recommendations of <a href="https://ropenscilabs.github.io/statistical-software-review-book/standards.html#spatial-software">Ropenscilabs</a> for developing spatial software in R. Please have a look at it, if you are not familiar. <strong>The two main libraries to be used for geo-processing are <code>sf</code> and <code>terra</code>. Please try to write your functions using these packages instead of the older packages <code>sp</code> and <code>raster</code>.</strong></li>
 <li>Before creating new code you might want to have a <strong>look at the existing code-base</strong> to see whether you can take advantage of existing processing or analysis routines. The easiest way is probably to have a look at the documentation pages (&lt;-insert link from index later here-&gt;) and look at the utilized routines there before going into the code itself. It is encouraged re-utilize code from the <em>code</em> folder as much as possible to reduce maintenance needs and complexity.</li>
-<li>We use <code>R</code> scripts to process our data and <code>Rmarkdownscripts (Rmd)</code> to document the utilized data, methods, pre-processing routines and analysis scripts. We have some <strong>basic recommendations and minimum standards for code developemt</strong> which are shown below.</li>
-<li>Develop your code with <strong>sample data</strong> that is quick to process and easy to reproduce. There are also some recommendations on sample data below.</li>
+<li>We use <code>R</code> scripts to process our data and <code>Rmarkdownscripts (Rmd)</code> to document the utilized data, methods, pre-processing routines and analysis scripts. We have some <strong>basic recommendations and minimum standards for code developemt</strong> which are shown in section <a href="#routines-for-preprocessing-datasets">Routines for preprocessing Datasets</a>.</li>
+<li>Test your code with <strong>sample data</strong> that is quick to process and easy to reproduce. There are also some recommendations on sample data below.</li>
 </ol>
 </div>
 <div id="repository-structure" class="section level3">
@@ -611,23 +715,47 @@ There are no past versions. Publish this analysis with <code>wflow_publish()</co
 ├── README.md # general information on the project
 └── renv/  # renv directory to lock used package versions</code></pre>
 </div>
-<div id="preprocessing-datasets" class="section level3">
-<h3>Preprocessing Datasets</h3>
-<p>This is a step-by-step guide to create a new pre-processing routine based on the example of TEOW ecoregions dataset from WWF. <strong>Pre-processing routines are organized in this repository along the line of thematic data-sets from differing data-sources</strong>. The intention of this organization is to have a <strong>modular structure</strong> that allows for easy adding or deleting data-sources from the pre-processing routine and eventually chain them together. Also this allows us to debug the code more easily if the routine is chained. <strong>An exception</strong> to this structure are routines that allow access to already pre-processed data-sets, in our case the <code>API</code>-Access <em>DOPA/JRC Rest Services</em>, which provides tabular information for several thematic data-sets pre-processed by JRC on the base of PAs.</p>
-<p>Please try to develop your routine using a small subset of <strong>sample</strong> data that takes few processing time for the documentation and has low storage requirements. For PAs we recommend e.g. to use 1 or 2 PAs from your area of interest. We currently use the <code>wdpar</code> package to automatically download and preprocess sample PAs from the <em>WDPA</em>. You can also save the sample data in the <em>data</em> folder. This is recommended if the dataset you use has no definitive storage place on the internet. Nevertheless, it is encouraged to include the downloading process in the routine as well and save the sample data in the temporary folder that is created by the <em>Rsession</em>.</p>
+<div id="datalake" class="section level3">
+<h3>Datalake</h3>
+<p>This repository uses a datalake to store input, output and processing data. This datalake is non public because of its size and partly sensitive nature. For every dataset we also provide information where the data originated from, so you might want to recreate the datalake structure on your local machine if you use this repository. Our datalake structure is organized as follows:</p>
+<p>datalake/</p>
+<pre><code>.
+├── mapme.protectedares/ # specifies the project folder. is named in the same way as the repository
+    ├── input/ # contains unprocessed input data with original filenames 
+      ├── teow/ 
+      ├── global_mangrove_watch/
+      ├── net_carbon_flux/
+      └── ...
+    ├── output/ # here goes all relevant, processed output data
+        ├── polygon / # the polygon-data on country level of supported and non supported PAs
+        ├── raster /  # raster representation of variables for the impact evaluation
+            └── tabular / # tabular data containing wdpa_id (lines) and processed variables (columns)
+                ├── 1_full_database / merged final table of all individual variables
+                ├── teow/
+                ├── global_mangrove_watch/
+                ├── net_carbon_flux/
+                └── ...
+    └── processing/ # contains data that is generated during processing.</code></pre>
+<p><strong>Naming conventions for datalake</strong>: Please name all folders and <em>processed</em> datasets lowercase and with underline _ as seperator instead of whitspace. Please keep the original data names in the input folder. Please, also make sure to keep the clean the processing folder regularly. Nevertheless, if there are datasets that take very long processing time you might want to keep them permanently in the processing folder.</p>
+</div>
+<div id="routines-for-preprocessing-datasets" class="section level3">
+<h3>Routines for preprocessing Datasets</h3>
+<p>This is a step-by-step guide to create a new pre-processing routine based on the example of TEOW ecoregions dataset from WWF. <strong>Pre-processing routines are organized in this repository along the line of thematic data-sets from differing data-sources</strong>. The intention of this organization is to have a <strong>modular structure</strong> that allows for easy adding or deleting data-sources from the pre-processing routine and eventually chain the routines together to preprocess several variables consecutively for a number of given areas.</p>
+<p>Also this allows us to debug the code more easily if the routine is chained. <strong>An exception</strong> to this structure are routines that allow access to already pre-processed data-sets, in our case the <code>API</code>-Access <em>DOPA/JRC Rest Services</em>, which provides tabular information for several thematic data-sets pre-processed by JRC on the base of PAs.</p>
+<p>Please try to develop your routine using a small subset of <strong>sample data</strong> that takes few processing time for the documentation and has low storage requirements. For PAs we recommend e.g. to use 3 or 4 PAs from your area of interest. We currently use the <code>wdpar</code> package to automatically download and preprocess sample PAs from the <em>WDPA</em>. You can also save the sample data in the <em>data</em> folder. This is recommended if the dataset you use has no definitive storage place on the internet. Nevertheless, it is encouraged to include the downloading process in the routine as well and save the sample data in the temporary folder that is created by the <em>Rsession</em>.</p>
 <p><strong>To create a new pre-processing routine you should</strong></p>
 <ol style="list-style-type: decimal">
-<li>Create a new issue for the data-source that should be processed. The Title could be for example: <em>“Pre-process TEOW ecoregion data from WWF to create tabular data for PA polygon database”</em></li>
-<li>Create a new branch in the repository as discussed above. This branch should indicate what is done e.g. <em>“preprocess_teow”</em></li>
-<li>Have a look at existing processing routines as mentioned above to see if you can recycle code or use existing routines.</li>
-<li>Create a <code>Rmd</code> file placed in the <em>analysis</em> folder (see structure above). Best practice is to use the <code>wflow_open()</code> command which will create a new <code>Rmd</code> file. Name this new file according to the pre-processed data-source and variable e.g. <code>wwf_teow.Rmd</code> for TEOW Ecoregions from the World Wildlife Fund for Nature (WWF) or <code>gfw_forests.Rmd</code> for different variables from the Global Forest Watch (GFW) such as <em>forest cover</em>, <em>forest cover loss</em> or <em>emissions from forest cover loss</em>. The full command to create a new script in our example would therefore look like this <code>wflow_open("analysis/wwf_teow.Rmd")</code></li>
-<li>Create a <code>R</code>-script for larger functional code-junks in the <em>code</em> folder (if you need to create new routines). This file can be sourced in the <code>Rmd</code> (details and naming convention below).</li>
-<li>Create a reference to the new routine and its documentation by creating a link to the rendered html file in <code>index.Rmd</code> (details below)</li>
-<li>Add relevant meta-data to the <code>Rmd</code> file (details below).</li>
+<li>Create a <strong>new issue</strong> for the data-source that should be processed. The Title could be for example: <em>“Pre-process TEOW ecoregion data from WWF to create tabular data for PA polygon database”</em></li>
+<li>Create a <strong>new branch</strong> for the repository as discussed above. This branch should indicate what is done e.g. <em>“preprocess_teow”</em></li>
+<li>Have a look at <strong>existing processing routines</strong> as mentioned above to see if you can recycle code or use existing routines.</li>
+<li>Create an <code>R</code>-script and <strong>develop your routine</strong> in the <em>code</em> folder. Details and naming conventions are given below in section <a href="#r-scripts">R scripts</a>. In this script you should develop the data-processing routine which will run (at least) on the whole PA portfolio from KfW. Depending on the routine this can include several steps e.g. <em>downloading</em>, <em>cleaning</em>, <em>merging or stacking</em> different input layers, <em>geo-processing</em> and final data wrangling to achieve an adequate output structure (details below). Try to document with <strong>inline comments</strong> all steps that are applied to the data. Make sure to realize all steps (if possible) using R packages <code>terra</code> and <code>sf</code> plus auxiliary packages such as the <code>tidyr</code> and <code>dpylr</code>for data wrangling. Please make sure that your final output data is structured and stored as a long table. For an example see section <a href="#output-data-structure">Output data structure</a></li>
+<li>Create a <code>Rmd</code> file and place it in the <em>analysis</em> folder (see structure above). Best practice is to use the <code>wflow_open()</code> command which will create a new <code>Rmd</code> file. Name this new file according to the pre-processed data-source and variable e.g. <code>wwf_teow.Rmd</code> for TEOW Ecoregions from the World Wildlife Fund for Nature (WWF) or <code>gfw_forests.Rmd</code> for different variables from the Global Forest Watch (GFW) such as <em>forest cover</em>, <em>forest cover loss</em> or <em>emissions from forest cover loss</em>. The full command to create a new script in our example would therefore look like this <code>wflow_open(&quot;analysis/wwf_teow.Rmd&quot;)</code>.</li>
+<li><strong>Document your routine</strong> in the <code>Rmd</code> file using a minimal reproducible example. Please try to follow our minimum standards given in the section <a href="#contents-of-the-rmd-file">Contents of the Rmd file</a>.</li>
+<li>Create a reference to the new routine and its documentation by creating a link to the rendered html file in <code>index.Rmd</code>. You can see how to do this in section <a href="#render-and-link-your-report">Render and link your report</a>.</li>
 </ol>
-<div id="seperate-r-scripts-with-source-code" class="section level4">
-<h4>Seperate R scripts with source code</h4>
-<p>You should try to develop R-functions that are seperated in an R-script and then sourced in the <code>Rmd</code> files. Those functions and R-scripts should be placed in the <em>code</em> folder (see structure above). This is especially relevant for code which can be re-used in several pre-processing routines such as chained pre-processing steps e.g. <code>reproject</code> -&gt; <code>rasterize</code> -&gt; <code>stack</code> -&gt; <code>zonal</code>.</p>
+<div id="r-scripts" class="section level4">
+<h4>R scripts</h4>
+<p>You should try to develop R-functions that are seperated in an R-script and then sourced in the <code>Rmd</code> files. Those functions and R-scripts should be placed in the <em>code</em> folder (see structure above). This is especially relevant for code which can be re-used in several pre-processing routines such as chained pre-processing steps e.g. <code>reproject</code> -&gt; <code>rasterize</code> -&gt; <code>stack</code> -&gt; <code>zonal</code>.</p>
 <p>Here you have two differing naming conventions when saving the script:</p>
 <ul>
 <li>You can create a new name that links the <code>R</code> file to the name of your <code>Rmd</code>file. This could be for example <em>preprocessing_wwf_teow.R</em>. Use this if your code is most probably specific to the dataset that you process.</li>
@@ -640,17 +768,17 @@ There are no past versions. Publish this analysis with <code>wflow_publish()</co
 <p><strong>PLEASE MAKE also sure to document newly created <code>R</code> files in <code>index.Rmd</code></strong> to allow others to get a quick assessment of the existing pre-processing routines. You only need to do this if you think your routine could be used also outside of the context in which you processed your dataset (i.e. more generic methods as shown above in the example of chained processing steps). If possible you can also use a graphical expression of the workflow (see examples in index) which will enable others to understand your routine quickly. Images for such graphical expressions should be stored in <em>docs</em> as well containing the name of the routine. For the example above this would be <em>rasterize_and_zonalstats.png</em>. You can find a Powerpoint Template for workflows in the <em>docs</em> folder as well.</p>
 </div>
 <div id="contents-of-the-rmd-file" class="section level4">
-<h4>Contents of the <code>Rmd</code> file</h4>
+<h4>Contents of the Rmd file</h4>
 <p>In order to create a good documentation of the processed data and the authors of the script we would like to ask for some minimal information in the <code>Rmd</code> files consisting of</p>
 <ul>
-<li>Author Name (and optionally contact details, link to github account or other)</li>
-<li>Purpose of the script
+<li><strong>Author</strong> Name (and optionally contact details, link to github account or other)</li>
+<li><strong>Purpose</strong> of the script
 <ul>
 <li>what is shown by the dataset(s) and what information is to be derived,</li>
 <li>what is done in the script and which processing scripts from the <em>code</em> folder are used</li>
 <li>what data comes out in the end.</li>
 </ul></li>
-<li>Meta-data for the processed dataset(s)
+<li><strong>Meta-data</strong> for the processed dataset(s)
 <ul>
 <li>Name of the dataset(s) and source(s) (scientific citation if available)</li>
 <li>Version number of the data (if the data is updated and possess this information)</li>
@@ -661,9 +789,59 @@ There are no past versions. Publish this analysis with <code>wflow_publish()</co
 <li>download-link</li>
 <li>when was the data downloaded</li>
 </ul></li>
-<li>Detailed description of the data processing</li>
-<li>Time necessary to process the sample data and details on the machine used to process it.</li>
+<li>Detailed description of the <strong>data processing routine</strong>. This can e.g. include <em>download</em>, <em>data-cleaning</em>, <em>data-merging</em>, <em>geo-processing</em> &amp; <em>data-wrangling</em> to obtain final results. Please <strong>LIMIT the amount that is necessary to render this file</strong>. This means, that very heavy pre-processing steps such as e.g. long downloads or data-merges should not be included as executable code here. In case of long runtime you can simply load your pre-processed data here and describe in general terms where you downloaded the data and how you pre-processed it in the R-script.</li>
+<li><strong>Time necessary to process the sample data</strong> or eventually the whole dataset in the R-script and details on the machine used to process it.</li>
 </ul>
+</div>
+<div id="output-data-structure" class="section level4">
+<h4>Output data structure</h4>
+<p>In order to be able to create a comprehensive and easy to analyse database from all preprocessing routines and datasets in the end, we suggest to have a final data-structure that is similar for each pre-processing routine. This datastructure should be a <code>longtable</code> with three columns: <em>wdpa_id</em>, <em>variable_name</em> and <em>value</em> which will allow us to easily merge and analyse all pre-processed data-sets.</p>
+<p>In the following section we provide an example for typical output data from a preprocessing routine and how this data could be transferred to a long table:</p>
+<pre class="r"><code>library(dplyr)
+library(tidyr)
+# create two examples for how output data could look like (classical tables in the &quot;wide&quot; format)
+df&lt;-tibble(wdpaid=c(1:10),
+           carbonflux_co2_balance_2010=c(21:30),
+           carbonflux_co2_balance_2020=c(21:30))
+
+df2&lt;-tibble(wdpaid=c(1:10),
+           teow_rainforest=c(21:30),
+           teow_savannah=c(21:30))
+
+#  have a look at them
+df
+df2
+
+# pivot the table to longer
+df_long&lt;-
+  pivot_longer(df,cols = c(carbonflux_co2_balance_2010,carbonflux_co2_balance_2020))
+
+df_long2&lt;-
+  pivot_longer(df2,cols = c(teow_rainforest,teow_savannah))
+
+# now we can bind both datasets
+wholedatabase&lt;-rbind(df_long,df_long2)
+
+# and very easily use them for portfolio analysis. 
+# example to calculate how much savannah is in our protected areas
+wholedatabase%&gt;%
+  filter(name==c(&quot;teow_rainforest&quot;,&quot;teow_savannah&quot;))%&gt;%
+  group_by(name)%&gt;%
+  summarise(sum=sum(value))
+
+wholedatabase%&gt;%
+  filter(name==c(&quot;carbonflux_co2_balance_2010&quot;,&quot;carbonflux_co2_balance_2020&quot;))%&gt;%
+  group_by(name)%&gt;%
+  summarise(sum=sum(value))</code></pre>
+</div>
+<div id="naming-coonvention-of-the-data" class="section level4">
+<h4>Naming coonvention of the data</h4>
+<p>In order to adopt an unambiguous data storage strategy, it would be great to have standard naming convention for all the datasets that would be used as either in raw form or saved as processed form. The naming convention should follow following structure:</p>
+<p><em>repository_data-name_raw/processed.extension </em>Example1: mapme.protectedareas_net-forest-carbon-flux-10N-060W_raw.tif *Example2: mapme.protectedareas_Terrestrial-Ecoregions-World_processed.shp</p>
+</div>
+<div id="chained-pre-processing" class="section level4">
+<h4>Chained pre-processing</h4>
+<p>This section will be written as soon as we have enough working pre-processing scripts to chain them. The idea will be to do something along the lines of sourcing several preprocessing scripts with <code>trycatch</code> to avoid interruption of chain processes.</p>
 </div>
 </div>
 <div id="analysis" class="section level3">
@@ -682,32 +860,33 @@ There are no past versions. Publish this analysis with <code>wflow_publish()</co
 </p>
 <div id="workflowr-sessioninfo" class="collapse">
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 4.0.3 (2020-10-10)
-Platform: x86_64-apple-darwin17.0 (64-bit)
-Running under: macOS Big Sur 10.16
+<pre><code>R version 3.6.3 (2020-02-29)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 18.04.5 LTS
 
 Matrix products: default
-BLAS:   /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRblas.dylib
-LAPACK: /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRlapack.dylib
+BLAS:   /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.7.1
+LAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.7.1
 
 locale:
-[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+ [1] LC_CTYPE=C.UTF-8       LC_NUMERIC=C           LC_TIME=C.UTF-8       
+ [4] LC_COLLATE=C.UTF-8     LC_MONETARY=C.UTF-8    LC_MESSAGES=C.UTF-8   
+ [7] LC_PAPER=C.UTF-8       LC_NAME=C              LC_ADDRESS=C          
+[10] LC_TELEPHONE=C         LC_MEASUREMENT=C.UTF-8 LC_IDENTIFICATION=C   
 
 attached base packages:
-[1] stats     graphics  grDevices datasets  utils     methods   base     
-
-other attached packages:
-[1] workflowr_1.6.2
+[1] stats     graphics  grDevices utils     datasets  methods   base     
 
 loaded via a namespace (and not attached):
- [1] Rcpp_1.0.6      rstudioapi_0.13 knitr_1.30      magrittr_2.0.1 
- [5] R6_2.5.0        rlang_0.4.10    stringr_1.4.0   tools_4.0.3    
- [9] xfun_0.19       git2r_0.27.1    htmltools_0.5.0 ellipsis_0.3.1 
-[13] rprojroot_2.0.2 yaml_2.2.1      digest_0.6.27   tibble_3.0.4   
-[17] lifecycle_1.0.0 crayon_1.3.4    later_1.1.0.1   vctrs_0.3.6    
-[21] promises_1.1.1  fs_1.5.0        glue_1.4.2      evaluate_0.14  
-[25] rmarkdown_2.5   stringi_1.5.3   compiler_4.0.3  pillar_1.4.7   
-[29] httpuv_1.5.4    renv_0.13.0     pkgconfig_2.0.3</code></pre>
+ [1] Rcpp_1.0.6        whisker_0.4       knitr_1.30        magrittr_2.0.1   
+ [5] workflowr_1.6.2   R6_2.5.0          rlang_0.4.11      fansi_0.5.0      
+ [9] stringr_1.4.0     tools_3.6.3       xfun_0.20         utf8_1.2.1       
+[13] git2r_0.28.0      htmltools_0.5.1.1 ellipsis_0.3.2    rprojroot_2.0.2  
+[17] yaml_2.2.1        digest_0.6.27     tibble_3.1.1      lifecycle_1.0.0  
+[21] crayon_1.4.1      later_1.2.0       vctrs_0.3.8       fs_1.5.0         
+[25] promises_1.2.0.1  glue_1.4.2        evaluate_0.14     rmarkdown_2.6    
+[29] stringi_1.6.2     compiler_3.6.3    pillar_1.6.0      httpuv_1.6.1     
+[33] pkgconfig_2.0.3  </code></pre>
 </div>
 </div>
 
