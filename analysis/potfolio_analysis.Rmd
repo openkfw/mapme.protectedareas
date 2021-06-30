@@ -31,8 +31,15 @@ wdpa_kfw_treatment<-
   filter(bmz_n_1>0)
 
 ## ---- TEOW ----
-db_teow<-rbind(read_csv("~/shared/datalake/mapme.protectedareas/output/polygon/teow/teow_long_allPAs_merged_biome.csv"),
-               read_csv("~/shared/datalake/mapme.protectedareas/output/polygon/teow/teow_long_allPAs_merged_eco.csv"))
+db_teow <-
+  rbind(
+    read_csv(
+      "~/shared/datalake/mapme.protectedareas/output/polygon/teow/teow_long_allPAs_merged_biome.csv"
+    ),
+    read_csv(
+      "~/shared/datalake/mapme.protectedareas/output/polygon/teow/teow_long_allPAs_merged_eco.csv"
+    )
+  )
 
 ## ---- GLOBAL MANGROVE WATCH ---
 

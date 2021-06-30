@@ -263,7 +263,7 @@ db_dopa <-
 colnames(db_dopa)
 biomass_long <-
   db_dopa %>%
-  select(iso3, agb_tot_c_mg, bgb_tot_c_mg, gsoc_tot_c_mg) %>%
+  select(wdpaid, iso3, agb_tot_c_mg, bgb_tot_c_mg, gsoc_tot_c_mg) %>%
   pivot_longer(.,
                c(agb_tot_c_mg, bgb_tot_c_mg, gsoc_tot_c_mg),
                names_to = "carbon",
@@ -290,12 +290,18 @@ carbon_plot <-
 
 ggplotly(carbon_plot)
 
+length(unique(biomass_long$wdpaid)) # We have observations from 384 PAs
+
+
 # ----- dopa xyz -----
 colnames(db_dopa)
+db_dopa$pop
 # db_dopa$p_road_pa_perc_tot # road percentage in pa total
 
-sum(db_dopa$pa_rtot_sqkm)
+boxplot(db_dopa$p_population_bu_last_epoch_sum)
+db_dopa$p_builtup_pa_sqkm # a lot of NAs
 
+db_dopa$p_s
 
 # ----- threats and landcover change -----
 library("sf")
