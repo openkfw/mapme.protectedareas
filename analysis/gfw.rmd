@@ -129,7 +129,8 @@ zonal_stats = statsGRASS(grass = grass,
                        thresholdClump = 6, 
                        thresholdCover = 10, 
                        years = 2001:2020, 
-                       saveRaster = F)
+                       saveRaster = F,
+                       hideoutput = T)
 ```
 
 
