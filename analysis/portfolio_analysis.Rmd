@@ -101,12 +101,13 @@ my_map <-
   # addProviderTiles(providers$CartoDB.Positron, group="CartoDB") %>%
   addProviderTiles(providers$Esri.WorldImagery, group="Satellite") %>%
   addProviderTiles(providers$Esri.WorldShadedRelief, group="Topography") %>%
+  addProviderTiles(providers$NASAGIBS.ViirsEarthAtNight2012, group="Nightlights") %>%
   addCircles(data = wdpa_kfw_treatment_centroid, opacity = 0.9,color = ~pal(MARINE), group = "Type",label = ~htmlEscape(NAME))%>%
   addCircles(data = wdpa_kfw_treatment_centroid, opacity = 0.9,color = ~pal2(bmz_n_1),group = "Project-Nr.")%>%
   addPolygons(data = wdpa_kfw_treatment,opacity = 0.9,color = ~pal(MARINE), group = "Type (Polygons)",label = ~htmlEscape(NAME))%>%
   addFullscreenControl()%>%
   addLayersControl(
-    baseGroups = c("OpenStreetMap","Satellite","Topography"), #"Toner", "CartoDB"
+    baseGroups = c("OpenStreetMap","Satellite","Topography","Nightlights"), #"Toner", "CartoDB"
     # overlayGroups = c("Type","Project-Nr."),
     overlayGroups = c("Type","Type (Polygons)","Project-Nr."),
     options = layersControlOptions(collapsed = FALSE))%>%
