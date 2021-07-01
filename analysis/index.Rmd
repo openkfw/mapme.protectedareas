@@ -10,35 +10,37 @@ workflowr:
   suppress_report: TRUE
 ---
 
-Welcome to the **KfW Protected Areas Database Website**. Here you can find all routines for datasources that where used to create the KfW PA database. This project was created as a reproducible research project using the *workflowr* package. For more information please visit [workflowr](https://github.com/jdblischak/workflowr) website. In addition, this project uses the the *renv* package to enable others to exactly work with the same package versions that had been utilized in this project. For more information please visit the [renv](https://rstudio.github.io/renv/index.html) website. In order to reproduce the analysis in this script and work with our routines, you need to download our [Github repository](https://github.com/openkfw/mapme.protectedareas) or work with individual files from the *code* folder in the repo. 
+Welcome to the **KfW Protected Areas Database**. Here you can find all routines for datasources that were used to create the KfW PA database. This project was created as a reproducible research project using the *workflowr* package. For more information please visit [workflowr](https://github.com/jdblischak/workflowr) website. In order to reproduce the analysis in this script and work with our routines, you can either just follow the tutorials below or you can check out codes from our [Github repository](https://github.com/openkfw/mapme.protectedareas). 
 
-This website is structured to show you the routines for each data-sources one by one with reproducible data-sets. Data routines range from processing raw data with geospatial techniques up to using API services that query existing data-sources such as the [DOPA Explorer from EU/JRC](https://dopa-explorer.jrc.ec.europa.eu/). To get more information please visit our Github repository and leave a comment or new issue. 
+This website is structured to show you the routines for each data-sources one by one with reproducible data-sets. Data routines range from processing raw data with geospatial techniques up to using API services that query existing data-sources such as the [DOPA Explorer from EU/JRC](https://dopa-explorer.jrc.ec.europa.eu/). All processing is done with *R*. To get more information please visit our Github repository and leave a comment or issue. You can also contribute to this repository (details see below).
+
+The **KfW Protected Areas Database** is a work in progress project and part of the [MAPME initiative](https://mapme-initiative.org/) to promote the use of open geodata and open-source GIS tecnologies in international development cooperation. We invite others to leave constructive feedback on our work while we are in the doing and get in touch with us on our initiative. 
 
 Chapters:
 
-- [About this project](README.html).
+- [About this project](README.html)
 
-- [How to contribute](contribute.html).
+- [How to contribute](contribute.html)
 
-- [Querying data from DOPA Rest API (DOPA/JRC)](dopa-rest.html).
+- [Querying data from DOPA Rest API (DOPA/JRC)](dopa-rest.html)
 
 - Processing Individual Datasets
 
-  - [TEOW Ecoregions (WWF)](wwf_teow.html).
+  - [TEOW Ecoregions (WWF/TEOW)](wwf_teow.html)
 
-  - [Net forest carbon flux (Harris et al. 2021)](carbon-flux.html).
+  - [Net forest carbon flux (Harris et al., 2021)](carbon-flux.html)
   
-  - [Mangrove Gain and Loss(GMW)](gmw-mangrove.html).
+  - [Mangrove Gain and Loss (WWF/Global Mangrove Watch)](gmw-mangrove.html)
   
-  - [WorldPop Population Count](worldpop-population-count.html)
+  - [WorldPop Population Count (worldpop.org)](worldpop-population-count.html)
 
-  - [Copernicus Global Land Cover](copernicus-land-cover.html).
+  - [Copernicus Global Land Cover (ESA)](copernicus-land-cover.html)
 
-  - [Terrain Ruggedness Index](terrain_ruggedness_index.html).
+  - [Terrain Ruggedness Index (NASA/SRTM)](terrain_ruggedness_index.html)
   
-  - [Accessibility to Cities (Weiss et al. 2018)](accessibility.html).
+  - [Accessibility to Cities (Weiss et al., 2018)](accessibility.html)
   
-  - [Global Forest Watch (mapme.forest)](gfw.html)
+  - [Global Forest Watch (Hansen et al., 2013](gfw.html)
   
-- [Portfolio Analysis](portfolio_analysis.html)
+- [Analysis of KfW Portfolio](portfolio_analysis.html)
 
