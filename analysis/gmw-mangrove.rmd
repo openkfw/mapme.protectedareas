@@ -6,18 +6,18 @@ output: workflowr::wflow_html
 ---
 
 ```{r setup, message=FALSE}
+
 # load required libraries
-library("terra")
 library("sf")
 library("wdpar")
 library("dplyr")
-library("knitr")
 
 starttime<-Sys.time() # mark the start time of this routine to calculate processing time at the end
 ```
 
 At first you might want to load the source functions for this routine. 
 ```{r loadlsource, include=TRUE}
+
 source("code/area_proj.R")
 ```
 
@@ -45,33 +45,19 @@ The processing routine:
 ![](assets/workflows/gmw_area_routine.png)
 
 
-# Download and prepare Mangrove data
-
-Global mangrove watch provides the mangrove data for the years 1996 to 2016 with periodic updates in between. The datasets have been stored in the datalake as the geopackage. The stored datasets are downloaded directly from the Ocean Data Viewer as mentioned in the metadata above. 
-
-For this routine, we will first load the mangrove data for year 1996 to see the extent of mangrove for this particular year.
-
-```{r loadGmw, warning=FALSE, message=FALSE, include=TRUE}
-
-# load mangrove data for 1996
-m <- st_read("/home/ombhandari/shared/datalake/mapme.protectedareas/input/global_mangrove_watch/gmw-v2-1996-valid.gpkg")
-```
-
 # Download and prepare WDPA polygon
 
-For this analysis, we would take one polygon data from Brazil, which is closer to coastal region so that the extent of mangroves can be analyzed.
-
-
+For this analysis, we would take one polygon data from Brazil using package `wdpar`, which is closer to coastal region so that the extent of mangroves can be analyzed. `wdpar` is a library to interface to the World Database on Protected Areas (WDPA). The library is used to monitor the performance of existing PAs and determine priority areas for the establishment of new PAs. We will use Brazil - for other countries of your choice, simply provide the country name or the ISO name e.g. GY for Guyana, COL for Colombia.
 
 ```{r fetchWdpar, warning=FALSE, include=TRUE}
 
 # fetch the raw data from wdpar of country
-br <- wdpar::wdpa_fetch("BRA")
+br <- 
+  wdpar::wdpa_fetch("BRA")
 # subset a wdpa polygon by it's wdpa id
-b <- br%>%
+br_subset <- br%>%
   filter(WDPAID %in% 555637331)
 ```
-
 
 The next immediate step would be to clean the fetched raw data with the functionality provided with routines from the `wdpar` package. Cleaning is done by the package following these steps:
 
@@ -84,35 +70,49 @@ The next immediate step would be to clean the fetched raw data with the function
 ```{r cleanWdpar, warning=FALSE, include=TRUE}
 
 # clean the data
-b <- wdpa_clean(
-  b,
-  erase_overlaps = FALSE)
+br_subset <- wdpa_clean(br_subset,
+                        erase_overlaps = FALSE)
 ```
 
 Lets have a look at the selected polygon data.
 
 ```{r wdpaMap, warning=FALSE, include=TRUE}
 
-plot(b[1])
+plot(br_subset[1])
 ```
 
 
-# Perform Intersection
+# Prepare mangrove polygon
+
+Global mangrove watch provides the mangrove data for the years 1996 to 2016 with periodic updates in between. The datasets have been stored in the datalake as the geopackage. The stored datasets are downloaded directly from the Ocean Data Viewer as mentioned in the metadata above. 
+
+For this routine, we will first load the mangrove data for year 1996 to see the extent of mangrove for this particular year.
+
+```{r loadGmw, warning=FALSE, message=FALSE, include=TRUE}
+
+# load mangrove data for 1996
+mangrove <- 
+  st_read("../../datalake/mapme.protectedareas/input/global_mangrove_watch/gmw-v2-1996-valid.gpkg")
+```
+
+# Intersect mangrove polygon and WDPA polygon layer
 
 After completing mangrove data and WDPA polygon preparation, we should now intersect the layers to crop out the desired extent from the global mangrove polygon. Before doing so, it is important to match the coordinate reference system of the polygons. For this, we will perform the coordinate transformation of the WDPA polygon to match with the CRS of mangrove data.
 
 ```{r transform, warning=FALSE, include=TRUE}
 
 # reproject wdpa polygon to match mangrove data
-b <- st_transform(b, st_crs(m))
+br_subset <- st_transform(br_subset,
+                          st_crs(mangrove))
 ```
 
-Now, we can apply `st_intersection` function to get the desired area of intersection between mangrove and wdpa polygon.
+Now, we can apply `st_intersection` function from the package `sf` to get the desired area of intersection between mangrove and wdpa polygon.
 
 ```{r intersect, warning=FALSE, message=FALSE, include=TRUE}
 
 # apply intersection
-m_subset <- st_intersection(m, b)
+m_subset <- st_intersection(mangrove,
+                            br_subset)
 ```
 
 # Compute mangrove area
@@ -122,17 +122,28 @@ Now, we have got the intersection polygon. Next step would be to compute the man
 ```{r areaComp, warning=FALSE, include=TRUE}
 
 # transform to laea using area_proj
-m_sub <- st_transform(m_subset, st_crs(area_proj(b)))
+m_sub <- st_transform(m_subset,
+                      st_crs(area_proj(br_subset)))
 # compute area in square km
 m_sub$area_sqkm <- st_area(m_sub)%>%
   sum()/1000000
-m_sub$area_sqkm
 ```
+
+After area computation, lets view the result:
+```{r area, warning=FALSE, include=TRUE}
+
+# view the result in data frame
+df.gmw <- data.frame(WDPAID=m_sub$WDPAID[1],
+                     area_sqkm=m_sub$area_sqkm[1])
+df.gmw
+```
+
+
 So, from the result above we can see that the area of mangrove for the WDPA ID 555637331 for the year 1996 is 4898.962 square km. 
 Similarly, we can compute the mangrove area of the desired polygon/s following this routine.
 
 
-In the end we are going to have a look how long the rendering of this file took so that people get an idea about the processing speed of this routine.
+In the end we are going to have a look how long the rendering of this file took so that we could get an idea about the processing speed of this routine.
 ```{r time, warning=FALSE, include=TRUE}
 
 stoptime<-Sys.time()
