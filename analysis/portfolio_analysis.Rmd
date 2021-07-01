@@ -14,6 +14,7 @@ library("readxl")
 library("janitor")
 library("sf")
 library("leaflet")
+library("leaflet.extras")
 library("RColorBrewer")
 library("plotly")
 library("ggthemes")
@@ -75,7 +76,7 @@ ggplotly(finance_plot)
 ```
 We machted our Latin America portfolio with the *World Database on Protected Areas - WDPA* (IUCN) and used data from the multiple different open data-sources to make an assessment of our portfolio and evaluate the impacts of our projects. Our database currently comprises `r nrow(wdpa_kfw_treatment)` PAs in Latin America which are situated in `r length(unique(wdpa_kfw_treatment$ISO3))` different countries. Those areas can be broadly categorized into `r table(wdpa_kfw_treatment$MARINE)[[3]]` terrestrial, `r table(wdpa_kfw_treatment$MARINE)[[1]]` marine, and `r table(wdpa_kfw_treatment$MARINE)[[2]]` partial marine/terrestrial protected areas. They cover a total surface of `r round(sum(st_area(wdpa_kfw_treatment))/(10^12),digits=3)` Mio. km^2^ which is about `r round(sum(st_area(wdpa_kfw_treatment))/(10^9)/357.581,digits=1)` times the size of Germany. 
 
-```{r firstmap, echo=FALSE, warning=FALSE}
+```{r projectmap, echo=FALSE, warning=FALSE,  fig.width=8}
 wdpa_kfw_treatment_centroid<-wdpa_kfw_treatment %>%
   filter(!is.na(MARINE))%>%
   st_centroid()
@@ -103,6 +104,7 @@ my_map <-
   addCircles(data = wdpa_kfw_treatment_centroid, opacity = 0.9,color = ~pal(MARINE), group = "Type",label = ~htmlEscape(NAME))%>%
   addCircles(data = wdpa_kfw_treatment_centroid, opacity = 0.9,color = ~pal2(bmz_n_1),group = "Project-Nr.")%>%
   addPolygons(data = wdpa_kfw_treatment,opacity = 0.9,color = ~pal(MARINE), group = "Type (Polygons)",label = ~htmlEscape(NAME))%>%
+  addFullscreenControl()%>%
   addLayersControl(
     baseGroups = c("OpenStreetMap","Satellite","Topography"), #"Toner", "CartoDB"
     # overlayGroups = c("Type","Project-Nr."),
