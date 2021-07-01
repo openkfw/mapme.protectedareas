@@ -49,11 +49,11 @@ db_teow <-
 ## Introduction
 Conservation finance is an important field in the KfW development bank with considerable investment into Protected Areas (Short PAs). The evaluation department, together with operational departments tries to learn more about our conservation projects by using our project documentation as well as open geo-datasets to assess the relevance and effectiveness of supported areas in Latin America. The main impact goals of our conservation financing efforts can be summarized under three broad topics: 
 
-1. Conservation of biological diversity
-2. Mitigation of global climate change e.g by reducing deforestation
-3. Improvement of livelihoods of the local population that uses the natural resources
+1. Conservation of biological diversity.
+2. Mitigation of global climate change e.g by reducing deforestation.
+3. Improvement of livelihoods of the local population that uses the natural resources.
 
-Conservation finance has increased in importance for German development cooperation and considerably more financial resources had been spent in Latin America since 2004. 
+Conservation finance has increased in importance for German development cooperation and considerably more financial resources had been spent in Latin America since 2004.  
 
 ```{r financeplot, echo=FALSE, message=FALSE, warning=FALSE}
 kfw_finance<-read_csv("~/shared/datalake/mapme.protectedareas/input/kfw_finance/mapme.protectedareas_kfw-finance_complete-2021-03-17.csv")
@@ -149,7 +149,7 @@ db_teow_biomes_kfw$name<-
 # create a treemap visualization of the supported ecoregions data
 # get the corresponding names for biomes and ecoregions
 db_teow_complete<-
-  read_sf("~/shared/datalake/mapme.protectedareas/input/teow/Terrestrial-Ecoregions-World.gpkg")
+  read_sf("~/shared/datalake/mapme.protectedareas/input/teow/Terrestrial_Ecoregions_World_validated.gpkg")
 # drop the geometry
 db_teow_complete<-
   st_drop_geometry(db_teow_complete)
