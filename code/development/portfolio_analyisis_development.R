@@ -13,7 +13,6 @@ library("ggthemes")
   # How much money was spend over time and different countries?
 
 
-
 # ----- TEOW Ecosystem analysis -----
 sort(unique(db_teow$name))
 

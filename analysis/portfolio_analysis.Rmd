@@ -1,6 +1,6 @@
 ---
-title: "KfW Protected Areas Portfolio Analysis"
-author: "Johannes Schielein"
+title: "Portfolio Analysis of Protected Areas with financial support from KfW"
+author: "Johannes Schielein (Author)"
 date: "2021-05-04"
 output: workflowr::wflow_html
 editor_options:
