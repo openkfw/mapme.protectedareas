@@ -1,3 +1,8 @@
+# download-scripts.R
+# Authors: "Om Prakash Bhandari (Author), Johannes Schielein (Review)"
+# Purpose: This script contains functions to download vector/raster datasets from the respective datasources.
+
+
 # Contents ----------------- Line Number
 
 # World Pop ---------------- 30
@@ -18,11 +23,6 @@ library(raster)
 library(remotes)
 remotes::install_github("mapme-initiative/mapme.forest")
 library(mapme.forest)
-
-
-
-
-
 
 
 
@@ -156,7 +156,7 @@ merge_lc <- function(y) {
   # merge all the rasters and write to disk
   m <- merge(rast(r[1]), rast(r[2]), rast(r[3]), rast(r[4]), rast(r[5]), rast(r[6]), rast(r[7]), rast(r[8]), rast(r[9]), 
              rast(r[10]), rast(r[11]), rast(r[12]), rast(r[13]), rast(r[14]), rast(r[15]), rast(r[16]), rast(r[17]),
-            filename=paste0("../../datalake/mapme.protectedareas/input/copernicus_global_land_cover/",y,"/Latin_America_LC_",y,".tif")))
+            filename=paste0("../../datalake/mapme.protectedareas/input/copernicus_global_land_cover/",y,"/Latin_America_LC_",y,".tif"))
 }
 
 # merge rasters per year

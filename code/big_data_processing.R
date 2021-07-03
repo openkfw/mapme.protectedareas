@@ -1,5 +1,5 @@
 # big_data_processing.R
-# Authors: Johannes Schielein, Om Prakash Bhandari
+# Authors: "Om Prakash Bhandari (Author), Johannes Schielein (Review)"
 # Purpose: This script contains several chunks dedicated to process each enlisted variables for whole kfw wdpa polygons. 
 
 # Contents ------------------------------------------------------- Line Number
