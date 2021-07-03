@@ -1,6 +1,6 @@
 ---
 title: "Copernicus Global Land Cover"
-author: "Johannes Schielein, Om Prakash Bhandari"
+author: "Om Prakash Bhandari (Author), Johannes Schielein (Review)"
 date: "5/4/2021"
 output: workflowr::wflow_html
 ---
@@ -17,7 +17,7 @@ library("rmarkdown") # only used for rendering tables  for this website
 starttime<-Sys.time() # mark the start time of this routine to calculate processing time at the end
 ```
 
-At first you might want to load the source functions for this routine. 
+We will now use a function from our repository. If you have downloaded our repository to your local machine, you can call the function as given below with the `source`command.  If you do not have a local copy, you can download the source-code for the function [here](https://github.com/openkfw/mapme.protectedareas/tree/main/code).
 ```{r loadlsource, warning=FALSE, message=FALSE, include=TRUE}
 
 source("code/copernicus-land-cover.R")
@@ -40,8 +40,8 @@ Here, in this analysis we are going to compute the area of land cover classes wi
 - Temporal resolution: Annual Updates
 - Unit: Map codes as values
 - Data downloaded: 23rd April, 2021
-- [Metadata Link]("https://lcviewer.vito.be/about")
-- [Download Link]("https://lcviewer.vito.be/download")
+- [Metadata Link](https://lcviewer.vito.be/about)
+- [Download Link](https://lcviewer.vito.be/download)
 
 ### Processing Workflow
 
@@ -187,7 +187,7 @@ Finally, we call the function `lc_clases` from the sourced script `copernicus-la
 
 ```{r lcComp, warning=FALSE, include=TRUE}
 
-# call the function lc_classes and receive the result for year 2019
+# call the function lc_classes and receive the result for year 2015
 df.final_2015 <- lc_classes(df.ven,
                             2015)
 # view the resulting data
@@ -196,8 +196,8 @@ paged_table(df.final_2015)
 
 So, for a single polygon for the year 2015, we computed the area of each land cover classes present in the polygon. We can see that among 23 discrete classes, the polygon we used consists of eight different classes with open forest comprising the largest area of the polygon.
 
-Similarly, to compute the land cover statistics for the year 2019, follow these steps: <br/>
-**load index polygon for year 2019 - crop index polygon with pa polygon - load the respective rasters - follow the routine**
+Similarly, to compute the land cover statistics for the year 2016, 2017, 2018, and 2019, follow these steps: <br/>
+**load index polygon for particular year - crop index polygon with pa polygon - load the respective rasters - follow the routine**
 
 In order to carry out land cover change analysis, we can load raster layer for another year of which we want to see the changes in the area of land cover classes and then finally subtract the area from the respective years.
 

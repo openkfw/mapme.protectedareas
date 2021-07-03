@@ -1,6 +1,6 @@
 ---
 title: "Dopa REST Services"
-author: "Johannes Schielein, Om Prakash Bhandari"
+author: "Om Prakash Bhandari (Author), Johannes Schielein (Review)"
 date: "3/1/2021"
 output: workflowr::wflow_html
 ---
@@ -23,7 +23,7 @@ The Digital Observatory for Protected Areas (DOPA) is an initiative from the Joi
 The functions listed in the script `dopa-rest.R` are:</br>
 `get_redlist_status`, `get_species_list`, `get_wdpa_level_centroid`, `get_water_stats`, `get_multiple_indicators`, `get_lcc_esa`,  `get_landcover_esa`,  `get_lcc_esa_percent`,  `get_landcover_copernicus`, `get_country_pa_normalized_ind`, `get_ecoregion_pa_normalized_ind` and `get_dopa`.
 
-At first you might want to load the source functions for this routine. 
+We will now use a function from our repository. If you have downloaded our repository to your local machine, you can call the function as given below with the `source`command.  If you do not have a local copy, you can download the source-code for the function [here](https://github.com/openkfw/mapme.protectedareas/tree/main/code).
 ```{r loadlsource, include=TRUE}
 
 source("code/dopa-rest.R")
@@ -41,7 +41,7 @@ Some information on this dataset:
 - Spatial Resolution: 5 km 
 - Temporal Coverage: 1964-2020 
 - Temporal Resolution: Biannual updates
-- [Metadata Link]("http://cmsdocs.s3.amazonaws.com/RedListGuidelines.pdf")
+- [Metadata Link](http://cmsdocs.s3.amazonaws.com/RedListGuidelines.pdf)
 
 
 How to use the function? 
@@ -127,7 +127,7 @@ Some information on this dataset:
 - Spatial Resolution: 5 km 
 - Temporal Coverage: 1964-2020 
 - Temporal Resolution: Biannual updates 
-- [Metadata Link]("http://cmsdocs.s3.amazonaws.com/RedListGuidelines.pdf")
+- [Metadata Link](http://cmsdocs.s3.amazonaws.com/RedListGuidelines.pdf)
 
 
 How to use the function? 
@@ -178,7 +178,7 @@ Returns information on the current surface area of permanent and seasonal water,
 - Spatial Resolution: 30 m 
 - Temporal Coverage: 1984-2019 
 - Temporal Resolution: Perioic updates  
-- [Metadata Link]("https://storage.cloud.google.com/global-surface-water/downloads_ancillary/DataUsersGuidev2019.pdf")
+- [Metadata Link](https://storage.cloud.google.com/global-surface-water/downloads_ancillary/DataUsersGuidev2019.pdf)
 
 
 You can use the function in the same way as the functions before by providing a WDPA ID to download the data for a specific area. 
@@ -224,7 +224,7 @@ Aggregation level defines the level of classification details. For eg. aggregati
 - Spatial Resolution: 300 m 
 - Temporal Coverage: 1992-2015 
 - Temporal Resolution: Annual updates  
-- [Metadata Link]("http://maps.elie.ucl.ac.be/CCI/viewer/download/ESACCI-LC-Ph2-PUGv2_2.0.pdf")
+- [Metadata Link](http://maps.elie.ucl.ac.be/CCI/viewer/download/ESACCI-LC-Ph2-PUGv2_2.0.pdf)
 
 How to use the function? 
 - Pass the wdpaid of the area to generate landcover change statistics between 1995 & 2015 
@@ -255,7 +255,7 @@ Returns percentage and absolute cover of different ESA CCI LC classes for a give
 - Spatial Resolution: 300 m 
 - Temporal Coverage: 1992-2015 
 - Temporal Resolution: Annual updates  
-- [Metadata Link]("http://maps.elie.ucl.ac.be/CCI/viewer/download/ESACCI-LC-Ph2-PUGv2_2.0.pdf") 
+- [Metadata Link](http://maps.elie.ucl.ac.be/CCI/viewer/download/ESACCI-LC-Ph2-PUGv2_2.0.pdf) 
 
 
 *How to use the function?*
@@ -279,17 +279,17 @@ paged_table(get_landcover_esa(32671,
 Returns percentage and absolute cover of ESA LC CCI classes which changed within first and last epoch for a given WDPA.
 
 
-    Data source: ESA CCI Land Cover 
-    Spatial Coverage:  Global 
-    Spatial Resolution: 300 m 
-    Temporal Coverage: 1992-2015 
-    Temporal Resolution: Annual updates  
-    [Metadata Link]("http://maps.elie.ucl.ac.be/CCI/viewer/download/ESACCI-LC-Ph2-PUGv2_2.0.pdf") 
+- Data source: ESA CCI Land Cover 
+- Spatial Coverage:  Global 
+- Spatial Resolution: 300 m 
+- Temporal Coverage: 1992-2015 
+- Temporal Resolution: Annual updates  
+- [Metadata Link](http://maps.elie.ucl.ac.be/CCI/viewer/download/ESACCI-LC-Ph2-PUGv2_2.0.pdf) 
 
 
-    How to use the function? 
-      - Pass the wdpaid of the area to generate ESA landcover change percentage for that PA 
-      - Example usage:
+How to use the function? 
+- Pass the wdpaid of the area to generate ESA landcover change percentage for that PA 
+- Example usage:
       
 ```{r warning=FALSE}
 
@@ -304,12 +304,12 @@ paged_table(get_lcc_esa_percent(32671))
 Returns percentage and absolute cover of Copernicus Land Cover classes for a given WDPA aggregation levels 0 (original Copernicus LC classes) and 2 (DOPA) are available.
 
 
-Data source: Copernicus Global Land Cover 
-Spatial Coverage:  Global 
-Spatial Resolution: 100 m 
-Temporal Coverage: 2015-2019 
-Temporal Resolution: Annual updates  
-[Metadata Link]("https://lcviewer.vito.be/about")
+- Data source: Copernicus Global Land Cover 
+- Spatial Coverage:  Global 
+- Spatial Resolution: 100 m 
+- Temporal Coverage: 2015-2019 
+- Temporal Resolution: Annual updates  
+- [Metadata Link](https://lcviewer.vito.be/about)
 
 
 How to use the function? 

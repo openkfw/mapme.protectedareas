@@ -1,6 +1,6 @@
 ---
 title: "Global Forest Watch"
-author: "Johannes Schielein, Om Prakash Bhandari"
+author: "Om Prakash Bhandari (Author), Johannes Schielein (Review)"
 date: "6/16/2021"
 output: workflowr::wflow_html
 ---
@@ -116,6 +116,7 @@ The function `statsGRASS` requires few arguments:
 - @thresholdClump: threshold value of forest areas to be considered in pixels
 - @thresholdCover: percentage of canopy cover (value differs with forest definition )
 - @saveRaster: If T, saves raster for given zone else does not.
+- @hideoutput: If T, generate messages given by the function else hide the messages.
 
 ```{r zonalStats, warning=FALSE, message=FALSE, include=TRUE}
 

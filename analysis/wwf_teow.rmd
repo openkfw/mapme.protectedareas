@@ -1,8 +1,8 @@
 ---
 title: "Processing Terrestrial Ecoregions of the World(TEOW)"
-author: "Johannes Schielein, Om Prakash Bhandari"
+author: "Om Prakash Bhandari (Author), Johannes Schielein (Review)"
 date: "3/12/2021"
-output: html_document
+output: workflowr::wflow_html
 ---
 
 ```{r setup, message=FALSE}
@@ -21,7 +21,7 @@ starttime<-Sys.time() # mark the starttime of this routine to calculate processi
 # Introduction
 
 Terrestrial Ecoregions of the World (TEOW) is a biogeographic regionalization of the Earth's terrestrial biodiversity. The biogeographic units are ecoregions, which are defined as relatively large units of land or inland water containing a distinct assemblage of natural communities sharing a large majority of species, dynamics, and environmental conditions. There are 867 terrestrial ecoregions, classified into 14 different terrestrial biomes such as forests, grasslands, or deserts. Ecoregions represent the original distribution of distinct assemblages of species and communities. The biome is more concrete aggregation of the organisms classified according to their adaptation to the environment in which they exist. <br/>
-Visit [Link]("https://www.worldwildlife.org/publications/terrestrial-ecoregions-of-the-world") for more information on TEOW from WWF.
+Visit [Link](https://www.worldwildlife.org/publications/terrestrial-ecoregions-of-the-world) for more information on TEOW from WWF.
 
 ### Datasource and Metadata Information
 
@@ -31,8 +31,8 @@ Visit [Link]("https://www.worldwildlife.org/publications/terrestrial-ecoregions-
 - Temporal Resolution: Cross-sectional
 - Unit: hectare
 - Data downloaded: 15th March, 2021
-- [Metadata Link]("https://globil-panda.opendata.arcgis.com/datasets/panda::terrestrial-ecoregions-world/about")
-- [Download Link]("https://globil-panda.opendata.arcgis.com/datasets/terrestrial-ecoregions-world")
+- [Metadata Link](https://globil-panda.opendata.arcgis.com/datasets/panda::terrestrial-ecoregions-world/about)
+- [Download Link](https://globil-panda.opendata.arcgis.com/datasets/terrestrial-ecoregions-world)
 
 
 Here we are going to carry out an analysis that intersects  WDPA polygons with the Ecoregions to calculate the area of different ecoregions and biomes within supported PAs. 

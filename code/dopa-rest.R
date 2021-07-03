@@ -1,5 +1,5 @@
 # dopa-rest.R
-# Authors: Om Bhandari, Johannes Schielein
+# Authors: "Om Prakash Bhandari (Author), Johannes Schielein (Review)"
 # Purpose: This script contains functions to create Queries to the DOPA Rest Services from JRC
 # Note: Please make sure you are registered with DOPA and have the required authorization for using REST Services (non commercial usage only)
 

@@ -1,6 +1,6 @@
 ---
 title: "Terrain Ruggedness Index"
-author: "Johannes Schielein, Om Prakash Bhandari"
+author: "Om Prakash Bhandari (Author), Johannes Schielein (Review)"
 date: "5/12/2021"
 output: workflowr::wflow_html
 ---
@@ -42,7 +42,7 @@ After getting the raster, we will compute TRI using `terrain` function offered b
 - Temporal resolution: Latest Update [2021-01-21]
 - Unit: meters
 - Data accessed: 14th May, 2021
-- [Metadata Link]("https://github.com/tilezen/joerd/blob/master/docs/data-sources.md#what-is-the-ground-resolution")
+- [Metadata Link](https://github.com/tilezen/joerd/blob/master/docs/data-sources.md#what-is-the-ground-resolution)
 
 ### Processing Workflow
 
