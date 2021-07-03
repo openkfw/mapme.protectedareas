@@ -1,5 +1,5 @@
 # carbon-flux.R
-# Authors: Om Bhandari, Johannes Schielein
+# Authors: "Om Prakash Bhandari (Author), Johannes Schielein (Review)"
 # Purpose: This script contains function to create Query to the Net Forest Carbon Flux datasets from Global Forest Watch (GFW) and download the raster...
 # ...of the desired grid coordinates
 library("terra")

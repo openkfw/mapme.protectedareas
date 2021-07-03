@@ -1,5 +1,5 @@
 # copernicus-land-cover.R
-# Authors: Johannes Schielein, Om Prakash Bhandari
+# Authors: "Om Prakash Bhandari (Author), Johannes Schielein (Review)"
 # Purpose: This script contains function which takes dataframe (which stores raster values) as argument 
 # and returns the data frame in long table format with with areas of land cover classes
 

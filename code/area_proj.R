@@ -1,5 +1,5 @@
 # area_proj.R
-# Authors: Johannes Schielein, Om Prakash Bhandari
+# Authors: "Johannes Schielein"
 # Purpose: This script contains function which gives projstring based on the bounding box of the (sf) object that is supplie. 
 # Note: The function relies heavily on code published at 'https://gis.stackexchange.com/questions/313721/automatically-get-an-adequate-projection-system-based-on-a-bounding-box/313725'
 
