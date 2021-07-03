@@ -1,6 +1,6 @@
 ---
 title: "Mangrove Gain and Loss"
-author: "Johannes Schielein, Om Prakash Bhandari"
+author: "Om Prakash Bhandari (Author), Johannes Schielein (Review)"
 date: "3/30/2021"
 output: workflowr::wflow_html
 ---
@@ -15,7 +15,7 @@ library("dplyr")
 starttime<-Sys.time() # mark the start time of this routine to calculate processing time at the end
 ```
 
-At first you might want to load the source functions for this routine. 
+We will now use a function from our repository. If you have downloaded our repository to your local machine, you can call the function as given below with the `source`command.  If you do not have a local copy, you can download the source-code for the function [here](https://github.com/openkfw/mapme.protectedareas/tree/main/code).
 ```{r loadlsource, include=TRUE}
 
 source("code/area_proj.R")
@@ -34,8 +34,8 @@ The main purpose of this routine is to carry out analysis on the protected area 
 - Temporal Coverage: 1996-2016
 - Temporal Resolution: Periodic updates(1996, 2007-2010, 2015, 2016)
 - Data downloaded: 17th March, 2021
-- [Metadata Link]("https://data.unep-wcmc.org/pdfs/45/GMW_001_Metadata.pdf?1560444488")
-- [Download Link]("https://data.unep-wcmc.org/datasets/45")
+- [Metadata Link](https://data.unep-wcmc.org/pdfs/45/GMW_001_Metadata.pdf?1560444488)
+- [Download Link](https://data.unep-wcmc.org/datasets/45)
 
 
 ### Processing Workflow
