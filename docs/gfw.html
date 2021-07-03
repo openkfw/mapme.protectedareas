@@ -9,7 +9,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content="Johannes Schielein, Om Prakash Bhandari" />
+<meta name="author" content="Om Prakash Bhandari (Author), Johannes Schielein (Review)" />
 
 
 <title>Global Forest Watch</title>
@@ -398,7 +398,7 @@ div.tocify {
 
 
 <h1 class="title toc-ignore">Global Forest Watch</h1>
-<h4 class="author">Johannes Schielein, Om Prakash Bhandari</h4>
+<h4 class="author">Om Prakash Bhandari (Author), Johannes Schielein (Review)</h4>
 <h4 class="date">6/16/2021</h4>
 
 </div>
@@ -424,7 +424,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2021-07-01
+<strong>Last updated:</strong> 2021-07-03
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 1
@@ -515,16 +515,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastreea154e765d03f63231cabefc5901e49fd3c2e3806targetblanka154e76a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/openkfw/mapme.protectedareas/tree/a154e765d03f63231cabefc5901e49fd3c2e3806" target="_blank">a154e76</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastreeb14c7b77d4236f581031fccc48d3c86400cea5f3targetblankb14c7b7a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/openkfw/mapme.protectedareas/tree/b14c7b77d4236f581031fccc48d3c86400cea5f3" target="_blank">b14c7b7</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastreea154e765d03f63231cabefc5901e49fd3c2e3806targetblanka154e76a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastreeb14c7b77d4236f581031fccc48d3c86400cea5f3targetblankb14c7b7a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/openkfw/mapme.protectedareas/tree/a154e765d03f63231cabefc5901e49fd3c2e3806" target="_blank">a154e76</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/openkfw/mapme.protectedareas/tree/b14c7b77d4236f581031fccc48d3c86400cea5f3" target="_blank">b14c7b7</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -534,7 +534,15 @@ Ignored files:
     Ignored:    .Rproj.user/
 
 Unstaged changes:
+    Modified:   analysis/accessibility.rmd
+    Modified:   analysis/carbon-flux.rmd
+    Modified:   analysis/copernicus-land-cover.rmd
+    Modified:   analysis/dopa-rest.rmd
     Modified:   analysis/gfw.rmd
+    Modified:   analysis/gmw-mangrove.rmd
+    Modified:   analysis/terrain_ruggedness_index.rmd
+    Modified:   analysis/worldpop-population-count.rmd
+    Modified:   analysis/wwf_teow.rmd
 
 </code></pre>
 <p>
@@ -573,6 +581,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/openkfw/mapme.protectedareas/43d5778e27977d0a6df1b2949354be4d338b1915/docs/gfw.html" target="_blank">43d5778</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2021-07-01
+</td>
+<td>
+update gfw html
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/e6ee00d36e73478c038cdb9998a6de4f0bf591ee/analysis/gfw.rmd" target="_blank">e6ee00d</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2021-07-01
+</td>
+<td>
+update with hideoutput option
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -856,6 +898,7 @@ co2Layer = paste0(tempdir(),&quot;/global_forest_watch/_co2_emission_.tif&quot;)
 <li><span class="citation">@thresholdClump</span>: threshold value of forest areas to be considered in pixels</li>
 <li><span class="citation">@thresholdCover</span>: percentage of canopy cover (value differs with forest definition )</li>
 <li><span class="citation">@saveRaster</span>: If T, saves raster for given zone else does not.</li>
+<li><span class="citation">@hideoutput</span>: If T, generate messages given by the function else hide the messages.</li>
 </ul>
 <pre class="r"><code>zonal_stats = statsGRASS(grass = grass, 
                        addon_base = &quot;./data-raw/addons&quot;, 
@@ -894,7 +937,7 @@ paged_table(zonal_stats[72:92])</code></pre>
 <p>In the end we are going to have a look how long the rendering of this file took to get an idea about the processing speed of this routine.</p>
 <pre class="r"><code>stoptime&lt;-Sys.time()
 print(starttime-stoptime)</code></pre>
-<pre><code>Time difference of -2.212892 mins</code></pre>
+<pre><code>Time difference of -2.508416 mins</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
