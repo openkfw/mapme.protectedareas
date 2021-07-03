@@ -1,6 +1,6 @@
 ---
 title: "Population Count"
-author: "Johannes Schielein, Om Prakash Bhandari"
+author: "Om Prakash Bhandari (Author), Johannes Schielein (Review)"
 date: "5/13/2021"
 output: workflowr::wflow_html
 ---
@@ -30,8 +30,8 @@ Anthropogenic disturbance to the protected areas is a well-known issue to all en
 - Temporal resolution: Annual Updates
 - Unit: number of people per grid cell
 - Data downloaded: 5th May, 2021
-- [Metadata Link]("https://www.worldpop.org/geodata/listing?id=64")
-- [Download Link]("https://www.worldpop.org/geodata/listing?id=64")
+- [Metadata Link](https://www.worldpop.org/geodata/listing?id=64)
+- [Download Link](https://www.worldpop.org/geodata/listing?id=64)
 
 ### Processing Workflow
 
