@@ -19,6 +19,7 @@ library("RColorBrewer")
 library("plotly")
 library("ggthemes")
 library("htmltools")
+library("scales")
 ```
 
 ```{r database_creation, message = FALSE, warning = FALSE, include = FALSE}
@@ -30,20 +31,6 @@ wdpa_kfw<-
 wdpa_kfw_treatment<-
   wdpa_kfw%>%
   filter(bmz_n_1>0)
-
-## ---- TEOW ----
-db_teow <-
-  rbind(
-    read_csv(
-      "~/shared/datalake/mapme.protectedareas/output/polygon/teow/teow_long_allPAs_merged_biome.csv"
-    ),
-    read_csv(
-      "~/shared/datalake/mapme.protectedareas/output/polygon/teow/teow_long_allPAs_merged_eco.csv"
-    )
-  )
-
-## ---- GLOBAL MANGROVE WATCH ---
-
 
 ```
 
@@ -122,6 +109,16 @@ my_map
 
 ## Ecoregions and Biomes
 ```{r teow_prepare_data, message = FALSE, warning = FALSE, include = FALSE}
+# load data
+db_teow <-
+  rbind(
+    read_csv(
+      "~/shared/datalake/mapme.protectedareas/output/polygon/teow/teow_long_allPAs_merged_biome.csv"
+    ),
+    read_csv(
+      "~/shared/datalake/mapme.protectedareas/output/polygon/teow/teow_long_allPAs_merged_eco.csv"
+    )
+  )
 # clean and prepare database
 db_teow_ecosystems <-
   db_teow %>%
@@ -167,50 +164,54 @@ db_fig_ecoregion <-
             by=c("name" = "ECO_NAME"))%>%
   distinct(.)
 
+```
+Conservation planning needs careful consideration on how to allocate limited financial resources in order to preserve the most relevant, remaining natural landscapes. In order to put money to work where it is most urgently needed, targeted ares should be high in biodiversity and endemism, as well as ecosystem functionality (and the degree to which they are threatened). Therefore, we need to use an adequate conceptual model that characterizes different natural areas in terms of biodiversity and ecosystem functionality. This will allow us to see how our financial resources are allocated among distinctive biotas and if we have an overall bias towards specific ecosystems while other relevant areas slip our attention. 
+
+To that end we utilize the *Terrestrial Ecoregions of the World (TEOW)* classification system from Olson et al..^[REF - Olson et al: https://academic.oup.com/bioscience/article/51/11/933/227116] The *TEOW* system is based on biogeographic knowledge from thousands of experts and designed with the purpose of conservation planning in mind. It differentiates between 867 ecoregions which are nested in 14 large biomes. Ecoregions are defined as *relatively large units of land containing a distinct assemblage of natural communities and species, with boundaries that approximate the original extent of natural communities prior to major land-use change* (Olson et al.). Each ecoregion is part of a terrestrial biome which is a major ecosystem division that shares a common climate, vegetation type (e.g. tundra or forest), soiltype and wildlife. 
+
+KfW supports PAs that cover `r length(unique(db_teow_ecosystems_kfw$name))` different ecosystems and `r length(unique(db_teow_biomes$name))` biomes. This corresponds to `r round(length(unique(db_teow_ecosystems_kfw$name))/length(unique(db_teow_ecosystems$name))*100,digits=0)`% of all terrestrial ecoregions in our `r length(unique(wdpa_kfw_treatment$ISO3))` partnering countries. This relatively high share indicates a broad diversification of the investment portfolio. Nevertheless we should compare total area size of supported ecoregions to get a more adequate representation of the utilized funds. The graphic below allows us to see the actual numbers biome. You can use the mouse to hover over the other biomes to get more detailed statistics for the other biomes.
+
+```{r teow_biomes_barplot_summary, echo=FALSE, message = FALSE,  warning=FALSE, fig.align="center", fig.width=4}
+## (2) create an overview plot
 # create summary table 
 db_teow_biomes_kfw_summary <-
   db_teow_biomes_kfw %>%
   group_by(name) %>%
   summarize(area_sqkm = sum(value))
 
+# add column if biome is Tropical & Subtropical Moist Broadleaf Forests 
+db_teow_biomes_kfw_summary$biome<-
+  ifelse(db_teow_biomes_kfw_summary$name=="Tropical & Subtropical Moist Broadleaf Forests",
+         "Tropical & Subtropical Moist Broadleaf Forests",
+         "Other Biomes")
+# create plot
+biomes_plot <-
+  na.omit(db_teow_biomes_kfw_summary) %>%
+  ggplot() +
+  geom_bar(aes(
+    biome,
+    area_sqkm,
+    fill = name,
+    text = paste('Name: ',
+                 name,
+                 '<br>Area (in sqkm):',
+                 round(area_sqkm,digits=2))
+  ),
+  stat = "identity",
+  position = "stack") +
+  labs(y = "Supported Area in sqkm", x = "", fill = "") +
+  scale_fill_tableau()+
+  theme_classic()+
+  scale_y_continuous(labels = comma)+
+  theme(axis.text.x = element_text(
+    angle = 45),
+    legend.position = "none")
+
+ggplotly(biomes_plot, 
+         tooltip="text")
 ```
-Conservation planning needs careful consideration on how to allocate limited financial resources in order to preserve the most relevant, remaining natural landscapes. In order to put money to work where it is most urgently needed, targeted ares should be high in biodiversity and endemism, as well as ecosystem functionality (and the degree to which they are threatened). Therefore, we need to use an adequate conceptual model that characterizes different natural areas in terms of biodiversity and ecosystem functionality. This will allow us to see how our financial resources are allocated among distinctive biotas and if we have an overall bias towards specific ecosystems while other relevant areas slip our attention. 
 
-To that end we utilize the *Terrestrial Ecoregions of the World (TEOW)* classification system from Olson et al..^[REF - Olson et al: https://academic.oup.com/bioscience/article/51/11/933/227116] The *TEOW* system is based on biogeographic knowledge from thousands of experts and designed with the purpose of conservation planning in mind. It differentiates between 867 ecoregions which are nested in 14 large biomes. Ecoregions are defined as *relatively large units of land containing a distinct assemblage of natural communities and species, with boundaries that approximate the original extent of natural communities prior to major land-use change* (Olson et al.). Each ecoregion is part of a terrestrial biome which is a major ecosystem division that shares a common climate, vegetation type (e.g. tundra or forest), soiltype and wildlife. 
-
-KfW supports PAs that cover `r length(unique(db_teow_ecosystems_kfw$name))` different ecosystems and `r length(unique(db_teow_biomes$name))` biomes. This corresponds to `r round(length(unique(db_teow_ecosystems_kfw$name))/length(unique(db_teow_ecosystems$name))*100,digits=0)`% of all terrestrial ecoregions in our `r length(unique(wdpa_kfw_treatment$ISO3))` partnering countries. This relatively high share indicates a broad diversification of the investment portfolio. Nevertheless we should compare total area size of supported ecoregions to get a more adequate representation of the utilized funds. The graphic below allows us to see the actual numbers for each ecoregion grouped by larger biomes. 
-
-
-```{r teow_biomes_barplot, echo=FALSE, message = FALSE,  warning=FALSE, fig.height=15, fig.width=8}
-
-# plot
-db_fig_ecoregion<-
-db_fig_ecoregion %>%
-  filter(!is.na(BIOME_NAME)) %>%
-  filter(BIOME_NAME != "")%>%
-  arrange(BIOME_NAME, value)
-
-# factorize the ecoregions name
-db_fig_ecoregion$name <- 
-  factor(db_fig_ecoregion$name,
-  levels = db_fig_ecoregion$name)
-
-ecoregion_plot <-
-  db_fig_ecoregion %>%
-  rename(Ecoregion = name,
-         Area = value,
-         Biome = BIOME_NAME) %>%
-  ggplot(., aes(Area, Ecoregion, fill = Biome)) +
-  geom_bar(stat = "identity") +
-  labs(y = "", x = "Supported ecoregion area in sqkm", fill = "") +
-  theme_bw() +
-  scale_fill_stata()
-ggplotly(ecoregion_plot,tooltip = c("Biome","Area"))%>% 
-  layout(legend = list(orientation = "h", x=-0.3, y = 1.15))
-```
-We can clearly see that our support is heavily concentrated in tropical and subtropical moist broadleaf forest areas. This biome alone makes up `r round(filter(.data=db_teow_biomes_kfw_summary,name=="Tropical & Subtropical Moist Broadleaf Forests")$area_sqkm/sum(db_teow_biomes_kfw_summary$area_sqkm)*100,digits = 0)`% of the total supported areas. Most of these areas are concentrated in the Amazon Basin. Nevertheless, we see that within this huge biome very different ecoregions are supported to differing degrees as well. 
-
-**Note**: It seems here that e.g. very few mountaineous regions are supported, relatively few mangrove areas and few Savannas. It would be interesting if there are any global priorities discussed currently in terms of biomes or ecoregions. 
+We can see that our support is heavily concentrated in tropical and subtropical moist broadleaf forest areas. This biome alone makes up `r round(filter(.data=db_teow_biomes_kfw_summary,name=="Tropical & Subtropical Moist Broadleaf Forests")$area_sqkm/sum(db_teow_biomes_kfw_summary$area_sqkm)*100,digits = 0)`% of the total supported areas. Most of these areas are concentrated in the Amazon Basin. Nevertheless our analysis also reveals that within this huge biome very different ecoregions are supported to differing degrees as well (in [Appendix A](#appendix_a)). This makes it plausible to assume that a wide variety of plants and animals are supported by our current portfolio. Nevertheless very few mountaineous regions are supported, relatively few mangrove areas and few Savannas. We would therefore adivse to consider increasing future efforts in other regions to diversify our impacts amongst more broadly amongst different biomes.  
 
 ## Ecosystem Services
 ### Carbon Storage
@@ -446,11 +447,42 @@ p4 <- gfw_kfw_area_pct_relyear_IUCN %>%
   labs(y = "", x = "", fill = "") +
   scale_colour_manual(values=brewer.pal(n = 10,name = "Paired"),
                       name="IUCN Categories")
-ggplotly(p4,tooltip = "text")%>% 
+ggplotly(p4,
+         tooltip = "text")%>% 
   layout(legend = list(orientation = "h", x=-0.3, y = 1.15))
 ```
 
-## Appendix 
+## Appendix A {#appendix_a}
+```{r teow_biomes_barplot, echo=FALSE, message = FALSE,  warning=FALSE, fig.height=15, fig.width=8}
+
+# plot
+db_fig_ecoregion<-
+db_fig_ecoregion %>%
+  filter(!is.na(BIOME_NAME)) %>%
+  filter(BIOME_NAME != "")%>%
+  arrange(BIOME_NAME, value)
+
+# factorize the ecoregions name
+db_fig_ecoregion$name <- 
+  factor(db_fig_ecoregion$name,
+  levels = db_fig_ecoregion$name)
+
+ecoregion_plot <-
+  db_fig_ecoregion %>%
+  rename(Ecoregion = name,
+         Area = value,
+         Biome = BIOME_NAME) %>%
+  ggplot(., aes(Area, Ecoregion, fill = Biome)) +
+  geom_bar(stat = "identity") +
+  labs(y = "", x = "Supported ecoregion area in sqkm", fill = "") +
+  theme_bw() +
+  scale_fill_stata()
+ggplotly(ecoregion_plot,tooltip = c("Biome","Area"))%>% 
+  layout(legend = list(orientation = "h", x=-0.3, y = 1.15))
+```
+
+
+## Appendix B
 ```{r teow_ecoregions_treemap, echo=FALSE, warning=FALSE}
 
 

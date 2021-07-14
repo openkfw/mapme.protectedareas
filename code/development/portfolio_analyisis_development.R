@@ -7,45 +7,96 @@ library("leaflet")
 library("RColorBrewer")
 library("plotly")
 library("ggthemes")
+library("scales")
 
+# ----- load data -----
+##  Protected areas
+wdpa_kfw<-
+  read_sf("data/wdpa_kfw_spatial_latinamerica_2021-04-22_allPAs.gpkg")
 
-# Financial data
-  # How much money was spend over time and different countries?
+#  Filter for supported areas
+wdpa_kfw_treatment<-
+  wdpa_kfw%>%
+  filter(bmz_n_1>0)
 
 
 # ----- TEOW Ecosystem analysis -----
-sort(unique(db_teow$name))
+# load data
+db_teow <-
+  rbind(
+    read_csv(
+      "~/shared/datalake/mapme.protectedareas/output/polygon/teow/teow_long_allPAs_merged_biome.csv"
+    ),
+    read_csv(
+      "~/shared/datalake/mapme.protectedareas/output/polygon/teow/teow_long_allPAs_merged_eco.csv"
+    )
+  )
 
-## Questions to be responded
-  # 1. Overview of supported ecosystems (total area)
-  # 2. Overview of supported biomes (total area)
-  # 3. How did our support for different biomes change over time? (total area)
-
-# 1.1 ---- Total area treemaps
+## (1) Data preparation ##
 # clean and prepare database
 db_teow_ecosystems <-
   db_teow %>%
-  filter(grepl('teow_intersect_sqkm_', name)) %>%
-  filter(WDPAID %in% wdpa_kfw_treatment$WDPAID)
-
-db_teow_ecosystems$name<-
-  gsub("teow_intersect_sqkm_","",db_teow_ecosystems$name)
+  filter(grepl('teow_intersect_sqkm_', name))
 
 db_teow_biomes <-
   db_teow %>%
+  filter(grepl('biome_intersect_sqkm_', name))
+
+# clean and prepare database for KfW areas only
+db_teow_ecosystems_kfw <-
+  db_teow %>%
+  filter(grepl('teow_intersect_sqkm_', name)) %>%
+  filter(WDPA_PID %in% wdpa_kfw_treatment$WDPAID)
+
+db_teow_biomes_kfw <-
+  db_teow %>%
   filter(grepl('biome_intersect_sqkm_', name)) %>%
-  filter(WDPAID %in% wdpa_kfw_treatment$WDPAID)
+  filter(WDPA_PID %in% wdpa_kfw_treatment$WDPAID)
+
+# clean the names
+db_teow_ecosystems_kfw$name<-
+  gsub("teow_intersect_sqkm_","",db_teow_ecosystems_kfw$name)
+
+db_teow_biomes_kfw$name<-
+  gsub("biome_intersect_sqkm_","",db_teow_biomes_kfw$name)
+
 
 # get the corresponding names for biomes and ecoregions
 db_teow_complete<-
-  read_sf("~/shared/datalake/mapme.protectedareas/input/teow/Terrestrial-Ecoregions-World.gpkg")
+  read_sf("~/shared/datalake/mapme.protectedareas/input/teow/Terrestrial_Ecoregions_World_validated.gpkg")
 # drop the geometry
 db_teow_complete<-
   st_drop_geometry(db_teow_complete)
 
-# join 
-db_fig <-
-  db_teow_ecosystems %>%
+## (2) create an overview plot
+# create summary table 
+db_teow_biomes_kfw_summary <-
+  db_teow_biomes_kfw %>%
+  group_by(name) %>%
+  summarize(area_sqkm = sum(value))
+
+
+
+biomes_plot <-
+  na.omit(db_teow_biomes_kfw_summary) %>%
+  ggplot() +
+  geom_bar(aes(biome,
+               area_sqkm, 
+               fill=name), 
+           stat = "identity", position = "stack") +
+  labs(y = "Supported Area in sqkm", x = "", fill = "") +
+  scale_fill_tableau()+
+  theme_classic()+
+  scale_y_continuous(labels = comma)
+
+ggplotly(carbon_plot)
+
+
+
+## (3) create a treemap visualization of the supported ecoregions data ##
+# create a joined table
+db_fig_ecoregion <-
+  db_teow_ecosystems_kfw %>%
   group_by(name) %>%
   summarize(value = round(sum(value),digits = 0)) %>%
   left_join(x = .,
@@ -53,6 +104,14 @@ db_fig <-
             by=c("name" = "ECO_NAME"))%>%
   distinct(.)
 
+# add column if biome is Tropical & Subtropical Moist Broadleaf Forests 
+db_teow_biomes_kfw_summary$biome<-
+  ifelse(db_teow_biomes_kfw_summary$name=="Tropical & Subtropical Moist Broadleaf Forests",
+         "Tropical & Subtropical Moist Broadleaf Forests",
+         "Other Biomes")
+
+
+## 
 # create an auxiliary table to join biomes (necessary dataformat for the function to work)
 db_aux<-
   db_fig%>%
