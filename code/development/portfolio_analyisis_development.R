@@ -75,7 +75,11 @@ db_teow_biomes_kfw_summary <-
   group_by(name) %>%
   summarize(area_sqkm = sum(value))
 
-
+# add column if biome is Tropical & Subtropical Moist Broadleaf Forests 
+db_teow_biomes_kfw_summary$biome<-
+  ifelse(db_teow_biomes_kfw_summary$name=="Tropical & Subtropical Moist Broadleaf Forests",
+         "Tropical & Subtropical Moist Broadleaf Forests",
+         "Other Biomes")
 
 biomes_plot <-
   na.omit(db_teow_biomes_kfw_summary) %>%
@@ -87,9 +91,11 @@ biomes_plot <-
   labs(y = "Supported Area in sqkm", x = "", fill = "") +
   scale_fill_tableau()+
   theme_classic()+
-  scale_y_continuous(labels = comma)
+  scale_y_continuous(labels = comma)+
+  theme(axis.text.x = element_text(
+    angle = 45))
 
-ggplotly(carbon_plot)
+ggplotly(biomes_plot)
 
 
 
@@ -104,11 +110,7 @@ db_fig_ecoregion <-
             by=c("name" = "ECO_NAME"))%>%
   distinct(.)
 
-# add column if biome is Tropical & Subtropical Moist Broadleaf Forests 
-db_teow_biomes_kfw_summary$biome<-
-  ifelse(db_teow_biomes_kfw_summary$name=="Tropical & Subtropical Moist Broadleaf Forests",
-         "Tropical & Subtropical Moist Broadleaf Forests",
-         "Other Biomes")
+
 
 
 ## 
