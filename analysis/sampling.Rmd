@@ -145,7 +145,7 @@ length(sample_treatment_1km)
 ```
 
 ### Sampling of areas in non-supported PAs
-Next wer sample areas in non-supported PAs. We therefore take the whole Database of the IUCN/WDPA database (excluding supported PAs) and apply some filtering methods and geoprocessing tools to avoid sample bias. Those comprise:
+Next we sample areas in non-supported PAs. We therefore take the whole Database of the IUCN/WDPA database (excluding supported PAs) and apply some filtering methods and geoprocessing tools to avoid sample bias. Those comprise:
   
   1. creating a flat layer of all PAs (see also first step above)
 2. clipping sampling strata to terrestrial PAs excluding marine PAs. 
@@ -252,23 +252,28 @@ length(sample_nonPA_1km)
 ```
 
 ## Visualization of sampling results
-No we will exibit the results in an interactive map. You can scroll around the areas, activate and deactivate layers and inspect the spatial sample. Layers comprise the three different samples and also the PA (polygon) baselayers. The map is intended to increase understanding of the sampling process and stimulate discussion about the sampling strategy. Note, that you can  maximize the map with the squared button on the upper left side the get a full screen view. 
+Now we will exibit the results in an interactive map. You can scroll around the areas, activate and deactivate layers and inspect the spatial sample. Layers comprise the three different samples and also the PA (polygon) baselayers. The map is intended to increase understanding of the sampling process and stimulate discussion about the sampling strategy. Note, that you can  maximize the map with the squared button on the upper left side the get a full screen view. 
 
 ```{r sampletmap, echo=FALSE, warning=FALSE,  fig.width=8}
 # project layers
 #project layer
 sample_nonPA_1km<-st_transform(sample_nonPA_1km, crs = st_crs(wdpa_kfw))
 sample_nontreatment_1km<-st_transform(sample_nontreatment_1km, crs = st_crs(wdpa_kfw))
+sample_treatment_1km<-st_transform(sample_treatment_1km, crs = st_crs(wdpa_kfw))
 wdpa_kfw_treatment_proj<-st_transform(wdpa_kfw_treatment_proj, crs = st_crs(wdpa_kfw))
-sample_treatment_1km<-st_transform(sample_treatment_1km, crs = st_crs(wdpa_kfw)) 
 wdpa_kfw_nontreatment_proj_buff500_inward<-st_transform(wdpa_kfw_nontreatment_proj_buff500_inward, crs = st_crs(wdpa_kfw))
+
+sample_nonPA_1km<-ms_simplify(sample_nonPA_1km)
+sample_nontreatment_1km<-ms_simplify(sample_nontreatment_1km)
+sample_treatment_1km<-ms_simplify(sample_treatment_1km)
+
 my_map <-
   leaflet() %>%
   addTiles(group = "OpenStreetMap") %>%
   addProviderTiles(providers$Esri.WorldImagery, group="Satellite") %>%
   addProviderTiles(providers$Esri.WorldShadedRelief, group="Topography") %>%
   addProviderTiles(providers$NASAGIBS.ViirsEarthAtNight2012, group="Nightlights") %>%
-  # addPolygons(data = wdpa_kfw_nontreatment_proj_buff500_inward, opacity = 0.3,color = "blue", group = "Other PAs (Polygon Area)")%>%
+  addPolygons(data = wdpa_kfw_nontreatment_proj_buff500_inward, opacity = 0.3,color = "blue", group = "Other PAs (Polygon Area)")%>%
   addPolygons(data = sample_nontreatment_1km,opacity = 0.9,color = "blue", group = "Sample other PAs")%>%
   addPolygons(data = sample_nonPA_1km,opacity = 0.9,color = "red", group = "Sample not PA")%>%
   addPolygons(data = sample_treatment_1km,opacity = 0.9,color = "yellow", group = "Sample supported PAs")%>%
@@ -276,11 +281,24 @@ my_map <-
   # addPolygons(data = adminborders,opacity = 0.9,color = "black", group = "Admin")%>%
   addLayersControl(
     baseGroups = c("OpenStreetMap","Satellite","Topography","Nightlights"),
-    overlayGroups = c("Sample Supported PAs","Sample other PAs","Sample not PA","KfW supported PAs (Polygon Area)","Other PAs (Polygon Area)"),
+    overlayGroups = c("Sample supported PAs","Sample other PAs","Sample not PA","KfW supported PAs (Polygon Area)","Other PAs (Polygon Area)"), #"Other PAs (Polygon Area)"
     options = layersControlOptions(collapsed = FALSE))%>%
   addFullscreenControl()
 my_map
+
 ```
+The following table also gives as a final overview about the total number of sampling AOIs per strata. The different sizes are the result of deleting overlapping AOIs. 
+```{r finaltable, echo=FALSE, warning=FALSE}
+# merge sample
+samplecomplete <-
+  rbind(
+    cbind(st_as_sf(sample_nontreatment_1km), strata = "nonsupported"),
+    cbind(st_as_sf(sample_nonPA_1km), strata = "nonPA"),
+    cbind(st_as_sf(sample_treatment_1km), strata = "supported")
+  )
+table(samplecomplete$strata)
+```
+
 
 ## Open quetions
 There are open questions remaining:
