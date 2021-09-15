@@ -1,13 +1,13 @@
 ---
-title: "sampling"
+  title: "sampling"
 author: "Johannes Schielein"
 date: "2021-09-10"
 output: workflowr::wflow_html
 editor_options:
   chunk_output_type: console
 ---
-
-```{r setup, message = FALSE,warning = FALSE,include = FALSE}
+  
+  ```{r setup, message = FALSE,warning = FALSE,include = FALSE}
 # load relevant libraries
 library("tidyverse")
 library("sf")
@@ -34,8 +34,8 @@ buffersize<-sqrt(1/pi)*aoi_areasize # the buffersize and radius is a function of
 
 ## Introduction
 The following script proposes a method to sample study areas inside and outside of the network of protected areas (short PAs) that were supported by the German Financial Cooperation (short FC). The idea is to create a valid control group / reference level to compare the impact of FC-supported PAs (in terms of reducing forest cover loss) to areas that were not supported by German FC. Our sample data will be used later in a matching approach that will create comparable pairs of "treated" and "non-treated" areas. Our sampling strategy differentiates between three different sampling strata:
-
-* *FC supported PAs*: These are PAs that were supported by German FC from 1995 onward either once or sometimes also several times. 
+  
+  * *FC supported PAs*: These are PAs that were supported by German FC from 1995 onward either once or sometimes also several times. 
 * *Non-supported PAs*: These are PAs that were not supported by the German FC in the same countries were we find supported areas. Those PAs might, however, have gotten financial or technical support by other donors, the responsible goverment, NGOs or another supporting party. 
 * *Non-protected Areas*: These are areas that are not under legal protection status in the countries supported by German FC. They comprise e.g. privately owned lands, agricultural areas or areas were the legal situation and property rights remain unclear. 
 
@@ -105,8 +105,8 @@ The sampling process now basically chooses arbitrary X and Y coordinates in our 
 
 ### Sampling of areas within supported PAs
 Some further technical details on the sampoling procedure for supported PAs are briefly listed here because they are part of the pre-processing routines to reduce sampling bias:
-
-1. The sampling process uses all PA polygons at once and randomly distributes points within. Because there are also overlapping PAs we first create one flat layer, without overlapping areas, which would bias the algorithm to allocate more points in the overlapping space. This is achive by _unionizing_ the polygons. 
+  
+  1. The sampling process uses all PA polygons at once and randomly distributes points within. Because there are also overlapping PAs we first create one flat layer, without overlapping areas, which would bias the algorithm to allocate more points in the overlapping space. This is achive by _unionizing_ the polygons. 
 2. We reduce our analysis to terrestrial protected areas by clipping out all marine areas from the sampling strata. 
 3. Because some of the created AOIs might themselves overlap, we check for such overlaps and delete all overlapping areas. Since sampling is random and so are overlaps, we do not think that this biases our sampling process. Nevertheless, we end up with a reduced sample size wich is also shown in the end of this script section. Sample size reduced most prominently in small PAs where sampling points are more likely to overlap. 
 
@@ -146,8 +146,8 @@ length(sample_treatment_1km)
 
 ### Sampling of areas in non-supported PAs
 Next wer sample areas in non-supported PAs. We therefore take the whole Database of the IUCN/WDPA database (excluding supported PAs) and apply some filtering methods and geoprocessing tools to avoid sample bias. Those comprise:
-
-1. creating a flat layer of all PAs (see also first step above)
+  
+  1. creating a flat layer of all PAs (see also first step above)
 2. clipping sampling strata to terrestrial PAs excluding marine PAs. 
 3. ereasing from the dataset such areas that overlap with supported PAs. Such overlaps are common and would bias the result as well because we would have sample points from supported and non-supported areas in the same region. 
 
@@ -169,7 +169,7 @@ wdpa_kfw_nontreatment_proj_buff500_inward_union_clip<-
 # erease from dataset such areas that overlap with supported areas
 wdpa_kfw_nontreatment_proj_buff500_inward_union_clip_erease <-
   ms_erase(target = wdpa_kfw_nontreatment_proj_buff500_inward_union_clip, # erease from the nonsupported areas layer
-          erase = st_as_sf(wdpa_kfw_treatment_proj)) # such areas that overlap with supported areas
+           erase = st_as_sf(wdpa_kfw_treatment_proj)) # such areas that overlap with supported areas
 
 # create a sample of areas within 
 sample_nontreatment<-
@@ -269,7 +269,7 @@ my_map <-
   addProviderTiles(providers$Esri.WorldShadedRelief, group="Topography") %>%
   addProviderTiles(providers$NASAGIBS.ViirsEarthAtNight2012, group="Nightlights") %>%
   addPolygons(data = wdpa_kfw_nontreatment_proj_buff500_inward, opacity = 0.3,color = "blue", group = "Other PAs (Polygon Area)")%>%
-  addPolygons(data = sample_nontreatment_1km,opacity = 0.9,color = "blue", group = "Sample other PAs")%>%
+  # addPolygons(data = sample_nontreatment_1km,opacity = 0.9,color = "blue", group = "Sample other PAs")%>%
   addPolygons(data = sample_nonPA_1km,opacity = 0.9,color = "red", group = "Sample not PA")%>%
   addPolygons(data = sample_treatment_1km,opacity = 0.9,color = "yellow", group = "Sample supported PAs")%>%
   addPolygons(data = wdpa_kfw_treatment_proj,opacity = 0.3,color = "yellow",group = "KfW supported PAs (Polygon Area)")%>%
@@ -284,8 +284,8 @@ my_map
 
 ## Open quetions
 There are open questions remaining:
-
-1. Do we  we really need sample points for supported and non-supported Protected Areas, or would it be also an option to compare the whole polygon area of the PAs to the _sampling_ points outside. (From a processing point of view it might still be possible to compute polygon statistics for supported areas and probably also for non-supported ones). 
+  
+  1. Do we  we really need sample points for supported and non-supported Protected Areas, or would it be also an option to compare the whole polygon area of the PAs to the _sampling_ points outside. (From a processing point of view it might still be possible to compute polygon statistics for supported areas and probably also for non-supported ones). 
 2. Should we have different sampling sizes depending on the strata e.g. more control areas outside than treatment areas within to improve matching results. 
 3. Should we further reduce the sampling areas in the stratas by e.g. based on categorical variables that would be otherwise be part of the matching process later. Such a variable could be e.g. a categorical variable that shows biomes or ecosystems in which case we could clip out supported (terrestrial) biomes from the sampling strata just as we did above with marine areas. This would most probably later improve the matching procedure. 
 4. What are the statistical downsides to the proposed sampling strategy. E.g. we loose quite some treatment and control areas because of the "buffering" process. This can be reduced by choosing smaller AOis or simply comparing polygons to AOIs outside as suggested above. Also not all treatment polygons contain samples from the current procedure. The sampling process tends to favor large polygons. In essence by the buffering process + the different size of PA polygons we tend to have a bias towards large areas being overrepresented and small areas being underrepresented in the sample. 
