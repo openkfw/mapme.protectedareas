@@ -220,7 +220,7 @@ my_map <-
   addProviderTiles(providers$Esri.WorldImagery, group="Satellite") %>%
   addProviderTiles(providers$Esri.WorldShadedRelief, group="Topography") %>%
   addProviderTiles(providers$NASAGIBS.ViirsEarthAtNight2012, group="Nightlights") %>%
-  addPolygons(data = wdpa_kfw_nontreatment_proj_buff500_inward, opacity = 0.3,color = "blue", group = "Other PAs (Inside Buffer)")%>%
+  #addPolygons(data = wdpa_kfw_nontreatment_proj_buff500_inward, opacity = 0.3,color = "blue", group = "Other PAs (Inside Buffer)")%>%
   addPolygons(data = sample_nontreatment_1km,opacity = 0.9,color = "blue", group = "Sample other PAs")%>%
   addPolygons(data = sample_nonPA_1km,opacity = 0.9,color = "red", group = "Sample not PA")%>%
   addPolygons(data = sample_treatment_1km,opacity = 0.9,color = "yellow", group = "Sample supported PAs")%>%
@@ -228,7 +228,7 @@ my_map <-
   # addPolygons(data = adminborders,opacity = 0.9,color = "black", group = "Admin")%>%
   addLayersControl(
     baseGroups = c("OpenStreetMap","Satellite","Topography","Nightlights"),
-    overlayGroups = c("Sample Supported PAs","Sample other PAs","Sample not PA","KfW Supported PAs","Other PAs"),
+    overlayGroups = c("Sample Supported PAs","Sample other PAs","Sample not PA","KfW Supported PAs"),#"Other PAs"
     options = layersControlOptions(collapsed = FALSE))%>%
   addFullscreenControl()
 my_map
