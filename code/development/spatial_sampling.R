@@ -5,7 +5,7 @@ library("tidyverse")
 library("GADMTools")
 library("rmapshaper")
 library("leaflet")
-library("leaflet.extras")
+library("leaflet.extras") 
 source("code/area_proj.R")
 
 # read data
