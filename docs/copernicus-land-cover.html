@@ -1,3 +1,1501 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:00de7b4f8c269bef77feac27a5c11e4573d3a2250518a856404bd823fa0a5ff5
-size 48410
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Om Prakash Bhandari (Author), Johannes Schielein (Review)" />
+
+
+<title>Copernicus Global Land Cover</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">mapme.protectedareas</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/openkfw/mapme-protectedareas">
+    <span class="fas fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Copernicus Global Land Cover</h1>
+<h4 class="author">Om Prakash Bhandari (Author), Johannes Schielein (Review)</h4>
+<h4 class="date">5/4/2021</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2021-09-15
+</p>
+<p>
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>mapme.protectedareas/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.6.2). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20210305code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(20210305)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20210305code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20210305)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastree2fc3683e612247b8d66e13d81f8dfd91ac69f4bbtargetblank2fc3683a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/openkfw/mapme.protectedareas/tree/2fc3683e612247b8d66e13d81f8dfd91ac69f4bb" target="_blank">2fc3683</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastree2fc3683e612247b8d66e13d81f8dfd91ac69f4bbtargetblank2fc3683a" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version <a href="https://github.com/openkfw/mapme.protectedareas/tree/2fc3683e612247b8d66e13d81f8dfd91ac69f4bb" target="_blank">2fc3683</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .RData
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    data-raw/addons/docs/rest/
+    Ignored:    data-raw/addons/etc/
+    Ignored:    data-raw/addons/scripts/
+
+Untracked files:
+    Untracked:  .tmp/
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were made to the R Markdown (<code>analysis/copernicus-land-cover.rmd</code>) and HTML (<code>docs/copernicus-land-cover.html</code>) files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view the files as they were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/openkfw/mapme.protectedareas/d1cfe2d256243e2adab952cc3349598987a12dd4/docs/copernicus-land-cover.html" target="_blank">d1cfe2d</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-09-15
+</td>
+<td>
+initial comit with sampling code
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/b58906843009573abc9543404c9fbe9b1dc349f7/analysis/copernicus-land-cover.rmd" target="_blank">b589068</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2021-07-03
+</td>
+<td>
+update author names, urls &amp; source code description
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/openkfw/mapme.protectedareas/1468f425022055d4299bdcf51a11922014796fbf/docs/copernicus-land-cover.html" target="_blank">1468f42</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2021-07-03
+</td>
+<td>
+update html files
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/openkfw/mapme.protectedareas/fa42f34f1cfa75d41154a833c822ab7b273c547e/docs/copernicus-land-cover.html" target="_blank">fa42f34</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-07-01
+</td>
+<td>
+Host with GitHub.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/openkfw/mapme.protectedareas/8bd1321518a72544c147f747f0b80d4412c966cf/docs/copernicus-land-cover.html" target="_blank">8bd1321</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-06-30
+</td>
+<td>
+Host with GitLab.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/openkfw/mapme.protectedareas/3a39ee392a1bc62f5b354d990e24f937829e4b5b/docs/copernicus-land-cover.html" target="_blank">3a39ee3</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-06-30
+</td>
+<td>
+Host with GitHub.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/openkfw/mapme.protectedareas/ae67dca8cb8d1d0d8e383a78f6f4139a91e4f448/docs/copernicus-land-cover.html" target="_blank">ae67dca</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-06-30
+</td>
+<td>
+Host with GitLab.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/openkfw/mapme.protectedareas/1cb75b79a24d41a16a8b24d52b211df397a6f1e5/docs/copernicus-land-cover.html" target="_blank">1cb75b7</a>
+</td>
+<td>
+Om Bandhari
+</td>
+<td>
+2021-06-30
+</td>
+<td>
+update html for index rmd
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/5ea076b50187f384bad40ccbcdfed9b5b73ccdb1/analysis/copernicus-land-cover.rmd" target="_blank">5ea076b</a>
+</td>
+<td>
+Om Bandhari
+</td>
+<td>
+2021-06-30
+</td>
+<td>
+update lc analysis
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/openkfw/mapme.protectedareas/6577989c45686acb6ded4de4c6b299b54cf2c782/docs/copernicus-land-cover.html" target="_blank">6577989</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2021-05-14
+</td>
+<td>
+minor updates on docs/html
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/825cd7758ba06239514ec69eda6c52cc9f20d3b4/analysis/copernicus-land-cover.rmd" target="_blank">825cd77</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2021-05-14
+</td>
+<td>
+create copernicus land cover rmd
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<pre class="r"><code># load required libraries
+library(&quot;terra&quot;)
+library(&quot;sf&quot;)
+library(&quot;wdpar&quot;)
+library(&quot;dplyr&quot;)
+library(&quot;rmarkdown&quot;) # only used for rendering tables  for this website
+
+starttime&lt;-Sys.time() # mark the start time of this routine to calculate processing time at the end</code></pre>
+<p>We will now use a function from our repository. If you have downloaded our repository to your local machine, you can call the function as given below with the <code>source</code>command. If you do not have a local copy, you can download the source-code for the function <a href="https://github.com/openkfw/mapme.protectedareas/tree/main/code">here</a>.</p>
+<pre class="r"><code>source(&quot;code/copernicus-land-cover.R&quot;)</code></pre>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>The actual surface cover of ground is known as Land Cover. The land cover data shows us how much of the region is covered by forests, rivers, wetlands, barren land, or urban infrastructure thus allowing the observation of land cover dynamics over a period of time. There are many products available for the analysis of global land cover classes, however, the European Union’s Earth Observation programme called as Copernicus provides high quality, readily available land cover products from year 2015 to 2019 free of cost for the public use.</p>
+<p>Here, in this analysis we are going to compute the area of land cover classes within the region of interest from the rasters downloaded from Copernicus Land Cover Viewer.</p>
+<div id="datasource-and-metadata-information" class="section level3">
+<h3>Datasource and Metadata Information</h3>
+<ul>
+<li>Dataset: Copernicus Global Land Cover - (Buchhorn et al. (2020))</li>
+<li>Geographical Coverage: Global</li>
+<li>Spatial resolution: 100 meter</li>
+<li>Temporal Coverage: 2015-2019</li>
+<li>Temporal resolution: Annual Updates</li>
+<li>Unit: Map codes as values</li>
+<li>Data downloaded: 23rd April, 2021</li>
+<li><a href="https://lcviewer.vito.be/about">Metadata Link</a></li>
+<li><a href="https://lcviewer.vito.be/download">Download Link</a></li>
+</ul>
+</div>
+<div id="processing-workflow" class="section level3">
+<h3>Processing Workflow</h3>
+<p>The purpose of this analysis is to compute area of different land cover classes present in the polygon of interest. In order to get the results, we need to go through several steps of processing as shown in the routine workflow:</p>
+<p><img src="assets/workflows/land_cover_area_routine.jpg" /></p>
+</div>
+</div>
+<div id="download-and-prepare-wdpa-polygons" class="section level1">
+<h1>Download and Prepare WDPA Polygons</h1>
+<p>For this analysis, we would choose one WDPA polygon from the country Venezuela. We can download the WDPA polygons from the package <code>wdpar</code> and then filter out the desired polygon using WDPAID with package <code>dplyr</code>.</p>
+<p>We will then reproject the downloaded polygon sample to WGS84 to match with the raster data. Since, we are using package <code>terra</code> for raster processing, so it is necessary to load the sample polygon as <code>spatVector</code>.</p>
+<pre class="r"><code># load sample WDPA polygon from country: Venezuela
+ven &lt;- wdpa_fetch(&quot;VEN&quot;)%&gt;%
+  filter(WDPAID %in% 555705224)
+# reproject to the WGS84
+ven &lt;- st_transform(ven,
+                    &quot;+proj=longlat +datum=WGS84 +no_defs&quot;)
+# load as spatVector for terra compatiility
+ven_v &lt;- 
+  vect(ven)
+# plot the PA polygon
+plot(ven[1])</code></pre>
+<p><img src="figure/copernicus-land-cover.rmd/fetchWdpar-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-fetchWdpar-1">
+Past versions of fetchWdpar-1.png
+</button>
+</p>
+<div id="fig-fetchWdpar-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/fa42f34f1cfa75d41154a833c822ab7b273c547e/docs/figure/copernicus-land-cover.rmd/fetchWdpar-1.png" target="_blank">fa42f34</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-07-01
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/8bd1321518a72544c147f747f0b80d4412c966cf/docs/figure/copernicus-land-cover.rmd/fetchWdpar-1.png" target="_blank">8bd1321</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-06-30
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/3a39ee392a1bc62f5b354d990e24f937829e4b5b/docs/figure/copernicus-land-cover.rmd/fetchWdpar-1.png" target="_blank">3a39ee3</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-06-30
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/ae67dca8cb8d1d0d8e383a78f6f4139a91e4f448/docs/figure/copernicus-land-cover.rmd/fetchWdpar-1.png" target="_blank">ae67dca</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-06-30
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6577989c45686acb6ded4de4c6b299b54cf2c782/docs/figure/copernicus-land-cover.rmd/fetchWdpar-1.png" target="_blank">6577989</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2021-05-14
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="prepare-land-cover-raster-data" class="section level1">
+<h1>Prepare land cover raster data</h1>
+<p>The 20X20 gridded copernicus global land cover rasters were downloaded to cover the extent of Latin America for years 2015 to 2019. For this analysis section, we will be processing land cover statistics for the year 2015.</p>
+<p>As we already prepared the polygon data, we need to load the rasters which intersects with our polygon of interest. To make the thing easier, we used function <code>gdaltindex</code> from package <code>gdalUtils</code> to get the index shapefiles of the land cover rasters, which are stored in datalake. Thus, we are going to crop the index polygon with our PA polygon of interest.</p>
+<pre class="r"><code># load index shapefile for the year 2015
+index &lt;- 
+  read_sf(&quot;../../datalake/mapme.protectedareas/processing/copernicus_land_cover/raster_index/raster_index_2015.shp&quot;)
+# transform to wgs84
+index &lt;- st_transform(index,
+                      &quot;+proj=longlat +datum=WGS84 +no_defs&quot;)</code></pre>
+<p>Lets have a look at how does the index polygon looks like:</p>
+<pre class="r"><code>plot(index)</code></pre>
+<p><img src="figure/copernicus-land-cover.rmd/plotIndex-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-plotIndex-1">
+Past versions of plotIndex-1.png
+</button>
+</p>
+<div id="fig-plotIndex-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/fa42f34f1cfa75d41154a833c822ab7b273c547e/docs/figure/copernicus-land-cover.rmd/plotIndex-1.png" target="_blank">fa42f34</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-07-01
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/8bd1321518a72544c147f747f0b80d4412c966cf/docs/figure/copernicus-land-cover.rmd/plotIndex-1.png" target="_blank">8bd1321</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-06-30
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/3a39ee392a1bc62f5b354d990e24f937829e4b5b/docs/figure/copernicus-land-cover.rmd/plotIndex-1.png" target="_blank">3a39ee3</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-06-30
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/ae67dca8cb8d1d0d8e383a78f6f4139a91e4f448/docs/figure/copernicus-land-cover.rmd/plotIndex-1.png" target="_blank">ae67dca</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-06-30
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/1563ca9bf7a179481f0853ea01d1a04a90503a72/docs/figure/copernicus-land-cover.rmd/plotIndex-1.png" target="_blank">1563ca9</a>
+</td>
+<td>
+Om Bandhari
+</td>
+<td>
+2021-06-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>From the plot, we can see that the index polygon covers the entire Latin America on 20*20 grids. In order to load the required rasters, we need to intersect the index polygon and the WDPA polygon.</p>
+<pre class="r"><code># crop the index with wdpa polygon
+ven_crop &lt;- st_crop(index,
+                    ven)</code></pre>
+<pre><code>although coordinates are longitude/latitude, st_intersection assumes that they are planar</code></pre>
+<pre class="r"><code># check the number of rasters having intersection with the polygon
+n &lt;- nrow(ven_crop)
+n</code></pre>
+<pre><code>[1] 1</code></pre>
+<p>Hence, the polygon we selected intersects only with the one land cover raster.</p>
+<p><strong>Note:</strong> We are using two object types of same polygon i.e. <code>ven</code> which is <code>sf</code> object and is used when applying sf function <code>st_crop</code> and another one is <code>ven_v</code> which is <code>terra</code> object and will be used while performing <code>crop</code> and <code>mask</code> functions from the package <code>terra</code>.</p>
+<p>Now the raster file is loaded to the working directory as the layer name <code>lc</code> as class object ‘SpatRaster’.</p>
+<pre class="r"><code># view raster metadata
+lc &lt;- 
+  rast(ven_crop$location)
+# plot the raster
+plot(lc)</code></pre>
+<p><img src="figure/copernicus-land-cover.rmd/viewArchivedRast-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-viewArchivedRast-1">
+Past versions of viewArchivedRast-1.png
+</button>
+</p>
+<div id="fig-viewArchivedRast-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/fa42f34f1cfa75d41154a833c822ab7b273c547e/docs/figure/copernicus-land-cover.rmd/viewArchivedRast-1.png" target="_blank">fa42f34</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-07-01
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/8bd1321518a72544c147f747f0b80d4412c966cf/docs/figure/copernicus-land-cover.rmd/viewArchivedRast-1.png" target="_blank">8bd1321</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-06-30
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/3a39ee392a1bc62f5b354d990e24f937829e4b5b/docs/figure/copernicus-land-cover.rmd/viewArchivedRast-1.png" target="_blank">3a39ee3</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-06-30
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/ae67dca8cb8d1d0d8e383a78f6f4139a91e4f448/docs/figure/copernicus-land-cover.rmd/viewArchivedRast-1.png" target="_blank">ae67dca</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-06-30
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/1563ca9bf7a179481f0853ea01d1a04a90503a72/docs/figure/copernicus-land-cover.rmd/viewArchivedRast-1.png" target="_blank">1563ca9</a>
+</td>
+<td>
+Om Bandhari
+</td>
+<td>
+2021-06-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="crop-the-land-cover-raster" class="section level1">
+<h1>Crop the land cover raster</h1>
+<p>Since we already loaded raster and polygon successfully to our workspace, we can now perform further processing that would be to clip the raster layer by the selected shapefile polygon both by its extent and mask layer. <code>Crop</code> returns the raster to its bounding box whereas <code>mask</code> returns the raster to defined vector polygon layer.</p>
+<pre class="r"><code># crop raster by polygon
+ven_crop &lt;- terra::crop(lc,
+                        ven_v)
+# plot the cropped raster layer
+plot(ven_crop)</code></pre>
+<p><img src="figure/copernicus-land-cover.rmd/cropRaster-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-cropRaster-1">
+Past versions of cropRaster-1.png
+</button>
+</p>
+<div id="fig-cropRaster-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/fa42f34f1cfa75d41154a833c822ab7b273c547e/docs/figure/copernicus-land-cover.rmd/cropRaster-1.png" target="_blank">fa42f34</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-07-01
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/8bd1321518a72544c147f747f0b80d4412c966cf/docs/figure/copernicus-land-cover.rmd/cropRaster-1.png" target="_blank">8bd1321</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-06-30
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/3a39ee392a1bc62f5b354d990e24f937829e4b5b/docs/figure/copernicus-land-cover.rmd/cropRaster-1.png" target="_blank">3a39ee3</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-06-30
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/ae67dca8cb8d1d0d8e383a78f6f4139a91e4f448/docs/figure/copernicus-land-cover.rmd/cropRaster-1.png" target="_blank">ae67dca</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-06-30
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/1563ca9bf7a179481f0853ea01d1a04a90503a72/docs/figure/copernicus-land-cover.rmd/cropRaster-1.png" target="_blank">1563ca9</a>
+</td>
+<td>
+Om Bandhari
+</td>
+<td>
+2021-06-30
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6577989c45686acb6ded4de4c6b299b54cf2c782/docs/figure/copernicus-land-cover.rmd/cropRaster-1.png" target="_blank">6577989</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2021-05-14
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code># mask the raster by polygon 
+ven_mask &lt;- terra::mask(ven_crop,
+                        ven_v)
+# plot the masked raster layer
+plot(ven_mask)</code></pre>
+<p><img src="figure/copernicus-land-cover.rmd/cropRaster-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-cropRaster-2">
+Past versions of cropRaster-2.png
+</button>
+</p>
+<div id="fig-cropRaster-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/fa42f34f1cfa75d41154a833c822ab7b273c547e/docs/figure/copernicus-land-cover.rmd/cropRaster-2.png" target="_blank">fa42f34</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-07-01
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/8bd1321518a72544c147f747f0b80d4412c966cf/docs/figure/copernicus-land-cover.rmd/cropRaster-2.png" target="_blank">8bd1321</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-06-30
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/3a39ee392a1bc62f5b354d990e24f937829e4b5b/docs/figure/copernicus-land-cover.rmd/cropRaster-2.png" target="_blank">3a39ee3</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-06-30
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/ae67dca8cb8d1d0d8e383a78f6f4139a91e4f448/docs/figure/copernicus-land-cover.rmd/cropRaster-2.png" target="_blank">ae67dca</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-06-30
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/1563ca9bf7a179481f0853ea01d1a04a90503a72/docs/figure/copernicus-land-cover.rmd/cropRaster-2.png" target="_blank">1563ca9</a>
+</td>
+<td>
+Om Bandhari
+</td>
+<td>
+2021-06-30
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6577989c45686acb6ded4de4c6b299b54cf2c782/docs/figure/copernicus-land-cover.rmd/cropRaster-2.png" target="_blank">6577989</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2021-05-14
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="prepare-data-frame" class="section level1">
+<h1>Prepare data frame</h1>
+<p>The next step would be to prepare the data frame. First, we would load the raster values from masked raster layer to the data frame named <code>df.ven</code>. Then, replace the column name containing raster values to <code>value</code> with the use of new data frame called <code>df.new</code>.</p>
+<pre class="r"><code># raster values as dataframe
+df.ven &lt;- 
+  as.data.frame(ven_mask)
+# new dataframe with value column
+df.new &lt;- data.frame(value=NA)
+# rename column to match with new df
+colnames(df.ven) &lt;- 
+  colnames(df.new)
+# check the columns with values of the prepared dataframe
+head(df.ven)</code></pre>
+<pre><code>     value
+2071   200
+2072   200
+2073   200
+2074   200
+2075   200
+2076   200</code></pre>
+<p>Similarly, we will prepare new data frame with only WDPAID to receive the final results.</p>
+<pre class="r"><code># empty data frame to receive results
+df.final &lt;- 
+  data.frame(WDPAID=555705224)</code></pre>
+</div>
+<div id="compute-area-of-land-cover-classes" class="section level1">
+<h1>Compute area of land cover classes</h1>
+<p>To carry out the final and main step of this analysis i.e. to compute the area of land cover classes, <code>expanse</code> function from the package <code>terra</code> would be used. We first compute the area of the masked raster layer <code>ven_mask</code> in square kilometer (sqkm). Then, we calculate the area in sqkm for single row of the data frame <code>df.ven</code>.</p>
+<pre class="r"><code># area of masked raster in km
+area_sqkm &lt;- terra::expanse(ven_mask,
+                            unit=&quot;km&quot;)
+# area per row of dataframe
+area_sqkm_per_cell &lt;- 
+  area_sqkm/nrow(df.ven)</code></pre>
+<p>Finally, we call the function <code>lc_clases</code> from the sourced script <code>copernicus-land-cover.R</code> which takes the data frame <code>df.ven</code> as argument and returns another data frame <code>data.final</code> in long table format with the area of individual land cover classes.</p>
+<pre class="r"><code># call the function lc_classes and receive the result for year 2015
+df.final_2015 &lt;- lc_classes(df.ven,
+                            2015)
+# view the resulting data
+paged_table(df.final_2015)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["WDPAID"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["name"],"name":[2],"type":["chr"],"align":["left"]},{"label":["value"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"555705224","2":"copernicus_lc_empty_area_sqkm_2015","3":"9.672739e-01"},{"1":"555705224","2":"copernicus_lc_closed_forest_evergreen_needle_leaf_area_sqkm_2015","3":"0.000000e+00"},{"1":"555705224","2":"copernicus_lc_closed_forest_deciduous_needle_leaf_area_sqkm_2015","3":"0.000000e+00"},{"1":"555705224","2":"copernicus_lc_closed_forest_evergreen_broad_leaf_area_sqkm_2015","3":"9.818905e+03"},{"1":"555705224","2":"copernicus_lc_closed_forest_deciduous_broad_leaf_area_sqkm_2015","3":"1.139950e+02"},{"1":"555705224","2":"copernicus_lc_closed_forest_mixed_area_sqkm_2015","3":"0.000000e+00"},{"1":"555705224","2":"copernicus_lc_closed_forest_unknown_area_sqkm_2015","3":"1.925269e+03"},{"1":"555705224","2":"copernicus_lc_open_forest_evergreen_needle_leaf_area_sqkm_2015","3":"0.000000e+00"},{"1":"555705224","2":"copernicus_lc_open_forest_deciduous_needle_leaf_area_sqkm_2015","3":"0.000000e+00"},{"1":"555705224","2":"copernicus_lc_open_forest_evergreen_broad_leaf_area_sqkm_2015","3":"1.176898e+03"},{"1":"555705224","2":"copernicus_lc_open_forest_deciduous_broad_leaf_area_sqkm_2015","3":"6.772112e+01"},{"1":"555705224","2":"copernicus_lc_open_forest_mixed_area_sqkm_2015","3":"0.000000e+00"},{"1":"555705224","2":"copernicus_lc_open_forest_unknown_area_sqkm_2015","3":"5.591285e+03"},{"1":"555705224","2":"copernicus_lc_shrubs_area_sqkm_2015","3":"1.550970e+03"},{"1":"555705224","2":"copernicus_lc_herbaceous_vegetation_area_sqkm_2015","3":"9.532055e+03"},{"1":"555705224","2":"copernicus_lc_herbaceous_wetland_area_sqkm_2015","3":"2.893558e+03"},{"1":"555705224","2":"copernicus_lc_moss_area_sqkm_2015","3":"0.000000e+00"},{"1":"555705224","2":"copernicus_lc_bare_sparse_vegetation_area_sqkm_2015","3":"4.167637e+01"},{"1":"555705224","2":"copernicus_lc_cultivated_managed_vegetation_agriculture_area_sqkm_2015","3":"1.149784e+04"},{"1":"555705224","2":"copernicus_lc_urban_built_up_area_sqkm_2015","3":"6.092154e+02"},{"1":"555705224","2":"copernicus_lc_snow_and_ice_area_sqkm_2015","3":"0.000000e+00"},{"1":"555705224","2":"copernicus_lc_permanent_water_bodies_area_sqkm_2015","3":"3.329691e+02"},{"1":"555705224","2":"copernicus_lc_open_sea_area_sqkm_2015","3":"1.323530e+04"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>So, for a single polygon for the year 2015, we computed the area of each land cover classes present in the polygon. We can see that among 23 discrete classes, the polygon we used consists of eight different classes with open forest comprising the largest area of the polygon.</p>
+<p>Similarly, to compute the land cover statistics for the year 2016, 2017, 2018, and 2019, follow these steps: <br/> <strong>load index polygon for particular year - crop index polygon with pa polygon - load the respective rasters - follow the routine</strong></p>
+<p>In order to carry out land cover change analysis, we can load raster layer for another year of which we want to see the changes in the area of land cover classes and then finally subtract the area from the respective years.</p>
+<p><strong>Note: If the polygon of interest intersects with multiple rasters, we have two methods to get the land cover statistics: </strong><br/> <em>1. load all rasters - merge them into one single raster using <code>terra:merge</code> - follow the processing routine - compute land cover statistics</em> <br/> <em>2. load individual raster - follow the processing routine - get land cover stats for individual rasters - aggregate the results</em> <br/> <br/></p>
+<p>In the end we are going to have a look how long the rendering of this file took so that people get an idea about the processing speed of this routine.</p>
+<pre class="r"><code>stoptime&lt;-Sys.time()
+print(starttime-stoptime)</code></pre>
+<pre><code>Time difference of -10.50144 secs</code></pre>
+<div id="references" class="section level3">
+<h3>References</h3>
+<p>[1] Buchhorn, M. ; Smets, B. ; Bertels, L. ; De Roo, B. ; Lesiv, M. ; Tsendbazar, N. - E. ; Herold, M. ; Fritz, S. Copernicus Global Land Service: Land Cover 100m: collection 3: epoch 2019: Globe 2020. DOI 10.5281/zenodo.3939050</p>
+<p>[2] Buchhorn, M. ; Smets, B. ; Bertels, L. ; De Roo, B. ; Lesiv, M. ; Tsendbazar, N. - E. ; Herold, M. ; Fritz, S. Copernicus Global Land Service: Land Cover 100m: collection 3: epoch 2018: Globe 2020. DOI 10.5281/zenodo.3518038</p>
+<p>[3] Buchhorn, M. ; Smets, B. ; Bertels, L. ; De Roo, B. ; Lesiv, M. ; Tsendbazar, N. - E. ; Herold, M. ; Fritz, S. Copernicus Global Land Service: Land Cover 100m: collection 3: epoch 2017: Globe 2020. DOI 10.5281/zenodo.3518036</p>
+<p>[4]Buchhorn, M. ; Smets, B. ; Bertels, L. ; De Roo, B. ; Lesiv, M. ; Tsendbazar, N. - E. ; Herold, M. ; Fritz, S. Copernicus Global Land Service: Land Cover 100m: collection 3: epoch 2016: Globe 2020. DOI 10.5281/zenodo.3518026</p>
+<p>[5] Buchhorn, M. ; Smets, B. ; Bertels, L. ; De Roo, B. ; Lesiv, M. ; Tsendbazar, N. - E. ; Herold, M. ; Fritz, S. Copernicus Global Land Service: Land Cover 100m: collection 3: epoch 2015: Globe 2020. DOI 10.5281/zenodo.3939038</p>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.6.3 (2020-02-29)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 18.04.5 LTS
+
+Matrix products: default
+BLAS:   /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.7.1
+LAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.7.1
+
+locale:
+ [1] LC_CTYPE=C.UTF-8       LC_NUMERIC=C           LC_TIME=C.UTF-8       
+ [4] LC_COLLATE=C.UTF-8     LC_MONETARY=C.UTF-8    LC_MESSAGES=C.UTF-8   
+ [7] LC_PAPER=C.UTF-8       LC_NAME=C              LC_ADDRESS=C          
+[10] LC_TELEPHONE=C         LC_MEASUREMENT=C.UTF-8 LC_IDENTIFICATION=C   
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] forcats_0.5.1   stringr_1.4.0   purrr_0.3.4     readr_1.4.0    
+ [5] tidyr_1.1.3     tibble_3.1.1    ggplot2_3.3.4   tidyverse_1.3.1
+ [9] rmarkdown_2.6   dplyr_1.0.6     wdpar_1.0.6     sf_0.9-8       
+[13] terra_1.2-15   
+
+loaded via a namespace (and not attached):
+ [1] httr_1.4.2         jsonlite_1.7.2     modelr_0.1.8       assertthat_0.2.1  
+ [5] countrycode_1.2.0  sp_1.4-5           cellranger_1.1.0   yaml_2.2.1        
+ [9] pillar_1.6.0       backports_1.2.1    lattice_0.20-44    glue_1.4.2        
+[13] digest_0.6.27      promises_1.2.0.1   rvest_1.0.0        colorspace_2.0-1  
+[17] htmltools_0.5.1.1  httpuv_1.6.1       pkgconfig_2.0.3    broom_0.7.6       
+[21] raster_3.4-13      haven_2.3.1        scales_1.1.1       whisker_0.4       
+[25] later_1.2.0        git2r_0.28.0       proxy_0.4-26       generics_0.1.0    
+[29] ellipsis_0.3.2     withr_2.4.2        cli_2.5.0          magrittr_2.0.1    
+[33] crayon_1.4.1       readxl_1.3.1       evaluate_0.14      fs_1.5.0          
+[37] fansi_0.5.0        xml2_1.3.2         class_7.3-19       tools_3.6.3       
+[41] hms_1.0.0          lifecycle_1.0.0    munsell_0.5.0      reprex_2.0.0      
+[45] compiler_3.6.3     e1071_1.7-7        rlang_0.4.11       classInt_0.4-3    
+[49] units_0.7-1        grid_3.6.3         rstudioapi_0.13    rappdirs_0.3.3    
+[53] gtable_0.3.0       codetools_0.2-18   DBI_1.1.1          curl_4.3.2        
+[57] R6_2.5.0           lubridate_1.7.10   knitr_1.30         utf8_1.2.1        
+[61] workflowr_1.6.2    rprojroot_2.0.2    KernSmooth_2.23-20 stringi_1.6.2     
+[65] Rcpp_1.0.7         vctrs_0.3.8        dbplyr_2.1.1       tidyselect_1.1.1  
+[69] xfun_0.24         </code></pre>
+</div>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
