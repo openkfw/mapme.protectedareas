@@ -1,5 +1,5 @@
 ---
-  title: "sampling"
+title: "sampling"
 author: "Johannes Schielein"
 date: "2021-09-10"
 output: workflowr::wflow_html
@@ -7,7 +7,7 @@ editor_options:
   chunk_output_type: console
 ---
   
-  ```{r setup, message = FALSE,warning = FALSE,include = FALSE}
+```{r setup, message = FALSE,warning = FALSE,include = FALSE}
 # load relevant libraries
 library("tidyverse")
 library("sf")
@@ -268,8 +268,8 @@ my_map <-
   addProviderTiles(providers$Esri.WorldImagery, group="Satellite") %>%
   addProviderTiles(providers$Esri.WorldShadedRelief, group="Topography") %>%
   addProviderTiles(providers$NASAGIBS.ViirsEarthAtNight2012, group="Nightlights") %>%
-  addPolygons(data = wdpa_kfw_nontreatment_proj_buff500_inward, opacity = 0.3,color = "blue", group = "Other PAs (Polygon Area)")%>%
-  # addPolygons(data = sample_nontreatment_1km,opacity = 0.9,color = "blue", group = "Sample other PAs")%>%
+  # addPolygons(data = wdpa_kfw_nontreatment_proj_buff500_inward, opacity = 0.3,color = "blue", group = "Other PAs (Polygon Area)")%>%
+  addPolygons(data = sample_nontreatment_1km,opacity = 0.9,color = "blue", group = "Sample other PAs")%>%
   addPolygons(data = sample_nonPA_1km,opacity = 0.9,color = "red", group = "Sample not PA")%>%
   addPolygons(data = sample_treatment_1km,opacity = 0.9,color = "yellow", group = "Sample supported PAs")%>%
   addPolygons(data = wdpa_kfw_treatment_proj,opacity = 0.3,color = "yellow",group = "KfW supported PAs (Polygon Area)")%>%
