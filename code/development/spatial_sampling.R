@@ -199,7 +199,7 @@ length(sample_nonPA_1km)
 
 # ----- save workspace -----
 save.image("../../datalake/mapme.protectedareas/processing/spatial_sampling.Rdata")
-# load("../../datalake/mapme.protectedareas/processing/spatial_sampling.Rdata")
+load("../../datalake/mapme.protectedareas/processing/spatial_sampling.Rdata")
 
 # ----- plot results -----
 plot(st_geometry(sample_nontreatment_1km))
@@ -232,3 +232,16 @@ my_map <-
     options = layersControlOptions(collapsed = FALSE))%>%
   addFullscreenControl()
 my_map
+
+# ---- export data -----
+# merge sample
+samplecomplete <-
+  rbind(
+    cbind(st_as_sf(sample_nontreatment_1km), strata = "nonsupported"),
+    cbind(st_as_sf(sample_nonPA_1km), strata = "nonPA"),
+    cbind(st_as_sf(sample_treatment_1km), strata = "supported")
+  )
+
+table(samplecomplete$strata)
+
+write_sf()
