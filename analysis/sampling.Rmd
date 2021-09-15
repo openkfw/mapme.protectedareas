@@ -260,7 +260,7 @@ No we will exibit the results in an interactive map. You can scroll around the a
 sample_nonPA_1km<-st_transform(sample_nonPA_1km, crs = st_crs(wdpa_kfw))
 sample_nontreatment_1km<-st_transform(sample_nontreatment_1km, crs = st_crs(wdpa_kfw))
 wdpa_kfw_treatment_proj<-st_transform(wdpa_kfw_treatment_proj, crs = st_crs(wdpa_kfw))
-sample_treatment_1km<-st_transform(sample_treatment_1km, crs = st_crs(wdpa_kfw))
+sample_treatment_1km<-st_transform(sample_treatment_1km, crs = st_crs(wdpa_kfw)) 
 wdpa_kfw_nontreatment_proj_buff500_inward<-st_transform(wdpa_kfw_nontreatment_proj_buff500_inward, crs = st_crs(wdpa_kfw))
 my_map <-
   leaflet() %>%
