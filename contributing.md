@@ -76,19 +76,20 @@ datalake/
 	.
 	├── mapme.protectedares/ # specifies the project folder. is named in the same way as the repository
 		├── input/ # contains unprocessed input data with original filenames 
-		  ├── teow/ 
+		  ├── teow/ # some unstructerd, raw input data
 		  ├── global_mangrove_watch/
 		  ├── net_carbon_flux/
+		  └── wdpa_kfw/ # THIS FOLDER CONTAINS POLYGON INFORMATION AND A COUPLE OF VARIABLES FROM THE ORIGINAL WDPA DATABASE
+		  	├── wdpa_kfw_spatial_latinamerica_<somedate>_supportedPAs_unique.gpkg # CONTAINS KFW SUPPORTED PAs
+			└── wdpa_kfw_spatial_latinamerica_<somedate>_AllPAs.gpkg # CONTAINS ALL PAs from the WDPA reference database
 		  └── ...
 		├── output/ # here goes all relevant, processed output data
-		    ├── polygon / # the polygon-data on country level of supported and non supported PAs
+		    ├── polygon / # STRUCTURED OUTPUT DATA FOR TEOW IN CSV & LONGFORMAT (wdpa-id, variable-name, value)
+		    	├── teow/ 
+		  	├── global_mangrove_watch/
+		  	├── net_carbon_flux/
+			└── ...
 		    ├── raster /  # raster representation of variables for the impact evaluation
-				└── tabular / # tabular data containing wdpa_id (lines) and processed variables (columns)
-				    ├── 1_full_database / merged final table of all individual variables
-				    ├── teow/
-				    ├── global_mangrove_watch/
-				    ├── net_carbon_flux/
-				    └── ...
 		└── processing/ # contains data that is generated during processing.
 
 **Naming conventions for datalake**: Please name all folders and _processed_ datasets lowercase and with underline _ as seperator instead of whitspace. Please keep the original data names in the input folder. Please, also make sure to keep the clean the processing folder regularly. Nevertheless, if there are datasets that take very long processing time you might want to keep them permanently in the processing folder. 
