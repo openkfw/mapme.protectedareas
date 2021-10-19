@@ -13,7 +13,7 @@
 # Terrain Ruggedness Index --------------------------------------- 970
 # Global Forest Watch (Area, Loss, CO2) -------------------------- 1070
 # Accessibility to Cities ---------------------------------------- 1150
-
+# Clay content in the soil --------------------------------------- 1230
 
 # Source Scripts ---------------------------------------------------------------
 source("code/area_proj.R")
@@ -1220,3 +1220,94 @@ compute_accessibility <- function(my_pa_polygon) {
 # write.csv(df.final,
 #           file = "../../datalake/mapme.protectedareas/output/polygon/accessibility_to_cities/travel_time_to_nearby_cities_2015.csv",
 #           row.names = F)
+
+
+
+
+
+
+
+# Clay content in the soil --------------------------------------------------------------------
+
+# load PA polygon
+pa_polygons_all <- 
+  vect("../../datalake/mapme.protectedareas/input/wdpa_kfw/wdpa_kfw_spatial_latinamerica_2021-04-22_allPAs.gpkg")
+
+# create a function 
+compute_clay_content <- function(b, my_pa_polygon) {
+  
+  
+  tryCatch(
+    
+    {
+      
+      # load worldpop global mosaic raster
+      clay <- 
+        rast(paste0("../../datalake/mapme.protectedareas/input/clay_content/clay_content_",b,"_cm.tif"))
+      # crop population count raster based on polygon
+      my_pa_polygon_crop <- terra::crop(clay,
+                                        my_pa_polygon)
+      # mask the population count raster
+      my_pa_polygon_mask <- terra::mask(my_pa_polygon_crop,
+                                        my_pa_polygon)
+      # take numeric wdpa_pid
+      wdpa_pid <- my_pa_polygon$WDPA_PID%>%
+        as.numeric()
+      # rasterize polygon based on extent of the cropped population count raster
+      pa_polygon_raster <- 
+        terra::rasterize(my_pa_polygon,
+                         my_pa_polygon_mask,
+                         wdpa_pid)
+      # calculate zonal statistics: here total number of people within a polygon
+      zstats <- terra::zonal(my_pa_polygon_mask, 
+                             pa_polygon_raster,
+                             fun='mean',
+                             na.rm=T)
+      # create dataframe from results
+      df.zstats <- data.frame(WDPAID=NA,
+                              clay_content=NA)
+      # rename columns
+      colnames(zstats) <- 
+        colnames(df.zstats)
+      # rename the column to store value per year
+      names(zstats)[names(zstats) == "clay_content"] <- 
+        paste0("clay_content_",b,"_cm")
+      # pivot to long format
+      zstats_long <- pivot_longer(zstats, 
+                                  cols=paste0("clay_content_",b,"_cm"))
+      # delete temporary files
+      delfiles <- dir(path=tempdir() ,pattern="spat_*")
+      file.remove(file.path(tempdir(), delfiles))
+      # return results
+      return(zstats_long)
+    },
+    error = function(e) {
+      message('Error in this line!')
+    }
+  )
+}
+
+
+# # process for all the polygons and all availabe level of vertical depths and bind the results
+# 
+# for (i in c(0, 10, 30)) {
+#   
+#   # create a dataframe to receive results processing first polygon
+#   df_clay <- compute_clay_content(i,
+#                                   pa_polygons_all[1, ])
+#   
+#   for (j in 2:nrow(pa_polygons_all)) {
+#     
+#     df_clay <- 
+#       rbind(df_clay,
+#             compute_clay_content(i,
+#                                  pa_polygons_all[j, ]))
+#     print(paste("Done processing line", j, sep=" "))
+#   }
+#   # write results per depth to CSV file in datalake
+#   write.csv(df_clay,
+#             file=paste0("../../datalake/mapme.protectedareas/output/polygon/clay_content/clay_content_",i,"_cm.csv"),
+#             row.names = F)
+#   print(paste("Done processing for depth (in cm):", i, sep=" "))
+# }
+
