@@ -1,0 +1,168 @@
+---
+title: "Clay content in the soil"
+author: "Om Prakash Bhandari (Author), Johannes Schielein (Review)"
+date: "10/18/2021"
+output: workflowr::wflow_html
+---
+
+```{r setup, message=FALSE}
+
+# load required libraries
+library("sf")
+library("terra")
+library("wdpar")
+library("tidyverse")
+
+starttime<-Sys.time() # mark the start time of this routine to calculate processing time at the end
+```
+
+
+
+# Introduction
+
+From the agricultural perspective, the information on the amount of clay content in the soil is vital as it defines the productivity of the soil. Since the clay holds water and nutrients and allows them to remain in soil, the more clay content thus results in high productive capacity [1]. The variable that we are processig here that provides information on the percentage of clay content in the soil can be used as an indicator for soil fertility and thus be part of an agricultural aptitude index. OpenLandMap is a data portal which provides open access to several geo-datasets. The global rasters on clay content can be accessed freely from this portal at six standard depths (0, 10, 30, 60, 100 and 200 cm). 
+
+### Datasource and Metadata Information
+
+- Dataset: Clay content in percentage (OpenLandMap.org)
+- Geographical Coverage: Global
+- Spatial resolution: 250 meter
+- Temporal Coverage: 1950-2017
+- Unit: % (kg / kg)
+- Data downloaded: 16th September, 2021
+- [Metadata Link](https://zenodo.org/record/2525663)
+- [Download Link](https://zenodo.org/record/2525663)
+
+### Processing Workflow
+
+The purpose of this analysis is to compute mean percentage of clay content in the soil for the desired protected area of interest. For this, following processing routine is followed:
+
+![](assets/workflows/clay_content_routine.jpg)
+
+# Download and Prepare WDPA Polygons
+
+For this analysis, we would try to get the country level polygon data from `wdpar` package. `wdpar` is a library to interface to the World Database on Protected Areas (WDPA). The library is used to monitor the performance of existing PAs and determine priority areas for the establishment of new PAs. We will use Venezuela - for other countries of your choice, simply provide the country name or the ISO name e.g. BRA for Brazil, Gy for Guyana, COL for Colombia.
+
+```{r fetchWdpar, warning=FALSE, include=TRUE}
+
+# fetch the raw data from wdpar of country
+vn_wdpa_raw <- 
+  wdpar::wdpa_fetch("VEN")
+```
+
+Since there are 290 enlisted protected areas in Venezuela (as of time of writing), we want to compute zonal statistics only for the polygon data of:
+  - Sierra Nevada - wdpaid 321,
+	- Páramos de Tamá, Cobre y Judio - wdpaid 322, and
+	- Henri Pittier - wdpaid 323
+
+For this, we have to subset the country level polygon data to the pa level.
+
+```{r subset, warning=FALSE, include=TRUE}
+
+# subset three wdpa polygons by their wdpa ids
+vn_wdpa_subset <-
+  vn_wdpa_raw%>%
+  filter(WDPAID %in% c(321,322,323))
+```
+
+
+Now, we will reproject the polygon data to the WGS84 and then apply `vect` function from `terra` package to further use it for terra functionalities.  
+
+```{r reprojPolygon, warning=FALSE, include=TRUE}
+
+# reproject to the WGS84
+vn_wdpa_subset <- st_transform(vn_wdpa_subset,
+                               "+proj=longlat +datum=WGS84 +no_defs")
+# spatvector for terra compatibility
+vn_wdpa_subset_v <- 
+  vect(vn_wdpa_subset)
+# we can plot the data to see the three selected polygons
+plot(vn_wdpa_subset_v)
+```
+
+# Prepare clay content raster data
+
+The global raster datasets are available to download for six standard depths (0, 10, 30, 60, 100 and 200 cm) and also with options on mean and median. Here, we are going to load the mean raster layer for the standard depth of 10 cm using package `terra`. 
+
+```{r loadRaster, warning=FALSE, include=TRUE}
+
+# load clay content raster
+clay_rast <- 
+  terra::rast("../../datalake/mapme.protectedareas/input/clay_content/clay_content_10_cm.tif")
+# view raster details
+clay_rast
+```
+
+
+### Crop the clay content raster
+
+As we completed raster and vector data preparation, the next step would be to clip the raster layer by the selected protected areas polygon both by its extent and mask layer. If we apply function `crop`, it gives us the raster layer by extent. However, using `mask` function returns the raster to defined vector polygon layer, which is required for zonal statistics computation.
+
+```{r cropRaster, warning=FALSE, include=TRUE}
+
+# crop raster by polygon
+clay_rast_crop <- 
+        terra::crop(clay_rast,
+                    vn_wdpa_subset_v)
+# plot the cropped raster layer
+plot(clay_rast_crop)
+# mask the raster by polygon 
+clay_rast_mask <- 
+        terra::mask(clay_rast_crop,
+                    vn_wdpa_subset_v)
+# plot the masked raster layer
+plot(clay_rast_mask)
+```
+Note: With these above two plots, you cans see the difference between the use of functions `crop` & `mask`. Thus, always use `mask` to compute zonal statistics.
+
+# Rasterize the polygon layer
+
+To compute the zonal statistics, it is necessary to rasterize the polygon layer. Doing so, values are transferred from the spatial objects to raster cells. We need to pass the extent layer and the mask layer to the rasterize function.
+
+
+``` {r rasterize, warning=FALSE, include=TRUE}
+
+# rasterize the polygon
+vn_subset_rast <-terra::rasterize(vn_wdpa_subset_v,
+                                  clay_rast_mask,
+                                  vn_wdpa_subset_v$WDPAID)
+# plot the rasterized polygon
+plot(vn_subset_rast)
+```
+
+# Compute Zonal Statistics
+
+A zonal statistics operation is one that calculates statistics on cell values of a raster (a value raster) within the zones defined by another dataset [ArcGIS definition]. Here, we are interested on only to compute the mean percentage of clay content in the soil, so, we would use function `mean` for `zonal` operation. 
+
+
+```{r zoneStats, warning=FALSE, include=TRUE}
+
+# zonal stats
+zstats <- terra::zonal(clay_rast_mask,
+                       vn_subset_rast,
+                       fun='mean',
+                       na.rm=T)
+# create dataframe to receive the result
+df.zstats <- data.frame(WDPAID=NA,
+                        clay_content_percentage_mean=NA)
+# rename column to match with dataframe
+colnames(zstats) <- 
+  colnames(df.zstats)
+# view the data
+rbind(df.zstats,zstats)[-1,]
+```
+
+From the zonal statistics result, we can see that the polygon with wdpaid 322 contains more percentage of clay in the soil while the polygon with id 321 contains less compared to other polygons. In this way, we can compute percentage of clay content in the soil for our desired region of interest.
+
+
+In the end we are going to have a look how long the rendering of this file took to get an idea about the processing speed of this routine.
+
+```{r time, warning=FALSE, include=TRUE}
+
+stoptime<-Sys.time()
+print(starttime-stoptime)
+```
+
+### References
+
+[1] Paul Schroeder (2016): Clays in the Critical Zone: An Introduction . Clays and Clay Minerals 65 (5): 586-587. DOI: 10.1346/CCMN.2016.064045
