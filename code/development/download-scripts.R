@@ -12,6 +12,7 @@
 # Global Forest Watch ------ 320
 # TEOW --------------------- 340
 # Accessibility ------------ 370
+# Clay Content ------------- 410
 
 # load all required libraries
 
@@ -23,7 +24,6 @@ library(raster)
 library(remotes)
 remotes::install_github("mapme-initiative/mapme.forest")
 library(mapme.forest)
-
 
 
 
@@ -399,3 +399,34 @@ get_accessibility("1mio_5mio", 14189807)
 get_accessibility("50k_50mio", 14189849)
 get_accessibility("5k_110mio", 14189852)
 get_accessibility("20k_110mio", 14189843)
+
+
+
+
+
+
+
+
+# Clay Content in the soil ------------------------------------------------------------------------------------------------
+
+# function to access clay content global rasters
+get_clay_content <- function(b) {
+  
+  tryCatch(
+    {
+      
+      # create url
+      url <- paste0("https://zenodo.org/record/2525663/files/sol_clay.wfraction_usda.3a1a1a_m_250m_b",b,"..",b,"cm_1950..2017_v0.2.tif?download=1")
+      # create string for destination
+      destfile <- paste0("../../datalake/mapme.protectedareas/input/clay_content/clay_content_",b,"_cm.tif")
+      # download the file and save it to the datalake
+      download.file(url, destfile)
+    },
+    error = function(e) {
+      message('Error in this line!')
+    }
+  )
+}
+
+# call function to download clay content rasters at three standard depths (0, 10, 30 cm)
+lapply(c(0, 10, 30), FUN = get_clay_content)
