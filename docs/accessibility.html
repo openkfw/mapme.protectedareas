@@ -953,8 +953,8 @@ extent      : -180, 180, -60, 85  (xmin, xmax, ymin, ymax)
 coord. ref. : +proj=longlat +datum=WGS84 +no_defs 
 source      : acc_50k_100k.tif 
 name        : acc_50k_100k </code></pre>
-<div id="crop-the-elevation-raster" class="section level3">
-<h3>Crop the elevation raster</h3>
+<div id="crop-the-accessibility-raster" class="section level3">
+<h3>Crop the accessibility raster</h3>
 <p>As we completed raster and vector data preparation, the next step would be to clip the raster layer by the selected protected areas polygon both by its extent and mask layer. If we clip by extent, it does clipping the raster by its bounding box. However, using <code>mask</code> function returns the raster to defined vector polygon layer, which is a must for zonal statistics computation.</p>
 <pre class="r"><code># crop raster by polygon
 acc_rast_crop &lt;- 
