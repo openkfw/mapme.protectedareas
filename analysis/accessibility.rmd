@@ -106,7 +106,7 @@ acc_rast <-
 acc_rast
 ```
 
-### Crop the elevation raster
+### Crop the accessibility raster
 
 As we completed raster and vector data preparation, the next step would be to clip the raster layer by the selected protected areas polygon both by its extent and mask layer. If we clip by extent, it does clipping the raster by its bounding box. However, using `mask` function returns the raster to defined vector polygon layer, which is a must for zonal statistics computation.
 

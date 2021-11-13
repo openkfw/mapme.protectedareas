@@ -40,7 +40,9 @@ Chapters:
   
   - [Accessibility to Cities (Weiss et al., 2018)](accessibility.html)
   
-  - [Global Forest Watch (Hansen et al., 2013](gfw.html)
+  - [Global Forest Watch (Hansen et al., 2013)](gfw.html)
+  
+  - [Clay content in the soil (OpenLandMap.org)](clay-content.html)
   
 - [Analysis of KfW Portfolio](portfolio_analysis.html)
 
