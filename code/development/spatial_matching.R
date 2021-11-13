@@ -7,7 +7,18 @@ library("ggplot2")
 
 # test for 2015
 matching_db<-
-  read_csv("../../datalake/mapme.protectedareas/output/matching/matching_frames/matching_frame_2003.csv")
+  read_csv("../../datalake/mapme.protectedareas/output/matching/matching_frames/matching_frame_2015.csv")
+
+# get all data
+matching_db_list<-
+  lapply(list.files("../../datalake/mapme.protectedareas/output/matching/matching_frames/"), function(x) {
+    read_csv(paste(
+      "../../datalake/mapme.protectedareas/output/matching/matching_frames/",
+      x,
+      sep = ""
+    ))
+  })
+
 
 # ---- apply Coarse Exact Matching -----
 
