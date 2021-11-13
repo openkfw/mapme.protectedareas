@@ -27,21 +27,24 @@ wdpa_kfw<-
   read_sf("data/wdpa_kfw_spatial_latinamerica_2021-04-22_allPAs.gpkg")
 
 # define area size for AOIs in sqkm and subsequently buffersize
-aoi_areasize=5000
-buffersize<-sqrt(1/pi)*aoi_areasize # the buffersize and radius is a function of geometric calculation of the area (rounded cirlce)
+aoi_areasize=4000*1000 # 5 sqkm
+buffersize<-round(sqrt(aoi_areasize/pi),digits=0) # the buffersize (and radius) is a function of geometric calculation of the area (rounded cirlce)
+samplesize_supported<-3000
+samplesize_nonsupported<-5000
+samplesize_nonPA<-10000
 
 ```
 
 ## Introduction
 The following script proposes a method to sample study areas inside and outside of the network of protected areas (short PAs) that were supported by the German Financial Cooperation (short FC). The idea is to create a valid control group / reference level to compare the impact of FC-supported PAs (in terms of reducing forest cover loss) to areas that were not supported by German FC. Our sample data will be used later in a matching approach that will create comparable pairs of "treated" and "non-treated" areas. Our sampling strategy differentiates between three different sampling strata:
   
-  * *FC supported PAs*: These are PAs that were supported by German FC from 1995 onward either once or sometimes also several times. 
+* *FC supported PAs*: These are PAs that were supported by German FC from 1995 onward either once or sometimes also several times. 
 * *Non-supported PAs*: These are PAs that were not supported by the German FC in the same countries were we find supported areas. Those PAs might, however, have gotten financial or technical support by other donors, the responsible goverment, NGOs or another supporting party. 
 * *Non-protected Areas*: These are areas that are not under legal protection status in the countries supported by German FC. They comprise e.g. privately owned lands, agricultural areas or areas were the legal situation and property rights remain unclear. 
 
 Information about the geographic coverage of PAs come from the WDPA/IUCN database in form of spatial polygons. They entail the grand majority, if not all legally protected areas in Latin America. Only in FC supported countries we can find `r nrow(wdpa_kfw)` PAs of which `r length(which(wdpa_kfw$bmz_n_1>0))` had gained financial supported by German FC. 
 
-We propose a sampling strategy instead of analyzing data on a continental scale for two reasons: *First* because of the large geographic coverage of the study area and the size of the input geodata it is (technically) very difficult to compare all areas on the Latin American continent without reducing the areas of interest to a limited set of observations. And *second*: we do not have geometrically delimited control areas outside of PAs. They are simply the entirety of areas that is situated outside of the PA network. We therefore use a sampling approach to create geometrically equal (rounded) polygon areas in and outside of PAs with a size of `r aoi_areasize/1000` sqkm. To create those circles, we randomly select 5000 areas of interest (short AOIs) inside supported PAs, 5000 AOIs in non-supported PAs and 5000 AOIs non-protected areas. 
+We propose a sampling strategy instead of analyzing data on a continental scale for two reasons: *First* because of the large geographic coverage of the study area and the size of the input geodata it is (technically) very difficult to compare all areas on the Latin American continent without reducing the areas of interest to a limited set of observations. And *second*: we do not have geometrically delimited control areas outside of PAs. They are simply the entirety of areas that is situated outside of the PA network. We therefore use a sampling approach to create geometrically equal (rounded) polygon areas in and outside of PAs with a size of `r aoi_areasize/10^6` sqkm. To create those circles, we randomly select 5000 areas of interest (short AOIs) inside supported PAs, 5000 AOIs in non-supported PAs and 5000 AOIs non-protected areas. 
 
 ## Data preparation and buffering
 The first part of our processing script deals with loading the PAs database and creating buffer areas around the PAs. For PAs we create two kind of spatial buffers: A `r round(buffersize/1000,digits = 2)`-km _outside_ buffer by which we increase the size of each PA by `r round(buffersize/1000,digits = 2)` km outwards (along the boarder), and a `r round(buffersize/1000,digits = 2)`-km _inside_ buffer, by which we decrease the PAs size by `r round(buffersize/1000,digits = 2)` km to the inside. We need this as a preparation step for sampling 5000 AOis in (and outside) of PAs (More details why are provided below). Furthermore we excluded from the WDPA database such PAs that have a point geometry instead of a polygon. Point geometries are given for areas where no exact delination is available in the IUCN database. They comprise, nevertheless, only a small portion of the overall database. In addition we exclude PAs by the buffering process. Those areas are such areas that are very small in which case an inside buffer effectively destroys the geometry of the polygon. We show two summary tables how many PAs are deleted by this procedure.  
@@ -101,12 +104,12 @@ wdpa_kfw_treatment_proj_buff500_inward<-
 ```
 
 ## Sampling 
-The sampling process now basically chooses arbitrary X and Y coordinates in our sampling space. We convert these coordinates to rounded AOIs of `r aoi_areasize/1000` sqkm size. This is achived as well by "buffering" the coordinate points which creates geometric shapes (circles). We use a diameter of `r round(buffersize,digits = 2)` meter for these circles which will result in the desired size for AOIs. We then constrain this spatial sample to the buffer zones in and outside of the PAs. By this we avoid a situation in which a sampling point might just fall at the edge of a PA, in which case the subsequently created AOI would overlap with the the area in- and outside of the PA, creating a bias for our estimations. 
+The sampling process now basically chooses arbitrary X and Y coordinates in our sampling space. We convert these coordinates to rounded AOIs of `r aoi_areasize/10^6` sqkm size. This is achived as well by "buffering" the coordinate points which creates geometric shapes (circles). We use a diameter of `r round(buffersize,digits = 2)` meter for these circles which will result in the desired size for AOIs. We then constrain this spatial sample to the buffer zones in and outside of the PAs. By this we avoid a situation in which a sampling point might just fall at the edge of a PA, in which case the subsequently created AOI would overlap with the the area in- and outside of the PA, creating a bias for our estimations. 
 
 ### Sampling of areas within supported PAs
 Some further technical details on the sampoling procedure for supported PAs are briefly listed here because they are part of the pre-processing routines to reduce sampling bias:
   
-  1. The sampling process uses all PA polygons at once and randomly distributes points within. Because there are also overlapping PAs we first create one flat layer, without overlapping areas, which would bias the algorithm to allocate more points in the overlapping space. This is achive by _unionizing_ the polygons. 
+1. The sampling process uses all PA polygons at once and randomly distributes points within. Because there are also overlapping PAs we first create one flat layer, without overlapping areas, which would bias the algorithm to allocate more points in the overlapping space. This is achive by _unionizing_ the polygons. 
 2. We reduce our analysis to terrestrial protected areas by clipping out all marine areas from the sampling strata. 
 3. Because some of the created AOIs might themselves overlap, we check for such overlaps and delete all overlapping areas. Since sampling is random and so are overlaps, we do not think that this biases our sampling process. Nevertheless, we end up with a reduced sample size wich is also shown in the end of this script section. Sample size reduced most prominently in small PAs where sampling points are more likely to overlap. 
 
@@ -123,7 +126,7 @@ wdpa_kfw_treatment_proj_buff500_inward_union_clip<-
 # create a sample of areas within 
 sample_treatment<-
   st_sample(wdpa_kfw_treatment_proj_buff500_inward_union_clip,
-            size = 5000,
+            size = samplesize_supported,
             type = "random",
             exact = FALSE, 
             by_polygon = TRUE)
@@ -138,16 +141,17 @@ sample_overlaps<-st_overlaps(sample_treatment_1km)
 table(lapply(sample_overlaps,length)>0)
 sample_overlaps<-which(lapply(sample_overlaps,length)>0)
 # erase overlapping AOIs from the sampled data
+sample_treatment_1km<-st_as_sf(sample_treatment_1km)
 sample_treatment_1km<-sample_treatment_1km[-sample_overlaps,]
 
 # compute the final length of sampled AOIs after overlap reduction
-length(sample_treatment_1km)
+nrow(sample_treatment_1km)
 ```
 
 ### Sampling of areas in non-supported PAs
 Next we sample areas in non-supported PAs. We therefore take the whole Database of the IUCN/WDPA database (excluding supported PAs) and apply some filtering methods and geoprocessing tools to avoid sample bias. Those comprise:
-  
-  1. creating a flat layer of all PAs (see also first step above)
+
+1. creating a flat layer of all PAs (see also first step above)
 2. clipping sampling strata to terrestrial PAs excluding marine PAs. 
 3. ereasing from the dataset such areas that overlap with supported PAs. Such overlaps are common and would bias the result as well because we would have sample points from supported and non-supported areas in the same region. 
 
@@ -174,7 +178,7 @@ wdpa_kfw_nontreatment_proj_buff500_inward_union_clip_erease <-
 # create a sample of areas within 
 sample_nontreatment<-
   st_sample(wdpa_kfw_nontreatment_proj_buff500_inward_union_clip_erease,
-            size = 5000,
+            size = samplesize_nonsupported,
             type = "random",
             exact = FALSE, 
             by_polygon = TRUE)
@@ -191,10 +195,12 @@ sample_nontreatment_overlaps<-
 
 # erase those from the sampled data
 sample_nontreatment_1km<-
+  st_as_sf(sample_nontreatment_1km)
+sample_nontreatment_1km<-
   sample_nontreatment_1km[-sample_nontreatment_overlaps,]
 
 # compute the final length of sampled AOIs
-length(sample_nontreatment_1km)
+nrow(sample_nontreatment_1km)
 ```
 
 ### Sampling non-protected areas
@@ -230,7 +236,7 @@ adminborders_erase<-
 # create a sample of areas within 
 sample_nonPA<-
   st_sample(adminborders_erase,
-            size = 5000,
+            size = samplesize_nonPA,
             type = "random",
             exact = FALSE, 
             by_polygon = TRUE)
@@ -245,9 +251,11 @@ table(lapply(sample_nonPA_overlaps,length)>0)
 sample_nonPA_overlaps<-which(lapply(sample_nonPA_overlaps,length)>0)
 
 # erase those from the sampled data
+sample_nonPA_1km<-
+  st_as_sf(sample_nonPA_1km)
 sample_nonPA_1km<-sample_nonPA_1km[-sample_nonPA_overlaps,]
 # compute the final length of sampled AOIs
-length(sample_nonPA_1km)
+nrow(sample_nonPA_1km)
 
 ```
 
@@ -263,32 +271,6 @@ sample_treatment_1km<-st_transform(sample_treatment_1km, crs = st_crs(wdpa_kfw))
 wdpa_kfw_treatment_proj<-st_transform(wdpa_kfw_treatment_proj, crs = st_crs(wdpa_kfw))
 wdpa_kfw_nontreatment_proj_buff500_inward<-st_transform(wdpa_kfw_nontreatment_proj_buff500_inward, crs = st_crs(wdpa_kfw))
 
-sample_nonPA_1km<-ms_simplify(sample_nonPA_1km)
-sample_nontreatment_1km<-ms_simplify(sample_nontreatment_1km)
-sample_treatment_1km<-ms_simplify(sample_treatment_1km)
-
-my_map <-
-  leaflet() %>%
-  addTiles(group = "OpenStreetMap") %>%
-  addProviderTiles(providers$Esri.WorldImagery, group="Satellite") %>%
-  addProviderTiles(providers$Esri.WorldShadedRelief, group="Topography") %>%
-  addProviderTiles(providers$NASAGIBS.ViirsEarthAtNight2012, group="Nightlights") %>%
-  addPolygons(data = wdpa_kfw_nontreatment_proj_buff500_inward, opacity = 0.3,color = "blue", group = "Other PAs (Polygon Area)")%>%
-  addPolygons(data = sample_nontreatment_1km,opacity = 0.9,color = "blue", group = "Sample other PAs")%>%
-  addPolygons(data = sample_nonPA_1km,opacity = 0.9,color = "red", group = "Sample not PA")%>%
-  addPolygons(data = sample_treatment_1km,opacity = 0.9,color = "yellow", group = "Sample supported PAs")%>%
-  addPolygons(data = wdpa_kfw_treatment_proj,opacity = 0.3,color = "yellow",group = "KfW supported PAs (Polygon Area)")%>%
-  # addPolygons(data = adminborders,opacity = 0.9,color = "black", group = "Admin")%>%
-  addLayersControl(
-    baseGroups = c("OpenStreetMap","Satellite","Topography","Nightlights"),
-    overlayGroups = c("Sample supported PAs","Sample other PAs","Sample not PA","KfW supported PAs (Polygon Area)","Other PAs (Polygon Area)"), #"Other PAs (Polygon Area)"
-    options = layersControlOptions(collapsed = FALSE))%>%
-  addFullscreenControl()
-my_map
-
-```
-The following table also gives as a final overview about the total number of sampling AOIs per strata. The different sizes are the result of deleting overlapping AOIs. 
-```{r finaltable, echo=FALSE, warning=FALSE}
 # merge sample
 samplecomplete <-
   rbind(
@@ -296,14 +278,107 @@ samplecomplete <-
     cbind(st_as_sf(sample_nonPA_1km), strata = "nonPA"),
     cbind(st_as_sf(sample_treatment_1km), strata = "supported")
   )
+
+# simplify sample stratas for mapview preserving polygons (note: polygons increase considerable the html output filesize)
+# sample_nonPA_1km<-ms_simplify(sample_nonPA_1km)
+# sample_nontreatment_1km<-ms_simplify(sample_nontreatment_1km)
+# sample_treatment_1km<-ms_simplify(sample_treatment_1km)
+
+# simplify sample stratas for mapview extracting centroids
+sample_nonPA_centroid<-st_centroid(sample_nonPA_1km)
+sample_nontreatment_centroid<-st_centroid(sample_nontreatment_1km)
+sample_treatment_centroid<-st_centroid(sample_treatment_1km)
+
+# create map
+my_map <-
+  leaflet() %>%
+  addTiles(group = "OpenStreetMap") %>%
+  addProviderTiles(providers$Esri.WorldImagery, group = "Satellite") %>%
+  addProviderTiles(providers$Esri.WorldShadedRelief, group = "Topography") %>%
+  addProviderTiles(providers$NASAGIBS.ViirsEarthAtNight2012, group = "Nightlights") %>%
+  # add PA polygons
+  addPolygons(
+    data = wdpa_kfw_nontreatment_proj_buff500_inward,
+    opacity = 0.3,
+    color = "blue",
+    group = "Other PAs (Polygon Area)"
+  ) %>%
+  addPolygons(
+    data = wdpa_kfw_treatment_proj,
+    opacity = 0.3,
+    color = "yellow",
+    group = "KfW supported PAs (Polygon Area)"
+  ) %>%
+  # add Sample locations
+  # addPolygons(data = sample_nontreatment_1km,opacity = 0.9,color = "blue", group = "Sample other PAs")%>%
+  # addPolygons(data = sample_nonPA_1km,opacity = 0.9,color = "red", group = "Sample not PA")%>%
+  # addPolygons(data = sample_treatment_1km,opacity = 0.9,color = "yellow", group = "Sample supported PAs")%>%
+  # addCircles(
+  #   data = sample_nontreatment_centroid,
+  #   opacity = 0.9,
+  #   color = "blue",
+  #   group = "Sample other PAs",
+  #   radius = buffersize
+  # ) %>%
+  # addCircles(
+  #   data = sample_nonPA_centroid,
+  #   opacity = 0.9,
+  #   color = "red",
+  #   group = "Sample not PA",
+  #   radius = buffersize
+  # ) %>%
+  addCircles(
+    data = sample_treatment_centroid,
+    opacity = 0.9,
+    color = "yellow",
+    group = "Sample supported PAs",
+    radius = buffersize
+  ) %>%
+  # add admin boundaries
+  # addPolygons(data = adminborders,opacity = 0.9,color = "black", group = "Admin")%>%
+  addLayersControl(
+    baseGroups = c("OpenStreetMap", "Satellite", "Topography", "Nightlights"),
+    overlayGroups = c(
+      "Sample supported PAs",
+      "Sample other PAs",
+      "Sample not PA",
+      "KfW supported PAs (Polygon Area)",
+      "Other PAs (Polygon Area)"
+    ),
+    #"Other PAs (Polygon Area)"
+    options = layersControlOptions(collapsed = FALSE)
+  ) %>%
+  addFullscreenControl()
+my_map
+
+```
+The following table also gives as a final overview about the total number of sampling AOIs per strata. The different sizes are the result of deleting overlapping AOIs. 
+```{r finaltable, echo=FALSE, warning=FALSE}
 table(samplecomplete$strata)
 ```
 
 
-## Open quetions
-There are open questions remaining:
+## Questions to attend for discussion and robustness checks later
+There are some issues that should be discussed and eventually used for robustness checks later
   
-  1. Do we  we really need sample points for supported and non-supported Protected Areas, or would it be also an option to compare the whole polygon area of the PAs to the _sampling_ points outside. (From a processing point of view it might still be possible to compute polygon statistics for supported areas and probably also for non-supported ones). 
-2. Should we have different sampling sizes depending on the strata e.g. more control areas outside than treatment areas within to improve matching results. 
-3. Should we further reduce the sampling areas in the stratas by e.g. based on categorical variables that would be otherwise be part of the matching process later. Such a variable could be e.g. a categorical variable that shows biomes or ecosystems in which case we could clip out supported (terrestrial) biomes from the sampling strata just as we did above with marine areas. This would most probably later improve the matching procedure. 
-4. What are the statistical downsides to the proposed sampling strategy. E.g. we loose quite some treatment and control areas because of the "buffering" process. This can be reduced by choosing smaller AOis or simply comparing polygons to AOIs outside as suggested above. Also not all treatment polygons contain samples from the current procedure. The sampling process tends to favor large polygons. In essence by the buffering process + the different size of PA polygons we tend to have a bias towards large areas being overrepresented and small areas being underrepresented in the sample. 
+1. Variation of sampling sizes depending on the strata. Currenlty the choice is to have more matching candidates in the strata of non-protected areas to increase matching balance later. However the sample size can be varied. We currently choose one that creates a good overall representativeness. Nevertheless to reduce the image of choosing arbitrarily we could also vary these parameters. 
+2. We could reduce available areas for sampling based on geographic variables that indicate areas where definitly no protected areas is to be established.
+3. Discuss the statistical downsides to the proposed sampling strategy. Currenlty we loose quite some treatment and control areas because of the "buffering" process. This can be reduced by choosing smaller AOis or simply comparing polygons to AOIs outside as suggested above. Also not all treatment polygons contain samples from the current procedure. The sampling process tends to favor large polygons (see map) which could introduce bias (smaller areas are reported to be more effective in conservation). In essence by the buffering process + the different size of PA polygons we tend to have a bias towards large areas being overrepresented and small areas being underrepresented in the sample. 
+
+
+```{r export_data, message = FALSE,warning = FALSE,include = FALSE}
+# write data out
+st_write(
+  samplecomplete,
+  dsn = paste("../../datalake/mapme.protectedareas/output/polygon/sampling/sampling_AOIs_",
+              format(Sys.time(), "%B-%d-%Y-%H:%M:%S"),
+              ".gpkg",
+              sep=""),
+  driver = "GPKG")
+
+
+
+# remove objects
+rm(list = ls())
+```
+
