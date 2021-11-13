@@ -243,5 +243,5 @@ samplecomplete <-
   )
 
 table(samplecomplete$strata)
-
+format(Sys.time(), "%B-%d-%Y")
 write_sf()
