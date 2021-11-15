@@ -332,11 +332,11 @@ for (i in 2003:2020){
            starts_with("population") & ends_with(as.character(c(
              my_year, my_year - 2
            ))))
-  colnames(tmp_pop) <- c("first", "last")
+  colnames(tmp_pop) <- c("last", "first")
   
   matching_data_combined_tmp <-
     matching_data_combined_tmp %>%
-    mutate(average_popgrowth = tmp_pop$last - tmp_pop$last)
+    mutate(average_popgrowth = tmp_pop$last - tmp_pop$first)
   
   # delete all other popvars
   matching_data_combined_tmp <-
