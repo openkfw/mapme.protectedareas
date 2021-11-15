@@ -13,6 +13,7 @@
 # TEOW --------------------- 340
 # Accessibility ------------ 370
 # Clay Content ------------- 410
+# Active Fire -------------- 440
 
 # load all required libraries
 
@@ -24,7 +25,6 @@ library(raster)
 library(remotes)
 remotes::install_github("mapme-initiative/mapme.forest")
 library(mapme.forest)
-
 
 
 # World Pop [Population Count] ------------------------------------------------------------------------------------------------------------
@@ -430,3 +430,84 @@ get_clay_content <- function(b) {
 
 # call function to download clay content rasters at three standard depths (0, 10, 30 cm)
 lapply(c(0, 10, 30), FUN = get_clay_content)
+
+
+
+
+
+
+
+# Active Fire ----------------------------------------------------------------------------------------------------------
+
+# set the required countries name as data frame 
+la_country <- c("Dominican_Republic", "Bolivia", "Brazil", "Honduras", "Panama", 
+                "Costa_Rica", "Peru", "Mexico", "Ecuador", "Belize", "Guyana",
+                "El_Salvador", "Nicaragua", "Guatemala", "Colombia", "Venezuela")
+
+# function to download active fire hostspot CSVs
+get_fire_events <- function(y, c) {
+  
+  # create url
+  url <-
+    paste0("https://firms.modaps.eosdis.nasa.gov/data/country/viirs-snpp/",y,"/viirs-snpp_",y,"_",c,".csv")
+  # create string for temporary file
+  destfile <- paste0("../../datalake/mapme.protectedareas/input/fire_event/CSVs/",c,"_",y,".csv")
+  # download the file and save it to temp folder
+  download.file(url, destfile)
+}
+
+# run function to download CSVs for year 2012 to 2020 for the above mentioned countries
+for (j in 1:length(la_country)) {
+  
+  for (i in 2012:2020) {
+    
+    get_fire_events(i, la_country[j]) 
+  }
+  print(paste("Done processing for country:", la_country[[j]], sep = " "))
+}
+
+# aggregate yearly --
+library(vroom)
+library(sf)
+library(rgdal)
+
+# set working directory to fire event CSVs
+setwd("../../datalake/mapme.protectedareas/input/fire_event/CSVs/")
+
+ay <- function(y) {
+  
+  # get all the csv files
+  files <-
+    fs::dir_ls(glob = paste0("*",y,".csv"))
+  # bind all CSVs
+  data <- 
+    vroom(files)
+  # subset the required columns
+  data_subset <- 
+    data[ ,-c(3:12)]
+  # remove other columns
+  data_subset$daynight <- NULL
+  data_subset$type <- NULL
+  print("data subset!")
+  # convert to spatial sf
+  coordinates(data_subset)<-~longitude+latitude
+  print("coordinates added!")
+  # load as sf object
+  sf_data_subset <- 
+    st_as_sf(data_subset)
+  print("sf loaded")
+  # set crs to WGS 84
+  st_crs(sf_data_subset) <- 
+    "+proj=longlat +datum=WGS84"
+  print("got projection!")
+  # write as gpkg to file
+  st_write(sf_data_subset,
+           paste0("../fire_",y,"_subset.gpkg"))
+}
+
+for (i in 2012:2020) {
+  
+  # test run
+  ay(i)
+  print(paste("done processing for year:", i, sep = " "))
+}

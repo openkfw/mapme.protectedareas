@@ -14,6 +14,7 @@
 # Global Forest Watch (Area, Loss, CO2) -------------------------- 1070
 # Accessibility to Cities ---------------------------------------- 1150
 # Clay content in the soil --------------------------------------- 1230
+# Number of fire events occured in a year ------------------------ 1320
 
 # Source Scripts ---------------------------------------------------------------
 source("code/area_proj.R")
@@ -31,7 +32,6 @@ remotes::install_github("mapme-initiative/mapme.forest")
 library(mapme.forest)
 library(vroom)
 library(gdalUtils)
-
 
 
 
@@ -1310,4 +1310,79 @@ compute_clay_content <- function(b, my_pa_polygon) {
 #             row.names = F)
 #   print(paste("Done processing for depth (in cm):", i, sep=" "))
 # }
+
+
+
+
+
+
+
+# Number of fire events occured in a year ------------------------------------------------------
+
+library(sf)
+library(tidyr)
+library(tidyverse)
+library(parallel)
+library(pbmcapply)
+
+# load wdpa polygon
+pa_polygon <- 
+  read_sf("../../datalake/mapme.protectedareas/input/wdpa_kfw/wdpa_kfw_spatial_latinamerica_2021-04-22_allPAs_valid.gpkg")
+# transform to WGS84
+pa_polygon <- st_transform(pa_polygon,
+                           "+proj=longlat +datum=WGS84 +no_defs")
+
+for (j in 2012:2020) {
+  
+  # load active fire polygon
+  fire <- 
+    read_sf(paste0("../../datalake/mapme.protectedareas/input/fire_event/fire_",j,"_subset.gpkg"))
+  # transform to WGS84
+  fire <- st_transform(fire,
+                       "+proj=longlat +datum=WGS84 +no_defs")
+  
+  # parallelization from here
+  z_stats = pbmclapply(1:nrow(pa_polygon), function(i) {
+    
+    
+    # intersection of fire and WDPA polygon
+    sf_p <- 
+      st_intersection(fire,
+                      pa_polygon[i, ])
+    # get wdpaid
+    wdpa_pid <- 
+      pa_polygon[i, ]$WDPA_PID
+    # get number of rows 
+    n <- 
+      nrow(sf_p)
+    # creata a data frame to store result
+    df <- 
+      data.frame(WDPA_PID=wdpa_pid,
+                 fire_events_count=n)
+    # rename column name to store value per year
+    names(df)[names(df) == "fire_events_count"] <- 
+      paste0("fire_events_count_",j)
+    # pivot to longer format
+    df_long <- 
+      tidyr::pivot_longer(df,
+                          cols=paste0("fire_events_count_",j))
+    # return results
+    return(df_long)
+  }, mc.cores = 6)
+  
+  # unlist all
+  for (i in 1:length(z_stats)) {
+    
+    if (class(z_stats[[i]]) != "try-error") {
+      
+      df_final <-
+        as.data.frame(z_stats[[i]])
+      write.csv(df_final,
+                file = paste0("../../datalake/mapme.protectedareas/output/polygon/fire_event/fire_events_count_",j,"_",i,".csv"),
+                row.names = F)
+    } else {
+      print(paste("try-error in line:", i, sep=" "))
+    }
+  }
+}
 
