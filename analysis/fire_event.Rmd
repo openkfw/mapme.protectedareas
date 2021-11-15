@@ -1,0 +1,131 @@
+---
+title: "Number of fire events occured in a year"
+author: "Om Prakash Bhandari (Author), Johannes Schielein (Review)"
+date: "2021-11-11"
+output: workflowr::wflow_html
+---
+
+```{r setup, message=FALSE}
+
+# load required libraries
+library("sf")
+library("wdpar")
+library("tidyverse")
+
+starttime <- Sys.time() # mark the start time of this routine to calculate processing time at the end
+```
+
+# Introduction
+
+Forest fire (wildfire, bushfire) is any fire caused due to unfortunate events or in some cases due to anthropogenic disturbances. By any means, forest fire is the major concern for the authorities responsible for the conservation of forest ecosystem and its elements. Thus it is important to account the number of fire events occured in a particular region of interest, in our case, say protected areas. With the information on how many fire events did occur in the past few years, the researchers will get an idea of increasing/decreasing trend and thus act accordingly to preserve it from future fire disasters. VIIRS provides free and open source datasets on active fire events from year 2012 to 2020 with other variables such as brightness, fire radiative power, date/time, lat/lon and day/night information.
+In this analysis section, we are going to take sample protected areas and compute the number of occurences of fire events in that particular region of interest for a particular year. 
+
+### Datasource and Metadata Information
+
+- Dataset: Visible Infrared Imaging Radiometer Suite (VIIRS) Active Fire [1]
+- Geographical Coverage: Global
+- Temporal Coverage: 2012-2020
+- Temporal Resolution: Annual
+- Data downloaded: 28th October, 2021
+- [Metadata Link](https://earthdata.nasa.gov/earth-observation-data/near-real-time/firms/viirs-i-band-active-fire-data)
+- [Download Link](https://firms.modaps.eosdis.nasa.gov/download/)
+
+### Processing Workflow
+
+To carry out this analysis, we will follow this processing routine:
+
+![](assets/workflows/fire_event_routine.jpg)
+
+# Download and Prepare WDPA Polygons
+
+For this analysis, we would try to get the country level polygon data from `wdpar` package. `wdpar` is a library to interface to the World Database on Protected Areas (WDPA). The library is used to monitor the performance of existing PAs and determine priority areas for the establishment of new PAs. We will use Venezuela - for other countries of your choice, simply provide the country name or the ISO name e.g. BRA for Brazil, Gy for Guyana, COL for Colombia.
+
+```{r fetchWdpar, warning=FALSE, include=TRUE}
+
+# fetch the raw data from wdpar of country
+vn_wdpa_raw <- 
+  wdpar::wdpa_fetch("VEN")
+```
+
+Since there are 290 enlisted protected areas in Venezuela (as of time of writing), we want to compute zonal statistics only for the polygon data of:
+	- Sierra Nevada - wdpaid 321, and
+	- Páramos de Tamá, Cobre y Judio - wdpaid 322
+
+For this, we have to subset the country level polygon data to the pa level.
+
+```{r subset, warning=FALSE, include=TRUE}
+
+# subset required wdpa polygons by their wdpa ids
+vn_wdpa_subset <-
+  vn_wdpa_raw%>%
+  filter(WDPAID %in% c(321, 322))
+```
+
+Now, we will reproject the polygon data to the WGS84 and plot the polygon to visualize.
+
+```{r reprojPolygon, warning=FALSE, include=TRUE}
+
+# reproject to the WGS84
+vn_wdpa_subset <- st_transform(vn_wdpa_subset,
+                               "+proj=longlat +datum=WGS84 +no_defs")
+# we can plot the data to see the selected WDPA polygons
+plot(vn_wdpa_subset[1])
+```
+
+# Prepare active fire polygons
+
+We have downloaded the CSV files from the VIIRS website for the individual countries of interest from LA for the years 2012 to 2020. Later we processed those CSVs which have coordinates in lat/lon to polygon files for particular year. In this analysis, we can thus directly load the fire event polygon and transfrom it to match coordinate system with the WDPA polygon.
+
+```{r loadFire, warning=FALSE, message=FALSE, include=TRUE}
+
+# load active fire event data for 2020
+fire <- 
+  read_sf("../../datalake/mapme.protectedareas/input/fire_event/fire_2020_subset.gpkg")
+# transform to WGS84
+fire <- st_transform(fire,
+                     "+proj=longlat +datum=WGS84 +no_defs")
+```
+
+# Intersect active fire and WDPA polygon layer
+
+After preparing fire event data and WDPA polygon, we should now intersect the layers to crop out the desired extent from the fire data. Since we already transformed the coordinate system of both the polygons to WGS84, we will now use function `st_intersection` from package `sf` to get the intersected portion of the fire data.
+
+```{r intersect, warning=FALSE, message=FALSE, include=TRUE}
+
+# apply intersection
+fire_subset <- st_intersection(fire,
+                               vn_wdpa_subset)
+# plot fire data
+plot(fire_subset[1])
+```
+
+# Count the number of events
+
+Now, we get the intersected portion of the fire data, we can simply count the number of rows from the intersected data in order to get the count of number of fire events within the selected polygon.
+
+```{r count, message=FALSE, warning=FALSE, include=TRUE}
+
+# compute number of occurences of the events
+n <- 
+  table(fire_subset$WDPAID)
+# store the result in a data frame
+df <- data.frame(WDPAID = vn_wdpa_subset$WDPAID,
+                 fire_events_count_2020 = c(n[[1]], n[[2]]))
+# view the result data frame
+df
+```
+
+From the result above, we can see that there were 136 fire events in WDPAID 321 and similarly 42 fire events in WDPAID 322 for the year 2020. In this way, we can compute the occurences of fire events in our polygon of interest for the particular years between 2012 and 2020.
+
+
+In the end we are going to have a look how long the rendering of this file took so that we could get an idea about the processing speed of this routine.
+
+```{r time, warning=FALSE, include=TRUE}
+
+stoptime <- Sys.time()
+print(starttime-stoptime)
+```
+
+# References
+
+[1] VIIRS I-Band 375 m Active Fire Data | Earthdata. (2021, July 7th). Earthdata. Retrieved October 28, 2021, from https://earthdata.nasa.gov/earth-observation-data/near-real-time/firms/viirs-i-band-active-fire-data

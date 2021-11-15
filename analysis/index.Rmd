@@ -44,6 +44,8 @@ Chapters:
   
   - [Clay content in the soil (OpenLandMap.org)](clay-content.html)
   
+  - [Number of fire events occured in a year (VIIRS)](fire_event.html)
+  
 - [Analysis of KfW Portfolio](portfolio_analysis.html)
 
 - [Sampling Strategy for IE](sampling.html)
