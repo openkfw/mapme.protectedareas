@@ -50,5 +50,9 @@ Chapters:
 
 - [Sampling Strategy for IE](sampling.html)
 
-- [Test](test.html)
+- [Descriptive Statistics](test.html)
+
+- [Model](test.html)
+
+
 
