@@ -242,6 +242,64 @@ samplecomplete <-
     cbind(st_as_sf(sample_treatment_1km), strata = "supported")
   )
 
-table(samplecomplete$strata)
-format(Sys.time(), "%B-%d-%Y")
-write_sf()
+# ----  Grids for spatially balanced sampling ---- 
+library("mapview")
+library(sf)
+
+# note: Grids have been created with QGIS since sf package is not efficient in creating larger fishnets. 
+
+fishnet_100km<-read_sf("../../datalake/mapme.protectedareas/output/polygon/sampling/fishnets/fishnet_within_countries_100km.gpkg")
+fishnet_10km_supported<-read_sf("../../datalake/mapme.protectedareas/output/polygon/sampling/fishnets/fishnet_within_10km.gpkg")
+fishnet_10km_nonpa<-read_sf("../../datalake/mapme.protectedareas/output/polygon/sampling/fishnets/fishnet_within_coutnries_disjoint_10km.gpkg")
+
+mapview(fishnet_100km,alpha.regions = 0)+mapview(fishnet_10km_supported, color = "red")+mapview(fishnet_10km_nonpa, color = "green")
+
+
+
+
+
+
+
+# for spatially weighted sampling see: https://cran.r-project.org/web/packages/spsurvey/vignettes/
+# for creating fishnets see: https://rpubs.com/dieghernan/beautifulmaps_I
+install.packages("spsurvey")
+library(spsurvey)
+?grts
+vignette("start-here", "spsurvey")
+?grts
+
+sample <- grts(NE_Lakes, n_base = 100)
+strata_n <- c(low = 25, high = 30)
+sample_strat <- grts(NE_Lakes, n_base = strata_n, stratum_var = "ELEV_CAT")
+sample_over <- grts(NE_Lakes, n_base = 30, n_over = 5)
+
+table(sample_strat$sites_base$wgt)
+table(sample_over$sites_base$wgt)
+nrow(sample_over$sites_base)
+nrow(sample_strat$sites_base)
+
+
+library("rnaturalearth")
+GB <- ne_download(50,
+                  type = "map_subunits",
+                  returnclass = "sf",
+                  destdir = tempdir()
+) %>%
+  subset(CONTINENT == "Europe") %>%
+  subset(ADM0_A3 == "GBR")
+
+# Projecting and cleaning
+GB <- st_transform(GB, 3857) %>% select(NAME_EN, ADM0_A3)
+initial <- GB
+initial$index_target <- 1:nrow(initial)
+target <- st_geometry(initial)
+
+plot(target)
+
+grid <- st_make_grid(target,
+                     50 * 50, # Kms
+                     crs = st_crs(initial),
+                     what = "centers"
+)
+plot(grid)
+

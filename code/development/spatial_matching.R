@@ -33,6 +33,14 @@ results_matching_PAs <-
       drop =  c("treatment","UID","biome_max","country"),
       eval.imbalance = TRUE)
 
+
+results_matching_PAs <-
+  cem("treatment",
+      as.data.frame(matching_db),
+      drop =  c("treatment","UID","biome_max","country"),  keep.all=TRUE)
+
+relax.cem(results_matching_PAs, as.data.frame(matching_db), depth=1)
+
 # check matched successes
 results_matching_PAs$tab
 
@@ -260,7 +268,9 @@ imbalance(
 results_matching_PAs_custom <-
   cem("treatment",
       as.data.frame(matching_db),
-      drop =  c("treatment","UID","biome_max","country"),
+      drop =  c("treatment","UID","biome_max","country",
+                "travel_time_to_nearby_cities_min_5k_10k",
+                "travel_time_to_nearby_cities_min_50k_100k"),
       eval.imbalance = TRUE,cutpoints = cutoffs_list)
 
 # check matched successes
@@ -315,4 +325,5 @@ sort(table(results_matching_PAs_custom$strata),decreasing = T)
 
 
 # NOTE: Possibly Interaction Treatment + Accessibility -> PAs that are closer are less protected then others.
+# NOTE 2: Differentiate heterogenous treatment effects based on high deforestation - low deforestation
 
