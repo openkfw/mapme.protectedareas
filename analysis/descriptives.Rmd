@@ -1,0 +1,401 @@
+---
+title: "descriptives"
+author: "Yota Eilers"
+date: "2021-11-25"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = FALSE, 
+                      fig.width=12, 
+                      fig.height=7,
+                      message = FALSE)
+
+
+# Load required libraries
+library(sf)
+library(plotly)
+library(tidyverse)
+library(stats)
+library(grid)
+library(stargazer)
+library(ggpmisc)
+
+```
+
+```{r data import, include=FALSE}
+# Import dataset with information on wdpa
+wdpa_info <- read_sf("data/wdpa_kfw_spatial_latinamerica_2021-04-22_allPAs.gpkg")
+wdpa_info <- st_drop_geometry(wdpa_info)
+wdpa_info <- wdpa_info %>%
+  rename('wdpa_pid' = 'WDPA_PID') %>%
+  mutate(wdpa_pid = as.character(wdpa_pid))
+
+# Import dataset on accessibility
+wdpa_accessibility <- read_csv("../../datalake/mapme.protectedareas/output/polygon/accessibility_to_cities/travel_time_to_nearby_cities_2000.csv")
+wdpa_accessibility <- wdpa_accessibility %>%
+  rename('wdpa_pid' = 'WDPA_PID') %>%
+  rename('travel_time_to_nearby_cities_min' = 'value') %>%
+  mutate(wdpa_pid = as.character(wdpa_pid)) %>%
+  select(wdpa_pid,travel_time_to_nearby_cities_min)
+
+# more data sets
+wdpa_kfw_latinamerica <- read_csv("data/wdpa-kfw_latinamerica_2021-04-22.csv")
+kfw_finance_complete <- read_csv("/datadrive/datalake/mapme.protectedareas/input/kfw_finance/mapme.protectedareas_kfw-finance_complete-2021-03-17.csv")
+kfw_finance_aggregated <- read_csv("/datadrive/datalake/mapme.protectedareas/input/kfw_finance/mapme.protectedareas_kfw-finance-2021-03-17.csv")
+gfw_zonalstats <- read_csv("/datadrive/datalake/mapme.protectedareas/output/polygon/global_forest_watch/zonal_statistics_supported_gfw_long.csv")
+
+# import project data
+projectdata_db<-
+  read_delim("../../datalake/mapme.protectedareas/input/project-data/projectdata.csv",";")
+projectdata_db <- projectdata_db %>% 
+  rename_all(make.names) %>%
+  rename('bmz_no'='BMZNo')
+names(projectdata_db) <- gsub("...", "_", names(projectdata_db), fixed = TRUE)
+names(projectdata_db) <- gsub(".", "_", names(projectdata_db), fixed = TRUE)
+
+#Reshape wide to long (wdpa_pid and bmz_no)
+wdpa_bmz <- wdpa_kfw_latinamerica %>%
+  gather(bmz_no, value, 9:18) %>%
+  select(-bmz_no) %>%
+  rename('bmz_no' = 'value') %>%
+  select(wdpa_pid, bmz_no) %>%
+  na.omit(bmz_no)
+
+
+# Changing variable types etc.
+gfw_zonalstats <- gfw_zonalstats %>%
+  rename('wdpa_pid'='WDPA_PID') %>%
+  mutate(wdpa_pid = as.character(wdpa_pid))
+
+kfw_finance_aggregated <- kfw_finance_aggregated %>%
+  rename('bmz_no' = 'bmz_nummer') 
+```
+
+
+```{r merge data, include=FALSE}
+
+# gfw zonal stats with bmz no
+gfw_bmz <- left_join(wdpa_bmz, gfw_zonalstats, 
+                     by=c("wdpa_pid"))
+# kfw data with wdpa pids
+kfw_finance_with_wdpa <-  kfw_finance_aggregated %>%
+  left_join(wdpa_bmz, kfw_finance_aggregated,
+            by=c('bmz_no'))
+
+# gfw zonal stats with kfw finance data
+gfw_kfw <- left_join(gfw_bmz, kfw_finance_aggregated,
+                     by=c('bmz_no'))
+```
+
+```{r data manipulation, include=F}
+
+# area pct relative to project start
+gfw_kfw_post2000 <- gfw_kfw %>%
+  filter(first_year >= 2000,
+         str_detect(name, 'area')) %>% 
+  select(-total_disbursed) %>%
+  mutate(area_year = as.numeric(substr(name,6,10)),
+         rel_year = area_year - first_year)
+
+gfw_kfw_p2000_area_fyear <- gfw_kfw_post2000 %>%
+  mutate(area_year = as.numeric(substr(name,6,10)),
+         dummy = area_year - first_year) %>%
+  filter(dummy == 0) %>%
+  select(-dummy, -name, -first_year, -last_year, -area_year, -rel_year) %>%
+  rename(value_projstart=value)
+
+
+gfw_kfw_post2000_relstart <- inner_join(gfw_kfw_post2000, gfw_kfw_p2000_area_fyear,
+                                        by=c('wdpa_pid', 'bmz_no')) %>%
+  mutate(area_pct_projstart = value/value_projstart) %>%
+  filter(! is.nan(area_pct_projstart))
+```
+
+## Relative forest cover -- exploratory
+
+### All observations
+
+```{r standard plot, echo=FALSE}
+p_line_noCAT <- gfw_kfw_post2000_relstart %>%
+  ggplot() +
+  geom_line(aes(x = rel_year, y = area_pct_projstart, group=interaction(wdpa_pid, bmz_no), color=interaction(wdpa_pid, bmz_no)))+
+  theme(axis.text.x=element_text(angle = 90, hjust = 0))+
+  geom_vline(xintercept = 0,
+             linetype = 'dotted',
+             color = 'red') + 
+  xlab("\n Year, relative to project start") +
+  ylab("Forest cover, relative to project start (%) \n") +
+  labs(title="All 'projects' (BMZ-no. & WDPA-ID combinations)") + 
+  theme(axis.title = element_text(size = 12, face=3),
+        axis.text = element_text(size = 12))
+ggplotly(p_line_noCAT)
+```
+
+### Outliers excluded
+
+```{r outlier info, echo=F}
+
+outlier_info <- wdpa_info %>%
+  filter(wdpa_pid==31758 | wdpa_pid==30628) %>%
+  select(wdpa_pid, NAME, ISO3, AREA_KM2)
+
+knitr::kable(outlier_info, format="markdown")
+```
+
+
+```{r sp no outliers, echo=F}
+gfw_kfw_p2000_rst_nO <- gfw_kfw_post2000_relstart %>%
+  filter(interaction(wdpa_pid, bmz_no)!=31758.209810854,
+         interaction(wdpa_pid, bmz_no)!=30628.201768464)
+
+p_line_noCAT_noOutl <- gfw_kfw_p2000_rst_nO %>%
+  ggplot() +
+  geom_line(aes(x = rel_year, y = area_pct_projstart, group=interaction(wdpa_pid, bmz_no), color=interaction(wdpa_pid, bmz_no)))+
+  theme(axis.text.x=element_text(angle = 90, hjust = 0))+
+  geom_vline(xintercept = 0,
+             linetype = 'dotted',
+             color = 'red') + 
+  xlab("\n Year, relative to project start") +
+  ylab("Forest cover, relative to project start (%) \n") +
+  labs(title="All 'projects' (BMZ-no. & WDPA-ID combinations), outliers excluded") + 
+  theme(axis.title = element_text(size = 12, face=3),
+        axis.text = element_text(size = 12))
+ggplotly()
+```
+
+From this point onwards, all plots exclude aforementioned outliers. 
+
+### Grouped by countries
+
+```{r country groups, echo=F}
+p_line_country_noOutl <- gfw_kfw_p2000_rst_nO %>%
+  inner_join(.,wdpa_info,
+             by=c('wdpa_pid')) %>%
+  ggplot() +
+  geom_line(aes(x = rel_year, y = area_pct_projstart, group=interaction(wdpa_pid, bmz_no), color=ISO3))+
+  theme(axis.text.x=element_text(angle = 90, hjust = 0))+
+  geom_vline(xintercept = 0,
+             linetype = 'dotted',
+             color = 'red') + 
+  xlab("\n Year, relative to project start") +
+  ylab("Forest cover, relative to project start (%) \n") +
+  labs(title="All 'projects' (BMZ-no. & WDPA-ID combinations), outliers excluded and grouped by country") + 
+  theme(axis.title = element_text(size = 12, face=3),
+        axis.text = element_text(size = 12))
+ggplotly()
+```
+
+
+### Grouped by accessibililty 
+
+```{r cutoffs travel time, echo=F}
+cutoffs_travel_time <- 
+  c(0,120,300,max(wdpa_accessibility$travel_time_to_nearby_cities_min,na.rm = T))
+
+cutoffs_travel_time_alt2 <- 
+  c(0,120,240,300,max(wdpa_accessibility$travel_time_to_nearby_cities_min,na.rm = T))
+```
+
+
+```{r accessibility groups, echo=F}
+
+p_line_access_noOutl <- gfw_kfw_p2000_rst_nO %>%
+  inner_join(.,wdpa_accessibility,
+             by=c('wdpa_pid')) %>%
+  mutate(accessibility_bins = cut(travel_time_to_nearby_cities_min, cutoffs_travel_time)) %>%
+  ggplot() +
+  geom_line(aes(x = rel_year, y = area_pct_projstart, group=interaction(wdpa_pid, bmz_no),
+                color=accessibility_bins, alpha=0.4))+
+  theme(axis.text.x=element_text(angle = 90, hjust = 0))+
+  geom_vline(xintercept = 0,
+             linetype = 'dotted',
+             color = 'red') + 
+  xlab("\n Year, relative to project start") +
+  ylab("Forest cover, relative to project start (%) \n") +
+  labs(title="All 'projects' (BMZ-no. & WDPA-ID combinations), outliers excluded and colored by accessibility") + 
+  theme(axis.title = element_text(size = 12, face=3),
+        axis.text = element_text(size = 12))
+ggplotly()
+```
+
+### Grouped by accessibility, country
+
+```{r accessibility and country, echo=F}
+thiscountry <- "COL"
+  
+p_line_access_noOutl_country <- gfw_kfw_p2000_rst_nO %>%
+  inner_join(.,wdpa_info,
+             by=c('wdpa_pid')) %>%
+  inner_join(.,wdpa_accessibility,
+             by=c('wdpa_pid')) %>%
+  mutate(accessibility_bins = cut(travel_time_to_nearby_cities_min, cutoffs_travel_time)) %>%
+  filter(ISO3 == thiscountry) %>%
+  ggplot() +
+  geom_line(aes(x = rel_year, y = area_pct_projstart, group=interaction(wdpa_pid, bmz_no),
+                color=accessibility_bins, alpha=0.4))+
+  theme(axis.text.x=element_text(angle = 90, hjust = 0))+
+  geom_vline(xintercept = 0,
+             linetype = 'dotted',
+             color = 'red') + 
+  xlab("\n Year, relative to project start") +
+  ylab("Forest cover, relative to project start (%) \n") +
+  labs(title=paste("Country:", thiscountry)) + 
+  theme(axis.title = element_text(size = 12, face=3),
+        axis.text = element_text(size = 12))
+ggplotly()
+
+```
+
+## Relative forest cover: Fitted lines
+
+```{r options, echo=F}
+options(scipen=999)
+
+# Break at rel_year == 1
+gfw_kfw_p2000_rst_nO_break <- gfw_kfw_p2000_rst_nO %>%
+  mutate(D = as.factor(ifelse(rel_year >= 1, 1, 0))) #break bei 1 oder 0?
+```
+
+### Slope coefficients
+
+```{r slope coefs, echo=F}
+lm1 <- lm(gfw_kfw_p2000_rst_nO_break$area_pct_projstart ~ gfw_kfw_p2000_rst_nO_break$D * gfw_kfw_p2000_rst_nO_break$rel_year)
+stargazer(lm1, type="text", title="(Slope) coefficients with break at relative year == 1", covariate.labels = c("Dummy before vs. after start", "Relative year", "Relative year X Dummy"))
+```
+
+### Fitted lines and scattered points
+
+```{r line fit points, echo=F}
+# with points
+p_lm_noCAT_nO_break <- gfw_kfw_p2000_rst_nO_break %>%
+  ggplot(aes(x = rel_year, y = area_pct_projstart, color = D)) +
+  geom_point(color='grey70', position = 'jitter', alpha=0.4) + 
+  geom_smooth(method = "lm") +
+  scale_color_manual(name="Treatment status",
+                     labels=c("Pre-treatment",
+                              "Post-treatment"),
+                     values = c("0"="#f8766d",
+                                "1"="#00b0f6")) +
+  stat_poly_eq(formula=y ~ x,
+               label.x = "right",
+               eq.with.lhs = "italic(hat(y))~`=`~",
+               aes(label = paste("bold(\"", c("D=0", "D=1")[stat(group)],
+                                 ": \")*",
+                                 stat(eq.label),
+                                 sep = "")),
+               parse = TRUE) +
+  labs(title="",
+       x="\n Year, relative to project start",
+       y="Forest cover, relative to project start (%) \n") +
+  theme(axis.title = element_text(size = 16, face=3),
+        axis.text = element_text(size = 16))
+p_lm_noCAT_nO_break
+```
+
+### Fitted lines and CIs only
+
+```{r no points, echo=FALSE}
+#without points
+p_lm_noCAT_nO_break <- gfw_kfw_p2000_rst_nO_break %>%
+  ggplot(aes(x = rel_year, y = area_pct_projstart, color = D)) + 
+  geom_smooth(method = "lm") +
+  stat_poly_eq(formula=y ~ x,
+               label.x = "right",
+               eq.with.lhs = "italic(hat(y))~`=`~",
+               aes(label = paste("bold(\"", c("D=0", "D=1")[stat(group)],
+                                 ": \")*",
+                                 stat(eq.label),
+                                 sep = "")),
+               parse = TRUE) +
+  labs(title="",
+       x="\n Year, relative to project start",
+       y="Forest cover, relative to project start (%) \n") +
+  theme(axis.title = element_text(size = 16, face=3),
+        axis.text = element_text(size = 16))
+p_lm_noCAT_nO_break
+```
+
+### Grouped by accessibility bins
+
+```{r no points accessibility, echo=F}
+# without points, with accessibility bins 
+p_lm_noCAT_nO_break_access <- gfw_kfw_p2000_rst_nO_break %>%
+  inner_join(.,wdpa_accessibility,
+             by=c('wdpa_pid')) %>%
+  mutate(accessibility_bins = cut(travel_time_to_nearby_cities_min, cutoffs_travel_time)) %>%
+  filter(!is.na(accessibility_bins)) %>%
+  ggplot(aes(x = rel_year, y = area_pct_projstart, color = accessibility_bins, linetype = D)) + 
+  geom_smooth(method = "lm") +
+  stat_poly_eq(formula=y ~ x,
+               label.x = "right",
+               eq.with.lhs = "italic(hat(y))~`=`~",
+               aes(label = paste("bold(\"", c("D=0, <2h", "D=1, <2h", "D=0, 2-6h", "D=1, 2-6h", "D=0, >6h", "D=1, >6h")[stat(group)],
+                                 ": \")*",
+                                 stat(eq.label),
+                                 sep = "")),
+               parse = TRUE) +
+  labs(title="",
+       x="\n Year, relative to project start",
+       y="Forest cover, relative to project start (%) \n") +
+  theme(axis.title = element_text(size = 16, face=3),
+        axis.text = element_text(size = 16))
+p_lm_noCAT_nO_break_access
+# ggplotly()
+```
+
+### Alternative accessibility bins
+
+```{r no points accessibility alt2 cutoffs, echo=F}
+# without points, with accessibility bins 
+p_lm_noCAT_nO_break_access_2 <- gfw_kfw_p2000_rst_nO_break %>%
+  inner_join(.,wdpa_accessibility,
+             by=c('wdpa_pid')) %>%
+  mutate(accessibility_bins = cut(travel_time_to_nearby_cities_min, cutoffs_travel_time_alt2)) %>%
+  filter(!is.na(accessibility_bins)) %>%
+  ggplot(aes(x = rel_year, y = area_pct_projstart, color = accessibility_bins, linetype = D)) + 
+  geom_smooth(method = "lm") +
+  stat_poly_eq(formula=y ~ x,
+               label.x = "left",
+               label.y = "bottom",
+               eq.with.lhs = "italic(hat(y))~`=`~",
+               aes(label = paste("bold(\"", c("D=0, <2h", "D=1, <2h", "D=0, 2-4h", "D=1, 2-4h", "D=0, 4-6h", "D=1, 4-6h", "D=0, >6h", "D=1, >6h")[stat(group)],
+                                 ": \")*",
+                                 stat(eq.label),
+                                 sep = "")),
+               parse = TRUE) +
+  labs(title="",
+       x="\n Year, relative to project start",
+       y="Forest cover, relative to project start (%) \n") +
+  theme(axis.title = element_text(size = 16, face=3),
+        axis.text = element_text(size = 16))
+p_lm_noCAT_nO_break_access_2
+# ggplotly()
+```
+
+```{r accessibility bins, echo=F}
+table(cut(inner_join(gfw_kfw_p2000_rst_nO_break, wdpa_accessibility, by=c("wdpa_pid"))$travel_time_to_nearby_cities_min,cutoffs_travel_time_alt2))
+```
+
+## Relative forest cover: Boxplots
+
+
+```{r boxplots, echo=F}
+# boxplots
+p_boxpl_noCAT_n0 <- gfw_kfw_p2000_rst_nO %>%
+  ggplot(aes(x=as.factor(rel_year), y=area_pct_projstart)) + 
+  geom_boxplot(fill="slateblue", alpha=0.2) + 
+  labs(title="Boxplot chart",
+       x="\n Year, relative to project start",
+       y="Forest cover, relative to project start (%) \n") + 
+  theme(axis.title = element_text(size = 16, face=3),
+        axis.text = element_text(size = 16)) +
+  scale_x_discrete(breaks=seq(-19,20, by=2))
+p_boxpl_noCAT_n0
+
+```
+
