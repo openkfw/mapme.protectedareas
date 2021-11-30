@@ -17,8 +17,6 @@ This website is structured to show you the routines for each data-sources one by
 
 The **KfW Protected Areas Database** is a work in progress project and part of the [MAPME initiative](https://mapme-initiative.org/) to promote the use of open geodata and open-source GIS tecnologies in international development cooperation. We invite others to leave constructive feedback on our work while we are in the doing and get in touch with us on our initiative. 
 
-@schrodinger1935gegenwartige
-
 Chapters:
 
 - [About this project](README.html)
@@ -53,9 +51,6 @@ Chapters:
 
 - [Sampling Strategy for IE](sampling.html)
 
-- [Descriptive Statistics](test.html)
-
-- [Model](test.html)
 
 
 
