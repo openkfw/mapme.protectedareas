@@ -4,7 +4,6 @@ site: workflowr::wflow_site
 output:
   workflowr::wflow_html:
     toc: false
-bibliography: docs/bib/library.bib  
 editor_options:
   chunk_output_type: console
 workflowr:
@@ -53,7 +52,7 @@ Chapters:
 
 - [Sampling Strategy for IE](sampling.html)
 
-- [Descriptive Statistics](test.html)
+- [Descriptive Statistics](descriptives.html)
 
 - [Model](test.html)
 
