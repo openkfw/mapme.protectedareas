@@ -47,6 +47,8 @@ Chapters:
   
   - [Number of fire events occured in a year (VIIRS)](fire_event.html)
   
+  - [Climatic variables - Precipitation and temperature (WorldClim)](climatic-variables.html)
+  
 - [Analysis of KfW Portfolio](portfolio_analysis.html)
 
 - [Sampling Strategy for IE](sampling.html)
