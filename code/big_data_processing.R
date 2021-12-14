@@ -15,6 +15,7 @@
 # Accessibility to Cities ---------------------------------------- 1150
 # Clay content in the soil --------------------------------------- 1230
 # Number of fire events occured in a year ------------------------ 1320
+# Climatic Variables (Temperature, Precipitation) ---------------- 1400
 
 # Source Scripts ---------------------------------------------------------------
 source("code/area_proj.R")
@@ -32,7 +33,6 @@ remotes::install_github("mapme-initiative/mapme.forest")
 library(mapme.forest)
 library(vroom)
 library(gdalUtils)
-
 
 
 
@@ -1123,14 +1123,14 @@ g_bind_final <-
 # pivot to longer format
 g_bind_long <- 
   pivot_longer(g_bind_final,
-                            cols = c("area_2000", "area_2001", "area_2002", "area_2003", "area_2004", "area_2005", "area_2006", "area_2007",
-                                     "area_2008", "area_2009", "area_2010", "area_2011", "area_2012", "area_2013", "area_2014", "area_2015",
-                                     "area_2016", "area_2017", "area_2018", "area_2019", "area_2020", "loss_2000", "loss_2001", "loss_2002",
-                                     "loss_2003", "loss_2004", "loss_2005", "loss_2006", "loss_2007", "loss_2008", "loss_2009", "loss_2010",
-                                     "loss_2011", "loss_2012", "loss_2013", "loss_2014", "loss_2015", "loss_2016", "loss_2017", "loss_2018",
-                                     "loss_2019", "loss_2020", "co2_2000", "co2_2001", "co2_2002", "co2_2003", "co2_2004", "co2_2005",
-                                     "co2_2006", "co2_2007", "co2_2008", "co2_2009", "co2_2010", "co2_2011", "co2_2012", "co2_2013",
-                                     "co2_2014","co2_2015", "co2_2016", "co2_2017", "co2_2018", "co2_2019", "co2_2020"))
+               cols = c("area_2000", "area_2001", "area_2002", "area_2003", "area_2004", "area_2005", "area_2006", "area_2007",
+                        "area_2008", "area_2009", "area_2010", "area_2011", "area_2012", "area_2013", "area_2014", "area_2015",
+                        "area_2016", "area_2017", "area_2018", "area_2019", "area_2020", "loss_2000", "loss_2001", "loss_2002",
+                        "loss_2003", "loss_2004", "loss_2005", "loss_2006", "loss_2007", "loss_2008", "loss_2009", "loss_2010",
+                        "loss_2011", "loss_2012", "loss_2013", "loss_2014", "loss_2015", "loss_2016", "loss_2017", "loss_2018",
+                        "loss_2019", "loss_2020", "co2_2000", "co2_2001", "co2_2002", "co2_2003", "co2_2004", "co2_2005",
+                        "co2_2006", "co2_2007", "co2_2008", "co2_2009", "co2_2010", "co2_2011", "co2_2012", "co2_2013",
+                        "co2_2014","co2_2015", "co2_2016", "co2_2017", "co2_2018", "co2_2019", "co2_2020"))
 # write long format result to disk
 write.csv(g_bind_long,
           file = "../../datalake/mapme.protectedareas/output/polygon/global_forest_watch/zonal_statistics_long.csv",
@@ -1164,7 +1164,7 @@ pa_polygons_all <-
 pa_polygons_all <- 
   vect(pa_polygons_all)
 
-# create a function ----
+# create a function --
 compute_accessibility <- function(my_pa_polygon) {
   
   tryCatch(
@@ -1385,4 +1385,101 @@ for (j in 2012:2020) {
     }
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+# Climatic Variables (Temperature, Precipitation) ----------------------------------------------------
+
+# load wdpa polygon
+my_pa_polygon <- 
+  read_sf("../../datalake/mapme.protectedareas/input/wdpa_kfw/wdpa_kfw_spatial_latinamerica_2021-02-01_supportedPAs_unique.gpkg")
+# transform to WGS84
+my_pa_polygon <- st_transform(my_pa_polygon,
+                              "+proj=longlat +datum=WGS84 +no_defs")
+
+
+### know the arguments
+
+# (1) f = folder name created in datalake ["temperature" or "precipitation"]
+# (2) v = variable name ["tavg" or "prec"]
+# (3) m = month in number - as string ["01" ,....., "12"]
+
+# create function to process climatic variables
+compute_climate_data <- function(f, v, m) {
+  
+  tryCatch(
+    {
+      
+      # load raster
+      rast <- 
+        rast(paste0("../../datalake/mapme.protectedareas/input/",f,"/wc2.1_30s_",v,"_",m,".tif"))
+      # crop temperature raster by polygon
+      my_pa_polygon_crop <- terra::crop(rast,
+                                        my_pa_polygon)
+      # to vect
+      my_pa_polygon_v <- 
+        vect(my_pa_polygon)
+      # mask the temperature raster
+      my_pa_polygon_mask <- terra::mask(my_pa_polygon_crop,
+                                        my_pa_polygon_v)
+      # take numeric wdpa_pid
+      wdpa_pid <- 
+        my_pa_polygon$WDPA_PID %>%
+        as.numeric()
+      # rasterize polygon based on extent of the cropped temperature raster
+      pa_polygon_raster <- 
+        terra::rasterize(my_pa_polygon_v,
+                         my_pa_polygon_mask,
+                         wdpa_pid)
+      # calculate zonal statistics: average temperature (in °C) within the polygon
+      zstats <- terra::zonal(my_pa_polygon_mask, 
+                             pa_polygon_raster, 
+                             fun='mean', 
+                             na.rm=T)
+      # create dataframe from results
+      df.zstats <- data.frame(WDPA_PID=NA,
+                              value=NA)
+      # rename columns
+      colnames(zstats) <-
+        colnames(df.zstats)
+      # rename the column to store value per month
+      names(zstats)[names(zstats) == "value"] <- 
+        paste0(f,"_",j)
+      # pivot to long format
+      zstats_long <- tidyr::pivot_longer(zstats, 
+                                         cols=paste0(f,"_",j))
+      
+      # write zonal statistics to disk as csv
+      write.csv(zstats_long,
+                file = paste0("../../datalake/mapme.protectedareas/output/polygon/",f,"/",f,"_",m,"_allPAs.csv"),
+                row.names = F)
+    },
+    
+    error = function(e) {
+      message('Error in this line!')
+    }
+  )
+}
+
+# # process temperature rasters
+# for (j in c("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12")) {
+#    # call function
+#    compute_climate_data("temperature", "tavg", j)
+# }
+# 
+# # process precipitation rasters
+# for (j in c("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12")) {
+#   # call function
+#   compute_climate_data("precipitation", "prec", j)
+# }
+
 
