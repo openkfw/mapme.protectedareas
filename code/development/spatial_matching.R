@@ -25,12 +25,12 @@ matching_db_list<-
 imbalance(
   matching_db$treatment,
   as.data.frame(matching_db),
-  drop = c("treatment","UID","biome_max","country"))
+  drop = c("treatment","id","biome_max","country"))
 
 results_matching_PAs <-
   cem("treatment",
       as.data.frame(matching_db),
-      drop =  c("treatment","UID","biome_max","country"),
+      drop =  c("treatment","id","biome_max","country"),
       eval.imbalance = TRUE)
 
 
@@ -53,10 +53,10 @@ results_matching_PAs$breaks
 # ----- adjust breaks -----
 ## ---- 1) Travel time: travel_time_to_nearby_cities_min_5k_10k ----
 ggplot(data = matching_db)+
-  geom_histogram(aes(travel_time_to_nearby_cities_min_5k_10k,fill=as.factor(treatment)),alpha = 0.7, position="dodge")
+  geom_histogram(aes(travel_time_to_nearby_cities_min_5k_100mio,fill=as.factor(treatment)),alpha = 0.7, position="dodge")
 
 ggplot(data = matching_db)+
-  geom_histogram(aes(travel_time_to_nearby_cities_min_50k_100k,fill=as.factor(treatment)),alpha = 0.7, position="dodge")
+  geom_histogram(aes(travel_time_to_nearby_cities_min_20l_100mio,fill=as.factor(treatment)),alpha = 0.7, position="dodge")
 
 # create list for manual cutoff points
 cutoffs_list<-
@@ -91,7 +91,7 @@ cutoffs_list$travel_time_to_nearby_cities_min_50k_100k<-
 ## 2) ---- Clay Content ins soils ----
 # create histogramm
 ggplot(data = matching_db)+
-  geom_histogram(aes(clay_content_30_cm,fill=as.factor(treatment)),alpha = 0.7, position="dodge")
+  geom_histogram(aes(clay_content_10_cm,fill=as.factor(treatment)),alpha = 0.7, position="dodge")
 
 # table default cutoffs CEM
 table(cut(matching_db$clay_content_30_cm,
