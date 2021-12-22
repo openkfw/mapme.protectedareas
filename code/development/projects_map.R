@@ -1,17 +1,11 @@
 library("tidyverse")
-# library("readxl")
-# library("janitor")
 library("sf")
 library("leaflet")
 library("leaflet.extras")
 library("leaflet.extras2")
 library("ggsci")
-# library("RColorBrewer")
-# library("plotly")
-# library("ggthemes")
-# library("htmltools")
 library("scales")
-pal_npg(palette = "nrc",alpha = .5)
+library("htmltools")
 
 ##  Protected areas
 wdpa_kfw<-
