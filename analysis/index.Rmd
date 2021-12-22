@@ -4,7 +4,6 @@ site: workflowr::wflow_site
 output:
   workflowr::wflow_html:
     toc: false
-bibliography: docs/bib/library.bib  
 editor_options:
   chunk_output_type: console
 workflowr:
@@ -50,6 +49,8 @@ Chapters:
 - [Analysis of KfW Portfolio](portfolio_analysis.html)
 
 - [Sampling Strategy for IE](sampling.html)
+
+- [Map of Supported Areas](projects_map.html)
 
 
 

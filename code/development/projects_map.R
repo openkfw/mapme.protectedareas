@@ -1,0 +1,103 @@
+library("tidyverse")
+# library("readxl")
+# library("janitor")
+library("sf")
+library("leaflet")
+library("leaflet.extras")
+library("leaflet.extras2")
+library("ggsci")
+# library("RColorBrewer")
+# library("plotly")
+# library("ggthemes")
+# library("htmltools")
+library("scales")
+pal_npg(palette = "nrc",alpha = .5)
+
+##  Protected areas
+wdpa_kfw<-
+  read_sf("~/shared/datalake/mapme.protectedareas/input/wdpa_kfw/wdpa_kfw_spatial_latinamerica_2021-02-01_supportedPAs_unique.gpkg")
+
+## create column for area coloring
+wdpa_kfw$REP_AREA_cat<-
+  cut(wdpa_kfw$REP_AREA,
+      c(0,1000,5000,10000,20000,max(wdpa_kfw$REP_AREA)),
+      c("< 1,000 sqkm","1,001-5,000 sqkm","5,001-10,000 sqkm","10,001-20,000 sqkm",paste("20,001-",max(wdpa_kfw$REP_AREA)," sqkm",sep="")))
+
+
+## fishnet
+fishnet <-
+  read_sf(
+    "../../datalake/mapme.protectedareas/output/polygon/sampling/fishnets/fishnet_all_update_Dec-07.gpkg"
+  )
+# load matching frame data
+# matched_data<-rbind(read.csv("../../datalake/mapme.protectedareas/output/tabular/regression_input/matched_panel_2015.csv"),
+#                     read.csv("../../datalake/mapme.protectedareas/output/tabular/regression_input/matched_panel_2007.csv"))
+
+matched_data<-read.csv("../../datalake/mapme.protectedareas/output/tabular/regression_input/matched_panel_2015.csv")
+# filter to delete multiple observations
+matched_data<-
+  matched_data %>%
+  filter(year == 2015)
+# merge data 
+matched_data_merged<-
+  merge(fishnet, matched_data, "poly_id")
+
+matched_data_merged<-st_transform(matched_data_merged,crs = st_crs(wdpa_kfw))
+
+## Create Color Pals for the plot data
+# create colorramp function for area
+pal_area <- colorFactor(
+  palette = pal_npg("nrc", alpha = 0.7)(length(unique(wdpa_kfw$REP_AREA_cat))),
+  domain = wdpa_kfw$REP_AREA_cat
+)
+
+# create colorramp2
+pal_treatment <- colorFactor(
+  palette = c("darkblue","orange"),
+  domain = matched_data_merged$treat_ever
+)
+
+## Crate map
+# wdpa_kfw_treatment_centroid<-st_transform(st_centroid(wdpa_kfw_treatment_centroid),crs = 4326)
+my_map <-
+  leaflet() %>%
+  # add external map providers
+  addTiles(group = "OpenStreetMap") %>%
+  addProviderTiles(providers$CartoDB.Positron, group="CartoDB") %>%
+  addProviderTiles(providers$Esri.WorldImagery, group="Satellite") %>%
+  addProviderTiles(providers$Esri.WorldShadedRelief, group="Topography") %>%
+  addProviderTiles(providers$NASAGIBS.ViirsEarthAtNight2012, group="Nightlights") %>%
+  addTiles("https://tiles.globalforestwatch.org/umd_tree_cover_loss/v1.8/dynamic/{z}/{x}/{y}.png",group="Forest Cover Loss (2001-2020)",attribution = "Hansen, M. C., P. V. Potapov, R. Moore, M. Hancher, S. A. Turubanova, A. Tyukavina, D. Thau, S. V. Stehman, S. J. Goetz, T. R. Loveland, A. Kommareddy, A. Egorov, L. Chini, C. O. Justice, and J. R. G. Townshend. 2013. “High-Resolution Global Maps of 21st-Century Forest Cover Change.” Science 342 (15 November): 850–53. Data available on-line from: http://earthenginepartners.appspot.com/science-2013-global-forest.")%>%
+  # add own data
+  addPolygons(data = wdpa_kfw,opacity = 0.9,color = "orange", group = "PA Boundaries (all years)",label = ~htmlEscape(NAME),weight = 1)%>%
+  addPolygons(data = wdpa_kfw,opacity = 1,color = ~pal_area(REP_AREA_cat), group = "PA Area Size",label = ~htmlEscape(REP_AREA),weight = 1)%>%
+  addPolygons(data = matched_data_merged, opacity = 0.9,color = ~pal_treatment(treat_ever), group = "Cells (Treamtent & Control) in 2015",label = ~htmlEscape(treat_ever),weight = 1)%>%
+  # addCircles(data = wdpa_kfw_treatment_centroid, opacity = 0.9,color = ~pal(MARINE), group = "Type",label = ~htmlEscape(NAME))%>%
+  # addCircles(data = wdpa_kfw_treatment_centroid, opacity = 0.9,color = ~pal2(bmz_n_1),group = "Project-Nr.")%>%
+  
+  # fullscreen control
+  addFullscreenControl() %>%
+  # add legent for area
+  addLegend("bottomright",
+            data = wdpa_kfw,
+            pal = pal_area,
+            values = ~REP_AREA_cat,
+            title = "Total Reported Area",
+            opacity = 1,
+            group = "PA Area Size") %>% 
+  addLegend("bottomright",
+            data = matched_data_merged,
+            pal = pal_treatment,
+            values = ~treat_ever,
+            title = "Treatement",
+            opacity = 1,
+            group = "Cells (Treamtent & Control) in 2015") %>% 
+  # add layers control to define which data is shown or ommited in default view
+  addLayersControl(
+    baseGroups = c("CartoDB","OpenStreetMap","Satellite","Topography","Nightlights","Forest Cover Loss (2001-2020)"), #"Toner",
+    overlayGroups = c("PA Boundaries (all years)","PA Area Size","Cells (Treamtent & Control) in 2015"),
+    options = layersControlOptions(collapsed = FALSE)) %>%
+  # ommit certain layers
+  hideGroup(group = c("PA Area Size","Cells (Treamtent & Control) in 2015"))
+
+my_map

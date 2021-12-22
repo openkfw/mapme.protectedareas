@@ -286,8 +286,12 @@ adminborders<-adminborders$sf
 # reproject
 adminborders<-st_transform(adminborders, st_crs(fishnet_100km))
 # intersect and clean
-fishnet_100km_erase<-
-  st_intersection(fishnet_100km,adminborders)
+# fishnet_100km_erase<-
+#   st_intersection(fishnet_100km,adminborders)
+
+# intersect and clean
+fishnet_100km_erase<-fishnet_100km
+  # st_intersection(fishnet_100km,adminborders)
 
 ## cut out protected areas 
 # load data
@@ -317,8 +321,9 @@ fishnet_100km_erase_centroids$dist_pa<-
 #reduce to relevant vars
 fishnet_100km_erase_centroids <-
   fishnet_100km_erase_centroids %>%
-  select(id, dist_pa) %>%
-  st_drop_geometry()
+  st_drop_geometry(.)%>%
+  dplyr::select(id, dist_pa)
+ 
 
 # merge
 fishnet_100km_erase<-fishnet_100km_erase%>%
@@ -390,10 +395,28 @@ mapview(sample_simple$sites_base,
           layer.name="Distance to Supported PA",
           hide = TRUE)
 
+mapview(pas_supported,  
+        zcol = "WDPAID",
+        alpha.regions=0.6,
+        layer.name="Supported PAs")
+
+mapview(fishnet_10km_supported, 
+        alpha.regions=0.6,
+        col.regions = "black",
+        layer.name="supported",
+        hide = TRUE)+
+  mapview(fishnet_10km_nonpa, 
+          alpha.regions=0.6,
+          col.regions = "red",
+          layer.name="supported",
+          hide = TRUE)
+  
+
+
 
 
 samplesize<-nrow(fishnet_10km_supported)*11
-
+samplesize
 
 sample_weigths_combined <- grts(fishnet_100km_erase, 
                                 n_base = 2497,
