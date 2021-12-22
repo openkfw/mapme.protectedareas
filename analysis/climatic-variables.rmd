@@ -1,0 +1,199 @@
+---
+title: "Climatic variables - Precipitation and temperature"
+author: "Om Prakash Bhandari (Author), Johannes Schielein (Review)"
+date: "11/23/2021"
+output: workflowr::wflow_html
+---
+
+```{r setup, message=FALSE}
+
+# load required libraries
+library("sf")
+library("terra")
+library("wdpar")
+library("tidyverse")
+
+starttime <- Sys.time() # mark the start time of this routine to calculate processing time at the end
+```
+
+# Introduction
+
+Climate change is one of the hottest issues around the globe in the present context. Existence of flora and fauna has been affected thoroughly with the rise in temperature and infrequent rainfall happening throughout different forests ecosystem. In context of protected areas, it is even more important to see the pattern of temperature and rainfall not only to assess the change issues but also to get the idea on how diverse is the protected area in terms of weather and climate. So, here in this analysis, we are going to demonstrate how to process precipitation and temperature data and get the average temperature and precipitation values in our protected area polygons of interest.
+
+### Datasource and Metadata Information
+
+- Dataset: Historical climate data (WorldClim) [1]
+- Geographical Coverage: Global
+- Spatial resolution: ~ 1 km
+- Temporal Coverage: 1970-2000
+- Unit: precipitation (mm) & temperature (°C)
+- Data downloaded: 18th November, 2021
+- [Metadata Link](https://www.worldclim.org/data/worldclim21.html)
+- [Download Link - average temperature](https://biogeo.ucdavis.edu/data/worldclim/v2.1/base/wc2.1_30s_tavg.zip)
+- [Download Link - precipitation](https://biogeo.ucdavis.edu/data/worldclim/v2.1/base/wc2.1_30s_prec.zip)
+
+### Processing Workflow
+
+The purpose of this analysis is to compute average temperature and average precipitation for the desired polygons. We need to perform zonal statistics operation. A zonal statistics operation is one that calculates statistics on cell values of a raster (a value raster) within the zones defined by another dataset [ArcGIS definition].
+
+To calculate zonal statistics for climatic variables, following processing routine is followed in this analysis:
+
+![](assets/workflows/climatic_variables_routine.jpg)
+
+# Download and Prepare WDPA Polygons
+
+For this analysis, we would try to get the country level polygon data from `wdpar` package. `wdpar` is a library to interface to the World Database on Protected Areas (WDPA). The library is used to monitor the performance of existing PAs and determine priority areas for the establishment of new PAs. We will use Brazil - for other countries of your choice, simply provide the country name or the ISO name e.g. VEN for Venezuela, Gy for Guyana, COL for Colombia.
+
+```{r fetchWdpar, warning=FALSE, include=TRUE}
+
+# fetch the raw data from wdpar of country
+br_wdpa_raw <- 
+  wdpar::wdpa_fetch("BRA")
+```
+
+Since there are 3202 enlisted protected areas in Brazil (as of time of writing), we want to compute zonal statistics only for the polygon data of:
+  - Reserva Biologica Do Rio Trombetas - wdpaid 43,
+	- Reserva Extrativista Rio Cajari - wdpaid 31776, and
+	- Estacao Ecologica Do Jari - wdpaid 4891
+
+For this, we have to subset the country level polygon data to the pa level.
+
+```{r subset, warning=FALSE, include=TRUE}
+
+# subset three wdpa polygons by their wdpa ids
+br_wdpa_subset <-
+  br_wdpa_raw%>%
+  filter(WDPAID %in% c(43,31776,4891))
+```
+
+Now, we will reproject the polygon data to the WGS84 and then apply `vect` function from `terra` package to further use it for terra functionalities.  
+
+```{r reprojPolygon, warning=FALSE, include=TRUE}
+
+# reproject to the WGS84
+br_wdpa_subset <- st_transform(br_wdpa_subset,
+                               "+proj=longlat +datum=WGS84 +no_defs")
+# spatvector for terra compatibility
+br_wdpa_subset_v <- 
+  vect(br_wdpa_subset)
+# we can plot the data to see the three selected polygons
+plot(br_wdpa_subset[1])
+```
+
+# Prepare precipitation and temperature raster data
+
+The global rasters (precipitation, average temperature) aggregated monthly for years 1970-2000 were downloaded in our directory in datalake. Here, we are going to load the `tavg` and `prec` raster layers for the month of January using package terra.
+
+```{r loadRaster, warning=FALSE, include=TRUE}
+
+# load precipitation raster
+prec_rast <- 
+  terra::rast("../../datalake/mapme.protectedareas/input/precipitation/wc2.1_30s_prec_01.tif")
+# view raster details
+prec_rast
+
+# load temperature raster
+tavg_rast <- 
+  terra::rast("../../datalake/mapme.protectedareas/input/temperature/wc2.1_30s_tavg_01.tif")
+# view raster details
+tavg_rast
+```
+
+### Crop the rasters
+
+As we completed raster and polygon data preparation, the next step would be to crop the raster layer by the selected protected areas polygon both by its extent and mask layer. If we apply function `crop`, it gives us the raster layer by extent. However, using `mask` function returns the raster to defined vector polygon layer, which is required for zonal statistics computation.
+
+```{r cropTempRaster, warning=FALSE, include=TRUE}
+
+# crop raster by polygon (tavg)
+tavg_rast_crop <- 
+        terra::crop(tavg_rast,
+                    br_wdpa_subset_v)
+# plot the cropped raster layer (tavg)
+plot(tavg_rast_crop)
+# mask the raster by polygon (tavg)
+tavg_rast_mask <- 
+        terra::mask(tavg_rast_crop,
+                    br_wdpa_subset_v)
+# plot the masked raster layer (tavg)
+plot(tavg_rast_mask)
+```
+
+Note: With these above two plots, you can see the difference between the use of functions `crop` & `mask`. Thus, always use `mask` to compute zonal statistics.
+
+Similarly, we will repeat the crop & mask operation for rainfall rasters too.
+
+```{r cropPrecRaster, warning=FALSE, include=TRUE}
+
+# crop raster by polygon (prec)
+prec_rast_crop <- 
+        terra::crop(prec_rast,
+                    br_wdpa_subset_v)
+# mask the raster by polygon (prec)
+prec_rast_mask <- 
+        terra::mask(prec_rast_crop,
+                    br_wdpa_subset_v)
+```
+
+# Rasterize the polygon layer
+
+To compute the zonal statistics, it is necessary to rasterize the polygon layer. Doing so, values are transferred from the spatial objects to raster cells. We need to pass the extent layer and the mask layer to the rasterize function.
+
+``` {r rasterize, warning=FALSE, include=TRUE}
+
+# rasterize the polygon
+br_subset_rast <-terra::rasterize(br_wdpa_subset_v,
+                                  tavg_rast_mask,
+                                  br_wdpa_subset_v$WDPAID)
+# plot the rasterized polygon
+plot(br_subset_rast)
+```
+
+Note: We can use either of the two rasters for rasterize operation since it uses only the resolution and extent from the raster file. So, we don't need to repeat this step.
+
+# Compute Zonal Statistics
+
+A zonal statistics operation is one that calculates statistics on cell values of a raster (a value raster) within the zones defined by another dataset [ArcGIS definition]. Here, we are interested only on computation of the average temperature and average precipitation values, so, we would use function `mean` for `zonal` operation. 
+
+
+```{r zoneStats, warning=FALSE, include=TRUE}
+
+# zonal stats (mean temperature)
+zstats_tavg <- terra::zonal(tavg_rast_mask,
+                            br_subset_rast,
+                            fun='mean',
+                            na.rm=T)
+# zonal stats (mean precipitation)
+zstats_prec <- terra::zonal(prec_rast_mask,
+                            br_subset_rast,
+                            fun='mean',
+                            na.rm=T)
+```
+
+Now that we computed zonal statistics for both mean precipitation and mean temperature, lets tidy up the dataframe a bit and view the results in more readble form. 
+
+```{r dataframe, warning=FALSE, include=TRUE}
+
+# create new dataframe with the values from zonal statistics
+df.zstats <- data.frame(WDPAID=br_wdpa_subset$WDPAID,
+                        mean_temperature_January=zstats_tavg[ ,2],
+                        mean_precipitation_January=zstats_prec[ ,2])
+# view the data
+df.zstats
+```
+
+From the zonal statistics result, we can see that the polygon with wdpaid 43 has highest temperature among these three whereas polygon with wdpaid 31776 has more rainfall. In this way, we can compute mean temperature and mean precipitation values for our defined region of interest.
+
+
+In the end we are going to have a look how long the rendering of this file took to get an idea about the processing speed of this routine.
+
+```{r time, warning=FALSE, include=TRUE}
+
+stoptime <- 
+  Sys.time()
+print(stoptime - starttime)
+```
+
+### References
+
+[1] Fick, S.E. and R.J. Hijmans, 2017. WorldClim 2: new 1km spatial resolution climate surfaces for global land areas. International Journal of Climatology 37 (12): 4302-4315.
