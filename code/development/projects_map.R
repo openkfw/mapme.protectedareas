@@ -41,8 +41,17 @@ matched_data_merged<-st_transform(matched_data_merged,crs = st_crs(wdpa_kfw))
 ## Create Color Pals for the plot data
 # create colorramp function for area
 pal_area <- colorFactor(
-  palette = pal_npg("nrc", alpha = 0.7)(length(unique(wdpa_kfw$REP_AREA_cat))),
+  palette = pal_npg("nrc")(length(unique(wdpa_kfw$REP_AREA_cat))),
   domain = wdpa_kfw$REP_AREA_cat
+)
+
+# create colorramp function for country
+colourCount = length(unique(wdpa_kfw$ISO3))
+getPalette = colorRampPalette(brewer.pal(9, "Set1"))
+
+pal_country <- colorFactor(
+  palette = getPalette(colourCount),
+  domain = wdpa_kfw$ISO3
 )
 
 # create colorramp2
@@ -65,10 +74,8 @@ my_map <-
   # add own data
   addPolygons(data = wdpa_kfw,opacity = 0.9,color = "orange", group = "PA Boundaries (all years)",label = ~htmlEscape(NAME),weight = 1)%>%
   addPolygons(data = wdpa_kfw,opacity = 1,color = ~pal_area(REP_AREA_cat), group = "PA Area Size",label = ~htmlEscape(REP_AREA),weight = 1)%>%
+  addPolygons(data = wdpa_kfw,opacity = 1,color = ~pal_country(ISO3), group = "Country",label = ~htmlEscape(ISO3),weight = 1)%>%
   addPolygons(data = matched_data_merged, opacity = 0.9,color = ~pal_treatment(treat_ever), group = "Cells (Treamtent & Control) in 2015",label = ~htmlEscape(treat_ever),weight = 1)%>%
-  # addCircles(data = wdpa_kfw_treatment_centroid, opacity = 0.9,color = ~pal(MARINE), group = "Type",label = ~htmlEscape(NAME))%>%
-  # addCircles(data = wdpa_kfw_treatment_centroid, opacity = 0.9,color = ~pal2(bmz_n_1),group = "Project-Nr.")%>%
-  
   # fullscreen control
   addFullscreenControl() %>%
   # add legent for area
@@ -86,12 +93,19 @@ my_map <-
             title = "Treatement",
             opacity = 1,
             group = "Cells (Treamtent & Control) in 2015") %>% 
+  addLegend("bottomright",
+            data = wdpa_kfw,
+            pal = pal_country,
+            values = ~ISO3,
+            title = "Country",
+            opacity = 1,
+            group = "Country") %>% 
   # add layers control to define which data is shown or ommited in default view
   addLayersControl(
     baseGroups = c("CartoDB","OpenStreetMap","Satellite","Topography","Nightlights","Forest Cover Loss (2001-2020)"), #"Toner",
-    overlayGroups = c("PA Boundaries (all years)","PA Area Size","Cells (Treamtent & Control) in 2015"),
+    overlayGroups = c("PA Boundaries (all years)","Country","PA Area Size","Cells (Treamtent & Control) in 2015"),
     options = layersControlOptions(collapsed = FALSE)) %>%
   # ommit certain layers
-  hideGroup(group = c("PA Area Size","Cells (Treamtent & Control) in 2015"))
+  hideGroup(group = c("Country","PA Area Size","Cells (Treamtent & Control) in 2015"))
 
 my_map
