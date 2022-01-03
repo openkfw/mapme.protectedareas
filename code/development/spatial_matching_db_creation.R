@@ -1,8 +1,12 @@
+# script to create the database for the matching process
+# author: Johannes Schielein 
+
+# call relevant libs. 
 library("sf")
 library("tidyverse")
 
 
-# ----- (1b) Load data -----
+# ----- (1) Load and combine input data-----
 # load and process project data
 project.data<-
   readxl::read_xlsx("../../datalake/mapme.protectedareas/input/kfw_finance/Portfolio_Auszahlungen.xlsx", skip = 4)
@@ -38,7 +42,7 @@ fishnet_complete<-
 GFW_wide<-
   read_sf("../../datalake/mapme.protectedareas/output/polygon/sampling/fishnets/dec_08/gfw/gfw_complete.gpkg")
 
-# load supported ara polygons
+# load supported area polygons
 wdpa_kfw<-
   read_sf("../../datalake/mapme.protectedareas/input/wdpa_kfw/wdpa_kfw_spatial_latinamerica_2021-02-01_supportedPAs_unique.gpkg")
 
@@ -51,7 +55,7 @@ sampling.ids<-
 
 sampling.ids<-st_transform(sampling.ids,crs=st_crs(wdpa_kfw))
 
-# get intersection
+# get intersection with wdpa data
 sampling.interserctions<-
   st_intersects(sampling.ids,wdpa_kfw)
 
@@ -265,10 +269,18 @@ matching_data_combined<-matching_data_combined %>%
 
 colnames(matching_data_combined)
 
-# drop c
 
+# ---- (4) create year-specific matching frames and save results---- 
+## move files if they had been already created
+newdirname="../../datalake/mapme.protectedareas/output/matching/matching_frames/arquived_2022-01-03"
+dir.create(newdirname)
+oldfiles=list.files("../../datalake/mapme.protectedareas/output/matching/matching_frames/",full.names = T)
+sapply(oldfiles,
+       function(x){
+         file.copy(x,newdirname)
+         file.remove(x)})
 
-# ---- (4) create year-specific matching frames ---- 
+##
 for (i in 2003:2020){
   print(paste("Starting to process year",i))
   # choose year
@@ -279,9 +291,12 @@ for (i in 2003:2020){
     matching_data_combined %>%
     select(starts_with("loss") &
              ends_with(as.character(c(
-               my_year, my_year - 1, my_year - 2
+               my_year-1:2001 # this routine (A) suggest to take trend since 2001 as pre treatment trend
+               # my_year, my_year - 1, my_year - 2 # this alternative routine (B) suggest to take 3 years as pre-treatment trend
              )))) %>%
     rowSums(na.rm = T)
+  
+  # short note: for routine A the number of years differs from year to year
   
   # remove all other loss variables from the matching frame
   matching_data_combined_tmp <-
@@ -346,6 +361,18 @@ for (i in 2003:2020){
     )
   )
 }
+
+
+# compare
+matching.old.2015=
+  read_csv("../../datalake/mapme.protectedareas/output/matching/matching_frames/arquived_2022-01-03/matching_frame_2015.csv")
+
+
+matching.new.2015=
+  read_csv("../../datalake/mapme.protectedareas/output/matching/matching_frames/matching_frame_2015.csv")
+
+summary(matching.old.2015$average_fcl_matchingyear)
+summary(matching.new.2015$average_fcl_matchingyear)
 
 # ----- (5) Export data for the model -----
 # colnames(matching_data_combined)
