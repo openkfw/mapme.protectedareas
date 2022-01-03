@@ -41,7 +41,7 @@ vignettes/*.pdf
 # unnecessary html files
 README.html
 contributing.html
-sampling.html
+docs/sampling.html
 
 # mac folders
 *.DS_Store
