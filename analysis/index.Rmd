@@ -50,8 +50,6 @@ Chapters:
   
 - [Analysis of KfW Portfolio](portfolio_analysis.html)
 
-- [Sampling Strategy for IE](sampling.html)
-
 - [Map of Supported Areas](projects_map.html)
 
 
