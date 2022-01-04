@@ -70,7 +70,10 @@ my_map <-
   addProviderTiles(providers$Esri.WorldImagery, group="Satellite") %>%
   addProviderTiles(providers$Esri.WorldShadedRelief, group="Topography") %>%
   addProviderTiles(providers$NASAGIBS.ViirsEarthAtNight2012, group="Nightlights") %>%
-  addTiles("https://tiles.globalforestwatch.org/umd_tree_cover_loss/latest/dynamic/{z}/{x}/{y}.png",group="Forest Cover Loss (2001-2020)",attribution = "Hansen, M. C., P. V. Potapov, R. Moore, M. Hancher, S. A. Turubanova, A. Tyukavina, D. Thau, S. V. Stehman, S. J. Goetz, T. R. Loveland, A. Kommareddy, A. Egorov, L. Chini, C. O. Justice, and J. R. G. Townshend. 2013. “High-Resolution Global Maps of 21st-Century Forest Cover Change.” Science 342 (15 November): 850–53. Data available on-line from: http://earthenginepartners.appspot.com/science-2013-global-forest.")%>%
+  addTiles("https://tiles.globalforestwatch.org/umd_tree_cover_loss/latest/dynamic/{z}/{x}/{y}.png",
+           group="Forest Cover Loss (2001-2020)",
+           #options=tileOptions(opacity = 0.7),
+           attribution = "Hansen, M. C., P. V. Potapov, R. Moore, M. Hancher, S. A. Turubanova, A. Tyukavina, D. Thau, S. V. Stehman, S. J. Goetz, T. R. Loveland, A. Kommareddy, A. Egorov, L. Chini, C. O. Justice, and J. R. G. Townshend. 2013. “High-Resolution Global Maps of 21st-Century Forest Cover Change.” Science 342 (15 November): 850–53. Data available on-line from: http://earthenginepartners.appspot.com/science-2013-global-forest.")%>%
 #  addTiles("https://tiles.globalforestwatch.org/umd_regional_primary_forest_2001/latest/dynamic/{z}/{x}/{y}.png",group="Regional Primary Forests (2001)",attribution = "Hansen, M. C., P. V. Potapov, R. Moore, M. Hancher, S. A. Turubanova, A. Tyukavina, D. Thau, S. V. Stehman, S. J. Goetz, T. R. Loveland, A. Kommareddy, A. Egorov, L. Chini, C. O. Justice, and J. R. G. Townshend. 2013. “High-Resolution Global Maps of 21st-Century Forest Cover Change.” Science 342 (15 November): 850–53. Data available on-line from: http://earthenginepartners.appspot.com/science-2013-global-forest.")%>%
   # add own data
   addPolygons(data = wdpa_kfw,opacity = 0.9,color = "orange", group = "PA Boundaries (all years)",label = ~htmlEscape(NAME),weight = 1)%>%
@@ -103,10 +106,10 @@ my_map <-
             group = "Country") %>% 
   # add layers control to define which data is shown or ommited in default view
   addLayersControl(
-    baseGroups = c("CartoDB","OpenStreetMap","Satellite","Topography","Nightlights","Forest Cover Loss (2001-2020)"), #"Toner",,"Regional Primary Forests (2001)"
-    overlayGroups = c("PA Boundaries (all years)","Country","PA Area Size","Cells (Treamtent & Control) in 2015"),
+    baseGroups = c("CartoDB","OpenStreetMap","Satellite","Topography","Nightlights"), #"Toner",,"Regional Primary Forests (2001)"
+    overlayGroups = c("PA Boundaries (all years)","Country","PA Area Size","Cells (Treamtent & Control) in 2015","Forest Cover Loss (2001-2020)"),
     options = layersControlOptions(collapsed = FALSE)) %>%
   # ommit certain layers
-  hideGroup(group = c("Country","PA Area Size","Cells (Treamtent & Control) in 2015"))
+  hideGroup(group = c("Country","PA Area Size","Cells (Treamtent & Control) in 2015","Forest Cover Loss (2001-2020)"))
 
 my_map
