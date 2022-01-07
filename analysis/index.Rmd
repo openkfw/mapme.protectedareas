@@ -52,6 +52,8 @@ Chapters:
 
 - [Map of Supported Areas](projects_map.html)
 
+- [Map Indonesia](projects_map_indonesia.html)
+
 
 
 

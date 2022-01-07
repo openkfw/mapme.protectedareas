@@ -1,0 +1,67 @@
+---
+title: "Map of Inonesian Areas"
+author: "Johannes Schielein (Author)"
+date: "2021-12-22"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+```{r setup, message = FALSE,warning = FALSE,include = FALSE}
+# load relevant libraries
+library("tidyverse")
+library("sf")
+library("leaflet")
+library("leaflet.extras")
+library("leaflet.extras2")
+library("ggsci")
+library("scales")
+library("htmltools")
+library("RColorBrewer")
+```
+
+```{r database_creation, message = FALSE, warning = FALSE, include = FALSE}
+##  Protected areas
+##  Protected areas
+wdpa_kfw<-
+  read_sf("~/shared/datalake/mapme.protectedareas/input/individual_areas_kfw/HuHa_Boundary_Shapefile/reki_all_pl2.WGS_84.shp")
+```
+
+## Map of Supported Areas
+
+The following map shows the Hu Ha protected area and forest cover loss layers from the Global Forest Watch. 
+
+```{r projectmap, echo=FALSE, warning=FALSE,  fig.width=8}
+## Crate map
+# wdpa_kfw_treatment_centroid<-st_transform(st_centroid(wdpa_kfw_treatment_centroid),crs = 4326)
+my_map <-
+  leaflet() %>%
+  # add external map providers
+  addTiles(group = "OpenStreetMap") %>%
+  addProviderTiles(providers$CartoDB.Positron, group="CartoDB") %>%
+  addProviderTiles(providers$Esri.WorldImagery, group="Satellite") %>%
+  addProviderTiles(providers$Esri.WorldShadedRelief, group="Topography") %>%
+  addProviderTiles(providers$NASAGIBS.ViirsEarthAtNight2012, group="Nightlights") %>%
+  addTiles("https://tiles.globalforestwatch.org/umd_tree_cover_loss/latest/dynamic/{z}/{x}/{y}.png",
+           group="Forest Cover Loss (2001-2020)",
+           #options=tileOptions(opacity = 0.7),
+           attribution = "Hansen, M. C., P. V. Potapov, R. Moore, M. Hancher, S. A. Turubanova, A. Tyukavina, D. Thau, S. V. Stehman, S. J. Goetz, T. R. Loveland, A. Kommareddy, A. Egorov, L. Chini, C. O. Justice, and J. R. G. Townshend. 2013. “High-Resolution Global Maps of 21st-Century Forest Cover Change.” Science 342 (15 November): 850–53. Data available on-line from: http://earthenginepartners.appspot.com/science-2013-global-forest.")%>%
+  addTiles(
+    "https://tiles.globalforestwatch.org/umd_regional_primary_forest_2001/latest/dynamic/{z}/{x}/{y}.png",
+    group = "Regional Primary Forests (2001)",
+    attribution = "Hansen, M. C., P. V. Potapov, R. Moore, M. Hancher, S. A. Turubanova, A. Tyukavina, D. Thau, S. V. Stehman, S. J. Goetz, T. R. Loveland, A. Kommareddy, A. Egorov, L. Chini, C. O. Justice, and J. R. G. Townshend. 2013. “High-Resolution Global Maps of 21st-Century Forest Cover Change.” Science 342 (15 November): 850–53. Data available on-line from: http://earthenginepartners.appspot.com/science-2013-global-forest."
+  ) %>% 
+  # add own data
+  addPolygons(data = wdpa_kfw,opacity = 0.7,color = "orange", group = "PA Boundaries",weight = 1)%>%
+  # fullscreen control
+  addFullscreenControl() %>%
+  # add layers control to define which data is shown or ommited in default view
+  addLayersControl(
+    baseGroups = c("CartoDB","OpenStreetMap","Satellite","Topography","Nightlights"), #"Toner",,"Regional Primary Forests (2001)"
+    overlayGroups = c("PA Boundaries","Forest Cover Loss (2001-2020)","Regional Primary Forests (2001)"),
+    options = layersControlOptions(collapsed = FALSE)) %>%
+  # ommit certain layers
+  hideGroup(group = c("Forest Cover Loss (2001-2020)","Regional Primary Forests (2001)"))
+
+my_map
+```
