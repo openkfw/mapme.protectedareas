@@ -79,7 +79,7 @@ my_map <-
   addPolygons(data = wdpa_kfw,opacity = 0.9,color = "orange", group = "PA Boundaries (all years)",label = ~htmlEscape(NAME),weight = 1)%>%
   addPolygons(data = wdpa_kfw,opacity = 1,color = ~pal_area(REP_AREA_cat), group = "PA Area Size",label = ~htmlEscape(REP_AREA),weight = 1)%>%
   addPolygons(data = wdpa_kfw,opacity = 1,color = ~pal_country(ISO3), group = "Country",label = ~htmlEscape(ISO3),weight = 1)%>%
-  addPolygons(data = matched_data_merged, opacity = 0.9,color = ~pal_treatment(treat_ever), group = "Cells (Treamtent & Control) in 2015",label = ~htmlEscape(treat_ever),weight = 1)%>%
+  addPolygons(data = matched_data_merged, opacity = 0.9,color = ~pal_treatment(treat_ever), group = "Cells (Treamtent & Control) in 2015",label = ~htmlEscape(wdpa_id),weight = 1)%>%
   # fullscreen control
   addFullscreenControl() %>%
   # add legent for area
@@ -113,3 +113,9 @@ my_map <-
   hideGroup(group = c("Country","PA Area Size","Cells (Treamtent & Control) in 2015","Forest Cover Loss (2001-2020)"))
 
 my_map
+
+
+# check which polygons are classified as controls but are inside a PA
+matched_data_merged%>%
+  #filter(!is.na(wdpa_id))%>%
+  filter(treat_ever==0)
