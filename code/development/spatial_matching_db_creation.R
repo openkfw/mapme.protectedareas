@@ -287,12 +287,20 @@ for (i in 2003:2020){
   my_year <- i
   ## 1. Create speciic FOREST COVER AND FOREST COVER LOSS variables
   # calculate average forest cover loss over past three years before start
-  matching_data_combined$average_fcl_matchingyear <-
+  matching_data_combined$sum_fcl_matchingyear_tmax <-
     matching_data_combined %>%
     select(starts_with("loss") &
              ends_with(as.character(c(
                my_year-1:2001 # this routine (A) suggest to take trend since 2001 as pre treatment trend
                # my_year, my_year - 1, my_year - 2 # this alternative routine (B) suggest to take 3 years as pre-treatment trend
+             )))) %>%
+    rowSums(na.rm = T)
+  # 
+  matching_data_combined$sum_fcl_matchingyear_t3 <-
+    matching_data_combined %>%
+    select(starts_with("loss") &
+             ends_with(as.character(c(
+               my_year, my_year - 1, my_year - 2 # this alternative routine (B) suggest to take 3 years as pre-treatment trend
              )))) %>%
     rowSums(na.rm = T)
   
@@ -364,15 +372,19 @@ for (i in 2003:2020){
 
 
 # compare
-matching.old.2015=
-  read_csv("../../datalake/mapme.protectedareas/output/matching/matching_frames/arquived_2022-01-03/matching_frame_2015.csv")
 
 
 matching.new.2015=
   read_csv("../../datalake/mapme.protectedareas/output/matching/matching_frames/matching_frame_2015.csv")
 
-summary(matching.old.2015$average_fcl_matchingyear)
-summary(matching.new.2015$average_fcl_matchingyear)
+summary(matching.new.2015$sum_fcl_matchingyear_t3)
+summary(matching.new.2015$sum_fcl_matchingyear_tmax)
+
+test=read_csv("../../datalake/mapme.protectedareas/input/kfw_finance/mapme.protectedareas_kfw-finance-2021-03-17.csv")
+
+table(test$first_year==2015)
+table(test$first_year==2007)
+
 
 # ----- (5) Export data for the model -----
 # colnames(matching_data_combined)
