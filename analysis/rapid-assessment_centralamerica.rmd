@@ -1,0 +1,191 @@
+---
+title: "Rapid forst cover loss assessment for selected areas in Central America"
+author: "Om Prakash Bhandari, Johannes Schielein"
+date: "2022/01/26"
+output: workflowr::wflow_html
+---
+
+```{r setup, message = FALSE,warning = FALSE,include = FALSE}
+# load relevant libraries
+library("tidyverse")
+library("ggplot2")
+library("sf")
+library("leaflet")
+library("leaflet.extras")
+library("leaflet.extras2")
+library("ggsci")
+library("scales")
+library("htmltools")
+library("RColorBrewer")
+library("plotly")
+library("rmarkdown")
+library("magrittr")
+```
+
+```{r database_creation, message = FALSE, warning = FALSE, include = FALSE}
+
+##  Protected areas
+uicn_kfw<-
+  read_sf("~/shared/Om/test/uicn/uicn_areas.gpkg")
+
+## create column for area coloring
+uicn_kfw$REP_AREA_cat<-
+  cut(uicn_kfw$REP_AREA,
+      c(0,1000,5000,10000,20000,max(uicn_kfw$REP_AREA)),
+      c("< 1,000 sqkm","1,001-5,000 sqkm","5,001-10,000 sqkm","10,001-20,000 sqkm",paste("20,001-",max(uicn_kfw$REP_AREA)," sqkm",sep="")))
+
+```
+
+
+```{r color_pallettes-creation, message = FALSE, warning = FALSE, include = FALSE}
+
+## Create Color Pals for the plot data
+# create colorramp function for area
+pal_area <- colorFactor(
+  palette = pal_npg("nrc", alpha = 0.7)(length(unique(uicn_kfw$REP_AREA_cat))),
+  domain = uicn_kfw$REP_AREA_cat
+)
+
+# create colorramp function for country
+colourCount = length(unique(uicn_kfw$ISO3))
+getPalette = colorRampPalette(brewer.pal(9, "Set1"))
+
+pal_country <- colorFactor(
+  palette = getPalette(colourCount),
+  domain = uicn_kfw$ISO3
+)
+
+```
+
+## Map and input data
+The following report is a quick assessment of forest cover loss in 19 protected areas (PA) in Caentral America. It is based on publicly available data from the World Database of Protected Areas (WDPA/IUCN) which was downloaded from the [Protected Planet Website](https://www.protectedplanet.net/en/search-areas?geo_type=site). Our initial goal was to analyze 21 areas that had been provided to us by our operational departments in a PDF document in Spanisch language. The identification of areas was based on a name search by which we were able to clearly identify 19 areas of the 21. Unfortunately two areas, `EL Imposible-San Benito` and `El Imposible-El Balsamo`are not in the current database from IUCN which only has an area named `El Imposible` (with WDPAID `12494` and reported area `17.65 sqkm`) probably the ancestor of the afforementioned two areas. 
+
+To quantify forstcover loss we utilized data from the Global Forst Watch (Hansen et al, 2013)[^1]. forst cover loss is defined in their work _"as a stand-replacement disturbance, or a change from a forest to non-forest state."_. forst cover loss can either be the result of human activities or natural factors such as forest fires or hurricanes, which are especially relevant in central America. In order to identify probable causes it is usefull to look at truecolor satellite images (see map below) and cross-check with additional data-sources such as the [NOAA website](https://coast.noaa.gov/hurricanes/#map=4/32/-80) that provides historical data for hurricane tracks. 
+
+It is alo important to note, that the utilized approach does not quantify total forest area in the analyzed PAs because it (currently) does not account for forest regrowth. Rather then this it compares forest areas and estimates forst cover loss in comparision to the baseline in the year 2000. In this sense the data can be utilized to e.g. assess threat levels and disturbance dynamics but it is not intended to make a complete quantification of forest stands, especially regarding regrown secondary forests. 
+
+[^1]: "Hansen, M. C., P. V. Potapov, R. Moore, M. Hancher, S. A. Turubanova, A. Tyukavina, D. Thau, S. V. Stehman, S. J. Goetz, T. R. Loveland, A. Kommareddy, A. Egorov, L. Chini, C. O. Justice, and J. R. G. Townshend. 2013. “High-Resolution Global Maps of 21st-Century Forest Cover Change.” Science 342 (15 November): 850–53. Data available on-line from: http://earthenginepartners.appspot.com/science-2013-global-forest."
+
+We processed the available 19 PA polygons using `mapme.forest` package for the year 2000 to 2020. The map below shows the raw input data. It is an interactive  map where you can toggle on and off the provided layers and zoom into the regions to inspect the analyzed areas. 
+
+```{r projectmap, echo=FALSE, warning=FALSE,  fig.width=8}
+
+## Create map
+# uicn_kfw_treatment_centroid<-st_transform(st_centroid(uicn_kfw_treatment_centroid),crs = 4326)
+my_map <-
+  leaflet() %>%
+  # add external map providers
+  addTiles(group = "OpenStreetMap") %>%
+  addProviderTiles(providers$CartoDB.Positron, group="CartoDB") %>%
+  addProviderTiles(providers$Esri.WorldImagery, group="Satellite") %>%
+  addProviderTiles(providers$Esri.WorldShadedRelief, group="Topography") %>%
+  addProviderTiles(providers$NASAGIBS.ViirsEarthAtNight2012, group="Nightlights") %>%
+  addTiles("https://tiles.globalforestwatch.org/umd_tree_cover_loss/latest/dynamic/{z}/{x}/{y}.png",
+           group="Forest Cover Loss (2001-2020)",
+           #options=tileOptions(opacity = 0.7),
+           attribution = "Hansen, M. C., P. V. Potapov, R. Moore, M. Hancher, S. A. Turubanova, A. Tyukavina, D. Thau, S. V. Stehman, S. J. Goetz, T. R. Loveland, A. Kommareddy, A. Egorov, L. Chini, C. O. Justice, and J. R. G. Townshend. 2013. “High-Resolution Global Maps of 21st-Century Forest Cover Change.” Science 342 (15 November): 850–53. Data available on-line from: http://earthenginepartners.appspot.com/science-2013-global-forest.")%>%
+  # add own data
+  addPolygons(data = uicn_kfw,opacity = 0.9,color = "orange", group = "PA Boundaries (all years)",label = ~htmlEscape(NAME),weight = 1)%>%
+  addPolygons(data = uicn_kfw,opacity = 1,color = ~pal_area(REP_AREA_cat), group = "PA Area Size",label = ~htmlEscape(REP_AREA),weight = 1)%>%
+  addPolygons(data = uicn_kfw,opacity = 1,color = ~pal_country(ISO3), group = "Country",label = ~htmlEscape(ISO3),weight = 1)%>%
+
+  # fullscreen control
+  addFullscreenControl() %>%
+  # add legent for area
+  addLegend("bottomright",
+            data = uicn_kfw,
+            pal = pal_area,
+            values = ~REP_AREA_cat,
+            title = "Total Reported Area",
+            opacity = 1,
+            group = "PA Area Size") %>% 
+ 
+  addLegend("bottomright",
+            data = uicn_kfw,
+            pal = pal_country,
+            values = ~ISO3,
+            title = "Country",
+            opacity = 1,
+            group = "Country") %>% 
+  # add layers control to define which data is shown or ommited in default view
+  addLayersControl(
+    baseGroups = c("CartoDB","OpenStreetMap","Satellite","Topography","Nightlights"), #"Toner",,"Regional Primary Forests (2001)"
+    overlayGroups = c("PA Boundaries (all years)","Country","PA Area Size","Forest Cover Loss (2001-2020)"),
+    options = layersControlOptions(collapsed = FALSE)) %>%
+  # ommit certain layers
+  hideGroup(group = c("Country","PA Area Size","Forest Cover Loss (2001-2020)"))
+
+my_map
+```
+
+```{r prepData, echo=FALSE, warning=FALSE, include = FALSE}
+
+# load uicn
+uicn_wide <- read.csv("~/shared/Om/test/uicn/gfw_area_loss-wide.csv")
+# subset only loss columns
+uicn_wide_subset <- uicn_wide %>%
+  select(c(1, 24:43))
+# add column called ISO3
+uicn_wide_subset$ISO3 <- c("GTM", "GTM", "GTM", "HND", "HND", "BLZ", "BLZ", "SLV", "SLV", "HND",
+                           "HND", "NIC", "NIC", "CRI", "CRI", "CRI", "CRI", "PAN", "PAN")
+# add column called ID as character
+uicn_wide_subset$WDPA_ID <- c("12555", "12564", "67744", "23306", "555697537", "220100", "902744", "555592565",
+                         "107428", "30625", "36053", "900699", "30628", "12493", "30599", "167",
+                         "2553", "198343", "68135")
+# remove wdpaid
+uicn_wide_subset$WDPAID <- NULL
+# add name
+uicn_wide_subset$Name <- 
+  c("Reserva Protectora de Manantiales Cerro San Gil", "Refugio de Vida Silvestre Punta de Manabique", "Reserva de la Biósfera Sierra de las Minas", "Parque Nacional Cusuco", "Parque Nacional Cuyamel-Omoa", "Reserva Marina Port Honduras",  "Parque Nacional Sarstún Temash", "Complejo Barra de Santiago", "Manglar Bola de Monte", "Reserva Biológica Laguna Karataska", "Parque Nacional Río Kruta", "Reserva Biológica Marina Cayos Miskitos y Franja Costera", "Reserva Biológica Indio Maíz", "Refugio de Vida Silvestre Barra del Colorado", "Parque Nacional Tortuguero (terrestres)",  "Parque Nacional Tortuguero (Marino)", "Parque Internacional La Amistad Costa Rica",  "Parque Internacional La Amistad Panamá", "Humedal de importancia internacional San San Pond Sak")
+
+### All ISO3s
+# pivot to long
+uicn_long <- pivot_longer(uicn_wide_subset,
+                          cols = c("loss_2001", "loss_2002", "loss_2003", "loss_2004", "loss_2005", "loss_2006", "loss_2007",
+                                   "loss_2008", "loss_2009", "loss_2010", "loss_2011", "loss_2012", "loss_2013", "loss_2014",
+                                   "loss_2015", "loss_2016", "loss_2017", "loss_2018", "loss_2019", "loss_2020"))
+# separate into name and year
+uicn_long.final <- uicn_long %>%
+  separate(name, c("name", "year"))
+```
+
+## Quantification of forst cover loss
+
+The following graphs show forest cover loss in each of the 19 analyzed areas seperatly. Note that it is difficult to assess the development of all areas at once because of the high intensity of forst cover loss in one area (Reserva Biológica Indio Maíz), which makes the development of the others difficult to visualize. Therefore you might click on the legend an deactivate/activate individual areas to improve the result. A double-click allows you to isolate an individual area. 
+
+```{r vis1, echo=FALSE, warning=FALSE, fig.width=12}
+# fig1 <- ggplot(uicn_long.final)+
+#   geom_line(aes(x = year, y = value, group = Name,color=Name))
+# ggplotly(fig1)
+
+fig1 <- plot_ly(uicn_long.final, x = ~year, y = ~value,
+                name = ~Name, color = ~Name, type = 'scatter', mode = 'lines+markers') %>%
+  layout(title="Forst cover loss area in ha")
+fig1
+```
+
+*Note*: For Reserva Biológica Indio Maíz the actual cause for the spike in forest cover loss was a Hurricane in 2016. 
+
+## Results Download
+
+Finally, here is a table containing desaggregated results for the forest cover area and loss area for the year 2000 - 2020. You can also download this dataset. 
+
+`Note: area in hectare`
+
+```{r result, echo=FALSE, warning=FALSE}
+
+uicn_wide$Name <- 
+  c("Reserva Protectora de Manantiales Cerro San Gil", "Refugio de Vida Silvestre Punta de Manabique", "Reserva de la Biósfera Sierra de las Minas", "Parque Nacional Cusuco", "Parque Nacional Cuyamel-Omoa", "Reserva Marina Port Honduras",  "Parque Nacional Sarstún Temash", "Complejo Barra de Santiago", "Manglar Bola de Monte", "Reserva Biológica Laguna Karataska", "Parque Nacional Río Kruta", "Reserva Biológica Marina Cayos Miskitos y Franja Costera", "Reserva Biológica Indio Maíz", "Refugio de Vida Silvestre Barra del Colorado", "Parque Nacional Tortuguero (terrestres)",  "Parque Nacional Tortuguero (Marino)", "Parque Internacional La Amistad Costa Rica",  "Parque Internacional La Amistad Panamá", "Humedal de importancia internacional San San Pond Sak")
+
+uicn <- uicn_wide[,c(1,44,2:43)]
+
+paged_table(uicn)
+
+# code for enabling csv download
+write.csv2(uicn, "./file.csv")
+readLines("./file.csv") %>% 
+  paste0(collapse="\n") %>% 
+  openssl::base64_encode() -> encoded
+
+```
+[Download CSV](`r sprintf('data:text/csv;base64,%s', encoded)`)
