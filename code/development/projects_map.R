@@ -11,6 +11,11 @@ library("htmltools")
 wdpa_kfw<-
   read_sf("~/shared/datalake/mapme.protectedareas/input/wdpa_kfw/wdpa_kfw_spatial_latinamerica_2021-02-01_supportedPAs_unique.gpkg")
 
+
+wdpa_kfw_centroid<-st_centroid(wdpa_kfw)
+View(wdpa_kfw_centroid)
+
+
 ## create column for area coloring
 wdpa_kfw$REP_AREA_cat<-
   cut(wdpa_kfw$REP_AREA,
