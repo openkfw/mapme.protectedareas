@@ -1,5 +1,5 @@
 ---
-title: "Rapid forst cover loss assessment for selected areas in Central America"
+title: "Rapid forest cover loss assessment for selected areas in Central America"
 author: "Om Prakash Bhandari, Johannes Schielein"
 date: "2022/01/26"
 output: workflowr::wflow_html
@@ -60,9 +60,9 @@ pal_country <- colorFactor(
 ## Map and input data
 The following report is a quick assessment of forest cover loss in 19 protected areas (PA) in Caentral America. It is based on publicly available data from the World Database of Protected Areas (WDPA/IUCN) which was downloaded from the [Protected Planet Website](https://www.protectedplanet.net/en/search-areas?geo_type=site). Our initial goal was to analyze 21 areas that had been provided to us by our operational departments in a PDF document in Spanisch language. The identification of areas was based on a name search by which we were able to clearly identify 19 areas of the 21. Unfortunately two areas, `EL Imposible-San Benito` and `El Imposible-El Balsamo`are not in the current database from IUCN which only has an area named `El Imposible` (with WDPAID `12494` and reported area `17.65 sqkm`) probably the ancestor of the afforementioned two areas. 
 
-To quantify forstcover loss we utilized data from the Global Forst Watch (Hansen et al, 2013)[^1]. forst cover loss is defined in their work _"as a stand-replacement disturbance, or a change from a forest to non-forest state."_. forst cover loss can either be the result of human activities or natural factors such as forest fires or hurricanes, which are especially relevant in central America. In order to identify probable causes it is usefull to look at truecolor satellite images (see map below) and cross-check with additional data-sources such as the [NOAA website](https://coast.noaa.gov/hurricanes/#map=4/32/-80) that provides historical data for hurricane tracks. 
+To quantify forestcover loss we utilized data from the Global Forest Watch (Hansen et al, 2013)[^1]. forest cover loss is defined in their work _"as a stand-replacement disturbance, or a change from a forest to non-forest state."_. forest cover loss can either be the result of human activities or natural factors such as forest fires or hurricanes, which are especially relevant in central America. In order to identify probable causes it is usefull to look at truecolor satellite images (see map below) and cross-check with additional data-sources such as the [NOAA website](https://coast.noaa.gov/hurricanes/#map=4/32/-80) that provides historical data for hurricane tracks. 
 
-It is alo important to note, that the utilized approach does not quantify total forest area in the analyzed PAs because it (currently) does not account for forest regrowth. Rather then this it compares forest areas and estimates forst cover loss in comparision to the baseline in the year 2000. In this sense the data can be utilized to e.g. assess threat levels and disturbance dynamics but it is not intended to make a complete quantification of forest stands, especially regarding regrown secondary forests. 
+It is alo important to note, that the utilized approach does not quantify total forest area in the analyzed PAs because it (currently) does not account for forest regrowth. Rather then this it compares forest areas and estimates forest cover loss in comparision to the baseline in the year 2000. In this sense the data can be utilized to e.g. assess threat levels and disturbance dynamics but it is not intended to make a complete quantification of forest stands, especially regarding regrown secondary forests. 
 
 [^1]: "Hansen, M. C., P. V. Potapov, R. Moore, M. Hancher, S. A. Turubanova, A. Tyukavina, D. Thau, S. V. Stehman, S. J. Goetz, T. R. Loveland, A. Kommareddy, A. Egorov, L. Chini, C. O. Justice, and J. R. G. Townshend. 2013. “High-Resolution Global Maps of 21st-Century Forest Cover Change.” Science 342 (15 November): 850–53. Data available on-line from: http://earthenginepartners.appspot.com/science-2013-global-forest."
 
@@ -149,9 +149,9 @@ uicn_long.final <- uicn_long %>%
   separate(name, c("name", "year"))
 ```
 
-## Quantification of forst cover loss
+## Quantification of forest cover loss
 
-The following graphs show forest cover loss in each of the 19 analyzed areas seperatly. Note that it is difficult to assess the development of all areas at once because of the high intensity of forst cover loss in one area (Reserva Biológica Indio Maíz), which makes the development of the others difficult to visualize. Therefore you might click on the legend an deactivate/activate individual areas to improve the result. A double-click allows you to isolate an individual area. 
+The following graphs show forest cover loss in each of the 19 analyzed areas seperatly. Note that it is difficult to assess the development of all areas at once because of the high intensity of forest cover loss in one area (Reserva Biológica Indio Maíz), which makes the development of the others difficult to visualize. Therefore you might click on the legend an deactivate/activate individual areas to improve the result. A double-click allows you to isolate an individual area. 
 
 ```{r vis1, echo=FALSE, warning=FALSE, fig.width=12}
 # fig1 <- ggplot(uicn_long.final)+
@@ -160,7 +160,7 @@ The following graphs show forest cover loss in each of the 19 analyzed areas sep
 
 fig1 <- plot_ly(uicn_long.final, x = ~year, y = ~value,
                 name = ~Name, color = ~Name, type = 'scatter', mode = 'lines+markers') %>%
-  layout(title="Forst cover loss area in ha")
+  layout(title="forest cover loss area in ha")
 fig1
 ```
 
