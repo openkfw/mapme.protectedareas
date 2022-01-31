@@ -131,7 +131,7 @@ uicn_wide_subset$ISO3 <- c("GTM", "GTM", "GTM", "HND", "HND", "BLZ", "BLZ", "SLV
 # add column called ID as character
 uicn_wide_subset$WDPA_ID <- c("12555", "12564", "67744", "23306", "555697537", "220100", "902744", "555592565",
                          "107428", "30625", "36053", "900699", "30628", "12493", "30599", "167",
-                         "2553", "198343", "68135")
+                         "2553", "555705286", "68135")
 # remove wdpaid
 uicn_wide_subset$WDPAID <- NULL
 # add name
