@@ -118,6 +118,17 @@ gfw_kfw_post2000_relstart <- inner_join(gfw_kfw_post2000, gfw_kfw_p2000_area_fye
                                         by=c('wdpa_pid', 'bmz_no')) %>%
   mutate(area_pct_projstart = value/value_projstart) %>%
   filter(! is.nan(area_pct_projstart))
+
+# calculate disbursements per year
+finance_data <- kfw_finance_aggregated %>% 
+  mutate(projdur = last_year - first_year +1,
+         disb_yr = total_disbursed/projdur) %>% 
+  left_join(.,wdpa_bmz,
+            by=c('bmz_no')) %>% 
+  left_join(.,wdpa_info,
+            by=c('wdpa_pid')) %>% 
+  select(wdpa_pid, bmz_no, projdur, disb_yr, AREA_KM2) %>% 
+  mutate(disb_yr_km2 = disb_yr/AREA_KM2)
 ```
 
 ## Relative forest cover -- exploratory
@@ -424,6 +435,39 @@ ggplotly(p_line_size)
 ```{r size bins}
 table(cut(inner_join(gfw_kfw_data, wdpa_info, by=c("wdpa_pid"))$AREA_KM2,cutoffs_size_2))
 
+```
+
+
+
+
+### Grouped by disbursements
+
+```{r inspect disb_yr_km2}
+finance_data %>% 
+  ggplot() +
+  geom_histogram(aes(x=disb_yr_km2))
+
+finance_data %>% 
+  filter(disb_yr_km2<100000) %>% 
+  ggplot() +
+  geom_histogram(aes(x=disb_yr_km2))
+```
+
+
+```{r disb cutoffs, echo=T}
+cutoffs_disb <-
+  c(0,100,1000,10000,max(finance_data$disb_yr_km2,na.rm = T)) # these breaks should be revised
+```
+
+```{r}
+gfw_kfw_data %>% 
+  inner_join(.,finance_data,
+             by=c("wdpa_pid","bmz_no")) %>% 
+  mutate(disb_yr_km2_bin = cut(disb_yr_km2, cutoffs_disb)) %>%
+  ggplot() +
+  geom_line(aes(x = rel_year, y = area_pct_projstart, group=interaction(wdpa_pid, bmz_no),
+                col=disb_yr_km2_bin,
+                alpha=0.4))
 ```
 
 
