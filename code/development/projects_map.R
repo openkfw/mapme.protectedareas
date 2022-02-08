@@ -7,32 +7,29 @@ library("ggsci")
 library("scales")
 library("htmltools")
 
+# ----- load and transform protected areas data -----
 ##  Protected areas
 wdpa_kfw<-
   read_sf("~/shared/datalake/mapme.protectedareas/input/wdpa_kfw/wdpa_kfw_spatial_latinamerica_2021-02-01_supportedPAs_unique.gpkg")
 
-
-wdpa_kfw_centroid<-st_centroid(wdpa_kfw)
-View(wdpa_kfw_centroid)
-
-
-## create column for area coloring
+## create column for area coloring based on categories
 wdpa_kfw$REP_AREA_cat<-
   cut(wdpa_kfw$REP_AREA,
       c(0,1000,5000,10000,20000,max(wdpa_kfw$REP_AREA)),
       c("< 1,000 sqkm","1,001-5,000 sqkm","5,001-10,000 sqkm","10,001-20,000 sqkm",paste("20,001-",max(wdpa_kfw$REP_AREA)," sqkm",sep="")))
 
 
+# ----- load and transform fishnet data -----
 ## fishnet
 fishnet <-
   read_sf(
     "../../datalake/mapme.protectedareas/output/polygon/sampling/fishnets/fishnet_all_update_Dec-07.gpkg"
   )
 # load matching frame data
-# matched_data<-rbind(read.csv("../../datalake/mapme.protectedareas/output/tabular/regression_input/matched_panel_2015.csv"),
-#                     read.csv("../../datalake/mapme.protectedareas/output/tabular/regression_input/matched_panel_2007.csv"))
-
-matched_data<-read.csv("../../datalake/mapme.protectedareas/output/tabular/regression_input/matched_panel_2015.csv")
+matched_data <-
+  read.csv(
+    "../../datalake/mapme.protectedareas/output/tabular/regression_input/matched_panel_2015.csv"
+  )
 # filter to delete multiple observations
 matched_data<-
   matched_data %>%
@@ -41,9 +38,12 @@ matched_data<-
 matched_data_merged<-
   merge(fishnet, matched_data, "poly_id")
 
-matched_data_merged<-st_transform(matched_data_merged,crs = st_crs(wdpa_kfw))
+# set crs
+matched_data_merged<-
+  st_transform(matched_data_merged,crs = st_crs(wdpa_kfw))
 
-## Create Color Pals for the plot data
+
+## ----- create color pallets for the plots -----
 # create colorramp function for area
 pal_area <- colorFactor(
   palette = pal_npg("nrc")(length(unique(wdpa_kfw$REP_AREA_cat))),
@@ -65,8 +65,7 @@ pal_treatment <- colorFactor(
   domain = matched_data_merged$treat_ever
 )
 
-## Crate map
-# wdpa_kfw_treatment_centroid<-st_transform(st_centroid(wdpa_kfw_treatment_centroid),crs = 4326)
+# ----- create map -----
 my_map <-
   leaflet() %>%
   # add external map providers
@@ -118,9 +117,3 @@ my_map <-
   hideGroup(group = c("Country","PA Area Size","Cells (Treamtent & Control) in 2015","Forest Cover Loss (2001-2020)"))
 
 my_map
-
-
-# check which polygons are classified as controls but are inside a PA
-matched_data_merged%>%
-  #filter(!is.na(wdpa_id))%>%
-  filter(treat_ever==0)

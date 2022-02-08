@@ -14,10 +14,36 @@ library("scales")
 wdpa_kfw<-
   read_sf("data/wdpa_kfw_spatial_latinamerica_2021-04-22_allPAs.gpkg")
 
+
+
 #  Filter for supported areas
 wdpa_kfw_treatment<-
   wdpa_kfw%>%
   filter(bmz_n_1>0)
+
+wdpa_kfw_treatment<-st_make_valid(wdpa_kfw_treatment)
+
+# ----- Finance Plot ----- 
+kfw_finance<-read_csv("~/shared/datalake/mapme.protectedareas/input/kfw_finance/mapme.protectedareas_kfw-finance_complete-2021-03-17.csv")
+
+kfw_finance$bmz_nummer<-
+  factor(kfw_finance$bmz_nummer)
+
+finance_plot <-
+  kfw_finance %>%
+  group_by(year) %>%
+  filter(!is.na(bmz_nummer)) %>%
+  # summarize(total_disbursed = sum(disbursement_total)) %>%
+  filter(year != 2021) %>%
+  ggplot() +
+  geom_bar(aes(
+    fill = bmz_nummer,
+    x = year, 
+    y = disbursement_total / (10 ^ 6)),
+    stat = "identity",position="stack",color="black") +
+  labs(y = "Disbursements (Mio. €)", x = "", fill = "") +
+  theme_classic()
+
 
 
 # ----- TEOW Ecosystem analysis -----

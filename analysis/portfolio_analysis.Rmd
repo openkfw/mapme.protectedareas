@@ -32,6 +32,9 @@ wdpa_kfw_treatment<-
   wdpa_kfw%>%
   filter(bmz_n_1>0)
 
+# make geometry valid
+wdpa_kfw_treatment <- 
+  st_make_valid(wdpa_kfw_treatment)
 ```
 
 ## Introduction
@@ -511,4 +514,20 @@ fig <-
     hovertemplate = "Ecosystem: %{label}<br>Area in sqkm: %{value}<extra></extra>"
   )
 fig
+
+finance_plot <-
+  kfw_finance %>%
+  group_by(year) %>%
+  filter(!is.na(bmz_nummer)) %>%
+  # summarize(total_disbursed = sum(disbursement_total)) %>%
+  filter(year != 2021) %>%
+  ggplot() +
+  geom_bar(aes(
+    fill = bmz_nummer,
+    x = year, 
+    y = disbursement_total / (10 ^ 6)),
+           stat = "identity",position="stack",color="black") +
+  labs(y = "Disbursements (Mio. €)", x = "", fill = "") +
+  theme_classic()
+
 ```
