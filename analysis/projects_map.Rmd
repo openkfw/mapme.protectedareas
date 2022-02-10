@@ -32,6 +32,22 @@ wdpa_kfw$REP_AREA_cat<-
       c(0,1000,5000,10000,20000,max(wdpa_kfw$REP_AREA)),
       c("< 1,000 sqkm","1,001-5,000 sqkm","5,001-10,000 sqkm","10,001-20,000 sqkm",paste("20,001-",max(wdpa_kfw$REP_AREA)," sqkm",sep="")))
 
+# Load KfW finance data 
+kfw_finance <- 
+  read_csv("~/shared/datalake/mapme.protectedareas/input/kfw_finance/mapme.protectedareas_kfw-finance-2021-03-17.csv") %>% 
+  filter(! is.na(bmz_nummer))
+
+#Load wdpa bmz keys
+keys_wdpaid_bmz <- read_csv("~/shared/datalake/mapme.protectedareas/output/matching/model_frames/keys_wdpaid_bmz.csv") %>% 
+  rename("bmz_nummer" = "value")
+
+# merge wdpa_kfw with keys
+wdpa_kfw <- left_join(wdpa_kfw, keys_wdpaid_bmz,
+                      by=c("WDPAID"))
+
+#add kfw_finance data to wdpa_kfw
+wdpa_kfw <- left_join(wdpa_kfw, kfw_finance, 
+                          by=c("bmz_nummer"))
 
 ## fishnet
 fishnet <-
@@ -75,6 +91,12 @@ pal_country <- colorFactor(
   domain = wdpa_kfw$ISO3
 )
 
+# create color ramp for kfw finance data
+pal_finance <- colorFactor(
+  palette = getPalette(colourCount),
+  domain = wdpa_kfw$first_year
+)
+
 ```
 
 ## Map of Supported Areas
@@ -102,6 +124,7 @@ my_map <-
   addPolygons(data = wdpa_kfw,opacity = 1,color = ~pal_area(REP_AREA_cat), group = "PA Area Size",label = ~htmlEscape(REP_AREA),weight = 1)%>%
   addPolygons(data = wdpa_kfw,opacity = 1,color = ~pal_country(ISO3), group = "Country",label = ~htmlEscape(ISO3),weight = 1)%>%
   addPolygons(data = matched_data_merged, opacity = 0.9,color = ~pal_treatment(treat_ever), group = "Cells (Treamtent & Control) in 2015",label = ~htmlEscape(treat_ever),weight = 1)%>%
+  addPolygons(data = wdpa_kfw, opacity = 0.9,color = ~pal_finance(first_year), group = "Year of project start",label = ~htmlEscape(first_year),weight = 1)%>%
   # fullscreen control
   addFullscreenControl() %>%
   # add legent for area
@@ -125,14 +148,21 @@ my_map <-
             values = ~ISO3,
             title = "Country",
             opacity = 1,
-            group = "Country") %>% 
+            group = "Country") %>%
+  addLegend("bottomright",
+            data = wdpa_kfw,
+            pal = pal_finance,
+            values = ~first_year,
+            title = "Year of project start",
+            opacity = 1,
+            group = "Year of project start") %>%
   # add layers control to define which data is shown or ommited in default view
   addLayersControl(
     baseGroups = c("CartoDB","OpenStreetMap","Satellite","Topography","Nightlights"), #"Toner",,"Regional Primary Forests (2001)"
-    overlayGroups = c("PA Boundaries (all years)","Country","PA Area Size","Cells (Treamtent & Control) in 2015","Forest Cover Loss (2001-2020)"),
+    overlayGroups = c("PA Boundaries (all years)","Country","PA Area Size","Cells (Treamtent & Control) in 2015","Forest Cover Loss (2001-2020)","Year of project start"),
     options = layersControlOptions(collapsed = FALSE)) %>%
   # ommit certain layers
-  hideGroup(group = c("Country","PA Area Size","Cells (Treamtent & Control) in 2015","Forest Cover Loss (2001-2020)"))
+  hideGroup(group = c("Country","PA Area Size","Cells (Treamtent & Control) in 2015","Forest Cover Loss (2001-2020)", "Year of project start"))
 
 my_map
 ```
