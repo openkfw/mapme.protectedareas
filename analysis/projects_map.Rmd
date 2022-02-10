@@ -23,6 +23,10 @@ library("RColorBrewer")
 ```{r database_creation, message = FALSE, warning = FALSE, include = FALSE}
 ##  Protected areas
 ##  Protected areas
+# wdpa_kfw<-
+#   read_sf("~/shared/datalake/mapme.protectedareas/input/wdpa_kfw/wdpa_kfw_spatial_latinamerica_2021-02-01_supportedPAs_unique.gpkg")
+
+# or simplified version
 wdpa_kfw<-
   read_sf("~/shared/datalake/mapme.protectedareas/input/wdpa_kfw/wdpa_kfw_spatial_latinamerica_2021-02-01_supportedPAs_unique.gpkg")
 
@@ -31,6 +35,7 @@ wdpa_kfw$REP_AREA_cat<-
   cut(wdpa_kfw$REP_AREA,
       c(0,1000,5000,10000,20000,max(wdpa_kfw$REP_AREA)),
       c("< 1,000 sqkm","1,001-5,000 sqkm","5,001-10,000 sqkm","10,001-20,000 sqkm",paste("20,001-",max(wdpa_kfw$REP_AREA)," sqkm",sep="")))
+
 
 # Load KfW finance data 
 kfw_finance <- 
