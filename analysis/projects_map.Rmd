@@ -55,24 +55,24 @@ wdpa_kfw <- left_join(wdpa_kfw, kfw_finance,
                           by=c("bmz_nummer"))
 
 ## fishnet
-fishnet <-
-  read_sf(
-    "../../datalake/mapme.protectedareas/output/polygon/sampling/fishnets/fishnet_all_update_Dec-07.gpkg"
-  )
+# fishnet <-
+#   read_sf(
+#     "../../datalake/mapme.protectedareas/output/polygon/sampling/fishnets/fishnet_all_update_Dec-07.gpkg"
+#   )
 # load matching frame data
 # matched_data<-rbind(read.csv("../../datalake/mapme.protectedareas/output/tabular/regression_input/matched_panel_2015.csv"),
 #                     read.csv("../../datalake/mapme.protectedareas/output/tabular/regression_input/matched_panel_2007.csv"))
 
-matched_data<-read.csv("../../datalake/mapme.protectedareas/output/tabular/regression_input/matched_panel_2015.csv")
+# matched_data<-read.csv("../../datalake/mapme.protectedareas/output/tabular/regression_input/matched_panel_2015.csv")
 # filter to delete multiple observations
-matched_data<-
-  matched_data %>%
-  filter(year == 2015)
+# matched_data<-
+#   matched_data %>%
+#   filter(year == 2015)
 # merge data 
-matched_data_merged<-
-  merge(fishnet, matched_data, "poly_id")
+# matched_data_merged<-
+#   merge(fishnet, matched_data, "poly_id")
 
-matched_data_merged<-st_transform(matched_data_merged,crs = st_crs(wdpa_kfw))
+# matched_data_merged<-st_transform(matched_data_merged,crs = st_crs(wdpa_kfw))
 
 ## Create Color Pals for the plot data
 # create colorramp function for area
@@ -82,10 +82,10 @@ pal_area <- colorFactor(
 )
 
 # create colorramp2
-pal_treatment <- colorFactor(
-  palette = c("darkblue","orange"),
-  domain = matched_data_merged$treat_ever
-)
+# pal_treatment <- colorFactor(
+#   palette = c("darkblue","orange"),
+#   domain = matched_data_merged$treat_ever
+# )
 
 # create colorramp function for country
 colourCount = length(unique(wdpa_kfw$ISO3))
