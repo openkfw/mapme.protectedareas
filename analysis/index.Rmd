@@ -50,7 +50,9 @@ Chapters:
   
 - [Analysis of KfW Portfolio](portfolio_analysis.html)
 
-- [Map of Supported Areas](projects_map.html)
+- [Map of KfW Supported Areas](projects_map.html)
+
+- [Map of GIZ Supported Areas](projects_map_giz.html)
 
 - [Rapid Assessment - Central America](rapid-assessment_centralamerica.html)
 
