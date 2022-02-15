@@ -54,7 +54,7 @@ Chapters:
 
 - [Map of GIZ Supported Areas](projects_map_giz.html)
 
-- [Project Preparation: Threat Assessment for Protected Areas](threat_assessment.html)
+- [Threat Assessment for Protected Areas](threat_assessment.html)
 
 - [Rapid Assessment - Central America](rapid-assessment_centralamerica.html)
 
