@@ -14,11 +14,12 @@ View(raw_giz)
 # notes for storing data in the future
 # column: WDPA ID: Should only contain one ID per row. if there area multiple IDs suggestion would be to make two or more columns.
 # column: WDPA ID: in cases there is no clarity in the ID, this should be put in an extra comment column to avoid e.g. entries like "201 (5002? 41014?)"
+# in General it would make also sense to collect the WDPA PID which allows to identify the area of multipolygon Protected Areas (not a must but more precise in around 1% of the cases)
 # column G: check dates, one seems to be wrong. 
 # column J: Should only contain numeric information, no character values. If area is not reported should be left blank. 
 # general note: It would be usefull to have the country codes of the Areas in ISO3 format just as in the WDPA data. This would facilitate automatic download
 # 23 PAs do not contain a WDPA ID currently (253 do). 
-# Only 218 areas could be identified in the current WDPA database by the given 253 ids. This should be quality checked. 
+# Only 218 areas could be identified in the current WDPA database by the given 263 ids in total. This should be quality checked. 
 
 # ----- preprocess GIZ data to be clean -----
 raw_giz <-
@@ -59,6 +60,8 @@ raw_giz_long <-
 # rename columns 
 raw_giz_long<-raw_giz_long %>% 
   rename(wdpa_identifier=name,wdpa_id=value)
+
+
 
 # ----- download and unzip the full database -----
 # download.file("https://d1gam3xoknrgr2.cloudfront.net/current/WDPA_Feb2022_Public_shp.zip",
@@ -116,6 +119,8 @@ wdpa_giz<-st_make_valid(wdpa_giz)
 
 # write out the data
 st_write(wdpa_giz,"../../datalake/mapme.protectedareas/input/wdpa_giz/wdpa_giz_supported_2019_wdpaV_Feb2022.gpkg")
+
+table(!raw_giz_long$wdpa_id%in%wdpa_giz$WDPAID)
 
 # ----- get all areas from the original data for supported countries -----
 country_codes_giz<-unique(wdpa_giz$ISO3)
@@ -192,4 +197,9 @@ st_write(wdpa_giz_all,"../../datalake/mapme.protectedareas/input/wdpa_giz/wdpa_g
 # write out the data
 st_write(wdpa_giz,"../../datalake/mapme.protectedareas/input/wdpa_giz/wdpa_giz_supported_2019_wdpaV_Feb2022_simplified.gpkg")
 
+st_write(wdpa_giz_all,"../../datalake/mapme.protectedareas/input/wdpa_giz/wdpa_giz_all_2019_wdpaV_Feb2022_simplified.gpkg")
 
+
+
+test<-sf::read_sf("../../datalake/mapme.protectedareas/input/wdpa_giz/wdpa_giz_supported_2019_wdpaV_Feb2022.gpkg")
+nrow(test)
