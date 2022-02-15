@@ -382,8 +382,41 @@ coplot_loss <-
 
 ggplotly(coplot_loss)
 
+# ----- lineplots for selected countries -----
+## loss statistics
+gfw_lossstats2<-
+  read_csv("../../datalake/mapme.protectedareas/output/polygon/global_forest_watch/zonal_statistics_allPAs_long_temporal.csv",
+           col_types = c("cfid"))
 
+## filter for area only
+gfw_lossstats2 <-
+  gfw_lossstats2 %>%
+  filter(name == "loss")
 
+gfw_lossstats_lineplot <-
+  merge(gfw_lossstats2,
+        st_drop_geometry(wdpa_kfw),
+        by.x = "WDPA_PID",
+        by.y = "WDPA_PID")
 
+# create data
+gfw_lossstats_lineplot<-
+  gfw_lossstats_lineplot %>% 
+  select(WDPA_PID,name,year,value,bmz_n_1,ISO3,NAME)
+
+# create lineplot
+lossdata_absolute_lineplot <-
+  gfw_lossstats_lineplot %>%
+  filter(ISO3 == "GTM") %>%
+  ggplot() +
+  geom_line(aes(x=year,
+                y=value,
+                color=factor(NAME)))+
+  labs(color="PA Name",x="")+
+  scale_y_continuous(labels=function(x) format(x, big.mark = ",", scientific = FALSE),name="Forest Loss in ha")+
+  theme_classic()
+    
+
+ggplotly(lossdata_absolute_lineplot)
 
 

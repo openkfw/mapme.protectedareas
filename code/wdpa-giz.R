@@ -61,20 +61,20 @@ raw_giz_long<-raw_giz_long %>%
   rename(wdpa_identifier=name,wdpa_id=value)
 
 # ----- download and unzip the full database -----
-download.file("https://d1gam3xoknrgr2.cloudfront.net/current/WDPA_Feb2022_Public_shp.zip",
-              destfile = "../../datalake/mapme.protectedareas/input/wdpa_giz/WDPA_Feb2022_Public_shp.zip")
-
-
-unzip("../../datalake/mapme.protectedareas/input/wdpa_giz/WDPA_Feb2022_Public_shp.zip",
-      exdir = "../../datalake/mapme.protectedareas/input/wdpa_giz/WDPA_Feb2022_Public_shp")
-
-
-unzip("../../datalake/mapme.protectedareas/input/wdpa_giz/WDPA_Feb2022_Public_shp/WDPA_Feb2022_Public_shp_0.zip",
-      exdir = "../../datalake/mapme.protectedareas/input/wdpa_giz/WDPA_Feb2022_Public_shp/WDPA_Feb2022_Public_shp_0")
-unzip("../../datalake/mapme.protectedareas/input/wdpa_giz/WDPA_Feb2022_Public_shp/WDPA_Feb2022_Public_shp_1.zip",
-      exdir = "../../datalake/mapme.protectedareas/input/wdpa_giz/WDPA_Feb2022_Public_shp/WDPA_Feb2022_Public_shp_1")
-unzip("../../datalake/mapme.protectedareas/input/wdpa_giz/WDPA_Feb2022_Public_shp/WDPA_Feb2022_Public_shp_2.zip",
-      exdir = "../../datalake/mapme.protectedareas/input/wdpa_giz/WDPA_Feb2022_Public_shp/WDPA_Feb2022_Public_shp_2")
+# download.file("https://d1gam3xoknrgr2.cloudfront.net/current/WDPA_Feb2022_Public_shp.zip",
+#               destfile = "../../datalake/mapme.protectedareas/input/wdpa_giz/WDPA_Feb2022_Public_shp.zip")
+# 
+# 
+# unzip("../../datalake/mapme.protectedareas/input/wdpa_giz/WDPA_Feb2022_Public_shp.zip",
+#       exdir = "../../datalake/mapme.protectedareas/input/wdpa_giz/WDPA_Feb2022_Public_shp")
+# 
+# 
+# unzip("../../datalake/mapme.protectedareas/input/wdpa_giz/WDPA_Feb2022_Public_shp/WDPA_Feb2022_Public_shp_0.zip",
+#       exdir = "../../datalake/mapme.protectedareas/input/wdpa_giz/WDPA_Feb2022_Public_shp/WDPA_Feb2022_Public_shp_0")
+# unzip("../../datalake/mapme.protectedareas/input/wdpa_giz/WDPA_Feb2022_Public_shp/WDPA_Feb2022_Public_shp_1.zip",
+#       exdir = "../../datalake/mapme.protectedareas/input/wdpa_giz/WDPA_Feb2022_Public_shp/WDPA_Feb2022_Public_shp_1")
+# unzip("../../datalake/mapme.protectedareas/input/wdpa_giz/WDPA_Feb2022_Public_shp/WDPA_Feb2022_Public_shp_2.zip",
+#       exdir = "../../datalake/mapme.protectedareas/input/wdpa_giz/WDPA_Feb2022_Public_shp/WDPA_Feb2022_Public_shp_2")
 
 # ----- filter the data for GIZ treated areas -----
 wdpa_raw <-
