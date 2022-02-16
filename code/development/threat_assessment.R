@@ -83,7 +83,6 @@ wdpa_allPAs$relative_loss_categorized <-
     labels = c("0-2 %", "2-5 %", "5-10 %", "10-20 %",">20 %")
   )
 
-
 ## categorize absolute loss by meaningfull and pretty breaks 
 wdpa_allPAs$absolute_loss_categorized <-
   cut(
@@ -399,23 +398,71 @@ gfw_lossstats_lineplot <-
         by.x = "WDPA_PID",
         by.y = "WDPA_PID")
 
+gfw_lossstats_lineplot_all <-
+  merge(gfw_lossstats2,
+        st_drop_geometry(wdpa_allPAs),
+        by.x = "WDPA_PID",
+        by.y = "WDPA_PID")
+
+
 # create data
 gfw_lossstats_lineplot<-
   gfw_lossstats_lineplot %>% 
   select(WDPA_PID,name,year,value,bmz_n_1,ISO3,NAME)
 
+
+gfw_lossstats_lineplot_all<-
+  gfw_lossstats_lineplot_all %>% 
+  select(WDPA_PID,name,year,value,bmz_n_1,ISO3,NAME)
+
+# 
+# # create lineplot
+# lossdata_absolute_lineplot <-
+#   gfw_lossstats_lineplot_all %>%
+#   filter(ISO3 == "GTM") %>%
+#   ggplot() +
+#   geom_line(aes(x=year,
+#                 y=value,
+#                 color=factor(NAME)))+
+#   labs(color="PA Name",x="")+
+#   scale_y_continuous(labels=function(x) format(x, big.mark = ",", scientific = FALSE),name="Forest Loss in ha")+
+#   theme_classic()
+# 
+# ggplotly(lossdata_absolute_lineplot) %>% layout(legend = list(orientation = "h", x = 0.4, y = -0.2))
+
+# ----- lineplot with colors -----
+# create labels for plot
+gfw_lossstats_lineplot_all$bmz_n_1_labeled <-
+  ifelse(
+    is.na(gfw_lossstats_lineplot_all$bmz_n_1),
+    "Not Supported",
+    gfw_lossstats_lineplot_all$bmz_n_1
+  )
+
+# create color pallete for fill
+palette_length <-
+  gfw_lossstats_lineplot_all %>%
+  filter(ISO3 == "GTM") %>%
+  {
+    unique(.$bmz_n_1_labeled)
+  } %>%
+  length()
+
+palette_lineplot<-
+  c(brewer.pal(palette_length-1,"Set1"),"grey80")
+
 # create lineplot
 lossdata_absolute_lineplot <-
-  gfw_lossstats_lineplot %>%
+  gfw_lossstats_lineplot_all %>%
   filter(ISO3 == "GTM") %>%
   ggplot() +
   geom_line(aes(x=year,
                 y=value,
-                color=factor(NAME)))+
-  labs(color="PA Name",x="")+
+                group=factor(WDPA_PID),color=factor(bmz_n_1_labeled)) ,alpha=0.4)+
+  labs(x="",title="Forest Loss in PAs in Guatemala")+
   scale_y_continuous(labels=function(x) format(x, big.mark = ",", scientific = FALSE),name="Forest Loss in ha")+
+  scale_color_manual(name = "Project Number",values=palette_lineplot)+
   theme_classic()
-    
 
 ggplotly(lossdata_absolute_lineplot)
 
