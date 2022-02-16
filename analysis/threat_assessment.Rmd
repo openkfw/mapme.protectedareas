@@ -412,7 +412,7 @@ lossdata_relative_jitter_plot <-
     alpha = .8
   )+
   labs(color="Country",x="")+
-  scale_y_continuous(labels=function(x) format(x, big.mark = ",", scientific = FALSE),name="Forest Loss in ha")+
+  scale_y_continuous(labels = scales::percent,name="Relative forest Loss")+
   theme_classic()
 
 ggplotly(lossdata_relative_jitter_plot,tooltip = "text")
