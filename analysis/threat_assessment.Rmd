@@ -424,6 +424,7 @@ ggplotly(lossdata_relative_jitter_plot,tooltip = "text")
 Lineplots can be used to assess the time-trend of one or several PAs. Their advantage is to display the trend data more detailed which allows users to judge whether a trend is increasing or decreasing and whether it is more likely due to natural phenomena (often huge singular spikes in the trend) or anthropogenic causes (steady, similar trends over all years). The downside of lineplots is that they are not able to compare a large set of PAs because the plots will get fairly messy if too many individual lines are displayed. This is especially troublesome if the trends of different displayed PAs differs considerably (e.g. high loss PAs vs. low loss PAs.). The following figures therefore only display the data for one selected country. You can isolate trends from on or several PAs of a given project by double-clicking on the project number in the legend. Single clicks on additional projects will allow to compare different projects. Both, absolute losses and relative losses are given in separate figures below. 
 
 ```{r line_plots, message = FALSE, warning = FALSE,fig.width=10, echo=FALSE}
+# ----- lineplots for selected countries -----
 # ----- absolute loss lineplot -----
 ## loss statistics
 gfw_lossstats2<-
@@ -433,7 +434,8 @@ gfw_lossstats2<-
 ## filter for area only
 gfw_lossstats2 <-
   gfw_lossstats2 %>%
-  filter(name == "loss")
+  filter(name == "loss")%>%
+  filter(WDPA_PID %in% wdpa_allPAs_lossdata$WDPA_PID) # indirectly filter MAB regions and invalid geometries out (see code above)
 
 gfw_lossstats_lineplot <-
   merge(gfw_lossstats2,
@@ -468,7 +470,7 @@ gfw_lossstats_lineplot_all$bmz_n_1_labeled <-
 # create color pallete for fill
 palette_length <-
   gfw_lossstats_lineplot_all %>%
-  filter(ISO3 == "GTM") %>%
+  filter(ISO3 == "NIC") %>%
   {
     unique(.$bmz_n_1_labeled)
   } %>%
@@ -480,17 +482,23 @@ palette_lineplot<-
 # create lineplot
 lossdata_absolute_lineplot <-
   gfw_lossstats_lineplot_all %>%
-  filter(ISO3 == "GTM") %>%
+  filter(ISO3 == "NIC") %>%
   ggplot() +
   geom_line(aes(x=year,
                 y=value,
-                group=factor(WDPA_PID),color=factor(bmz_n_1_labeled)) ,alpha=0.4)+
-  labs(x="",title="Absolut Forest Loss in PAs in Guatemala")+
+                group=factor(WDPA_PID),
+                color=factor(bmz_n_1_labeled),
+                text = paste(
+                  "Area Name: ", NAME,
+                  "\nYear: ", year,
+                  #"\nRelative forest loss: ", round(relative_loss,digits = 2)*100, " %",
+                  "\nBMZ-Number: ", bmz_n_1)) ,alpha=0.4)+
+  labs(x="",title="Absolut Forest Loss in PAs in Nicaragua")+
   scale_y_continuous(labels=function(x) format(x, big.mark = ",", scientific = FALSE),name="Forest Loss in ha")+
   scale_color_manual(name = "Project Number",values=palette_lineplot)+
   theme_classic()
 
-ggplotly(lossdata_absolute_lineplot)
+ggplotly(lossdata_absolute_lineplot,tooltip="text")
 
 # ----- lineplot with colors relative loss -----
 ## loss statistics
@@ -501,7 +509,8 @@ gfw_lossstats3<-
 ## filter for area only
 gfw_lossstats3 <-
   gfw_lossstats3 %>%
-  filter(name == "area")
+  filter(name == "area")%>%
+  filter(WDPA_PID %in% wdpa_allPAs_lossdata$WDPA_PID)
 
 gfw_lossstats_lineplot_all_relative <-
   merge(gfw_lossstats3,
@@ -528,23 +537,28 @@ gfw_lossstats_lineplot_all_relative$bmz_n_1_labeled <-
 # create plot
 lossdata_relative_lineplot <-
   gfw_lossstats_lineplot_all_relative %>%
-  filter(ISO3 == "GTM") %>%
+  filter(ISO3 == "NIC") %>%
   ggplot() +
   geom_line(aes(x=year,
                 y=fc_relative,
-                group=factor(WDPA_PID),color=factor(bmz_n_1_labeled)) ,alpha=0.4)+
-  labs(x="",title="Relative Forest Loss in PAs in Guatemala")+
+                group=factor(WDPA_PID),
+                color=factor(bmz_n_1_labeled),
+                text = paste(
+                  "Area Name: ", NAME,
+                  "\nYear: ", year,
+                  #"\nRelative forest loss: ", round(relative_loss,digits = 2)*100, " %",
+                  "\nBMZ-Number: ", bmz_n_1)) ,alpha=0.4)+
+  labs(x="",title="Relative Forest Loss in PAs in Nicaragua")+
   scale_y_continuous(labels=scales::percent,name="Forest cover in % of base-value (2000)")+
   scale_color_manual(name = "Project Number",values=palette_lineplot)+
   theme_classic()
 
-ggplotly(lossdata_relative_lineplot)
-
+ggplotly(lossdata_relative_lineplot,tooltip = "text")
 ```
 
 ## Interpretation & Discussion
 
-As outline above the GFW methodology defines forest cover loss as a _"as a stand-replacement disturbance, or a change from a forest to non-forest state."_. Loss can either be the result of human activities or natural factors such as droughts, forest fires or hurricanes, amongst others. Thus, the data currently does not allow the differentiate permanent loss and conversion from temporary loss due to natural factors. **A more in-depth analysis of pre-selected areas is therefore recommended when using the current data.**  An illustrative example for this (in the data) is Reserva Biológica Indio Maíz in Nicaragua which was hardly hit by a hurricane in 2016 and experienced subsequent forest fires in 2017. GFW displays this loss of nearly 117,000 hectares (see also interactive map) although natural regrowth of the forests is most likely happening at this point in time. 
+As outline above the GFW methodology defines forest cover loss as a _"as a stand-replacement disturbance, or a change from a forest to non-forest state."_. Loss can either be the result of human activities or natural factors such as droughts, forest fires or hurricanes, amongst others. Thus, the data currently does not allow the differentiate permanent loss and conversion from temporary loss due to natural factors. **A more in-depth analysis of pre-selected areas is therefore recommended when using the current data.**  An illustrative example for this (in the data) is Reserva Biológica Indio Maíz in Nicaragua which was hardly hit by a hurricane in 2016 and experienced subsequent forest fires in 2017. GFW displays this loss of nearly 117,000 hectares in 2017 (see also interactive map and lineplots) although natural regrowth of the forests is most likely happening at this point in time. 
 
 GFW data can be used to get an assessment of old-growth and primary forests as well as associated carbon emissions. It can indicate which areas had been highly threatened either due to natural causes (hurricanes/fires) or human causes (deforestation/logging/degradation and conversion to agriculture/silviculture). Especially useful in this context is to have a look at the whole trend from 2001 to 2020. Huge spikes in the individual trend data might indicate natural causes such as fires and hurricanes. A quick search with google always helps to confirm this hypothesis or you might look at Hurricane data e.g. on the [NOAA website](https://coast.noaa.gov/hurricanes/#map=4/32/-80) which provides historical data for hurricane tracks. More continuous growth in forest loss is probably due to the conversion of natural forests for agricultural purposes. Again you might look at the map given above and activate the satellite layer to see what might be happening below the detected loss. GFW does not (currently) allow to detect regrowth and regeneration but it is planned to provide that feature soon.  
 
