@@ -382,6 +382,7 @@ coplot_loss <-
 ggplotly(coplot_loss)
 
 # ----- lineplots for selected countries -----
+# ----- absolute loss lineplot -----
 ## loss statistics
 gfw_lossstats2<-
   read_csv("../../datalake/mapme.protectedareas/output/polygon/global_forest_watch/zonal_statistics_allPAs_long_temporal.csv",
@@ -390,7 +391,8 @@ gfw_lossstats2<-
 ## filter for area only
 gfw_lossstats2 <-
   gfw_lossstats2 %>%
-  filter(name == "loss")
+  filter(name == "loss")%>%
+  filter(WDPA_PID %in% wdpa_allPAs_lossdata$WDPA_PID) # indirectly filter MAB regions and invalid geometries out (see code above)
 
 gfw_lossstats_lineplot <-
   merge(gfw_lossstats2,
@@ -415,9 +417,6 @@ gfw_lossstats_lineplot_all<-
   gfw_lossstats_lineplot_all %>% 
   select(WDPA_PID,name,year,value,bmz_n_1,ISO3,NAME)
 
-
-
-# ----- lineplot with colors absolute loss -----
 # create labels for plot
 gfw_lossstats_lineplot_all$bmz_n_1_labeled <-
   ifelse(
@@ -425,11 +424,10 @@ gfw_lossstats_lineplot_all$bmz_n_1_labeled <-
     "Not Supported",
     gfw_lossstats_lineplot_all$bmz_n_1
   )
-
 # create color pallete for fill
 palette_length <-
   gfw_lossstats_lineplot_all %>%
-  filter(ISO3 == "GTM") %>%
+  filter(ISO3 == "NIC") %>%
   {
     unique(.$bmz_n_1_labeled)
   } %>%
@@ -441,18 +439,23 @@ palette_lineplot<-
 # create lineplot
 lossdata_absolute_lineplot <-
   gfw_lossstats_lineplot_all %>%
-  filter(ISO3 == "GTM") %>%
+  filter(ISO3 == "NIC") %>%
   ggplot() +
   geom_line(aes(x=year,
                 y=value,
-                group=factor(WDPA_PID),color=factor(bmz_n_1_labeled)) ,alpha=0.4)+
-  labs(x="",title="Forest Loss in PAs in Guatemala")+
+                group=factor(WDPA_PID),
+                color=factor(bmz_n_1_labeled),
+                text = paste(
+                  "Area Name: ", NAME,
+                  "\nYear: ", year,
+                  #"\nRelative forest loss: ", round(relative_loss,digits = 2)*100, " %",
+                  "\nBMZ-Number: ", bmz_n_1)) ,alpha=0.4)+
+  labs(x="",title="Absolut Forest Loss in PAs in Nicaragua")+
   scale_y_continuous(labels=function(x) format(x, big.mark = ",", scientific = FALSE),name="Forest Loss in ha")+
   scale_color_manual(name = "Project Number",values=palette_lineplot)+
   theme_classic()
 
-ggplotly(lossdata_absolute_lineplot)
-
+ggplotly(lossdata_absolute_lineplot,tooltip="text")
 
 # ----- lineplot with colors relative loss -----
 ## loss statistics
@@ -463,7 +466,8 @@ gfw_lossstats3<-
 ## filter for area only
 gfw_lossstats3 <-
   gfw_lossstats3 %>%
-  filter(name == "area")
+  filter(name == "area")%>%
+  filter(WDPA_PID %in% wdpa_allPAs_lossdata$WDPA_PID)
 
 gfw_lossstats_lineplot_all_relative <-
   merge(gfw_lossstats3,
@@ -490,17 +494,21 @@ gfw_lossstats_lineplot_all_relative$bmz_n_1_labeled <-
 # create plot
 lossdata_relative_lineplot <-
   gfw_lossstats_lineplot_all_relative %>%
-  filter(ISO3 == "GTM") %>%
+  filter(ISO3 == "NIC") %>%
   ggplot() +
   geom_line(aes(x=year,
                 y=fc_relative,
-                group=factor(WDPA_PID),color=factor(bmz_n_1_labeled)) ,alpha=0.4)+
-  labs(x="",title="Relative Forest Loss in PAs in Guatemala")+
-  scale_y_continuous(labels=scales::percent,name="Forest cover in % of 2000")+
+                group=factor(WDPA_PID),
+                color=factor(bmz_n_1_labeled),
+                text = paste(
+                  "Area Name: ", NAME,
+                  "\nYear: ", year,
+                  #"\nRelative forest loss: ", round(relative_loss,digits = 2)*100, " %",
+                  "\nBMZ-Number: ", bmz_n_1)) ,alpha=0.4)+
+  labs(x="",title="Relative Forest Loss in PAs in Nicaragua")+
+  scale_y_continuous(labels=scales::percent,name="Forest cover in % of base-value (2000)")+
   scale_color_manual(name = "Project Number",values=palette_lineplot)+
   theme_classic()
 
-ggplotly(lossdata_relative_lineplot)
-
-
+ggplotly(lossdata_relative_lineplot,tooltip = "text")
 
