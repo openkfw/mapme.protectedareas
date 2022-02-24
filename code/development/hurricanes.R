@@ -1,6 +1,7 @@
 ## Processing routine for hurricane data
 # download data from arquive
 
+# dir.create("../../datalake/mapme.protectedareas/input/hurricanes/2022-02-21/")
 # download.file(
 #   "https://www.ncei.noaa.gov/data/international-best-track-archive-for-climate-stewardship-ibtracs/v04r00/access/shapefile/IBTrACS.since1980.list.v04r00.lines.zip",
 #   "../../datalake/mapme.protectedareas/input/hurricanes/2022-02-21/IBTrACS.since1980.list.v04r00.lines.zip"
@@ -120,7 +121,7 @@ hurricanes_subset_buf<-
 # st_interpolate_aw(x, to, extensive=F)
 
 aux_grid <-
-  rast(vect(hurricanes_subset_buf), resolution = 1000)
+  rast(vect(hurricanes_subset_buf), resolution = 5000)
 
 results_list<-as.list(vector(length=length(2000:2020)))
 
@@ -139,7 +140,7 @@ f_rast_calc <- function(my_season)
       # filter dataset, rearrange, convert to terra vector format and rasterize. 
         hurricanes_aux %>%
         filter(SID == unique(.$SID)[i]) %>%
-        arrange(ISO_TIME) %>% # arrange polygons by time for rasterization
+        arrange(desc(ISO_TIME)) %>% # arrange polygons by time for rasterization
         vect %>%
         terra::rasterize(., aux_grid, field = "wind_combinded")
     }, error = function(e){
@@ -154,14 +155,27 @@ f_rast_calc <- function(my_season)
   
 }
 # test function
-test<-f_rast_calc(2000)
+rast_result <-
+  f_rast_calc(2012)
 
-writeRaster(test,"../../datalake/mapme.protectedareas/processing/hurricanes/test/test.tif")
+# project result
+rast_result <-
+  project(rast_result, "epsg:4326")
 
-test<-rast("../../datalake/mapme.protectedareas/processing/hurricanes/test/test.tif")
+# get maximum value for year
+rast_result_reduce <- app(rast_result,
+                          fun = "max", na.rm = T)
 
-# test2<-terra::max(test,na.rm=T)
-test2<-app(test,fun="mean")
+# store result
+# dir.create("../../datalake/mapme.protectedareas/processing/hurricanes/test/")
+writeRaster(
+  rast_result_reduce,
+  "../../datalake/mapme.protectedareas/processing/hurricanes/test/test3.tif",
+  overwrite = T,
+  datatype = "INT1U",
+  memfrac = 0.8
+)
+
 
 
 
@@ -190,34 +204,35 @@ test2<-app(test,fun="mean")
 # comment: geometry errors are due to some observations in the eastern pacific. Since I do not know the actual cause of the problem I just delte them from 
 # the dataset by identification via their large surface areas. 
 
-# hurricanes_subset_buf %>%
-#   #filter(LON>170&LON<180) %>%
-#   mapView(., zcol = "LON", legend = TRUE)
-# st_bbox_by_feature = function(x) {
-#   x = st_geometry(x)
-#   f <- function(y) st_as_sfc(st_bbox(y))
-#   do.call("c", lapply(x, f))
-# }
-# 
-# test<-
-#   st_bbox_by_feature(hurricanes_subset_buf)
-# # xmin, ymin, xmax and ymax 
-# colnames(as.tibble(test))
-# plot(st_geometry(hurricanes_subset_buf))
-# 
-# hurricanes_subset_buf$area_aux<-
-#   st_area(hurricanes_subset_buf)
-# 
-# hurricanes_subset_buf$area_aux<-
-#   units::set_units(hurricanes_subset_buf$area_aux, km^2)
-# 
-# sort(hurricanes_subset_buf$area_aux,decreasing = T)
-#  
-# hurricanes_subset_buf <-
-#   hurricanes_subset_buf %>% 
-#   filter(as.numeric(area_aux)<10^6)
-# 
-# mapView(hurricanes_subset_buf,zcol = "area_aux", legend = TRUE)
+hurricanes_subset_buf %>%
+  #filter(LON>170&LON<180) %>%
+  mapView(., zcol = "LON", legend = TRUE)
+st_bbox_by_feature = function(x) {
+  x = st_geometry(x)
+  f <- function(y) st_as_sfc(st_bbox(y))
+  do.call("c", lapply(x, f))
+}
+
+test<-
+  st_bbox_by_feature(hurricanes_subset_buf)
+# xmin, ymin, xmax and ymax
+
+xmin(vect(test[1]))
+plot(vect(test[1]))
+
+hurricanes_subset_buf$area_aux<-
+  st_area(hurricanes_subset_buf)
+
+hurricanes_subset_buf$area_aux<-
+  units::set_units(hurricanes_subset_buf$area_aux, km^2)
+
+sort(hurricanes_subset_buf$area_aux,decreasing = T)
+
+hurricanes_subset_buf <-
+  hurricanes_subset_buf %>%
+  filter(as.numeric(area_aux)<10^6)
+
+mapView(hurricanes_subset_buf,zcol = "area_aux", legend = TRUE)
 
 
 
