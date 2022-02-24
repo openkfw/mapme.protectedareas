@@ -165,7 +165,7 @@ test2<-app(test,fun="mean")
 
 
 
-?max
+?max 
 # apply funnction through all seasons
 # for (p in 2000:2020) {
 #   writeRaster(
