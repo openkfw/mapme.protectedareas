@@ -60,33 +60,9 @@ hurricanes_subset<-
   filter(DIST2LAND<100)
 
 # have a look at the data
-mapView(hurricanes_subset,zcol = "wind_combinded", at = seq(64, 185, 20), legend = TRUE)
+# mapView(hurricanes_subset,zcol = "wind_combinded", at = seq(64, 185, 20), legend = TRUE)
 
-# ----- delete data with invalid geometries -----
-# comment: geometry errors are due to some observations in the eastern pacific. They form long stretches of lines over the whole globe.
-# the problem only becomes relevant when reprojecting the data. Reprojection though is required to later buffer based on metrical units 
-# Because the reason for these problems is unknown, we simply filter  out falty geometries abfter projection based on the feature length. 
-# for the data after 2000 this problem only appeared in four observations.
-crs_robinson_world <-
-  "+proj=robin +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
 
-hurricanes_subset<-
-  st_transform(hurricanes_subset,crs = crs_robinson_world)
-
-# check geometry errors
-# plot(hurricanes_subset["LAT"])
-
-hurricanes_subset$length<-
-  st_length(hurricanes_subset)
-
-hurricanes_subset$length<-
-  units::set_units(hurricanes_subset$length, km)
-
-head(sort(hurricanes_subset$length,decreasing=T))
-
-# filter out those where the length is more then  30000km. Note. This might change if projection system is changed. 
-hurricanes_subset<- hurricanes_subset %>% 
-  filter(as.integer(length)<30000)
 
 # ---- create a combined 64 knots radius estimation for buffering ----
 hurricanes_subset$R64_combined <-
@@ -112,8 +88,15 @@ hurricanes_subset$R64_combined_model <-
     hurricanes_subset$R64_combined
   )
 
-head(sort(hurricanes_subset$length,decreasing = T))
+
 # ---- buffer values based un radii -----
+# reproject
+crs_robinson_world <-
+  "+proj=robin +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
+
+hurricanes_subset<-
+  st_transform(hurricanes_subset,crs = crs_robinson_world)
+
 # convert radius (currently miles) into meters
 hurricanes_subset$R64_combined_model_meters<-
   hurricanes_subset$R64_combined_model*1609.34
@@ -125,14 +108,83 @@ hurricanes_subset_buf<-
             endCapStyle="ROUND"
             )
 
+# ----- correct invalid geometries @ the dateline-----
+# geometry errors come from features that cross the dateline at -180 degreee. 
+# suppoesdly this can be fixed by using st_wrap_dateline() but for some reason it does not work on the data. 
+# the proposed solution is to delete features (hurricane tracks) that cross the dateline and cannot be fixed. 
+
+# project back again
+hurricanes_subset_buf<-
+  st_transform(hurricanes_subset_buf,crs = 4326)
+# make as much as possible geoms valid
+hurricanes_subset_buf<-
+  st_make_valid(hurricanes_subset_buf)
+# delete invalid geoms
+hurricanes_subset_buf<-
+  hurricanes_subset_buf[-which(st_is_valid(hurricanes_subset_buf)==F),]
+
+# wrap dateline geometries
+hurricanes_subset_buf<- hurricanes_subset_buf%>%
+  st_wrap_dateline(options = c("WRAPDATELINE=YES"))
+
+# project back again
+hurricanes_subset_buf<-
+  st_transform(hurricanes_subset_buf,crs = 4326)
+
 mapView(hurricanes_subset,zcol = "wind_combinded", at = seq(64, 185, 20), legend = TRUE) + 
   mapView(hurricanes_subset_buf,zcol = "wind_combinded", at = seq(64, 185, 20), legend = TRUE)
+
+# st_write(
+#   hurricanes_subset_buf,
+#   "../../datalake/mapme.protectedareas/processing/hurricanes/hurricanes_subset_buf.gpkg"
+# )
+# 
+# hurricanes_subset_buf_reimport<-
+#   st_read("../../datalake/mapme.protectedareas/processing/hurricanes/hurricanes_subset_buf.gpkg")
+
+# # create points
+# pt1 = st_point(c(-179.5,-80))
+# pt2 = st_point(c(-179.5,80))
+# pt3 = st_point(c(179.5,-80))
+# pt4 = st_point(c(179.5,80))
+# 
+# points<-st_sfc(pt1, pt2,pt3,pt4)
+# points<-st_as_sf(points)
+# points$id<-c(1,1,2,2)
+# points$name<-c(1,1,2,2)
+# st_crs(points)<-4326
+# 
+# # create line
+# lines<-
+#   points %>% group_by(id) %>% summarize(m = mean(name)) %>% st_cast("LINESTRING")
+# lines_buf<-st_buffer(lines,0.4999)
+# # lines2<-
+# #   points_to_lines(data = points2,ids = "id",names = "name",order_matters = F)
+# # lines<-rbind(lines,lines2)
+# 
+# lines_buf<- lines_buf%>%
+#   st_wrap_dateline(options = c("WRAPDATELINE=YES"))
+# 
+# hurricanes_subset_buf$intersects_datum_1 <-
+#   st_intersects(hurricanes_subset_buf, lines_buf, sparse = F)[, 1]
+# 
+# hurricanes_subset$intersects_datum_2 <-
+#   st_intersects(hurricanes_subset_buf, lines_buf, sparse = F)[, 2]
+# 
+# hurricanes_subset$intersects_datum<-
+#   ifelse(hurricanes_subset$intersects_datum_1==T|hurricanes_subset$intersects_datum_2==T,T,F)
+# 
+# hurricanes_subset <-
+#   hurricanes_subset %>%
+#   filter(intersects_datum == F)
+
+
 
 # ----- rasterize and take maximum -----
 # proposed output data: maximum (likely) windspeed that affected a given region due to a storm of the category hurricane (at least H1 or 64 knts. windspeed)
 # st_interpolate_aw(x, to, extensive=F)
 aux_grid <-
-  rast(vect(hurricanes_subset_buf), resolution = 5000)
+  rast(vect(hurricanes_subset_buf), resolution = 0.05)
 
 results_list<-as.list(vector(length=length(2000:2020)))
 
@@ -149,10 +201,10 @@ f_rast_calc <- function(my_season)
     aux_list[[i]] <-
     tryCatch({
       # filter dataset, rearrange, convert to terra vector format and rasterize. 
-        hurricanes_aux %>%
+        hurricanes_aux%>%
         filter(SID == unique(.$SID)[i]) %>%
         arrange(desc(ISO_TIME)) %>% # arrange polygons by time for rasterization
-        vect %>%
+        vect(.) %>%
         terra::rasterize(., aux_grid, field = "wind_combinded")
     }, error = function(e){
       print("Problem with data. Please check.") 
@@ -219,8 +271,8 @@ writeRaster(
 write_sf(hurricanes_subset,
          "../../datalake/mapme.protectedareas/processing/hurricanes/2000-2020_V01/max_likely_windspeed_H01_global_2000-2020_lines.gpkg")
 
-mapView(hurricanes_subset,zcol = "wind_combinded", at = seq(64, 185, 20), legend = TRUE) + 
-  mapView(rast_result_stack_reduce)
+# mapView(hurricanes_subset,zcol = "wind_combinded", at = seq(64, 185, 20), legend = TRUE) + 
+#   mapView(rast_result_stack_reduce)
 
 # ----- Analyse protected areas portfolio ----
 ## Desired Output Indicators:
