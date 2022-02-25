@@ -15,8 +15,6 @@ library("sf")
 library("terra")
 library("dplyr")
 library("mapview")
-library("ggplot2")
-source("code/area_proj.R")
 
 
 # call data 
@@ -69,14 +67,13 @@ mapView(hurricanes_subset,zcol = "wind_combinded", at = seq(64, 185, 20), legend
 # the problem only becomes relevant when reprojecting the data. Reprojection though is required to later buffer based on metrical units 
 # Because the reason for these problems is unknown, we simply filter  out falty geometries abfter projection based on the feature length. 
 # for the data after 2000 this problem only appeared in four observations.
-crs_robinson_world<-
-"+proj=robin +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
-
-plot(hurricanes_subset["LAT"])
+crs_robinson_world <-
+  "+proj=robin +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
 
 hurricanes_subset<-
   st_transform(hurricanes_subset,crs = crs_robinson_world)
 
+# check geometry errors
 # plot(hurricanes_subset["LAT"])
 
 hurricanes_subset$length<-
@@ -86,13 +83,11 @@ hurricanes_subset$length<-
   units::set_units(hurricanes_subset$length, km)
 
 head(sort(hurricanes_subset$length,decreasing=T))
-# mapView(hurricanes_subset,zcol = "wind_combinded", legend = TRUE)
 
 # filter out those where the length is more then  30000km. Note. This might change if projection system is changed. 
 hurricanes_subset<- hurricanes_subset %>% 
   filter(as.integer(length)<30000)
 
-# plot(hurricanes_subset["LAT"])
 # ---- create a combined 64 knots radius estimation for buffering ----
 hurricanes_subset$R64_combined <-
   hurricanes_subset %>%
@@ -117,12 +112,13 @@ hurricanes_subset$R64_combined_model <-
     hurricanes_subset$R64_combined
   )
 
+head(sort(hurricanes_subset$length,decreasing = T))
 # ---- buffer values based un radii -----
 # convert radius (currently miles) into meters
 hurricanes_subset$R64_combined_model_meters<-
   hurricanes_subset$R64_combined_model*1609.34
 
-# buffer layer with meters   distance
+# buffer layer with meters distance
 hurricanes_subset_buf<-
   st_buffer(hurricanes_subset,
             dist = hurricanes_subset$R64_combined_model_meters,
@@ -131,6 +127,7 @@ hurricanes_subset_buf<-
 
 mapView(hurricanes_subset,zcol = "wind_combinded", at = seq(64, 185, 20), legend = TRUE) + 
   mapView(hurricanes_subset_buf,zcol = "wind_combinded", at = seq(64, 185, 20), legend = TRUE)
+
 # ----- rasterize and take maximum -----
 # proposed output data: maximum (likely) windspeed that affected a given region due to a storm of the category hurricane (at least H1 or 64 knts. windspeed)
 # st_interpolate_aw(x, to, extensive=F)
