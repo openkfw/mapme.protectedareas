@@ -16,6 +16,7 @@ library("terra")
 library("dplyr")
 library("mapview")
 library("ggplot2")
+source("code/area_proj.R")
 
 
 # call data 
@@ -24,8 +25,8 @@ hurricanes_raw <-
     "../../datalake/mapme.protectedareas/input/hurricanes/2022-02-21/IBTrACS.since1980.list.v04r00.lines/IBTrACS.since1980.list.v04r00.lines.shp"
   )
 
+# ----- filter data ---- 
 # column description is given here: https://www.ncei.noaa.gov/sites/default/files/2021-07/IBTrACS_v04_column_documentation.pdf
-
 # subset data for observational period (2000-2020)
 hurricanes_raw$ISO_DATE <- as.Date(hurricanes_raw$ISO_TIME,
                                    format = "%Y-%m-%d")
@@ -51,7 +52,7 @@ hurricanes_raw<-
   hurricanes_raw %>% 
   filter(!is.na(wind_combinded))
 
-# ----- create a dataset for windspeeds above 64 knots ----
+# create a dataset for windspeeds above 64 knots
 hist(hurricanes_raw$wind_combinded)
 table(hurricanes_raw$wind_combinded>64)/nrow(hurricanes_raw) # will contain only about 19% of all obs. 
 
@@ -63,17 +64,41 @@ hurricanes_subset<-
 # have a look at the data
 mapView(hurricanes_subset,zcol = "wind_combinded", at = seq(64, 185, 20), legend = TRUE)
 
-# ---- get parameter estimation of 64 knts influence radius ----
+# ----- delete data with invalid geometries -----
+# comment: geometry errors are due to some observations in the eastern pacific. They form long stretches of lines over the whole globe.
+# the problem only becomes relevant when reprojecting the data. Reprojection though is required to later buffer based on metrical units 
+# Because the reason for these problems is unknown, we simply filter  out falty geometries abfter projection based on the feature length. 
+# for the data after 2000 this problem only appeared in four observations.
+crs_robinson_world<-
+"+proj=robin +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
+
+plot(hurricanes_subset["LAT"])
+
+hurricanes_subset<-
+  st_transform(hurricanes_subset,crs = crs_robinson_world)
+
+# plot(hurricanes_subset["LAT"])
+
+hurricanes_subset$length<-
+  st_length(hurricanes_subset)
+
+hurricanes_subset$length<-
+  units::set_units(hurricanes_subset$length, km)
+
+head(sort(hurricanes_subset$length,decreasing=T))
+# mapView(hurricanes_subset,zcol = "wind_combinded", legend = TRUE)
+
+# filter out those where the length is more then  30000km. Note. This might change if projection system is changed. 
+hurricanes_subset<- hurricanes_subset %>% 
+  filter(as.integer(length)<30000)
+
+# plot(hurricanes_subset["LAT"])
+# ---- create a combined 64 knots radius estimation for buffering ----
 hurricanes_subset$R64_combined <-
   hurricanes_subset %>%
   select(contains("R64")) %>%
   st_drop_geometry() %>%
   rowMeans(., na.rm = T)
-
-# look at correleation visually
-hurricanes_subset %>% 
-  ggplot() + 
-  geom_point(aes(wind_combinded, R64_combined))
 
 # create linear model
 hurricanes_model<-
@@ -83,12 +108,6 @@ hurricanes_subset %>%
 # predict based on real data 
 hurricanes_subset$R64_modeled<-
   predict.lm(hurricanes_model,hurricanes_subset)
-
-# compare predicted to real
-hurricanes_subset %>% 
-  select(R64_combined,R64_modeled) %>% 
-  st_drop_geometry() %>% 
-  View()
 
 # substitute missings with predicted
 hurricanes_subset$R64_combined_model <-
@@ -103,12 +122,6 @@ hurricanes_subset$R64_combined_model <-
 hurricanes_subset$R64_combined_model_meters<-
   hurricanes_subset$R64_combined_model*1609.34
 
-# project layer 
-hurricanes_subset <- 
-  st_transform(hurricanes_subset, crs = 3395)
-
-hurricanes_subset<-st_make_valid(hurricanes_subset)
-
 # buffer layer with meters   distance
 hurricanes_subset_buf<-
   st_buffer(hurricanes_subset,
@@ -116,10 +129,11 @@ hurricanes_subset_buf<-
             endCapStyle="ROUND"
             )
 
+mapView(hurricanes_subset,zcol = "wind_combinded", at = seq(64, 185, 20), legend = TRUE) + 
+  mapView(hurricanes_subset_buf,zcol = "wind_combinded", at = seq(64, 185, 20), legend = TRUE)
 # ----- rasterize and take maximum -----
 # proposed output data: maximum (likely) windspeed that affected a given region due to a storm of the category hurricane (at least H1 or 64 knts. windspeed)
 # st_interpolate_aw(x, to, extensive=F)
-
 aux_grid <-
   rast(vect(hurricanes_subset_buf), resolution = 5000)
 
@@ -133,7 +147,7 @@ f_rast_calc <- function(my_season)
   # get
   k <- length(unique(hurricanes_aux$SID))
   aux_list <- as.list(vector(length = k))
-  # rasterize each polygon feature separatly, stack rasters and the reduce to a single raster taking the maximum 
+  # rasterize each polygon feature separately, stack rasters and the reduce to a single raster taking the maximum 
   for (i in 1:k) {
     aux_list[[i]] <-
     tryCatch({
@@ -154,85 +168,92 @@ f_rast_calc <- function(my_season)
    # max(.,na.rm=T)
   
 }
-# test function
-rast_result <-
-  f_rast_calc(2012)
 
-# project result
-rast_result <-
-  project(rast_result, "epsg:4326")
+## Apply function for all years
+# dir.create("../../datalake/mapme.protectedareas/processing/hurricanes/2000-2020_V01")
 
-# get maximum value for year
-rast_result_reduce <- app(rast_result,
-                          fun = "max", na.rm = T)
-
-# store result
-# dir.create("../../datalake/mapme.protectedareas/processing/hurricanes/test/")
-writeRaster(
-  rast_result_reduce,
-  "../../datalake/mapme.protectedareas/processing/hurricanes/test/test3.tif",
-  overwrite = T,
-  datatype = "INT1U",
-  memfrac = 0.8
-)
-
-
-
-
-?max 
-# apply funnction through all seasons
-# for (p in 2000:2020) {
-#   writeRaster(
-#     f_rast_calc(p),
-#     paste(
-#       "../../datalake/mapme.protectedareas/processing/hurricanes/test/hurricane_maxspeeds_",
-#       p,
-#       ".tif",
-#       sep = ""
-#     ),
-#     overwrite = T,
-#     datatype = "INT1U",
-#     memfrac = 0.8
-#   )
-# }
-
-
-
-
-###### ARQUIVW
-# ----- delete faulty entries -----
-# comment: geometry errors are due to some observations in the eastern pacific. Since I do not know the actual cause of the problem I just delte them from 
-# the dataset by identification via their large surface areas. 
-
-hurricanes_subset_buf %>%
-  #filter(LON>170&LON<180) %>%
-  mapView(., zcol = "LON", legend = TRUE)
-st_bbox_by_feature = function(x) {
-  x = st_geometry(x)
-  f <- function(y) st_as_sfc(st_bbox(y))
-  do.call("c", lapply(x, f))
+for(i in 2000:2020) {
+  # test function
+  rast_result <-
+    f_rast_calc(i)
+  
+  # project result back into WGS84
+  rast_result <-
+    project(rast_result, "epsg:4326")
+  
+  # get maximum value for year
+  rast_result_reduce <- app(rast_result,
+                            fun = "max", na.rm = T)
+  
+  # store result
+  # dir.create("../../datalake/mapme.protectedareas/processing/hurricanes/test/")
+  writeRaster(
+    rast_result_reduce,
+    paste("../../datalake/mapme.protectedareas/processing/hurricanes/2000-2020_V01/max_likely_windspeed_H01_global_",i,".tif"),
+    overwrite = T,
+    datatype = "INT1U",
+    memfrac = 0.8
+  )
 }
 
-test<-
-  st_bbox_by_feature(hurricanes_subset_buf)
-# xmin, ymin, xmax and ymax
+# stack data and write out as a rater stack
+rast_result_stack<-
+  rast(list.files("../../datalake/mapme.protectedareas/processing/hurricanes/2000-2020_V01/", full.names = TRUE))
 
-xmin(vect(test[1]))
-plot(vect(test[1]))
+writeRaster(
+  rast_result_stack,
+  "../../datalake/mapme.protectedareas/processing/hurricanes/2000-2020_V01/max_likely_windspeed_H01_global_2000-2020.tif",
+  overwrite = T,
+  datatype = "INT1U",
+  memfrac = 0.8)
 
-hurricanes_subset_buf$area_aux<-
-  st_area(hurricanes_subset_buf)
+# reduce to max from all years
+rast_result_stack_reduce <- app(rast_result_stack,
+                          fun = "max", na.rm = T)
 
-hurricanes_subset_buf$area_aux<-
-  units::set_units(hurricanes_subset_buf$area_aux, km^2)
+writeRaster(
+  rast_result_stack_reduce,
+  "../../datalake/mapme.protectedareas/processing/hurricanes/2000-2020_V01/max_likely_windspeed_H01_global_2000-2020_reduced.tif",
+  overwrite = T,
+  datatype = "INT1U",
+  memfrac = 0.8)
 
-sort(hurricanes_subset_buf$area_aux,decreasing = T)
+# export original line-data for display purposes
+write_sf(hurricanes_subset,
+         "../../datalake/mapme.protectedareas/processing/hurricanes/2000-2020_V01/max_likely_windspeed_H01_global_2000-2020_lines.gpkg")
 
-hurricanes_subset_buf <-
-  hurricanes_subset_buf %>%
-  filter(as.numeric(area_aux)<10^6)
+mapView(hurricanes_subset,zcol = "wind_combinded", at = seq(64, 185, 20), legend = TRUE) + 
+  mapView(rast_result_stack_reduce)
 
-mapView(hurricanes_subset_buf,zcol = "area_aux", legend = TRUE)
+# ----- Analyse protected areas portfolio ----
+## Desired Output Indicators:
+# 1: zonal stats: max, min, mean, meadian
+# 2: total affected surface area in ha. 
 
+
+# ----- ARQUIVE -----
+
+## TEST AND APPLY RASTERIZATION FUNCTION
+# # test function
+# rast_result <-
+#   f_rast_calc(2012)
+# 
+# # project result back into WGS84
+# rast_result <-
+#   project(rast_result, "epsg:4326")
+# 
+# # get maximum value for year
+# rast_result_reduce <- app(rast_result,
+#                           fun = "max", na.rm = T)
+# 
+# # store result
+# # dir.create("../../datalake/mapme.protectedareas/processing/hurricanes/test/")
+# writeRaster(
+#   rast_result_reduce,
+#   "../../datalake/mapme.protectedareas/processing/hurricanes/test/test5.tif",
+#   overwrite = T,
+#   datatype = "INT1U",
+#   memfrac = 0.8
+# )
 
 
