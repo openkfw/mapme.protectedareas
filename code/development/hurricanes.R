@@ -73,7 +73,7 @@ hurricanes_subset$R64_combined <-
 
 # create linear model
 hurricanes_model<-
-hurricanes_subset %>% 
+  hurricanes_subset %>% 
   lm(R64_combined~wind_combinded,data = .)
 
 # predict based on real data 
@@ -106,7 +106,7 @@ hurricanes_subset_buf<-
   st_buffer(hurricanes_subset,
             dist = hurricanes_subset$R64_combined_model_meters,
             endCapStyle="ROUND"
-            )
+  )
 
 # ----- correct invalid geometries @ the dateline-----
 # geometry errors come from features that cross the dateline at -180 degreee. 
@@ -199,22 +199,22 @@ f_rast_calc <- function(my_season)
   # rasterize each polygon feature separately, stack rasters and the reduce to a single raster taking the maximum 
   for (i in 1:k) {
     aux_list[[i]] <-
-    tryCatch({
-      # filter dataset, rearrange, convert to terra vector format and rasterize. 
+      tryCatch({
+        # filter dataset, rearrange, convert to terra vector format and rasterize. 
         hurricanes_aux%>%
-        filter(SID == unique(.$SID)[i]) %>%
-        arrange(desc(ISO_TIME)) %>% # arrange polygons by time for rasterization
-        vect(.) %>%
-        terra::rasterize(., aux_grid, field = "wind_combinded")
-    }, error = function(e){
-      print("Problem with data. Please check.") 
-      return(NA)})
+          filter(SID == unique(.$SID)[i]) %>%
+          arrange(desc(ISO_TIME)) %>% # arrange polygons by time for rasterization
+          vect(.) %>%
+          terra::rasterize(., aux_grid, field = "wind_combinded")
+      }, error = function(e){
+        print("Problem with data. Please check.") 
+        return(NA)})
     print(paste("Done with", i, "out of", k, "from year", my_season, sep = " "))
-
+    
   }
   # create raster stack and then reduce to single layer again by taking the maximum values. 
   rast(unlist(aux_list)) #%>% 
-   # max(.,na.rm=T)
+  # max(.,na.rm=T)
   
 }
 
@@ -258,7 +258,7 @@ writeRaster(
 
 # reduce to max from all years
 rast_result_stack_reduce <- app(rast_result_stack,
-                          fun = "max", na.rm = T)
+                                fun = "max", na.rm = T)
 
 writeRaster(
   rast_result_stack_reduce,
