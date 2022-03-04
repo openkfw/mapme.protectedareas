@@ -198,31 +198,42 @@ honeycomb$PA_boarder<-
   ifelse(honeycomb$PA_boarder==T,1,0)
 
 head(honeycomb)
-
-# create column to see whether it intersects with treated PAs
-# ----- get data within wdpa ids -----
-
 # write spatial data out
 write_sf(honeycomb,
          "../../datalake/mapme.protectedareas/processing/fishnet/honeycomb_5_sqkm_subset_intersect.gpkg")
 
-# ----- measure distances to kfw treate areas -----
+# create column to see whether it intersects with treated PAs
+# ----- get data within wdpa ids -----
+# eventually read data in if already processed
+honeycomb<-
+  read_sf("../../datalake/mapme.protectedareas/processing/fishnet/honeycomb_5_sqkm_subset_intersect.gpkg")
+
+
+# ----- create intersection with buffered wdpa areas to see which data is in and out of a given distance -----
 wdpa_kfw_treated <-
   wdpa_kfw %>%
   filter(!is.na(bmz_n_1))
 
-# create an index of the nearest feature
-index <- 
-  st_nearest_feature(x = honeycomb, y = wdpa_kfw_treated)
+bufferdistance<-50000 # 50km
+wdpa_kfw_treated_buf <- wdpa_kfw_treated %>%
+  st_buffer(., bufferdistance) %>%
+  st_union() %>% # unite to a geometry object
+  st_sf() # make the geometry a data frame object
 
-# slice based on the index
-wdpa_kfw_treated <- wdpa_kfw_treated %>% slice(index)
+wdpa_kfw_treated_buf <- st_make_valid(wdpa_kfw_treated_buf)
 
-# calculate distance between polygons
-poly_dist <-
-  st_distance(x = honeycomb, y = wdpa_kfw_treated, by_element = TRUE)
+mapView(wdpa_kfw_treated) + mapView(wdpa_kfw_treated_buf, col.regions="red")
 
-# add the distance calculations to the fire polygons
-honeycomb$distance <- 
-  poly_dist
+# create intersection
+# intersection
+within_buff_results <- 
+  st_within(honeycomb,wdpa_kfw_treated,sparse = T)
 
+within_buff_results<- # maybe change to st_contains()
+  data.frame(row.id=rep(seq_along(within_results), 
+                        lengths(within_results)), 
+             col.id=unlist(within_results))
+
+colnames(within_buff_results)<-c("poly_id","within_buf")
+write_csv(within_buff_results,
+          "../../datalake/mapme.protectedareas/processing/fishnet/honeycomb_5_sqkm_subset_withinbuf_50km_wdpa_long.csv")
