@@ -1,7 +1,10 @@
 ## script to create fishnet polygons for the geospatial impact evaluation
 # Author: Johannes Schielein
 # Originally Created: 2022-02-27
-# Last Update: 2022-02-28
+# Last Update: 2022-03-04
+
+## Important Note: This script requires at least about 20GB of RAM to work properly.
+# Otherwise the Rsession unexpetedly crashes when operating with the large grid
 
 # ----- call libraries -----
 library("sf")
@@ -10,7 +13,7 @@ library("units")
 library("dplyr")
 library("readr")
 
-# ---- preprocess data -----
+# ---- create honeycomb grid -----
 # load wdpa data for KfW supported countries, project with EA projection and get bbox for grid
 wdpa_kfw<-
   read_sf("data/wdpa_kfw_spatial_latinamerica_2021-04-22_allPAs.gpkg")
@@ -39,10 +42,11 @@ for (i in c(5)) { # gridcell size in square kilometers (=100 ha). 10, 2, 1
   )
 }
 
-# ----- subset data for terrestrial areas only -----
+# ----- subset grid for terrestrial areas only -----
 # reading the 5km data requires about 18 GB of RAM. If RAM is too low, rsession will crash as a result. 
 honeycomb<-
   st_read("../../datalake/mapme.protectedareas/processing/fishnet/honeycomb_5_sqkm.gpkg")
+
 # load in countries
 dir.create("../../datalake/mapme.protectedareas/input/gadm/gadm_3_6-2022-02-26")
 gadm_world <-
@@ -58,7 +62,7 @@ country_index<-
 
 gadm_SA<-
   gadm_world[country_index,]
-# mapView(gadm_SA)
+
 # write_sf(gadm_SA, 
 #          "../../datalake/mapme.protectedareas/input/gadm/gadm_3_6-2022-02-26/gadm_SA.gpkg")
 
@@ -85,18 +89,9 @@ honeycomb<-
 write_sf(honeycomb,
          "../../datalake/mapme.protectedareas/processing/fishnet/honeycomb_5_sqkm_subset.gpkg")
 
-honeycomb$test<-1:nrow(honeycomb)
-str(honeycomb)
-write_sf(honeycomb,
-         "../../datalake/mapme.protectedareas/processing/fishnet/honeycomb_5_sqkm_subset_test.gpkg")
-honeycomb$test2<-ifelse(honeycomb$test>100,1,0)
-
-write_sf(honeycomb,
-         "../../datalake/mapme.protectedareas/processing/fishnet/honeycomb_5_sqkm_subset_test3.gpkg")
-
-# ----- get intersections & within  with wdpa ids -----
+# ----- get intersection, within and boarder polygons of grid with PAs and buffered PAs -----
 honeycomb<-
-  read_sf( "../../datalake/mapme.protectedareas/processing/fishnet/backup/honeycomb_5_sqkm.gpkghoneycomb_5_sqkm_subset.gpkg")
+  read_sf( "../../datalake/mapme.protectedareas/processing/fishnet/honeycomb_5_sqkm_subset.gpkg")
 
 wdpa_LA<-
   st_read("../../datalake/mapme.protectedareas/input/wdpa-kfw/wdpa_kfw_spatial_latinamerica_2021-04-22_allPAs_valid_simplified.gpkg")
@@ -115,18 +110,37 @@ wdpa_LA<-
 wdpa_LA<-
   st_make_valid(wdpa_LA)
 
-# intersection
+# subset for treated
+wdpa_kfw_treated <-
+  wdpa_LA %>%
+  filter(!is.na(bmz_n_1))
+
+## important to note that only 356 areas remain after filtering
+
+# buffer with a given distance
+bufferdistance<-50000 # 50km
+wdpa_kfw_treated_buf <- wdpa_kfw_treated %>%
+  st_buffer(., bufferdistance) %>%
+  st_union() %>% # unite to a geometry object
+  st_sf() # make the geometry a data frame object
+
+# make valid
+wdpa_kfw_treated_buf <- 
+  st_make_valid(wdpa_kfw_treated_buf)
+
+# intersection with all PAs
 intersection_results <- 
   st_intersects(honeycomb,wdpa_LA,sparse = T)
 
-# within
+# within with all PAs
 within_results <- 
   st_within(honeycomb,wdpa_LA,sparse = T)
 
-# understand intersection results
-# table(unlist(lapply(intersection_results,length)))
+# within for buffered treatment PAs
+within_buff_results <- 
+  st_within(honeycomb,wdpa_kfw_treated,sparse = T)
 
-# create longtable df.
+# create longtable dfs
 intersection_results_df<-
   data.frame(row.id=rep(seq_along(intersection_results), 
                         lengths(intersection_results)), 
@@ -137,15 +151,25 @@ within_results_df<- # maybe change to st_contains()
                         lengths(within_results)), 
              col.id=unlist(within_results))
 
+within_buff_results_df<- # maybe change to st_contains()
+  data.frame(row.id=rep(seq_along(within_results), 
+                        lengths(within_results)), 
+             col.id=unlist(within_results))
+
+# merge all three dataframes
+all_spatial_df<-
+  dplyr::merge(intersection_results_df,within_results_df)
+
+all_spatial_df<-
+  dplyr::merge(all_spatial_df,within_buff_results_df)
+
 # add wdpa ids to it
-intersection_results_df$wdpa_id<-
-  st_drop_geometry(wdpa_LA)[intersection_results_df$col.id,"WDPAID"]
+all_spatial_df$wdpa_id<-
+  st_drop_geometry(wdpa_LA)[all_spatial_df$col.id,"WDPAID"]
 
-within_results_df$wdpa_id<-
-  st_drop_geometry(wdpa_LA)[within_results_df$col.id,"WDPAID"]
-
+#########
 # change column names
-colnames(intersection_results_df)<-c("poly_id","wdpa_rowname","WDPAID")
+colnames(all_spatial_df)<-c("poly_id","wdpa_rowname","WDPAID")
 colnames(within_results_df)<-c("poly_id","wdpa_rowname","WDPAID")
 
 # boarder polygons = intersection - within
@@ -197,42 +221,12 @@ honeycomb$PA_within<-
 honeycomb$PA_boarder<-
   ifelse(honeycomb$PA_boarder==T,1,0)
 
-head(honeycomb)
 # write spatial data out
 write_sf(honeycomb,
          "../../datalake/mapme.protectedareas/processing/fishnet/honeycomb_5_sqkm_subset_intersect.gpkg")
 
-# create column to see whether it intersects with treated PAs
-# ----- get data within wdpa ids -----
-# eventually read data in if already processed
-honeycomb<-
-  read_sf("../../datalake/mapme.protectedareas/processing/fishnet/honeycomb_5_sqkm_subset_intersect.gpkg")
-
 
 # ----- create intersection with buffered wdpa areas to see which data is in and out of a given distance -----
-wdpa_kfw_treated <-
-  wdpa_kfw %>%
-  filter(!is.na(bmz_n_1))
-
-bufferdistance<-50000 # 50km
-wdpa_kfw_treated_buf <- wdpa_kfw_treated %>%
-  st_buffer(., bufferdistance) %>%
-  st_union() %>% # unite to a geometry object
-  st_sf() # make the geometry a data frame object
-
-wdpa_kfw_treated_buf <- st_make_valid(wdpa_kfw_treated_buf)
-
-mapView(wdpa_kfw_treated) + mapView(wdpa_kfw_treated_buf, col.regions="red")
-
-# create intersection
-# intersection
-within_buff_results <- 
-  st_within(honeycomb,wdpa_kfw_treated,sparse = T)
-
-within_buff_results<- # maybe change to st_contains()
-  data.frame(row.id=rep(seq_along(within_results), 
-                        lengths(within_results)), 
-             col.id=unlist(within_results))
 
 colnames(within_buff_results)<-c("poly_id","within_buf")
 write_csv(within_buff_results,
