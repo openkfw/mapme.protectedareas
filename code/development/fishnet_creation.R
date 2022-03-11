@@ -3,7 +3,7 @@
 # Originally Created: 2022-02-27
 # Last Update: 2022-03-04
 
-## Important Note: This script requires at least about 20GB of RAM to work properly.
+## Important Note: This script requires at least about 40GB of RAM to work properly.
 # Otherwise the Rsession unexpetedly crashes when operating with the large grid
 
 # ----- call libraries -----
@@ -37,7 +37,8 @@ for (i in c(5)) { # gridcell size in square kilometers (=100 ha). 10, 2, 1
              "../../datalake/mapme.protectedareas/processing/fishnet/honeycomb_",
              i,
              "_sqkm.gpkg",
-             sep = ""
+             sep = "",
+             append= FALSE # overwrite layer if exists. Use with caution
            )
   )
 }
@@ -87,14 +88,16 @@ honeycomb<-
 
 # save results
 write_sf(honeycomb,
-         "../../datalake/mapme.protectedareas/processing/fishnet/honeycomb_5_sqkm_subset.gpkg")
+         "../../datalake/mapme.protectedareas/processing/fishnet/honeycomb_5_sqkm_subset.gpkg",
+         append= FALSE # overwrite layer if exists. Use with caution
+         )
 
 # ----- get intersection, within and boarder polygons of grid with PAs and buffered PAs -----
 honeycomb<-
   read_sf( "../../datalake/mapme.protectedareas/processing/fishnet/honeycomb_5_sqkm_subset.gpkg")
 
 wdpa_LA<-
-  st_read("../../datalake/mapme.protectedareas/input/wdpa-kfw/wdpa_kfw_spatial_latinamerica_2021-04-22_allPAs_valid_simplified.gpkg")
+  st_read("../../datalake/mapme.protectedareas/input/wdpa_kfw/wdpa_kfw_spatial_latinamerica_2021-04-22_allPAs_valid_simplified.gpkg")
 
 wdpa_LA <-
   wdpa_LA %>%
@@ -115,7 +118,7 @@ wdpa_kfw_treated <-
   wdpa_LA %>%
   filter(!is.na(bmz_n_1))
 
-## important to note that only 356 areas remain after filtering
+## important to note that only 356 areas remain after filtering from 398
 
 # buffer with a given distance
 bufferdistance<-50000 # 50km
@@ -128,6 +131,7 @@ wdpa_kfw_treated_buf <- wdpa_kfw_treated %>%
 wdpa_kfw_treated_buf <- 
   st_make_valid(wdpa_kfw_treated_buf)
 
+## intersections
 # intersection with all PAs
 intersection_results <- 
   st_intersects(honeycomb,wdpa_LA,sparse = T)
@@ -138,7 +142,7 @@ within_results <-
 
 # within for buffered treatment PAs
 within_buff_results <- 
-  st_within(honeycomb,wdpa_kfw_treated,sparse = T)
+  st_within(honeycomb,wdpa_kfw_treated_buf,sparse = T)
 
 # create longtable dfs
 intersection_results_df<-
@@ -152,9 +156,37 @@ within_results_df<- # maybe change to st_contains()
              col.id=unlist(within_results))
 
 within_buff_results_df<- # maybe change to st_contains()
-  data.frame(row.id=rep(seq_along(within_results), 
-                        lengths(within_results)), 
-             col.id=unlist(within_results))
+  data.frame(row.id=rep(seq_along(within_buff_results), 
+                        lengths(within_buff_results)), 
+             col.id=unlist(within_buff_results))
+
+## add wdpaids for intersection and within
+# add wdpa ids to it
+intersection_results_df$wdpa_id<-
+  st_drop_geometry(wdpa_LA)[intersection_results_df$col.id,"WDPAID"]
+
+# add wdpa ids to it
+within_results_df$wdpa_id<-
+  st_drop_geometry(wdpa_LA)[within_results_df$col.id,"WDPAID"]
+
+# change column names 
+colnames(intersection_results_df)<-c("poly_id","wdpa_rowname","WDPAID")
+colnames(within_results_df)<-c("poly_id","wdpa_rowname","WDPAID")
+
+
+## create df with polygons that cross boarder
+# boarder polygons = intersection - within
+boarder_results_df<-
+  intersection_results_df %>% 
+  filter(poly_id%in%within_results_df$poly_id==F)
+
+
+
+
+
+# save workspace
+save.image("../../johannes/workspace_tmp.Rdata")
+
 
 # merge all three dataframes
 all_spatial_df<-
@@ -163,19 +195,10 @@ all_spatial_df<-
 all_spatial_df<-
   dplyr::merge(all_spatial_df,within_buff_results_df)
 
-# add wdpa ids to it
-all_spatial_df$wdpa_id<-
-  st_drop_geometry(wdpa_LA)[all_spatial_df$col.id,"WDPAID"]
+
 
 #########
-# change column names
-colnames(all_spatial_df)<-c("poly_id","wdpa_rowname","WDPAID")
-colnames(within_results_df)<-c("poly_id","wdpa_rowname","WDPAID")
 
-# boarder polygons = intersection - within
-boarder_results_df<-
-  intersection_results_df %>% 
-  filter(poly_id%in%within_results_df$poly_id==F)
 
 
 # save results
