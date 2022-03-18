@@ -169,10 +169,14 @@ intersection_results_df$wdpa_id<-
 within_results_df$wdpa_id<-
   st_drop_geometry(wdpa_LA)[within_results_df$col.id,"WDPAID"]
 
+
 # change column names 
 colnames(intersection_results_df)<-c("poly_id","wdpa_rowname","WDPAID")
 colnames(within_results_df)<-c("poly_id","wdpa_rowname","WDPAID")
+colnames(within_buff_results_df)<-c("poly_id","wdpa_rowname")
 
+
+nrow(within_results_df)
 
 ## create df with polygons that cross boarder
 # boarder polygons = intersection - within
@@ -180,45 +184,47 @@ boarder_results_df<-
   intersection_results_df %>% 
   filter(poly_id%in%within_results_df$poly_id==F)
 
+##! 
+## create df for controls (not within buffered regions and other PAS)
+controls_df<-
+  st_drop_geometry(honeycomb) %>% 
+  filter(!row.id%in%intersection_results_df$poly_id) %>% 
+  filter(!row.id%in%within_buff_results_df$poly_id)
 
+colnames(controls_df)<-c("poly_id","wdpa_rowname")
+##!
 
-
-
-# save workspace
-save.image("../../johannes/workspace_tmp.Rdata")
-
-
-# merge all three dataframes
-all_spatial_df<-
-  dplyr::merge(intersection_results_df,within_results_df)
-
-all_spatial_df<-
-  dplyr::merge(all_spatial_df,within_buff_results_df)
-
-
-
-#########
-
-
-
-# save results
+# save tables
 write_csv(intersection_results_df,
           "../../datalake/mapme.protectedareas/processing/fishnet/honeycomb_5_sqkm_subset_intersect_wdpa_long.csv")
 
 write_csv(within_results_df,
           "../../datalake/mapme.protectedareas/processing/fishnet/honeycomb_5_sqkm_subset_within_wdpa_long.csv")
 
+write_csv(within_buff_results_df,
+          "../../datalake/mapme.protectedareas/processing/fishnet/honeycomb_5_sqkm_subset_within_treated_buff50km_long.csv")
+
 write_csv(boarder_results_df,
           "../../datalake/mapme.protectedareas/processing/fishnet/honeycomb_5_sqkm_subset_boarder_wdpa_long.csv")
 
+write_csv(controls_df,
+          "../../datalake/mapme.protectedareas/processing/fishnet/honeycomb_5_sqkm_subset_controls.csv")
+
+
 # ----- add intersection information to original honeycomb grid ----- 
 # eventually read in data if already processed
-intersection_results_df<-
-  read.csv("../../datalake/mapme.protectedareas/processing/fishnet/honeycomb_5_sqkm_subset_intersect_wdpa_long.csv")
-within_results_df<-
-  read.csv("../../datalake/mapme.protectedareas/processing/fishnet/honeycomb_5_sqkm_subset_within_wdpa_long.csv")
-boarder_results_df<-
-  read.csv("../../datalake/mapme.protectedareas/processing/fishnet/honeycomb_5_sqkm_subset_boarder_wdpa_long.csv")
+# intersection_results_df <-
+#   read.csv(
+#     "../../datalake/mapme.protectedareas/processing/fishnet/honeycomb_5_sqkm_subset_intersect_wdpa_long.csv"
+#   )
+# within_results_df <-
+#   read.csv(
+#     "../../datalake/mapme.protectedareas/processing/fishnet/honeycomb_5_sqkm_subset_within_wdpa_long.csv"
+#   )
+# boarder_results_df <-
+#   read.csv(
+#     "../../datalake/mapme.protectedareas/processing/fishnet/honeycomb_5_sqkm_subset_boarder_wdpa_long.csv"
+#   )
 
 # create column for honeycomb to see whether it intersects with PAs
 honeycomb$PA_intersect<-
@@ -229,6 +235,12 @@ honeycomb$PA_within<-
 
 honeycomb$PA_boarder<-
   1:nrow(honeycomb)%in%boarder_results_df$poly_id
+
+honeycomb$PA_within_buff50km<-
+  1:nrow(honeycomb)%in%within_buff_results_df$poly_id
+
+honeycomb$controls<-
+  1:nrow(honeycomb)%in%controls_df$poly_id
 
 honeycomb <-
   honeycomb %>%
@@ -244,13 +256,11 @@ honeycomb$PA_within<-
 honeycomb$PA_boarder<-
   ifelse(honeycomb$PA_boarder==T,1,0)
 
+honeycomb$PA_within_buff50km<-
+  ifelse(honeycomb$PA_within_buff50km==T,1,0)
+
 # write spatial data out
 write_sf(honeycomb,
          "../../datalake/mapme.protectedareas/processing/fishnet/honeycomb_5_sqkm_subset_intersect.gpkg")
 
 
-# ----- create intersection with buffered wdpa areas to see which data is in and out of a given distance -----
-
-colnames(within_buff_results)<-c("poly_id","within_buf")
-write_csv(within_buff_results,
-          "../../datalake/mapme.protectedareas/processing/fishnet/honeycomb_5_sqkm_subset_withinbuf_50km_wdpa_long.csv")
