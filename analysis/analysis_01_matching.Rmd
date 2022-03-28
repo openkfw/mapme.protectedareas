@@ -25,13 +25,13 @@ lapply(lop, require, character.only = TRUE)
 ```
 
 
-```{r Propensity Score Matching (PSM)}
+```{r Propensity Score Matching (PSM), echo=TRUE}
 #------- Select years and prepare table -------
 
 # Years with matching frames. Years without treatment starting years (no BMZ number started in these years) 2003, 2017, 2018, 2020
 T_year <- c(2004:2016, 2019)
 
-
+T_year <- c(2015)
 for (i in T_year) {
   
   #------- Load matching frames -------
@@ -104,10 +104,10 @@ for (i in T_year) {
 }
 ```
 
-```{r Coarsened Exact Matching (CEM)}
+```{r Coarsened Exact Matching (CEM), echo=TRUE}
 # Years with matching frames. Years without treatment starting years (no BMZ number started in these years) 2003, 2017, 2018, 2020
 T_year <- c(2004:2016, 2019)
-
+T_year <- c(2015)
 # Load cutpoints (use cutpoints from dummy CEM matching for 2015)
 cutoffs_list <- readRDS("../../datalake/mapme.protectedareas/output/tabular/regression_input/CEM/cem_cutpoints.rds")
 
@@ -115,7 +115,7 @@ for (i in T_year) {
   
   #------- Load matching frames -------
   
-  df_unfiltered <- 
+  df <- 
     read_csv(paste("./output/matching/matching_frames/matching_frame_",i,".csv", sep = "")) %>% 
     select(id, poly_id, treatment, everything())
   
