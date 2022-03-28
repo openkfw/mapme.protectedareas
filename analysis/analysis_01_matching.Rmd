@@ -6,12 +6,12 @@ output: workflowr::wflow_html
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(include = FALSE)
 knitr::opts_knit$set(root.dir = "~/shared/datalake/mapme.protectedareas")
 ```
 
 
-```{r}
+```{r include=FALSE}
 # clean workspace, set options
 rm(list=ls())
 options(scipen=999)
@@ -25,11 +25,11 @@ lapply(lop, require, character.only = TRUE)
 ```
 
 
-```{r psm loop}
+```{r Propensity Score Matching}
 #------- Select years and prepare table -------
 
 # Years with matching frames. Years without treatment starting years (no BMZ number started in these years) 2003, 2017, 2018, 2020
-T_year <- c(2003:2016, 2019)
+T_year <- c(2004:2016, 2019)
 
 
 for (i in T_year) {
@@ -39,9 +39,11 @@ for (i in T_year) {
   df <- 
     read_csv(paste("./output/matching/matching_frames/matching_frame_",i,".csv", sep = "")) %>% 
     select(id, poly_id, treatment, everything())
-  #assign(file, df)
-
   
+   df <- df %>% 
+    filter(! is.na(country),
+           ! is.na(clay_content_10_cm))
+   
   #------- NN PS matching w/ replacement and exact matching 'country'-------
   
   tryCatch({
@@ -56,14 +58,14 @@ for (i in T_year) {
                      fc_area_matchingyear +
                      sum_fcl_matchingyear_tmax,
                    family = binomial(link = "probit"), 
-                   data = df_match)
+                   data = df)
       
     
     stargazer(glm_out1,
               summary=TRUE,
               type="text",
               title = paste0("Probit regression for matching frame ",i),
-              out = paste0("../../yota/plots/propensity_score_matching/probit_summary_",i,".html"))
+              out = paste0("../../datalake/mapme.protectedareas/output/plots/propensity_score_matching/probit_summary_",i,".html"))
     
   
     m_out1 <- matchit(treatment ~
@@ -74,7 +76,7 @@ for (i in T_year) {
                         as.factor(country) +
                         fc_area_matchingyear +
                         sum_fcl_matchingyear_tmax,
-                      data = df_match,
+                      data = df,
                       method = "nearest",
                       replace = TRUE,
                       exact = ~ as.factor(country),
