@@ -105,6 +105,60 @@ for (i in T_year) {
 ```
 
 ```{r Coarsened Exact Matching (CEM)}
+# Years with matching frames. Years without treatment starting years (no BMZ number started in these years) 2003, 2017, 2018, 2020
+T_year <- c(2004:2016, 2019)
+
+# Load cutpoints (use cutpoints from dummy CEM matching for 2015)
+cutoffs_list <- readRDS("../../datalake/mapme.protectedareas/output/tabular/regression_input/CEM/cem_cutpoints.rds")
+
+for (i in T_year) {
+  
+  #------- Load matching frames -------
+  
+  df_unfiltered <- 
+    read_csv(paste("./output/matching/matching_frames/matching_frame_",i,".csv", sep = "")) %>% 
+    select(id, poly_id, treatment, everything())
+  
+  
+  # Prepare df for matching (no NA allowed)
+  df_match <- df %>% 
+    filter(! is.na(country),
+           ! is.na(clay_content_10_cm))
+  
+  #------- Perform CEM -------
+  
+  tryCatch({
+    
+    m_out2 <- matchit(treatment ~
+                        travel_time_to_nearby_cities_min_20l_100mio +
+                        clay_content_10_cm +
+                        terrain_ruggedness_index_mean +
+                        elevation_mean +
+                        as.factor(country) +
+                        fc_area_matchingyear +
+                        sum_fcl_matchingyear_tmax,
+                      data = df_match,
+                      method = "cem",
+                      cutpoints = cutoffs_list)
+    
+    # Matching summary
+    print(m_out2)
+    print(summary(m_out2, un = FALSE))
+    
+    # Balance table
+    bal_table <- bal.tab(m_out2, un = TRUE)
+    print(bal_table)
+    
+    # Matched data
+    m_data2 <- match.data(m_out2) 
+    
+    ## Export data
+    write_csv(m_data2, 
+              paste0("../../datalake/mapme.protectedareas/output/tabular/regression_input/CEM/ce_matched_panel_", i, ".csv"))
+    
+  }, error=function(e){cat("ERROR :",conditionMessage(e), "\n")})
+  
+}
 
 ```
 
