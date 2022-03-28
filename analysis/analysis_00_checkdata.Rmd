@@ -166,7 +166,7 @@ wdpa_kfw <- left_join(wdpa_kfw, kfw_finance,
 #   read_sf(
 #     "../../datalake/mapme.protectedareas/output/polygon/sampling/fishnets/fishnet_all_update_Dec-07.gpkg")
 fishnet <- 
-  read_sf("../../datalake/mapme.protectedareas/processing/fishnet/honeycomb_5_sqkm_kfw.gpkg")
+  read_sf("~/shared/datalake/mapme.protectedareas/processing/fishnet/honeycomb_5_sqkm_kfw.gpkg")
 
 
 # fishnet for merge
@@ -174,7 +174,7 @@ mf_fishnet <- fishnet
 
 # Years with matched panels:
 # T_year <- c(2004, 2006:2013, 2015, 2016, 2019)
-T_year <- c(2006)
+T_year <- c(2012)
 
 #data before matching
 for (i in T_year) {
@@ -222,7 +222,7 @@ my_map_matching <-
   addProviderTiles(providers$Esri.WorldShadedRelief, group="Topography") %>%
   addProviderTiles(providers$NASAGIBS.ViirsEarthAtNight2012, group="Nightlights") %>%
   # add own data
-  addPolygons(data = wdpa_kfw,opacity = 0.9,color = "orange", group = "PA Boundaries",label = ~htmlEscape(NAME),weight = 1)%>%
+  addPolygons(data = wdpa_kfw,opacity = 0.9,color = "orange", group = "PA Boundaries",label = ~htmlEscape(DESIG_ENG),weight = 1)%>%
   addPolygons(data = mf_fishnet, opacity = 0.9, color = ~pal_match(treated), 
               group = "Treated polygons",label = ~htmlEscape(poly_id),weight = 1) %>%
   addFullscreenControl() %>%
