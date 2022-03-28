@@ -25,14 +25,6 @@ lapply(lop, require, character.only = TRUE)
 ```
 
 
-```{r}
-#------- Load keys -------
-
-keys_id_wdpa_bmz <- 
-  read_csv("../../yota/temp/keys_id_wdpa_bmz.csv")
-```
-
-
 ```{r psm loop}
 #------- Select years and prepare table -------
 
@@ -43,20 +35,10 @@ for (i in T_year) {
   
   #------- Load matching frames -------
   #file <- paste0("matching_frame_",i)
-  df_unfiltered <- 
+  df <- 
     read_csv(paste("./output/matching/matching_frames/matching_frame_",i,".csv", sep = "")) %>% 
     select(id, poly_id, treatment, everything())
   #assign(file, df)
-  
-  # delete polygons with falsely assigned treatment status: delete this chunk when using new data
-  treated_ids_df <- keys_id_wdpa_bmz %>% 
-    filter(first_year == i) %>%
-    distinct(poly_id)
-  
-  treated_ids <- treated_ids_df$poly_id
-  
-  df <- df_unfiltered %>% 
-    filter((treatment == 0) | (treatment == 1 & (poly_id %in% treated_ids)))
   
   # skip to next iteration if no treatment polygons
   if (nrow(subset(df, df$treatment == 1))==0) {
