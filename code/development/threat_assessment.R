@@ -1,3 +1,7 @@
+## Development code for threat assessments
+# Author: Johannes Schielein
+
+# load libraries and set session options. 
 library("tidyverse")
 library("sf")
 library("leaflet")
@@ -6,11 +10,14 @@ library("leaflet.extras2")
 library("ggsci")
 library("scales")
 library("htmltools")
+library("RColorBrewer")
+library("plotly")
+options(scipen=10000)
 
 # ----- load and transform protected areas data -----
 ##  Protected areas
 wdpa_kfw<-
-  read_sf("~/shared/datalake/mapme.protectedareas/input/wdpa_kfw/wdpa_kfw_spatial_latinamerica_2021-02-01_supportedPAs_unique.gpkg")
+  read_sf("~/shared/datalake/mapme.protectedareas/input/wdpa_kfw/wdpa_kfw_spatial_latinamerica_2021-02-01_supportedPAs_unique_simplified.gpkg")
 
 ## create column for area coloring based on categories
 wdpa_kfw$REP_AREA_cat<-
@@ -21,7 +28,8 @@ wdpa_kfw$REP_AREA_cat<-
 # ----- load loss data and prepare for mapping -----
 ## loss statistics
 gfw_lossstats<-
-  read_csv("../../datalake/mapme.protectedareas/output/polygon/global_forest_watch/zonal_statistics_allPAs_long_temporal.csv")
+  read_csv("../../datalake/mapme.protectedareas/output/polygon/global_forest_watch/zonal_statistics_allPAs_long_temporal.csv",
+           col_types = c("cfid"))
 
 ## filter for area only
 gfw_lossstats <-
@@ -30,7 +38,7 @@ gfw_lossstats <-
 
 ## load spatial data
 wdpa_allPAs<-
-  st_read("../../datalake/mapme.protectedareas/input/wdpa_kfw/wdpa_kfw_spatial_latinamerica_2021-04-22_allPAs_valid.gpkg")
+  st_read("../../datalake/mapme.protectedareas/input/wdpa_kfw/wdpa_kfw_spatial_latinamerica_2021-04-22_allPAs_valid_simplified.gpkg")
 
 ## check if wdpa ids from loss statistics are contained in spatial data
 table(unique(gfw_lossstats$WDPA_PID)%in%wdpa_allPAs$WDPA_PID) # all but one
@@ -75,7 +83,6 @@ wdpa_allPAs$relative_loss_categorized <-
     labels = c("0-2 %", "2-5 %", "5-10 %", "10-20 %",">20 %")
   )
 
-
 ## categorize absolute loss by meaningfull and pretty breaks 
 wdpa_allPAs$absolute_loss_categorized <-
   cut(
@@ -97,7 +104,8 @@ wdpa_nonSupportPA<-wdpa_allPAs %>%
   filter(GEOMETRY_TYPE != 'POINT') %>% 
   filter(is.na(bmz_n_1)==TRUE) 
 
-## ----- create color pallets for the plots -----
+
+# ----- create color pallets for the map -----
 # create colorramp function for area
 # pal_relative_loss <- colorFactor(
 #   palette = pal_ucscgb()(length(unique(wdpa_allPAs$relative_loss_categorized))),
@@ -123,12 +131,6 @@ pal_country <- colorFactor(
   domain = wdpa_kfw$ISO3
 )
 
-# create colorramp2
-# pal_treatment <- colorFactor(
-#   palette = c("darkblue","orange"),
-#   domain = matched_data_merged$treat_ever
-# )
-
 ## add label string for map display 
 wdpa_allPAs_lossdata$label <- 
   with(wdpa_allPAs_lossdata, paste(
@@ -137,6 +139,16 @@ wdpa_allPAs_lossdata$label <-
   "Absolute Loss (2000-2020):",round(absolute_loss,digits=0)," ha", "</br>",
   "Relative Loss (2000-2020):", round(relative_loss*100,digits=2)," %:",
   "</p>"))
+
+# # add variable for treatment
+# wdpa_allPAs_lossdata$treated<-
+#   ifelse(!is.na(wdpa_allPAs_lossdata$bmz_n_1),"Supported", "Non-Supported")
+# 
+# # add color pal for treatment
+# pal_treatment <- colorFactor(
+#   palette = c(NA,"#2b8cbe"),
+#   domain = wdpa_allPAs_lossdata$treated
+# )
 
 # ----- create map -----
 my_map <-
@@ -159,7 +171,7 @@ my_map <-
     attribution = "Hansen, M. C., P. V. Potapov, R. Moore, M. Hancher, S. A. Turubanova, A. Tyukavina, D. Thau, S. V. Stehman, S. J. Goetz, T. R. Loveland, A. Kommareddy, A. Egorov, L. Chini, C. O. Justice, and J. R. G. Townshend. 2013. “High-Resolution Global Maps of 21st-Century Forest Cover Change.” Science 342 (15 November): 850–53. Data available on-line from: http://earthenginepartners.appspot.com/science-2013-global-forest."
   ) %>%
   # add own polygon data
-  addPolygons(data = wdpa_kfw,opacity = 0.9,color = "orange", group = "PAs KfW-supported",label = ~htmlEscape(NAME),weight = 1)%>%
+  addPolygons(data = wdpa_kfw,opacity = 0.9,color = "#2b8cbe", group = "PAs KfW-supported",label = ~htmlEscape(NAME),weight = 1)%>%
   addPolygons(data = wdpa_nonSupportPA,opacity = 0.7,color = "darkgrey", group = "PAs (Others)",label = ~htmlEscape(NAME),weight = 1)%>%
   # add own forest loss data as circles
   addCircleMarkers(data=wdpa_allPAs_lossdata,
@@ -175,17 +187,18 @@ my_map <-
                    popup = ~label,
                    stroke = FALSE, 
                    fillOpacity = 0.5
-                   ) %>%
+  ) %>%
   # add fullscreen control
   addFullscreenControl() %>%
-  # add legent for area
+  # add legend(s)
   addLegend("bottomright",
             data = wdpa_allPAs,
             pal = pal_relative_loss,
             values = ~relative_loss_categorized,
             title = "Relative Forest Loss (2001-2020)",
             opacity = 1,
-            group = "PA Area Size") %>% 
+            group = "PA Area Size") %>%
+  
   # add layers control to define how and where data is displayed.
   addLayersControl(
     baseGroups = c("CartoDB","OpenStreetMap","Satellite","Topography","Nightlights"), #"Toner",,"Regional Primary Forests (2001)"
@@ -195,20 +208,307 @@ my_map <-
   hideGroup(group = c("PA Area Size","Forest Cover Loss (2001-2020)", "Regional Primary Forests (2001)"))
 
 my_map
+# ----- create horizontal lollipop plots for top loss areas -----
+lossdata_lollipop_plot <-
+  wdpa_allPAs_lossdata %>%
+  top_n(30, wdpa_allPAs_lossdata$absolute_loss) %>%
+  # arrange(desc(absolute_loss)) %>%
+  ggplot() +
+  geom_point(aes(
+    x = reorder(NAME,-absolute_loss),
+    y = absolute_loss,
+    color = factor(bmz_n_1),
+    text = paste(
+      "Area Name: ", NAME,
+      "\nForest cover loss: ", round(absolute_loss,digits = 0), " ha",
+      "\nBMZ-Number: ", bmz_n_1)
+  )) +
+  geom_segment(aes(
+    x = reorder(NAME,-absolute_loss),
+    xend = reorder(NAME,-absolute_loss),
+    y = 0,
+    yend = absolute_loss,
+    color = factor(bmz_n_1),
+    text = paste(
+      "Area Name: ", NAME,
+      "\nForest cover loss: ", round(absolute_loss,digits = 0), " ha",
+      "\nBMZ-Number: ", bmz_n_1)
+  )) +
+  coord_flip() +
+  labs(x="", y="Absolute Forest Cover Loss in ha (2000-2020)", color = "Project Number")+
+  theme_classic()
 
-# ---- create horizontal barplot for 50 top absolute loss -----
-
-wdpa_allPAs_lossdata$absolute_loss
+ggplotly(lossdata_lollipop_plot,tooltip = "text")
 
 
-wdpa_allPAs_lossdata %>%
-  top_n(20, wdpa_allPAs_lossdata$absolute_loss) %>% 
-  # arrange(desc(absolute_loss)) %>% 
-  ggplot()+
-  geom_bar(aes(x=reorder(NAME,-absolute_loss), y=absolute_loss,
-               fill=PARENT_ISO,color=factor(bmz_n_1)),stat="identity",size = 1.1)+
-  coord_flip()
+# ----- filter data -----
+# filter data for seperate display of jitters
+wdpa_allPAs_lossdata$treated<-
+  ifelse(is.na(wdpa_allPAs_lossdata$bmz_n_1)==TRUE,0,1)
+
+wdpa_allPAs_lossdata_treated<-
+  wdpa_allPAs_lossdata %>%
+  filter(treated==1)
+# ----- crosstables for relative and absolute loss -----
+library("knitr")
+# create absolute loss table
+loss_data_summarycats_absolute <-
+  wdpa_allPAs_lossdata %>%
+  filter(treated == 0) %>%
+  {
+    round(table(.$absolute_loss_categorized) / nrow(.) * 100, digits = 2)
+  } %>%
+  as.data.frame() %>%
+  rename("Absolute Forst Loss (ha)" = Var1, "% of all PAs" = Freq) 
+
+loss_data_summarycats_absolute$`% of KfW Supported PAs` <-
+  wdpa_allPAs_lossdata %>%
+  filter(treated == 1) %>%
+  {
+    round(table(.$absolute_loss_categorized) / nrow(.) * 100, digits = 2)
+  } %>%
+  as.data.frame() %>%
+  rename("Absolute Forst Loss (ha)" = Var1,
+         "% of KfW Supported PAs" = Freq) %>%
+  pull("% of KfW Supported PAs")
+
+kable(loss_data_summarycats_absolute)
+
+# create relative loss table
+loss_data_summarycats_relative <-
+  wdpa_allPAs_lossdata %>%
+  filter(treated == 0) %>%
+  {
+    round(table(.$relative_loss_categorized) / nrow(.) * 100, digits = 2)
+  } %>%
+  as.data.frame() %>%
+  rename("Relative Forst Loss" = Var1, "% of all PAs" = Freq) 
+
+loss_data_summarycats_relative$`% of KfW Supported PAs` <-
+  wdpa_allPAs_lossdata %>%
+  filter(treated == 1) %>%
+  {
+    round(table(.$relative_loss_categorized) / nrow(.) * 100, digits = 2)
+  } %>%
+  as.data.frame() %>%
+  rename("Relative Forst Loss (ha)" = Var1,
+         "% of KfW Supported PAs" = Freq) %>%
+  pull("% of KfW Supported PAs")
+
+kable(loss_data_summarycats_relative)
+
+# ----- jitter plots absolute loss -----
+# create plot
+lossdata_absolute_jitter_plot <-
+  wdpa_allPAs_lossdata %>%
+  filter(treated == 0) %>%
+  ggplot() +
+  geom_jitter(
+    aes(
+    x = ISO3,
+    y = absolute_loss,
+    color = factor(ISO3),
+    text = paste(
+      "Area Name: ", NAME,
+      "\nAbsolute forest loss: ", round(absolute_loss,digits = 0), " ha",
+      "\nRelative forest loss: ", round(relative_loss,digits = 2)*100, " %",
+      "\nBMZ-Number: ", bmz_n_1)
+    ),
+    alpha = .8) +
+  geom_jitter(
+    data = wdpa_allPAs_lossdata_treated,
+    aes(x = ISO3, 
+        y = absolute_loss,
+        text = paste(
+          "Area Name: ", NAME,
+          "\nAbsolute forest loss: ", round(absolute_loss,digits = 0), " ha",
+          "\nRelative forest loss: ", round(relative_loss,digits = 2)*100, " %",
+          "\nBMZ-Number: ", bmz_n_1)),
+    color = "black",
+    alpha = .8
+  )+
+  labs(color="Country",x="")+
+  scale_y_continuous(labels=function(x) format(x, big.mark = ",", scientific = FALSE),name="Forest Loss in ha")+
+  theme_classic()
+
+ggplotly(lossdata_absolute_jitter_plot,tooltip = "text")
+
+# ----- jitter plots relative loss -----
+# create plot
+lossdata_relative_jitter_plot <-
+  wdpa_allPAs_lossdata %>%
+  filter(treated == 0) %>%
+  ggplot() +
+  geom_jitter(
+    aes(
+      x = ISO3,
+      y = relative_loss,
+      color = factor(ISO3),
+      text = paste(
+        "Area Name: ", NAME,
+        "\nAbsolute forest loss: ", round(absolute_loss,digits = 0), " ha",
+        "\nRelative forest loss: ", round(relative_loss,digits = 2)*100, " %",
+        "\nBMZ-Number: ", bmz_n_1)
+    ),
+    alpha = .8) +
+  geom_jitter(
+    data = wdpa_allPAs_lossdata_treated,
+    aes(x = ISO3, 
+        y = relative_loss,
+        text = paste(
+          "Area Name: ", NAME,
+          "\nAbsolute forest loss: ", round(absolute_loss,digits = 0), " ha",
+          "\nRelative forest loss: ", round(relative_loss,digits = 2)*100, " %",
+          "\nBMZ-Number: ", bmz_n_1)),
+    color = "black",
+    alpha = .8
+  )+
+  labs(color="Country",x="")+
+  scale_y_continuous(labels = scales::percent,name="Relative forest Loss")+
+  theme_classic()
+
+ggplotly(lossdata_relative_jitter_plot,tooltip = "text")
 
 
-wdpa_allPAs_lossdata
+
+
+# ----- coplot relative and absolute loss -----
+coplot_loss <-
+  wdpa_allPAs_lossdata %>%
+  ggplot() +
+  geom_point(aes(relative_loss, absolute_loss, color = factor(treated)), alpha =
+               0.5)
+
+ggplotly(coplot_loss)
+
+# ----- lineplots for selected countries -----
+# ----- absolute loss lineplot -----
+## loss statistics
+gfw_lossstats2<-
+  read_csv("../../datalake/mapme.protectedareas/output/polygon/global_forest_watch/zonal_statistics_allPAs_long_temporal.csv",
+           col_types = c("cfid"))
+
+## filter for area only
+gfw_lossstats2 <-
+  gfw_lossstats2 %>%
+  filter(name == "loss")%>%
+  filter(WDPA_PID %in% wdpa_allPAs_lossdata$WDPA_PID) # indirectly filter MAB regions and invalid geometries out (see code above)
+
+gfw_lossstats_lineplot <-
+  merge(gfw_lossstats2,
+        st_drop_geometry(wdpa_kfw),
+        by.x = "WDPA_PID",
+        by.y = "WDPA_PID")
+
+gfw_lossstats_lineplot_all <-
+  merge(gfw_lossstats2,
+        st_drop_geometry(wdpa_allPAs),
+        by.x = "WDPA_PID",
+        by.y = "WDPA_PID")
+
+
+# create data
+gfw_lossstats_lineplot<-
+  gfw_lossstats_lineplot %>% 
+  select(WDPA_PID,name,year,value,bmz_n_1,ISO3,NAME)
+
+
+gfw_lossstats_lineplot_all<-
+  gfw_lossstats_lineplot_all %>% 
+  select(WDPA_PID,name,year,value,bmz_n_1,ISO3,NAME)
+
+# create labels for plot
+gfw_lossstats_lineplot_all$bmz_n_1_labeled <-
+  ifelse(
+    is.na(gfw_lossstats_lineplot_all$bmz_n_1),
+    "Not Supported",
+    gfw_lossstats_lineplot_all$bmz_n_1
+  )
+# create color pallete for fill
+palette_length <-
+  gfw_lossstats_lineplot_all %>%
+  filter(ISO3 == "NIC") %>%
+  {
+    unique(.$bmz_n_1_labeled)
+  } %>%
+  length()
+
+palette_lineplot<-
+  c(brewer.pal(palette_length-1,"Set1"),"grey80")
+
+# create lineplot
+lossdata_absolute_lineplot <-
+  gfw_lossstats_lineplot_all %>%
+  filter(ISO3 == "NIC") %>%
+  ggplot() +
+  geom_line(aes(x=year,
+                y=value,
+                group=factor(WDPA_PID),
+                color=factor(bmz_n_1_labeled),
+                text = paste(
+                  "Area Name: ", NAME,
+                  "\nYear: ", year,
+                  #"\nRelative forest loss: ", round(relative_loss,digits = 2)*100, " %",
+                  "\nBMZ-Number: ", bmz_n_1)) ,alpha=0.4)+
+  labs(x="",title="Absolut Forest Loss in PAs in Nicaragua")+
+  scale_y_continuous(labels=function(x) format(x, big.mark = ",", scientific = FALSE),name="Forest Loss in ha")+
+  scale_color_manual(name = "Project Number",values=palette_lineplot)+
+  theme_classic()
+
+ggplotly(lossdata_absolute_lineplot,tooltip="text")
+
+# ----- lineplot with colors relative loss -----
+## loss statistics
+gfw_lossstats3<-
+  read_csv("../../datalake/mapme.protectedareas/output/polygon/global_forest_watch/zonal_statistics_allPAs_long_temporal.csv",
+           col_types = c("cfid"))
+
+## filter for area only
+gfw_lossstats3 <-
+  gfw_lossstats3 %>%
+  filter(name == "area")%>%
+  filter(WDPA_PID %in% wdpa_allPAs_lossdata$WDPA_PID)
+
+gfw_lossstats_lineplot_all_relative <-
+  merge(gfw_lossstats3,
+        st_drop_geometry(wdpa_allPAs),
+        by.x = "WDPA_PID",
+        by.y = "WDPA_PID") %>% 
+  select(WDPA_PID,name,year,value,bmz_n_1,ISO3,NAME) 
+
+gfw_lossstats_lineplot_all_relative$fc_relative <-
+  gfw_lossstats_lineplot_all_relative %>%
+  group_by(WDPA_PID) %>%
+  summarise(relative_loss = value / max(value)) %>% 
+  pull(relative_loss)
+
+
+# create labels for plot
+gfw_lossstats_lineplot_all_relative$bmz_n_1_labeled <-
+  ifelse(
+    is.na(gfw_lossstats_lineplot_all_relative$bmz_n_1),
+    "Not Supported",
+    gfw_lossstats_lineplot_all_relative$bmz_n_1
+  )
+
+# create plot
+lossdata_relative_lineplot <-
+  gfw_lossstats_lineplot_all_relative %>%
+  filter(ISO3 == "NIC") %>%
+  ggplot() +
+  geom_line(aes(x=year,
+                y=fc_relative,
+                group=factor(WDPA_PID),
+                color=factor(bmz_n_1_labeled),
+                text = paste(
+                  "Area Name: ", NAME,
+                  "\nYear: ", year,
+                  #"\nRelative forest loss: ", round(relative_loss,digits = 2)*100, " %",
+                  "\nBMZ-Number: ", bmz_n_1)) ,alpha=0.4)+
+  labs(x="",title="Relative Forest Loss in PAs in Nicaragua")+
+  scale_y_continuous(labels=scales::percent,name="Forest cover in % of base-value (2000)")+
+  scale_color_manual(name = "Project Number",values=palette_lineplot)+
+  theme_classic()
+
+ggplotly(lossdata_relative_lineplot,tooltip = "text")
 
