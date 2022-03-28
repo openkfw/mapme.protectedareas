@@ -168,7 +168,7 @@ cutoffs_list$fc_area_matchingyear <- c(0.0000,  509.4486, 1018.8973, 1528.3459, 
     
     ## Export data
     write_csv(m_data2, 
-              paste0("../../datalake/mapme.protectedareas/output/tabular/regression_input/CEM/ce_matched_panel_", i, ".csv"))
+              paste0("../../datalake/mapme.protectedareas/output/tabular/regression_input/CEM/ce_matched_data_", i, ".csv"))
     
 #  }, error=function(e){cat("ERROR :",conditionMessage(e), "\n")})
   

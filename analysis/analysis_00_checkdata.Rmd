@@ -162,9 +162,12 @@ wdpa_kfw <- left_join(wdpa_kfw, kfw_finance,
                       by=c("bmz_nummer"))
 
 ## fishnet
-fishnet <-
-  read_sf(
-    "../../datalake/mapme.protectedareas/output/polygon/sampling/fishnets/fishnet_all_update_Dec-07.gpkg")
+# fishnet <-
+#   read_sf(
+#     "../../datalake/mapme.protectedareas/output/polygon/sampling/fishnets/fishnet_all_update_Dec-07.gpkg")
+fishnet <- 
+  read_sf("../../datalake/mapme.protectedareas/processing/fishnet/honeycomb_5_sqkm_kfw.gpkg")
+
 
 # fishnet for merge
 mf_fishnet <- fishnet
@@ -175,15 +178,18 @@ T_year <- c(2006)
 
 #data before matching
 for (i in T_year) {
-  #data after matching
-  df <- 
-    read_csv(paste("./output/matching/matching_frames/matching_frame_",i,".csv", sep = ""),
-             col_types = cols(wdpa_id = col_character(),
-                              bmz_nummer = col_character())) #%>% 
-    #filter(treatment == 1)
-  # assign(file2, df2)
+  # #data after matching
+  # df <- 
+  #   read_csv(paste("./output/matching/matching_frames/matching_frame_",i,".csv", sep = ""),
+  #            col_types = cols(wdpa_id = col_character(),
+  #                             bmz_nummer = col_character())) #%>% 
+  #   #filter(treatment == 1)
+  # # assign(file2, df2)
+  # 
+  # mf_fishnet <- inner_join(mf_fishnet, df, by=c("poly_id"))
   
-  mf_fishnet <- inner_join(mf_fishnet, df, by=c("poly_id"))
+  mf_fishnet <- left_join(mf_fishnet, st_drop_geometry(wdpa_kfw)) %>% 
+    filter(matching_year == i)
   
   wdpa_kfw <- wdpa_kfw %>% 
     filter(first_year == i)
@@ -192,15 +198,15 @@ for (i in T_year) {
 mf_fishnet <- st_transform(mf_fishnet,crs = st_crs(wdpa_kfw))
 
 # Look at treated polygons only
-mf_fishnet <- mf_fishnet %>% 
-  filter(treatment.x == 1)
+# mf_fishnet <- mf_fishnet %>% 
+#   filter(treatment.x == 1)
 
 #------- Color palettes --------
 
 # create colorramp2
 pal_match <- colorFactor(
   palette = c("darkblue","green"),
-  domain = mf_fishnet$treatment.x
+  domain = mf_fishnet$treated
 )
 
 #------- Map --------
@@ -216,14 +222,14 @@ my_map_matching <-
   addProviderTiles(providers$Esri.WorldShadedRelief, group="Topography") %>%
   addProviderTiles(providers$NASAGIBS.ViirsEarthAtNight2012, group="Nightlights") %>%
   # add own data
-  addPolygons(data = wdpa_kfw,opacity = 0.9,color = "orange", group = "PA Boundaries (all years)",label = ~htmlEscape(NAME),weight = 1)%>%
-  addPolygons(data = mf_fishnet, opacity = 0.9, color = ~pal_match(treatment.x), 
+  addPolygons(data = wdpa_kfw,opacity = 0.9,color = "orange", group = "PA Boundaries",label = ~htmlEscape(NAME),weight = 1)%>%
+  addPolygons(data = mf_fishnet, opacity = 0.9, color = ~pal_match(treated), 
               group = "Treated polygons",label = ~htmlEscape(poly_id),weight = 1) %>%
   addFullscreenControl() %>%
 addLegend("bottomright",
           data = mf_fishnet,
           pal = pal_match,
-          values = ~treatment.x,
+          values = ~treated,
           # labels = c("not matched", "matched"),
           title = "Treated polygons",
           opacity = 1,
@@ -231,7 +237,7 @@ addLegend("bottomright",
 # add layers control to define which data is shown or ommited in default view
 addLayersControl(
   baseGroups = c("CartoDB","OpenStreetMap","Satellite","Topography","Nightlights"), #"Toner",,"Regional Primary Forests (2001)"
-  overlayGroups = c("PA Boundaries (all years)", "Treated polygons"),
+  overlayGroups = c("PA Boundaries", "Treated polygons"),
   options = layersControlOptions(collapsed = FALSE)) %>%
   # ommit certain layers
   hideGroup(group = c("Country","PA Area Size","Cells (Treamtent & Control) in 2015","Forest Cover Loss (2001-2020)"))
