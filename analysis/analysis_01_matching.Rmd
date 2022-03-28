@@ -25,7 +25,7 @@ lapply(lop, require, character.only = TRUE)
 ```
 
 
-```{r Propensity Score Matching}
+```{r Propensity Score Matching (PSM)}
 #------- Select years and prepare table -------
 
 # Years with matching frames. Years without treatment starting years (no BMZ number started in these years) 2003, 2017, 2018, 2020
@@ -102,5 +102,9 @@ for (i in T_year) {
   }, error=function(e){cat("ERROR :",conditionMessage(e), "\n")})
   
 }
+```
+
+```{r Coarsened Exact Matching (CEM)}
+
 ```
 
