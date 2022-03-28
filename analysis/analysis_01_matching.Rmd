@@ -6,12 +6,12 @@ output: workflowr::wflow_html
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(include = FALSE)
 knitr::opts_knit$set(root.dir = "~/shared/datalake/mapme.protectedareas")
 ```
 
 
-```{r}
+```{r include=FALSE}
 # clean workspace, set options
 rm(list=ls())
 options(scipen=999)
@@ -25,51 +25,26 @@ lapply(lop, require, character.only = TRUE)
 ```
 
 
-```{r}
-#------- Load keys -------
-
-keys_id_wdpa_bmz <- 
-  read_csv("../../yota/temp/keys_id_wdpa_bmz.csv")
-```
-
-
-```{r psm loop}
+```{r Propensity Score Matching (PSM)}
 #------- Select years and prepare table -------
 
-# Years with matching frames:
-T_year <- c(2003:2020)
+# Years with matching frames. Years without treatment starting years (no BMZ number started in these years) 2003, 2017, 2018, 2020
+T_year <- c(2004:2016, 2019)
+
 
 for (i in T_year) {
   
   #------- Load matching frames -------
   #file <- paste0("matching_frame_",i)
-  df_unfiltered <- 
+  df <- 
     read_csv(paste("./output/matching/matching_frames/matching_frame_",i,".csv", sep = "")) %>% 
     select(id, poly_id, treatment, everything())
-  #assign(file, df)
   
-  # delete polygons with falsely assigned treatment status: delete this chunk when using new data
-  treated_ids_df <- keys_id_wdpa_bmz %>% 
-    filter(first_year == i) %>%
-    distinct(poly_id)
-  
-  treated_ids <- treated_ids_df$poly_id
-  
-  df <- df_unfiltered %>% 
-    filter((treatment == 0) | (treatment == 1 & (poly_id %in% treated_ids)))
-  
-  # skip to next iteration if no treatment polygons
-  if (nrow(subset(df, df$treatment == 1))==0) {
-    # obs_table <- obs_table[,-paste0(i)]
-    next
-  }
-  
-  # Prepare df for matching (no NA allowed)
-  df_match <- df %>% 
+   df <- df %>% 
     filter(! is.na(country),
            ! is.na(clay_content_10_cm))
-  
-  #------- 3:1 NN PS matching w/ replacement and exact matching 'country'-------
+   
+  #------- NN PS matching w/ replacement and exact matching 'country'-------
   
   tryCatch({
     
@@ -83,14 +58,14 @@ for (i in T_year) {
                      fc_area_matchingyear +
                      sum_fcl_matchingyear_tmax,
                    family = binomial(link = "probit"), 
-                   data = df_match)
+                   data = df)
       
     
     stargazer(glm_out1,
               summary=TRUE,
               type="text",
               title = paste0("Probit regression for matching frame ",i),
-              out = paste0("../../yota/plots/propensity_score_matching/probit_summary_",i,".html"))
+              out = paste0("../../datalake/mapme.protectedareas/output/plots/propensity_score_matching/probit_summary_",i,".html"))
     
   
     m_out1 <- matchit(treatment ~
@@ -101,10 +76,9 @@ for (i in T_year) {
                         as.factor(country) +
                         fc_area_matchingyear +
                         sum_fcl_matchingyear_tmax,
-                      data = df_match,
+                      data = df,
                       method = "nearest",
                       replace = TRUE,
-                      ratio = 3,
                       exact = ~ as.factor(country),
                       distance = "glm", 
                       discard = "both", # common support: drop units from both groups 
@@ -128,5 +102,9 @@ for (i in T_year) {
   }, error=function(e){cat("ERROR :",conditionMessage(e), "\n")})
   
 }
+```
+
+```{r Coarsened Exact Matching (CEM)}
+
 ```
 
