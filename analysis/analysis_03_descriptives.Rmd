@@ -1,0 +1,341 @@
+---
+title: "Balance Descriptives"
+author: "Yota"
+date: "28 3 2022"
+output: workflowr::wflow_html
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir = "~/shared/datalake/mapme.protectedareas")
+```
+
+```{r include=FALSE}
+# clean workspace, set options
+rm(list=ls())
+options(scipen=999)
+options(width = 200)
+
+# get packages
+lop <- c("dplyr", "plm", "stargazer", "tidyverse", "MatchIt", "glm", "optmatch", "cobalt", "gridExtra")
+newp <- lop[!(lop %in% installed.packages()[,"Package"])]
+if(length(newp)) install.packages(newp)
+lapply(lop, require, character.only = TRUE)
+
+```
+
+<style>
+pre {
+  overflow-x: auto;
+}
+pre code {
+  word-wrap: normal;
+  white-space: pre;
+}
+</style>
+
+## Number of observations
+
+```{r observations table, echo=FALSE}
+
+# Years with matching frames. Years without treatment starting years (no BMZ number started in these years) 2003, 2017, 2018, 2020
+T_year <- c(2004:2016, 2019)
+
+obs_table <- matrix(, nrow = 11, ncol = length(T_year))
+colnames(obs_table) <- T_year
+rownames(obs_table) <- c("MF obs total", "MF obs treat", "MF obs control",
+                         "After CEM",
+                         "CEM obs total", "CEM obs treat", "CEM obs control",
+                         "After PSM",
+                         "PSM obs total", "PSM obs treat", "PSM obs control")
+
+# Add lines to separation lines 
+obs_table[4,] <- rep(" ", length(T_year))
+obs_table[8,] <- rep(" ", length(T_year))
+
+for (i in T_year) {
+  
+  m_out1 <- readRDS(paste0("./output/matching/matchit_objects/CEM/m_cem_", i, ".rds"))
+  bal_table <- bal.tab(m_out1, un = TRUE)
+  
+  # add to obs table (all cells)
+  obs_table[1,paste0(i)] <- bal_table$Observations[1,1] + bal_table$Observations[1,2]
+  obs_table[2,paste0(i)] <- bal_table$Observations[1,2]
+  obs_table[3,paste0(i)] <- bal_table$Observations[1,1]
+  
+  # CEM 
+  obs_table[5,paste0(i)] <- bal_table$Observations[3,1] + bal_table$Observations[3,2]
+  obs_table[6,paste0(i)] <- bal_table$Observations[3,2]
+  obs_table[7,paste0(i)] <- bal_table$Observations[3,1]
+  
+  m_out1 <- readRDS(paste0("./output/matching/matchit_objects/PSM/m_psm_", i, ".rds"))
+  bal_table <- bal.tab(m_out1, un = TRUE)
+  
+  # PSM 
+  obs_table[9,paste0(i)] <- bal_table$Observations[3,1] + bal_table$Observations[3,2]
+  obs_table[10,paste0(i)] <- bal_table$Observations[3,2]
+  obs_table[11,paste0(i)] <- bal_table$Observations[3,1]
+}
+
+
+```
+
+```{r obs table, R.options = list(width = 200), echo=FALSE}
+stargazer(obs_table,
+          summary=FALSE,
+          type="text",
+          title = paste0("Number of observations after before and after CEM and PSM, respectively"))
+```
+
+
+```{r function for plots,echo=FALSE}
+
+build_plots_psm <- function(year) {
+  
+  # read matchit object
+  m_out1 <- readRDS(paste0("./output/matching/matchit_objects/PSM/m_psm_", year, ".rds"))
+  
+  # Balance table
+  bal_table <- bal.tab(m_out1, un = TRUE)
+  stargazer(bal_table$Balance,
+          summary=FALSE,
+          type="text",
+          title = paste0("Balance before and after PSM for matching frame ", year))
+  
+  # Love plot
+  plot_love <- love.plot(m_out1, binary = "std")
+  
+  # Balance plot (density)
+  ### Travel time
+  plot_tt <- bal.plot(m_out1, var.name = "travel_time_to_nearby_cities_min_5k_100mio", which = "both")
+  ### Clay content
+  plot_cc <- bal.plot(m_out1, var.name = "clay_content_10_cm", which = "both")
+  ### Terrain ruggedness
+  plot_tr <- bal.plot(m_out1, var.name = "terrain_ruggedness_index_mean", which = "both")
+  ### Elevation mean
+  plot_em <- bal.plot(m_out1, var.name = "elevation_mean", which = "both")
+  ### FC area matchingyear
+  plot_fcarea <- bal.plot(m_out1, var.name = "fc_area_matchingyear", which = "both")
+  ### Sum FC losses (tmax)
+  plot_sumfcl <- bal.plot(m_out1, var.name = "sum_fcl_matchingyear_tmax", which = "both") +
+    xlim(0,1000)
+  
+  plot(plot_love)
+  plot(plot_tt)
+  plot(plot_cc)
+  plot(plot_tr)
+  plot(plot_em)
+  plot(plot_fcarea)
+  plot(plot_sumfcl)
+}
+
+build_plots_cem <- function(year) {
+  
+  # read matchit object
+  m_out1 <- readRDS(paste0("./output/matching/matchit_objects/CEM/m_cem_", year, ".rds"))
+  
+  # Balance table
+  bal_table <- bal.tab(m_out1, un = TRUE)
+  stargazer(bal_table$Balance,
+          summary=FALSE,
+          type="text",
+          title = paste0("Balance before and after CEM for matching frame ", year))
+  
+  # Love plot
+  plot_love <- love.plot(m_out1, binary = "std")
+  
+  # Balance plot (density)
+  ### Travel time
+  plot_tt <- bal.plot(m_out1, var.name = "travel_time_to_nearby_cities_min_5k_100mio", which = "both")
+  ### Clay content
+  plot_cc <- bal.plot(m_out1, var.name = "clay_content_10_cm", which = "both")
+  ### Terrain ruggedness
+  plot_tr <- bal.plot(m_out1, var.name = "terrain_ruggedness_index_mean", which = "both")
+  ### Elevation mean
+  plot_em <- bal.plot(m_out1, var.name = "elevation_mean", which = "both")
+  ### FC area matchingyear
+  plot_fcarea <- bal.plot(m_out1, var.name = "fc_area_matchingyear", which = "both")
+  ### Sum FC losses (tmax)
+  plot_sumfcl <- bal.plot(m_out1, var.name = "sum_fcl_matchingyear_tmax", which = "both")
+  
+  plot(plot_love)
+  plot(plot_tt)
+  plot(plot_cc)
+  plot(plot_tr)
+  plot(plot_em)
+  plot(plot_fcarea)
+  plot(plot_sumfcl)
+}
+
+```
+
+
+## Matching frame 2004
+
+### CEM
+```{r}
+build_plots_cem(2004)
+```
+
+### PSM
+```{r}
+build_plots_psm(2004)
+```
+
+
+## Matching frame 2005
+
+### CEM
+```{r}
+build_plots_cem(2005)
+```
+
+### PSM
+```{r}
+build_plots_psm(2005)
+```
+
+## Matching frame 2006
+
+### CEM
+```{r}
+build_plots_cem(2006)
+```
+
+### PSM
+```{r}
+build_plots_psm(2006)
+```
+
+## Matching frame 2007
+
+### CEM
+```{r}
+build_plots_cem(2007)
+```
+
+### PSM
+```{r}
+build_plots_psm(2007)
+```
+
+## Matching frame 2008
+
+### CEM
+```{r}
+build_plots_cem(2008)
+```
+
+### PSM
+```{r}
+build_plots_psm(2008)
+```
+
+## Matching frame 2009
+
+### CEM
+```{r}
+build_plots_cem(2009)
+```
+
+### PSM
+```{r}
+build_plots_psm(2009)
+```
+
+## Matching frame 2010
+
+### CEM
+```{r}
+build_plots_cem(2010)
+```
+
+### PSM
+```{r}
+build_plots_psm(2010)
+```
+
+## Matching frame 2011
+
+### CEM
+```{r}
+build_plots_cem(2011)
+```
+
+### PSM
+```{r}
+build_plots_psm(2011)
+```
+
+## Matching frame 2012
+
+### CEM
+```{r}
+build_plots_cem(2012)
+```
+
+### PSM
+```{r}
+build_plots_psm(2012)
+```
+
+## Matching frame 2013
+
+### CEM
+```{r}
+build_plots_cem(2013)
+```
+
+### PSM
+```{r}
+build_plots_psm(2013)
+```
+
+## Matching frame 2014
+
+### CEM
+```{r}
+build_plots_cem(2014)
+```
+
+### PSM
+```{r}
+build_plots_psm(2014)
+```
+
+## Matching frame 2015
+
+### CEM
+```{r}
+build_plots_cem(2015)
+```
+
+### PSM
+```{r}
+build_plots_psm(2015)
+```
+
+## Matching frame 2016
+
+### CEM
+```{r}
+build_plots_cem(2016)
+```
+
+### PSM
+```{r}
+build_plots_psm(2016)
+```
+
+
+## Matching frame 2019
+
+### CEM
+```{r}
+build_plots_cem(2019)
+```
+
+### PSM
+```{r}
+build_plots_psm(2019)
+```
