@@ -31,7 +31,7 @@ lapply(lop, require, character.only = TRUE)
 # Years with matching frames. Years without treatment starting years (no BMZ number started in these years) 2003, 2017, 2018, 2020
 T_year <- c(2004:2016, 2019)
 
-T_year <- c(2015)
+# T_year <- c(2015)
 for (i in T_year) {
   
   #------- Load matching frames -------
@@ -65,7 +65,7 @@ for (i in T_year) {
               summary=TRUE,
               type="text",
               title = paste0("Probit regression for matching frame ",i),
-              out = paste0("../../datalake/mapme.protectedareas/output/plots/propensity_score_matching/probit_summary_",i,".html"))
+              out = paste0("/output/plots/propensity_score_matching/probit_summary_",i,".html"))
     
   
     m_out1 <- matchit(treatment ~
@@ -83,6 +83,9 @@ for (i in T_year) {
                       distance = "glm", 
                       discard = "both", # common support: drop units from both groups 
                       link = "probit")
+    
+    # Save matchit object
+    saveRDS(m_out1, paste0("./output/matching/matchit_objects/PSM/m_psm_", i, ".rds"))
     
     print(m_out1)
     print(summary(m_out1, un = FALSE))
@@ -107,7 +110,7 @@ for (i in T_year) {
 ```{r Coarsened Exact Matching (CEM), echo=TRUE}
 # Years with matching frames. Years without treatment starting years (no BMZ number started in these years) 2003, 2017, 2018, 2020
 T_year <- c(2004:2016, 2019)
-T_year <- c(2015)
+# T_year <- c(2015)
 
 
 
@@ -154,6 +157,9 @@ cutoffs_list$fc_area_matchingyear <- c(0.0000,  509.4486, 1018.8973, 1528.3459, 
                       data = df_match,
                       method = "cem",
                       cutpoints = cutoffs_list)
+
+    # Save matchit object
+    saveRDS(m_out2, paste0("./output/matching/matchit_objects/CEM/m_cem_", i, ".rds"))
     
     # Matching summary
     print(m_out2)
