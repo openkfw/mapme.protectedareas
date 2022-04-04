@@ -381,7 +381,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2022-03-29
+<strong>Last updated:</strong> 2022-04-02
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 1
@@ -405,7 +405,7 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 </div>
 <div id="strongRMarkdownfilestronguncommittedchanges" class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown is untracked by Git. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
+<p>The R Markdown file has unstaged changes. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
 </div>
 </div>
 </div>
@@ -472,16 +472,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastreed599d3a30d41c642a73584ecbfbe2aec605ef567targetblankd599d3aa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/openkfw/mapme.protectedareas/tree/d599d3a30d41c642a73584ecbfbe2aec605ef567" target="_blank">d599d3a</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastree8e7b0527e127d0c878657a71dd185f47116e5f2ftargetblank8e7b052a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/openkfw/mapme.protectedareas/tree/8e7b0527e127d0c878657a71dd185f47116e5f2f" target="_blank">8e7b052</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastreed599d3a30d41c642a73584ecbfbe2aec605ef567targetblankd599d3aa" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastree8e7b0527e127d0c878657a71dd185f47116e5f2ftargetblank8e7b052a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/openkfw/mapme.protectedareas/tree/d599d3a30d41c642a73584ecbfbe2aec605ef567" target="_blank">d599d3a</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/openkfw/mapme.protectedareas/tree/8e7b0527e127d0c878657a71dd185f47116e5f2f" target="_blank">8e7b052</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -494,10 +494,12 @@ Ignored files:
 
 Untracked files:
     Untracked:  Rplot.pdf
-    Untracked:  analysis/analysis_03_descriptives.Rmd
 
 Unstaged changes:
+    Modified:   analysis/analysis_00_checkdata.Rmd
     Modified:   analysis/analysis_01_matching.Rmd
+    Modified:   analysis/analysis_02_createpanel.Rmd
+    Modified:   analysis/analysis_03_descriptives.Rmd
 
 </code></pre>
 <p>
@@ -510,9 +512,69 @@ Note that any generated files, e.g. HTML, png, CSS, etc., are not included in t
 <hr>
 </div>
 <div id="versions" class="tab-pane fade">
+
 <p>
-There are no past versions. Publish this analysis with <code>wflow_publish()</code> to start tracking its development.
+These are the previous versions of the repository in which changes were made to the R Markdown (<code>analysis/analysis_03_descriptives.Rmd</code>) and HTML (<code>docs/analysis_03_descriptives.html</code>) files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view the files as they were in that past version.
 </p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/8e7b0527e127d0c878657a71dd185f47116e5f2f/analysis/analysis_03_descriptives.Rmd" target="_blank">8e7b052</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-03-29
+</td>
+<td>
+updates and create descriptives script
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/openkfw/mapme.protectedareas/8e7b0527e127d0c878657a71dd185f47116e5f2f/docs/analysis_03_descriptives.html" target="_blank">8e7b052</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-03-29
+</td>
+<td>
+updates and create descriptives script
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 <hr>
 </div>
 </div>
@@ -526,992 +588,838 @@ pre code {
   white-space: pre;
 }
 </style>
-<div id="number-of-observations" class="section level2">
-<h2>Number of observations</h2>
 <pre><code>
 Number of observations after before and after CEM and PSM, respectively
-=================================================================================================================
-                 2004   2005   2006   2007   2008   2009   2010   2011   2012   2013   2014   2015   2016   2019 
------------------------------------------------------------------------------------------------------------------
-MF obs total    118125 118129 118350 118271 118197 118277 118171 118130 118162 118133 118124 121730 118153 118165
-MF obs treat     1277   1281   1502   1423   1346   1370   1323   1282   1314   1285   1276   4882   1305   1312 
-MF obs control  116848 116848 116848 116848 116851 116907 116848 116848 116848 116848 116848 116848 116848 116853
-After CEM                                                                                                        
-CEM obs total    6032   6032   8722   6642   6475   6198   6185   5977   5988   5989   5991  12276   6039   5950 
-CEM obs treat    984    985    1153   1094   1033   1064   1009   983    988    987    985    4155   996    990  
-CEM obs control  5048   5047   7569   5548   5442   5134   5176   4994   5000   5002   5006   8121   5043   4960 
-After PSM                                                                                                        
-PSM obs total    2251   2232   2729   2488   2368   2437   2333   2245   2356   2257   2246   7964   2317   2309 
-PSM obs treat    1272   1276   1490   1417   1343   1368   1319   1276   1303   1280   1271   4730   1299   1303 
-PSM obs control  979    956    1239   1071   1025   1069   1014   969    1053   977    975    3234   1018   1006 
------------------------------------------------------------------------------------------------------------------</code></pre>
-</div>
+===============================================================================================================================
+                 2004    2005    2006    2007    2008    2009    2010    2011    2012    2013    2014    2015    2016    2019  
+-------------------------------------------------------------------------------------------------------------------------------
+MF obs total    2690829 2690935 2697807 2695269 2694424 2691624 2692271 2691108 2692513 2690958 2690666 2795667 2692994 2692307
+MF obs treat      291     397    7269    4731    3886    1086    1733     570    1975     420     128   105129   2456    1769  
+MF obs control  2690538 2690538 2690538 2690538 2690538 2690538 2690538 2690538 2690538 2690538 2690538 2690538 2690538 2690538
+After CEM                                                                                                                      
+CEM obs total   235849  242316  188664  614415  287947   13255  407637   8395    82154   76515   61348  1471481 667595   17472 
+CEM obs treat     291     397    7112    4442    3773     961    1732     547    1923     412     128   104944   2456    1375  
+CEM obs control 235558  241919  181552  609973  284174   12294  405905   7848    80231   76103   61220  1366537 665139   16097 
+After PSM                                                                                                                      
+PSM obs total     575     789    13917   8920    7579    1865    3448    1068    3664     797     251   197059   4814    2702  
+PSM obs treat     291     397    7269    4634    3855    1086    1733     565    1975     420     128   105129   2456    1712  
+PSM obs control   284     392    6648    4286    3724     779    1715     503    1689     377     123    91930   2358     990  
+-------------------------------------------------------------------------------------------------------------------------------</code></pre>
 <div id="matching-frame-2004" class="section level2">
 <h2>Matching frame 2004</h2>
-<div id="cem" class="section level3">
-<h3>CEM</h3>
-<pre class="r"><code>build_plots_cem(2004)</code></pre>
 <pre><code>
-Balance before and after CEM for matching frame 2004
-===================================================================
-                                            Type   Diff.Un Diff.Adj
--------------------------------------------------------------------
-travel_time_to_nearby_cities_min_5k_100mio Contin.  1.048   0.068  
-clay_content_10_cm                         Contin. -0.343   0.007  
-terrain_ruggedness_index_mean              Contin. -0.552   -0.105 
-elevation_mean                             Contin. -0.727   0.028  
-as.factor(country)_Belize                  Binary  -0.0004    0    
-as.factor(country)_Bolivia                 Binary   0.380     0    
-as.factor(country)_Brazil                  Binary  -0.062     0    
-as.factor(country)_Colombia                Binary  -0.073     0    
-as.factor(country)_Dominican Republic      Binary   0.009     0    
-as.factor(country)_Ecuador                 Binary  -0.015     0    
-as.factor(country)_El Salvador             Binary  -0.001     0    
-as.factor(country)_Guatemala               Binary  -0.004     0    
-as.factor(country)_Guyana                  Binary  -0.017     0    
-as.factor(country)_Honduras                Binary   0.038     0    
-as.factor(country)_Mexico                  Binary  -0.166     0    
-as.factor(country)_Nicaragua               Binary  -0.007     0    
-as.factor(country)_Panama                  Binary  -0.003     0    
-as.factor(country)_Peru                    Binary  -0.078     0    
-fc_area_matchingyear                       Contin.  2.932   -0.033 
-sum_fcl_matchingyear_tmax                  Contin. -1.133   -0.013 
--------------------------------------------------------------------</code></pre>
-<p><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-2-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-2-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-2-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-2-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-2-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-2-7.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
-<div id="psm" class="section level3">
-<h3>PSM</h3>
-<pre class="r"><code>build_plots_psm(2004)</code></pre>
-<pre><code>
-Balance before and after PSM for matching frame 2004
-====================================================================
-                                             Type   Diff.Un Diff.Adj
---------------------------------------------------------------------
-distance                                   Distance  1.527   0.013  
-travel_time_to_nearby_cities_min_5k_100mio Contin.   1.048   0.050  
-clay_content_10_cm                         Contin.  -0.343   -0.054 
-terrain_ruggedness_index_mean              Contin.  -0.552   -0.058 
-elevation_mean                             Contin.  -0.727   0.054  
-as.factor(country)_Belize                   Binary  -0.0004    0    
-as.factor(country)_Bolivia                  Binary   0.380     0    
-as.factor(country)_Brazil                   Binary  -0.062     0    
-as.factor(country)_Colombia                 Binary  -0.073     0    
-as.factor(country)_Dominican Republic       Binary   0.009     -0   
-as.factor(country)_Ecuador                  Binary  -0.015     0    
-as.factor(country)_El Salvador              Binary  -0.001     0    
-as.factor(country)_Guatemala                Binary  -0.004     0    
-as.factor(country)_Guyana                   Binary  -0.017     0    
-as.factor(country)_Honduras                 Binary   0.038     0    
-as.factor(country)_Mexico                   Binary  -0.166     0    
-as.factor(country)_Nicaragua                Binary  -0.007     0    
-as.factor(country)_Panama                   Binary  -0.003     0    
-as.factor(country)_Peru                     Binary  -0.078     0    
-fc_area_matchingyear                       Contin.   2.932   -0.118 
-sum_fcl_matchingyear_tmax                  Contin.  -1.133   0.012  
---------------------------------------------------------------------</code></pre>
-<p><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-3-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-3-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-3-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-3-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-3-6.png" width="672" style="display: block; margin: auto;" /></p>
-<pre><code>Warning: Removed 20289 rows containing non-finite values (stat_density).</code></pre>
-<pre><code>Warning: Removed 78 rows containing non-finite values (stat_density).</code></pre>
-<p><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-3-7.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
+Balance (raw means) before and after CEM and PSM for matching frame 2004
+=========================================================================
+                                      Type    Diff.Un  Diff.CEM  Diff.PSM
+-------------------------------------------------------------------------
+traveltime_5k_110mio                 Contin. -371.671   -6.513    9.258  
+soil_5_15cm_clay                     Contin. 1,739.185 1,134.352 -68.403 
+terrain_ruggedness_index_mean        Contin.  11.804     3.558    0.261  
+elevation_mean                       Contin.  -78.655   -24.970  -19.468 
+as.factor(NAME_0)_Belize             Binary   -0.001       0        0    
+as.factor(NAME_0)_Bolivia            Binary   -0.073       0        0    
+as.factor(NAME_0)_Brazil             Binary    0.440       0        0    
+as.factor(NAME_0)_Colombia           Binary   -0.077       0        0    
+as.factor(NAME_0)_Costa Rica         Binary   -0.004       0        0    
+as.factor(NAME_0)_Dominican Republic Binary   -0.003       0        0    
+as.factor(NAME_0)_Ecuador            Binary   -0.017       0        0    
+as.factor(NAME_0)_El Salvador        Binary   -0.001       0        0    
+as.factor(NAME_0)_Guatemala          Binary   -0.008       0        0    
+as.factor(NAME_0)_Guyana             Binary   -0.014       0        0    
+as.factor(NAME_0)_Honduras           Binary   -0.007       0        0    
+as.factor(NAME_0)_Mexico             Binary   -0.136       0        0    
+as.factor(NAME_0)_Nicaragua          Binary   -0.008       0        0    
+as.factor(NAME_0)_Panama             Binary   -0.005       0        0    
+as.factor(NAME_0)_Peru               Binary   -0.085       0        0    
+treecover                            Contin.  174.276    0.804    6.305  
+loss_t3                              Contin.   2.079     0.731    0.655  
+-------------------------------------------------------------------------
+
+Balance (standardized means) before and after CEM and PSM for matching frame 2004
+======================================================================
+                                      Type   Diff.Un Diff.CEM Diff.PSM
+----------------------------------------------------------------------
+traveltime_5k_110mio                 Contin. -5.299   -0.093   0.132  
+soil_5_15cm_clay                     Contin.  3.607   2.352    -0.142 
+terrain_ruggedness_index_mean        Contin.  1.277   0.385    0.028  
+elevation_mean                       Contin. -0.237   -0.075   -0.059 
+as.factor(NAME_0)_Belize             Binary  -0.001     0        0    
+as.factor(NAME_0)_Bolivia            Binary  -0.073     0        0    
+as.factor(NAME_0)_Brazil             Binary   0.440     0        0    
+as.factor(NAME_0)_Colombia           Binary  -0.077     0        0    
+as.factor(NAME_0)_Costa Rica         Binary  -0.004     0        0    
+as.factor(NAME_0)_Dominican Republic Binary  -0.003     0        0    
+as.factor(NAME_0)_Ecuador            Binary  -0.017     0        0    
+as.factor(NAME_0)_El Salvador        Binary  -0.001     0        0    
+as.factor(NAME_0)_Guatemala          Binary  -0.008     0        0    
+as.factor(NAME_0)_Guyana             Binary  -0.014     0        0    
+as.factor(NAME_0)_Honduras           Binary  -0.007     0        0    
+as.factor(NAME_0)_Mexico             Binary  -0.136     0        0    
+as.factor(NAME_0)_Nicaragua          Binary  -0.008     0        0    
+as.factor(NAME_0)_Panama             Binary  -0.005     0        0    
+as.factor(NAME_0)_Peru               Binary  -0.085     0        0    
+treecover                            Contin.  1.564   0.007    0.057  
+loss_t3                              Contin.  0.232   0.081    0.073  
+----------------------------------------------------------------------</code></pre>
+<pre><code>Warning: Large mean differences detected; you may not be using standardized mean differences for continuous variables.</code></pre>
+<p><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202004-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202004-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202004-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202004-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202004-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202004-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202004-7.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="matching-frame-2005" class="section level2">
 <h2>Matching frame 2005</h2>
-<div id="cem-1" class="section level3">
-<h3>CEM</h3>
-<pre class="r"><code>build_plots_cem(2005)</code></pre>
 <pre><code>
-Balance before and after CEM for matching frame 2005
-===================================================================
-                                            Type   Diff.Un Diff.Adj
--------------------------------------------------------------------
-travel_time_to_nearby_cities_min_5k_100mio Contin.  1.044   0.068  
-clay_content_10_cm                         Contin. -0.343   0.006  
-terrain_ruggedness_index_mean              Contin. -0.542   -0.105 
-elevation_mean                             Contin. -0.727   0.027  
-as.factor(country)_Belize                  Binary  -0.0004    0    
-as.factor(country)_Bolivia                 Binary   0.379     -0   
-as.factor(country)_Brazil                  Binary  -0.062     0    
-as.factor(country)_Colombia                Binary  -0.073     0    
-as.factor(country)_Dominican Republic      Binary   0.009     0    
-as.factor(country)_Ecuador                 Binary  -0.015     0    
-as.factor(country)_El Salvador             Binary  -0.001     0    
-as.factor(country)_Guatemala               Binary  -0.004     0    
-as.factor(country)_Guyana                  Binary  -0.015     0    
-as.factor(country)_Honduras                Binary   0.038     0    
-as.factor(country)_Mexico                  Binary  -0.166     0    
-as.factor(country)_Nicaragua               Binary  -0.007     0    
-as.factor(country)_Panama                  Binary  -0.003     0    
-as.factor(country)_Peru                    Binary  -0.078     0    
-fc_area_matchingyear                       Contin.  2.952   -0.032 
-sum_fcl_matchingyear_tmax                  Contin. -1.135   -0.012 
--------------------------------------------------------------------</code></pre>
-<p><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-4-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-4-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-4-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-4-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-4-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-4-7.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
-<div id="psm-1" class="section level3">
-<h3>PSM</h3>
-<pre class="r"><code>build_plots_psm(2005)</code></pre>
-<pre><code>
-Balance before and after PSM for matching frame 2005
-====================================================================
-                                             Type   Diff.Un Diff.Adj
---------------------------------------------------------------------
-distance                                   Distance  1.539   0.015  
-travel_time_to_nearby_cities_min_5k_100mio Contin.   1.044   0.049  
-clay_content_10_cm                         Contin.  -0.343   -0.022 
-terrain_ruggedness_index_mean              Contin.  -0.542   -0.037 
-elevation_mean                             Contin.  -0.727   0.073  
-as.factor(country)_Belize                   Binary  -0.0004    0    
-as.factor(country)_Bolivia                  Binary   0.379     -0   
-as.factor(country)_Brazil                   Binary  -0.062     -0   
-as.factor(country)_Colombia                 Binary  -0.073     0    
-as.factor(country)_Dominican Republic       Binary   0.009     -0   
-as.factor(country)_Ecuador                  Binary  -0.015     0    
-as.factor(country)_El Salvador              Binary  -0.001     0    
-as.factor(country)_Guatemala                Binary  -0.004     -0   
-as.factor(country)_Guyana                   Binary  -0.015     -0   
-as.factor(country)_Honduras                 Binary   0.038     0    
-as.factor(country)_Mexico                   Binary  -0.166     0    
-as.factor(country)_Nicaragua                Binary  -0.007     0    
-as.factor(country)_Panama                   Binary  -0.003     0    
-as.factor(country)_Peru                     Binary  -0.078     -0   
-fc_area_matchingyear                       Contin.   2.952   -0.115 
-sum_fcl_matchingyear_tmax                  Contin.  -1.135   0.008  
---------------------------------------------------------------------</code></pre>
-<p><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-5-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-5-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-5-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-5-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-5-6.png" width="672" style="display: block; margin: auto;" /></p>
-<pre><code>Warning: Removed 20291 rows containing non-finite values (stat_density).</code></pre>
-<pre><code>Warning: Removed 78 rows containing non-finite values (stat_density).</code></pre>
-<p><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-5-7.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
+Balance (raw means) before and after CEM and PSM for matching frame 2005
+=======================================================================
+                                      Type   Diff.Un  Diff.CEM Diff.PSM
+-----------------------------------------------------------------------
+traveltime_5k_110mio                 Contin. -154.616  -3.160   11.730 
+soil_5_15cm_clay                     Contin. 344.096  173.710   37.867 
+terrain_ruggedness_index_mean        Contin.  0.758    1.654    0.114  
+elevation_mean                       Contin. -462.210 -58.657   7.538  
+as.factor(NAME_0)_Belize             Binary   -0.001     0        0    
+as.factor(NAME_0)_Bolivia            Binary   -0.073     0        0    
+as.factor(NAME_0)_Brazil             Binary   -0.185     0        -0   
+as.factor(NAME_0)_Colombia           Binary   -0.077     0        0    
+as.factor(NAME_0)_Costa Rica         Binary   -0.004     0        0    
+as.factor(NAME_0)_Dominican Republic Binary   -0.003     0        0    
+as.factor(NAME_0)_Ecuador            Binary   -0.017     0        0    
+as.factor(NAME_0)_El Salvador        Binary   -0.001     0        0    
+as.factor(NAME_0)_Guatemala          Binary   -0.008     0        0    
+as.factor(NAME_0)_Guyana             Binary   0.611      0        0    
+as.factor(NAME_0)_Honduras           Binary   -0.007     0        0    
+as.factor(NAME_0)_Mexico             Binary   -0.136     0        0    
+as.factor(NAME_0)_Nicaragua          Binary   -0.008     0        0    
+as.factor(NAME_0)_Panama             Binary   -0.005     0        0    
+as.factor(NAME_0)_Peru               Binary   -0.085     0        0    
+treecover                            Contin. 121.664   -0.523   10.921 
+loss_t3                              Contin.  4.097    0.627    0.021  
+-----------------------------------------------------------------------
+
+Balance (standardized means) before and after CEM and PSM for matching frame 2005
+======================================================================
+                                      Type   Diff.Un Diff.CEM Diff.PSM
+----------------------------------------------------------------------
+traveltime_5k_110mio                 Contin. -0.646   -0.013   0.049  
+soil_5_15cm_clay                     Contin.  1.264   0.638    0.139  
+terrain_ruggedness_index_mean        Contin.  0.065   0.141    0.010  
+elevation_mean                       Contin. -1.463   -0.186   0.024  
+as.factor(NAME_0)_Belize             Binary  -0.001     0        0    
+as.factor(NAME_0)_Bolivia            Binary  -0.073     0        0    
+as.factor(NAME_0)_Brazil             Binary  -0.185     0        -0   
+as.factor(NAME_0)_Colombia           Binary  -0.077     0        0    
+as.factor(NAME_0)_Costa Rica         Binary  -0.004     0        0    
+as.factor(NAME_0)_Dominican Republic Binary  -0.003     0        0    
+as.factor(NAME_0)_Ecuador            Binary  -0.017     0        0    
+as.factor(NAME_0)_El Salvador        Binary  -0.001     0        0    
+as.factor(NAME_0)_Guatemala          Binary  -0.008     0        0    
+as.factor(NAME_0)_Guyana             Binary   0.611     0        0    
+as.factor(NAME_0)_Honduras           Binary  -0.007     0        0    
+as.factor(NAME_0)_Mexico             Binary  -0.136     0        0    
+as.factor(NAME_0)_Nicaragua          Binary  -0.008     0        0    
+as.factor(NAME_0)_Panama             Binary  -0.005     0        0    
+as.factor(NAME_0)_Peru               Binary  -0.085     0        0    
+treecover                            Contin.  0.777   -0.003   0.070  
+loss_t3                              Contin.  4.546   0.696    0.023  
+----------------------------------------------------------------------</code></pre>
+<p><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202005-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202005-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202005-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202005-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202005-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202005-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202005-7.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="matching-frame-2006" class="section level2">
 <h2>Matching frame 2006</h2>
-<div id="cem-2" class="section level3">
-<h3>CEM</h3>
-<pre class="r"><code>build_plots_cem(2006)</code></pre>
 <pre><code>
-Balance before and after CEM for matching frame 2006
-===================================================================
-                                            Type   Diff.Un Diff.Adj
--------------------------------------------------------------------
-travel_time_to_nearby_cities_min_5k_100mio Contin.  1.083   0.060  
-clay_content_10_cm                         Contin. -0.249   -0.001 
-terrain_ruggedness_index_mean              Contin. -0.197   -0.037 
-elevation_mean                             Contin. -0.392   0.050  
-as.factor(country)_Belize                  Binary  -0.0004    0    
-as.factor(country)_Bolivia                 Binary   0.312     0    
-as.factor(country)_Brazil                  Binary  -0.134     0    
-as.factor(country)_Colombia                Binary  -0.073     0    
-as.factor(country)_Dominican Republic      Binary   0.007     0    
-as.factor(country)_Ecuador                 Binary  -0.015     0    
-as.factor(country)_El Salvador             Binary  -0.001     0    
-as.factor(country)_Guatemala               Binary  -0.004     0    
-as.factor(country)_Guyana                  Binary  -0.017     0    
-as.factor(country)_Honduras                Binary   0.031     0    
-as.factor(country)_Mexico                  Binary  -0.166     0    
-as.factor(country)_Nicaragua               Binary  -0.007     0    
-as.factor(country)_Panama                  Binary  -0.003     0    
-as.factor(country)_Peru                    Binary   0.071     0    
-fc_area_matchingyear                       Contin.  2.630   -0.044 
-sum_fcl_matchingyear_tmax                  Contin. -1.250   -0.012 
--------------------------------------------------------------------</code></pre>
-<p><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-6-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-6-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-6-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-6-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-6-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-6-7.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
-<div id="psm-2" class="section level3">
-<h3>PSM</h3>
-<pre class="r"><code>build_plots_psm(2006)</code></pre>
-<pre><code>
-Balance before and after PSM for matching frame 2006
-====================================================================
-                                             Type   Diff.Un Diff.Adj
---------------------------------------------------------------------
-distance                                   Distance  1.408   0.002  
-travel_time_to_nearby_cities_min_5k_100mio Contin.   1.083   0.084  
-clay_content_10_cm                         Contin.  -0.249   -0.041 
-terrain_ruggedness_index_mean              Contin.  -0.197   -0.180 
-elevation_mean                             Contin.  -0.392   -0.048 
-as.factor(country)_Belize                   Binary  -0.0004    0    
-as.factor(country)_Bolivia                  Binary   0.312     -0   
-as.factor(country)_Brazil                   Binary  -0.134     -0   
-as.factor(country)_Colombia                 Binary  -0.073     0    
-as.factor(country)_Dominican Republic       Binary   0.007     -0   
-as.factor(country)_Ecuador                  Binary  -0.015     0    
-as.factor(country)_El Salvador              Binary  -0.001     0    
-as.factor(country)_Guatemala                Binary  -0.004     -0   
-as.factor(country)_Guyana                   Binary  -0.017     0    
-as.factor(country)_Honduras                 Binary   0.031     0    
-as.factor(country)_Mexico                   Binary  -0.166     0    
-as.factor(country)_Nicaragua                Binary  -0.007     0    
-as.factor(country)_Panama                   Binary  -0.003     0    
-as.factor(country)_Peru                     Binary   0.071     -0   
-fc_area_matchingyear                       Contin.   2.630   -0.079 
-sum_fcl_matchingyear_tmax                  Contin.  -1.250   0.018  
---------------------------------------------------------------------</code></pre>
-<p><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-7-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-7-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-7-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-7-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-7-6.png" width="672" style="display: block; margin: auto;" /></p>
-<pre><code>Warning: Removed 20284 rows containing non-finite values (stat_density).</code></pre>
-<pre><code>Warning: Removed 78 rows containing non-finite values (stat_density).</code></pre>
-<p><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-7-7.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
+Balance (raw means) before and after CEM and PSM for matching frame 2006
+======================================================================
+                                      Type   Diff.Un Diff.CEM Diff.PSM
+----------------------------------------------------------------------
+traveltime_5k_110mio                 Contin. 823.957  9.033   -30.258 
+soil_5_15cm_clay                     Contin. 183.343 100.151  -46.886 
+terrain_ruggedness_index_mean        Contin. 11.001   -0.483   0.976  
+elevation_mean                       Contin. 807.475 129.587  128.914 
+as.factor(NAME_0)_Belize             Binary  -0.001     0        0    
+as.factor(NAME_0)_Bolivia            Binary  -0.073     0        0    
+as.factor(NAME_0)_Brazil             Binary  -0.560     0        0    
+as.factor(NAME_0)_Colombia           Binary  -0.077     0        0    
+as.factor(NAME_0)_Costa Rica         Binary  -0.004     0        0    
+as.factor(NAME_0)_Dominican Republic Binary  -0.003     0        0    
+as.factor(NAME_0)_Ecuador            Binary  -0.017     0        0    
+as.factor(NAME_0)_El Salvador        Binary  -0.001     0        0    
+as.factor(NAME_0)_Guatemala          Binary  -0.008     0        0    
+as.factor(NAME_0)_Guyana             Binary  -0.014     0        0    
+as.factor(NAME_0)_Honduras           Binary  -0.007     0        0    
+as.factor(NAME_0)_Mexico             Binary  -0.136     0        0    
+as.factor(NAME_0)_Nicaragua          Binary  -0.008     0        0    
+as.factor(NAME_0)_Panama             Binary  -0.005     0        0    
+as.factor(NAME_0)_Peru               Binary   0.915     0        0    
+treecover                            Contin. 174.461  -0.398   -9.666 
+loss_t3                              Contin.  4.093   0.104    0.019  
+----------------------------------------------------------------------
+
+Balance (standardized means) before and after CEM and PSM for matching frame 2006
+======================================================================
+                                      Type   Diff.Un Diff.CEM Diff.PSM
+----------------------------------------------------------------------
+traveltime_5k_110mio                 Contin.  1.060   0.012    -0.037 
+soil_5_15cm_clay                     Contin.  0.303   0.165    -0.109 
+terrain_ruggedness_index_mean        Contin.  0.980   -0.043   0.073  
+elevation_mean                       Contin.  0.735   0.118    0.101  
+as.factor(NAME_0)_Belize             Binary  -0.001     0        0    
+as.factor(NAME_0)_Bolivia            Binary  -0.073     0        0    
+as.factor(NAME_0)_Brazil             Binary  -0.560     0        0    
+as.factor(NAME_0)_Colombia           Binary  -0.077     0        0    
+as.factor(NAME_0)_Costa Rica         Binary  -0.004     0        0    
+as.factor(NAME_0)_Dominican Republic Binary  -0.003     0        0    
+as.factor(NAME_0)_Ecuador            Binary  -0.017     0        0    
+as.factor(NAME_0)_El Salvador        Binary  -0.001     0        0    
+as.factor(NAME_0)_Guatemala          Binary  -0.008     0        0    
+as.factor(NAME_0)_Guyana             Binary  -0.014     0        0    
+as.factor(NAME_0)_Honduras           Binary  -0.007     0        0    
+as.factor(NAME_0)_Mexico             Binary  -0.136     0        0    
+as.factor(NAME_0)_Nicaragua          Binary  -0.008     0        0    
+as.factor(NAME_0)_Panama             Binary  -0.005     0        0    
+as.factor(NAME_0)_Peru               Binary   0.915     0        0    
+treecover                            Contin.  0.931   -0.002   -0.060 
+loss_t3                              Contin.  0.279   0.007    0.012  
+----------------------------------------------------------------------</code></pre>
+<p><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202006-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202006-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202006-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202006-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202006-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202006-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202006-7.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="matching-frame-2007" class="section level2">
 <h2>Matching frame 2007</h2>
-<div id="cem-3" class="section level3">
-<h3>CEM</h3>
-<pre class="r"><code>build_plots_cem(2007)</code></pre>
 <pre><code>
-Balance before and after CEM for matching frame 2007
-===================================================================
-                                            Type   Diff.Un Diff.Adj
--------------------------------------------------------------------
-travel_time_to_nearby_cities_min_5k_100mio Contin.  0.988   0.062  
-clay_content_10_cm                         Contin. -0.350   0.005  
-terrain_ruggedness_index_mean              Contin. -0.311   -0.060 
-elevation_mean                             Contin. -0.400   0.035  
-as.factor(country)_Belize                  Binary  -0.0004    0    
-as.factor(country)_Bolivia                 Binary   0.417     0    
-as.factor(country)_Brazil                  Binary  -0.096     0    
-as.factor(country)_Colombia                Binary  -0.073     0    
-as.factor(country)_Dominican Republic      Binary   0.011     0    
-as.factor(country)_Ecuador                 Binary  -0.015     0    
-as.factor(country)_El Salvador             Binary  -0.001     0    
-as.factor(country)_Guatemala               Binary  -0.004     0    
-as.factor(country)_Guyana                  Binary  -0.017     0    
-as.factor(country)_Honduras                Binary   0.033     0    
-as.factor(country)_Mexico                  Binary  -0.166     0    
-as.factor(country)_Nicaragua               Binary  -0.007     0    
-as.factor(country)_Panama                  Binary  -0.003     0    
-as.factor(country)_Peru                    Binary  -0.079     0    
-fc_area_matchingyear                       Contin.  2.338   -0.020 
-sum_fcl_matchingyear_tmax                  Contin. -1.193   -0.011 
--------------------------------------------------------------------</code></pre>
-<p><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-8-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-8-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-8-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-8-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-8-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-8-7.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
-<div id="psm-3" class="section level3">
-<h3>PSM</h3>
-<pre class="r"><code>build_plots_psm(2007)</code></pre>
-<pre><code>
-Balance before and after PSM for matching frame 2007
-====================================================================
-                                             Type   Diff.Un Diff.Adj
---------------------------------------------------------------------
-distance                                   Distance  1.539   0.011  
-travel_time_to_nearby_cities_min_5k_100mio Contin.   0.988   0.055  
-clay_content_10_cm                         Contin.  -0.350   -0.068 
-terrain_ruggedness_index_mean              Contin.  -0.311   -0.110 
-elevation_mean                             Contin.  -0.400   0.021  
-as.factor(country)_Belize                   Binary  -0.0004    0    
-as.factor(country)_Bolivia                  Binary   0.417     0    
-as.factor(country)_Brazil                   Binary  -0.096     0    
-as.factor(country)_Colombia                 Binary  -0.073     0    
-as.factor(country)_Dominican Republic       Binary   0.011     0    
-as.factor(country)_Ecuador                  Binary  -0.015     0    
-as.factor(country)_El Salvador              Binary  -0.001     0    
-as.factor(country)_Guatemala                Binary  -0.004     0    
-as.factor(country)_Guyana                   Binary  -0.017     0    
-as.factor(country)_Honduras                 Binary   0.033     0    
-as.factor(country)_Mexico                   Binary  -0.166     0    
-as.factor(country)_Nicaragua                Binary  -0.007     0    
-as.factor(country)_Panama                   Binary  -0.003     0    
-as.factor(country)_Peru                     Binary  -0.079     0    
-fc_area_matchingyear                       Contin.   2.338   -0.083 
-sum_fcl_matchingyear_tmax                  Contin.  -1.193   0.030  
---------------------------------------------------------------------</code></pre>
-<p><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-9-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-9-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-9-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-9-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-9-6.png" width="672" style="display: block; margin: auto;" /></p>
-<pre><code>Warning: Removed 20284 rows containing non-finite values (stat_density).</code></pre>
-<pre><code>Warning: Removed 80 rows containing non-finite values (stat_density).</code></pre>
-<p><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-9-7.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
+Balance (raw means) before and after CEM and PSM for matching frame 2007
+=======================================================================
+                                      Type   Diff.Un  Diff.CEM Diff.PSM
+-----------------------------------------------------------------------
+traveltime_5k_110mio                 Contin. 167.847   -4.167   88.314 
+soil_5_15cm_clay                     Contin. -114.357 -118.149 -17.729 
+terrain_ruggedness_index_mean        Contin.  5.073    1.575    0.052  
+elevation_mean                       Contin. 327.908   57.016  102.429 
+as.factor(NAME_0)_Belize             Binary   -0.001     0        0    
+as.factor(NAME_0)_Bolivia            Binary   0.610      0        -0   
+as.factor(NAME_0)_Brazil             Binary   -0.372     0        -0   
+as.factor(NAME_0)_Colombia           Binary   -0.077     0        0    
+as.factor(NAME_0)_Costa Rica         Binary   -0.004     0        0    
+as.factor(NAME_0)_Dominican Republic Binary   0.109      0        0    
+as.factor(NAME_0)_Ecuador            Binary   -0.017     0        0    
+as.factor(NAME_0)_El Salvador        Binary   -0.001     0        0    
+as.factor(NAME_0)_Guatemala          Binary   -0.008     0        0    
+as.factor(NAME_0)_Guyana             Binary   -0.014     0        0    
+as.factor(NAME_0)_Honduras           Binary   -0.007     0        0    
+as.factor(NAME_0)_Mexico             Binary   -0.136     0        0    
+as.factor(NAME_0)_Nicaragua          Binary   -0.008     0        0    
+as.factor(NAME_0)_Panama             Binary   -0.005     0        0    
+as.factor(NAME_0)_Peru               Binary   -0.068     0        0    
+treecover                            Contin. 157.030   -0.282  -14.052 
+loss_t3                              Contin.  0.338    -1.146   0.014  
+-----------------------------------------------------------------------
+
+Balance (standardized means) before and after CEM and PSM for matching frame 2007
+======================================================================
+                                      Type   Diff.Un Diff.CEM Diff.PSM
+----------------------------------------------------------------------
+traveltime_5k_110mio                 Contin.  0.250   -0.006   0.132  
+soil_5_15cm_clay                     Contin. -0.178   -0.184   -0.028 
+terrain_ruggedness_index_mean        Contin.  0.433   0.134    0.004  
+elevation_mean                       Contin.  0.291   0.051    0.091  
+as.factor(NAME_0)_Belize             Binary  -0.001     0        0    
+as.factor(NAME_0)_Bolivia            Binary   0.610     0        -0   
+as.factor(NAME_0)_Brazil             Binary  -0.372     0        -0   
+as.factor(NAME_0)_Colombia           Binary  -0.077     0        0    
+as.factor(NAME_0)_Costa Rica         Binary  -0.004     0        0    
+as.factor(NAME_0)_Dominican Republic Binary   0.109     0        0    
+as.factor(NAME_0)_Ecuador            Binary  -0.017     0        0    
+as.factor(NAME_0)_El Salvador        Binary  -0.001     0        0    
+as.factor(NAME_0)_Guatemala          Binary  -0.008     0        0    
+as.factor(NAME_0)_Guyana             Binary  -0.014     0        0    
+as.factor(NAME_0)_Honduras           Binary  -0.007     0        0    
+as.factor(NAME_0)_Mexico             Binary  -0.136     0        0    
+as.factor(NAME_0)_Nicaragua          Binary  -0.008     0        0    
+as.factor(NAME_0)_Panama             Binary  -0.005     0        0    
+as.factor(NAME_0)_Peru               Binary  -0.068     0        0    
+treecover                            Contin.  0.837   -0.002   -0.075 
+loss_t3                              Contin.  0.016   -0.056   0.001  
+----------------------------------------------------------------------</code></pre>
+<p><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202007-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202007-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202007-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202007-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202007-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202007-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202007-7.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="matching-frame-2008" class="section level2">
 <h2>Matching frame 2008</h2>
-<div id="cem-4" class="section level3">
-<h3>CEM</h3>
-<pre class="r"><code>build_plots_cem(2008)</code></pre>
 <pre><code>
-Balance before and after CEM for matching frame 2008
-===================================================================
-                                            Type   Diff.Un Diff.Adj
--------------------------------------------------------------------
-travel_time_to_nearby_cities_min_5k_100mio Contin.  0.978   0.065  
-clay_content_10_cm                         Contin. -0.354   0.003  
-terrain_ruggedness_index_mean              Contin. -0.464   -0.109 
-elevation_mean                             Contin. -0.365   0.032  
-as.factor(country)_Belize                  Binary  -0.0004    0    
-as.factor(country)_Bolivia                 Binary   0.357     0    
-as.factor(country)_Brazil                  Binary  -0.078     0    
-as.factor(country)_Colombia                Binary  -0.073     0    
-as.factor(country)_Dominican Republic      Binary   0.022     -0   
-as.factor(country)_Ecuador                 Binary  -0.015     0    
-as.factor(country)_El Salvador             Binary  -0.001     0    
-as.factor(country)_Guatemala               Binary  -0.004     0    
-as.factor(country)_Guyana                  Binary  -0.017     0    
-as.factor(country)_Honduras                Binary   0.036     0    
-as.factor(country)_Mexico                  Binary  -0.166     0    
-as.factor(country)_Nicaragua               Binary  -0.007     0    
-as.factor(country)_Panama                  Binary  -0.003     0    
-as.factor(country)_Peru                    Binary  -0.050     -0   
-fc_area_matchingyear                       Contin.  2.033   -0.022 
-sum_fcl_matchingyear_tmax                  Contin. -1.101   -0.010 
--------------------------------------------------------------------</code></pre>
-<p><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-10-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-10-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-10-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-10-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-10-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-10-7.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
-<div id="psm-4" class="section level3">
-<h3>PSM</h3>
-<pre class="r"><code>build_plots_psm(2008)</code></pre>
-<pre><code>
-Balance before and after PSM for matching frame 2008
-====================================================================
-                                             Type   Diff.Un Diff.Adj
---------------------------------------------------------------------
-distance                                   Distance  1.462   0.016  
-travel_time_to_nearby_cities_min_5k_100mio Contin.   0.978   0.052  
-clay_content_10_cm                         Contin.  -0.354   0.034  
-terrain_ruggedness_index_mean              Contin.  -0.464   -0.018 
-elevation_mean                             Contin.  -0.365   0.033  
-as.factor(country)_Belize                   Binary  -0.0004    0    
-as.factor(country)_Bolivia                  Binary   0.357     0    
-as.factor(country)_Brazil                   Binary  -0.078     0    
-as.factor(country)_Colombia                 Binary  -0.073     0    
-as.factor(country)_Dominican Republic       Binary   0.022     0    
-as.factor(country)_Ecuador                  Binary  -0.015     0    
-as.factor(country)_El Salvador              Binary  -0.001     0    
-as.factor(country)_Guatemala                Binary  -0.004     0    
-as.factor(country)_Guyana                   Binary  -0.017     0    
-as.factor(country)_Honduras                 Binary   0.036     0    
-as.factor(country)_Mexico                   Binary  -0.166     0    
-as.factor(country)_Nicaragua                Binary  -0.007     0    
-as.factor(country)_Panama                   Binary  -0.003     0    
-as.factor(country)_Peru                     Binary  -0.050     -0   
-fc_area_matchingyear                       Contin.   2.033   -0.068 
-sum_fcl_matchingyear_tmax                  Contin.  -1.101   0.003  
---------------------------------------------------------------------</code></pre>
-<p><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-11-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-11-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-11-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-11-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-11-6.png" width="672" style="display: block; margin: auto;" /></p>
-<pre><code>Warning: Removed 20303 rows containing non-finite values (stat_density).</code></pre>
-<pre><code>Warning: Removed 92 rows containing non-finite values (stat_density).</code></pre>
-<p><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-11-7.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
+Balance (raw means) before and after CEM and PSM for matching frame 2008
+========================================================================
+                                      Type    Diff.Un  Diff.CEM Diff.PSM
+------------------------------------------------------------------------
+traveltime_5k_110mio                 Contin.  -47.566   4.077   -14.147 
+soil_5_15cm_clay                     Contin. -269.980  -97.251   -3.349 
+terrain_ruggedness_index_mean        Contin.  12.027    -0.568   -0.618 
+elevation_mean                       Contin. 1,695.000 213.637  -117.253
+as.factor(NAME_0)_Belize             Binary    0.001      0        0    
+as.factor(NAME_0)_Bolivia            Binary   -0.073      0        0    
+as.factor(NAME_0)_Brazil             Binary   -0.445      -0       0    
+as.factor(NAME_0)_Colombia           Binary   -0.077      0        0    
+as.factor(NAME_0)_Costa Rica         Binary   -0.004      0        0    
+as.factor(NAME_0)_Dominican Republic Binary    0.091      0        0    
+as.factor(NAME_0)_Ecuador            Binary   -0.016      0        0    
+as.factor(NAME_0)_El Salvador        Binary   -0.001      0        0    
+as.factor(NAME_0)_Guatemala          Binary   -0.008      0        0    
+as.factor(NAME_0)_Guyana             Binary   -0.014      0        0    
+as.factor(NAME_0)_Honduras           Binary   -0.007      0        0    
+as.factor(NAME_0)_Mexico             Binary   -0.136      0        0    
+as.factor(NAME_0)_Nicaragua          Binary   -0.008      0        0    
+as.factor(NAME_0)_Panama             Binary   -0.005      0        0    
+as.factor(NAME_0)_Peru               Binary    0.702      0        0    
+treecover                            Contin.  -5.891    0.202    16.275 
+loss_t3                              Contin.   2.951    -0.111   -0.100 
+------------------------------------------------------------------------
+
+Balance (standardized means) before and after CEM and PSM for matching frame 2008
+======================================================================
+                                      Type   Diff.Un Diff.CEM Diff.PSM
+----------------------------------------------------------------------
+traveltime_5k_110mio                 Contin. -0.078   0.007    -0.023 
+soil_5_15cm_clay                     Contin. -0.371   -0.134   -0.005 
+terrain_ruggedness_index_mean        Contin.  1.038   -0.049   -0.053 
+elevation_mean                       Contin.  1.221   0.154    -0.084 
+as.factor(NAME_0)_Belize             Binary   0.001     0        0    
+as.factor(NAME_0)_Bolivia            Binary  -0.073     0        0    
+as.factor(NAME_0)_Brazil             Binary  -0.445     -0       0    
+as.factor(NAME_0)_Colombia           Binary  -0.077     0        0    
+as.factor(NAME_0)_Costa Rica         Binary  -0.004     0        0    
+as.factor(NAME_0)_Dominican Republic Binary   0.091     0        0    
+as.factor(NAME_0)_Ecuador            Binary  -0.016     0        0    
+as.factor(NAME_0)_El Salvador        Binary  -0.001     0        0    
+as.factor(NAME_0)_Guatemala          Binary  -0.008     0        0    
+as.factor(NAME_0)_Guyana             Binary  -0.014     0        0    
+as.factor(NAME_0)_Honduras           Binary  -0.007     0        0    
+as.factor(NAME_0)_Mexico             Binary  -0.136     0        0    
+as.factor(NAME_0)_Nicaragua          Binary  -0.008     0        0    
+as.factor(NAME_0)_Panama             Binary  -0.005     0        0    
+as.factor(NAME_0)_Peru               Binary   0.702     0        0    
+treecover                            Contin. -0.026   0.001    0.072  
+loss_t3                              Contin.  0.230   -0.009   -0.008 
+----------------------------------------------------------------------</code></pre>
+<p><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202008-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202008-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202008-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202008-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202008-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202008-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202008-7.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="matching-frame-2009" class="section level2">
 <h2>Matching frame 2009</h2>
-<div id="cem-5" class="section level3">
-<h3>CEM</h3>
-<pre class="r"><code>build_plots_cem(2009)</code></pre>
 <pre><code>
-Balance before and after CEM for matching frame 2009
-===================================================================
-                                            Type   Diff.Un Diff.Adj
--------------------------------------------------------------------
-travel_time_to_nearby_cities_min_5k_100mio Contin.  0.972   0.064  
-clay_content_10_cm                         Contin. -0.015   0.001  
-terrain_ruggedness_index_mean              Contin. -0.572   -0.104 
-elevation_mean                             Contin. -0.761   0.028  
-as.factor(country)_Belize                  Binary   0.005     0    
-as.factor(country)_Bolivia                 Binary   0.349     0    
-as.factor(country)_Brazil                  Binary  -0.095     0    
-as.factor(country)_Colombia                Binary  -0.073     0    
-as.factor(country)_Dominican Republic      Binary   0.008     -0   
-as.factor(country)_Ecuador                 Binary  -0.015     0    
-as.factor(country)_El Salvador             Binary  -0.001     0    
-as.factor(country)_Guatemala               Binary   0.057     0    
-as.factor(country)_Guyana                  Binary  -0.017     0    
-as.factor(country)_Honduras                Binary   0.035     -0   
-as.factor(country)_Mexico                  Binary  -0.164     -0   
-as.factor(country)_Nicaragua               Binary  -0.007     0    
-as.factor(country)_Panama                  Binary  -0.003     0    
-as.factor(country)_Peru                    Binary  -0.079     -0   
-fc_area_matchingyear                       Contin.  2.787   -0.028 
-sum_fcl_matchingyear_tmax                  Contin. -0.614   0.009  
--------------------------------------------------------------------</code></pre>
-<p><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-12-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-12-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-12-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-12-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-12-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-12-7.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
-<div id="psm-5" class="section level3">
-<h3>PSM</h3>
-<pre class="r"><code>build_plots_psm(2009)</code></pre>
-<pre><code>
-Balance before and after PSM for matching frame 2009
-====================================================================
-                                             Type   Diff.Un Diff.Adj
---------------------------------------------------------------------
-distance                                   Distance  1.393   0.007  
-travel_time_to_nearby_cities_min_5k_100mio Contin.   0.972   0.031  
-clay_content_10_cm                         Contin.  -0.015   -0.079 
-terrain_ruggedness_index_mean              Contin.  -0.572   0.024  
-elevation_mean                             Contin.  -0.761   0.119  
-as.factor(country)_Belize                   Binary   0.005     0    
-as.factor(country)_Bolivia                  Binary   0.349     0    
-as.factor(country)_Brazil                   Binary  -0.095     0    
-as.factor(country)_Colombia                 Binary  -0.073     0    
-as.factor(country)_Dominican Republic       Binary   0.008     -0   
-as.factor(country)_Ecuador                  Binary  -0.015     0    
-as.factor(country)_El Salvador              Binary  -0.001     0    
-as.factor(country)_Guatemala                Binary   0.057     -0   
-as.factor(country)_Guyana                   Binary  -0.017     0    
-as.factor(country)_Honduras                 Binary   0.035     -0   
-as.factor(country)_Mexico                   Binary  -0.164     0    
-as.factor(country)_Nicaragua                Binary  -0.007     0    
-as.factor(country)_Panama                   Binary  -0.003     0    
-as.factor(country)_Peru                     Binary  -0.079     0    
-fc_area_matchingyear                       Contin.   2.787   -0.083 
-sum_fcl_matchingyear_tmax                  Contin.  -0.614   -0.010 
---------------------------------------------------------------------</code></pre>
-<p><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-13-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-13-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-13-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-13-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-13-6.png" width="672" style="display: block; margin: auto;" /></p>
-<pre><code>Warning: Removed 20342 rows containing non-finite values (stat_density).</code></pre>
-<pre><code>Warning: Removed 138 rows containing non-finite values (stat_density).</code></pre>
-<p><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-13-7.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
+Balance (raw means) before and after CEM and PSM for matching frame 2009
+========================================================================
+                                      Type    Diff.Un  Diff.CEM Diff.PSM
+------------------------------------------------------------------------
+traveltime_5k_110mio                 Contin. -169.185   10.330   11.305 
+soil_5_15cm_clay                     Contin. 1,825.795 542.249  -59.372 
+terrain_ruggedness_index_mean        Contin.   0.322    -1.748   0.955  
+elevation_mean                       Contin. -302.227   13.254   85.543 
+as.factor(NAME_0)_Belize             Binary    0.644      0        0    
+as.factor(NAME_0)_Bolivia            Binary   -0.073      0        0    
+as.factor(NAME_0)_Brazil             Binary   -0.560      0        0    
+as.factor(NAME_0)_Colombia           Binary   -0.077      0        0    
+as.factor(NAME_0)_Costa Rica         Binary   -0.004      0        0    
+as.factor(NAME_0)_Dominican Republic Binary   -0.003      0        0    
+as.factor(NAME_0)_Ecuador            Binary   -0.017      0        0    
+as.factor(NAME_0)_El Salvador        Binary   -0.001      0        0    
+as.factor(NAME_0)_Guatemala          Binary    0.078      0        0    
+as.factor(NAME_0)_Guyana             Binary   -0.014      0        0    
+as.factor(NAME_0)_Honduras           Binary   -0.007      0        0    
+as.factor(NAME_0)_Mexico             Binary    0.133      0        0    
+as.factor(NAME_0)_Nicaragua          Binary   -0.008      0        0    
+as.factor(NAME_0)_Panama             Binary   -0.005      0        0    
+as.factor(NAME_0)_Peru               Binary   -0.085      0        0    
+treecover                            Contin.  203.530   0.076    2.745  
+loss_t3                              Contin.  -3.517    -2.456   1.001  
+------------------------------------------------------------------------
+
+Balance (standardized means) before and after CEM and PSM for matching frame 2009
+======================================================================
+                                      Type   Diff.Un Diff.CEM Diff.PSM
+----------------------------------------------------------------------
+traveltime_5k_110mio                 Contin. -0.320   0.020    0.065  
+soil_5_15cm_clay                     Contin.  2.505   0.744    -0.083 
+terrain_ruggedness_index_mean        Contin.  0.042   -0.226   0.141  
+elevation_mean                       Contin. -0.463   0.020    0.305  
+as.factor(NAME_0)_Belize             Binary   0.644     0        0    
+as.factor(NAME_0)_Bolivia            Binary  -0.073     0        0    
+as.factor(NAME_0)_Brazil             Binary  -0.560     0        0    
+as.factor(NAME_0)_Colombia           Binary  -0.077     0        0    
+as.factor(NAME_0)_Costa Rica         Binary  -0.004     0        0    
+as.factor(NAME_0)_Dominican Republic Binary  -0.003     0        0    
+as.factor(NAME_0)_Ecuador            Binary  -0.017     0        0    
+as.factor(NAME_0)_El Salvador        Binary  -0.001     0        0    
+as.factor(NAME_0)_Guatemala          Binary   0.078     0        0    
+as.factor(NAME_0)_Guyana             Binary  -0.014     0        0    
+as.factor(NAME_0)_Honduras           Binary  -0.007     0        0    
+as.factor(NAME_0)_Mexico             Binary   0.133     0        0    
+as.factor(NAME_0)_Nicaragua          Binary  -0.008     0        0    
+as.factor(NAME_0)_Panama             Binary  -0.005     0        0    
+as.factor(NAME_0)_Peru               Binary  -0.085     0        0    
+treecover                            Contin.  1.266   0.0005   0.032  
+loss_t3                              Contin. -0.165   -0.115   0.039  
+----------------------------------------------------------------------</code></pre>
+<p><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202009-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202009-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202009-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202009-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202009-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202009-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202009-7.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="matching-frame-2010" class="section level2">
 <h2>Matching frame 2010</h2>
-<div id="cem-6" class="section level3">
-<h3>CEM</h3>
-<pre class="r"><code>build_plots_cem(2010)</code></pre>
 <pre><code>
-Balance before and after CEM for matching frame 2010
-===================================================================
-                                            Type   Diff.Un Diff.Adj
--------------------------------------------------------------------
-travel_time_to_nearby_cities_min_5k_100mio Contin.  1.014   0.067  
-clay_content_10_cm                         Contin. -0.376   0.006  
-terrain_ruggedness_index_mean              Contin. -0.562   -0.102 
-elevation_mean                             Contin. -0.725   0.035  
-as.factor(country)_Belize                  Binary  -0.0004    0    
-as.factor(country)_Bolivia                 Binary   0.364     0    
-as.factor(country)_Brazil                  Binary  -0.044     0    
-as.factor(country)_Colombia                Binary  -0.073     0    
-as.factor(country)_Dominican Republic      Binary   0.008     0    
-as.factor(country)_Ecuador                 Binary  -0.015     0    
-as.factor(country)_El Salvador             Binary  -0.001     0    
-as.factor(country)_Guatemala               Binary  -0.004     0    
-as.factor(country)_Guyana                  Binary  -0.017     0    
-as.factor(country)_Honduras                Binary   0.036     0    
-as.factor(country)_Mexico                  Binary  -0.166     0    
-as.factor(country)_Nicaragua               Binary  -0.007     0    
-as.factor(country)_Panama                  Binary  -0.003     0    
-as.factor(country)_Peru                    Binary  -0.078     -0   
-fc_area_matchingyear                       Contin.  2.045   -0.022 
-sum_fcl_matchingyear_tmax                  Contin. -1.153   -0.013 
--------------------------------------------------------------------</code></pre>
-<p><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-14-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-14-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-14-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-14-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-14-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-14-7.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
-<div id="psm-6" class="section level3">
-<h3>PSM</h3>
-<pre class="r"><code>build_plots_psm(2010)</code></pre>
-<pre><code>
-Balance before and after PSM for matching frame 2010
-====================================================================
-                                             Type   Diff.Un Diff.Adj
---------------------------------------------------------------------
-distance                                   Distance  1.442   0.018  
-travel_time_to_nearby_cities_min_5k_100mio Contin.   1.014   0.043  
-clay_content_10_cm                         Contin.  -0.376   -0.004 
-terrain_ruggedness_index_mean              Contin.  -0.562   -0.014 
-elevation_mean                             Contin.  -0.725   0.138  
-as.factor(country)_Belize                   Binary  -0.0004    0    
-as.factor(country)_Bolivia                  Binary   0.364     0    
-as.factor(country)_Brazil                   Binary  -0.044     0    
-as.factor(country)_Colombia                 Binary  -0.073     0    
-as.factor(country)_Dominican Republic       Binary   0.008     0    
-as.factor(country)_Ecuador                  Binary  -0.015     0    
-as.factor(country)_El Salvador              Binary  -0.001     0    
-as.factor(country)_Guatemala                Binary  -0.004     0    
-as.factor(country)_Guyana                   Binary  -0.017     0    
-as.factor(country)_Honduras                 Binary   0.036     0    
-as.factor(country)_Mexico                   Binary  -0.166     0    
-as.factor(country)_Nicaragua                Binary  -0.007     0    
-as.factor(country)_Panama                   Binary  -0.003     0    
-as.factor(country)_Peru                     Binary  -0.078     0    
-fc_area_matchingyear                       Contin.   2.045   -0.105 
-sum_fcl_matchingyear_tmax                  Contin.  -1.153   -0.016 
---------------------------------------------------------------------</code></pre>
-<p><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-15-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-15-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-15-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-15-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-15-6.png" width="672" style="display: block; margin: auto;" /></p>
-<pre><code>Warning: Removed 20291 rows containing non-finite values (stat_density).</code></pre>
-<pre><code>Warning: Removed 78 rows containing non-finite values (stat_density).</code></pre>
-<p><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-15-7.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
+Balance (raw means) before and after CEM and PSM for matching frame 2010
+=======================================================================
+                                      Type   Diff.Un  Diff.CEM Diff.PSM
+-----------------------------------------------------------------------
+traveltime_5k_110mio                 Contin. -149.520  17.744   25.693 
+soil_5_15cm_clay                     Contin. -552.915 -466.678  65.199 
+terrain_ruggedness_index_mean        Contin.  -3.156   0.310    0.013  
+elevation_mean                       Contin. -82.566   60.011   -2.498 
+as.factor(NAME_0)_Belize             Binary   -0.001     0        0    
+as.factor(NAME_0)_Bolivia            Binary   -0.073     0        0    
+as.factor(NAME_0)_Brazil             Binary   0.440      0        0    
+as.factor(NAME_0)_Colombia           Binary   -0.077     0        0    
+as.factor(NAME_0)_Costa Rica         Binary   -0.004     0        0    
+as.factor(NAME_0)_Dominican Republic Binary   -0.003     0        0    
+as.factor(NAME_0)_Ecuador            Binary   -0.017     0        0    
+as.factor(NAME_0)_El Salvador        Binary   -0.001     0        0    
+as.factor(NAME_0)_Guatemala          Binary   -0.008     0        0    
+as.factor(NAME_0)_Guyana             Binary   -0.014     0        0    
+as.factor(NAME_0)_Honduras           Binary   -0.007     0        0    
+as.factor(NAME_0)_Mexico             Binary   -0.136     0        0    
+as.factor(NAME_0)_Nicaragua          Binary   -0.008     0        0    
+as.factor(NAME_0)_Panama             Binary   -0.005     0        0    
+as.factor(NAME_0)_Peru               Binary   -0.085     0        0    
+treecover                            Contin. -229.867  -0.321   -5.891 
+loss_t3                              Contin.  3.193    0.795    0.013  
+-----------------------------------------------------------------------
+
+Balance (standardized means) before and after CEM and PSM for matching frame 2010
+======================================================================
+                                      Type   Diff.Un Diff.CEM Diff.PSM
+----------------------------------------------------------------------
+traveltime_5k_110mio                 Contin. -0.286   0.034    0.209  
+soil_5_15cm_clay                     Contin. -1.006   -0.849   0.278  
+terrain_ruggedness_index_mean        Contin. -0.472   0.046    0.003  
+elevation_mean                       Contin. -0.131   0.096    -0.020 
+as.factor(NAME_0)_Belize             Binary  -0.001     0        0    
+as.factor(NAME_0)_Bolivia            Binary  -0.073     0        0    
+as.factor(NAME_0)_Brazil             Binary   0.440     0        0    
+as.factor(NAME_0)_Colombia           Binary  -0.077     0        0    
+as.factor(NAME_0)_Costa Rica         Binary  -0.004     0        0    
+as.factor(NAME_0)_Dominican Republic Binary  -0.003     0        0    
+as.factor(NAME_0)_Ecuador            Binary  -0.017     0        0    
+as.factor(NAME_0)_El Salvador        Binary  -0.001     0        0    
+as.factor(NAME_0)_Guatemala          Binary  -0.008     0        0    
+as.factor(NAME_0)_Guyana             Binary  -0.014     0        0    
+as.factor(NAME_0)_Honduras           Binary  -0.007     0        0    
+as.factor(NAME_0)_Mexico             Binary  -0.136     0        0    
+as.factor(NAME_0)_Nicaragua          Binary  -0.008     0        0    
+as.factor(NAME_0)_Panama             Binary  -0.005     0        0    
+as.factor(NAME_0)_Peru               Binary  -0.085     0        0    
+treecover                            Contin. -1.468   -0.002   -0.084 
+loss_t3                              Contin.  0.299   0.074    0.003  
+----------------------------------------------------------------------</code></pre>
+<p><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202010-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202010-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202010-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202010-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202010-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202010-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202010-7.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="matching-frame-2011" class="section level2">
 <h2>Matching frame 2011</h2>
-<div id="cem-7" class="section level3">
-<h3>CEM</h3>
-<pre class="r"><code>build_plots_cem(2011)</code></pre>
 <pre><code>
-Balance before and after CEM for matching frame 2011
-===================================================================
-                                            Type   Diff.Un Diff.Adj
--------------------------------------------------------------------
-travel_time_to_nearby_cities_min_5k_100mio Contin.  1.044   0.068  
-clay_content_10_cm                         Contin. -0.340  -0.0003 
-terrain_ruggedness_index_mean              Contin. -0.500   -0.098 
-elevation_mean                             Contin. -0.717   0.029  
-as.factor(country)_Belize                  Binary  -0.0004    0    
-as.factor(country)_Bolivia                 Binary   0.378     0    
-as.factor(country)_Brazil                  Binary  -0.065     0    
-as.factor(country)_Colombia                Binary  -0.073     0    
-as.factor(country)_Dominican Republic      Binary   0.009     0    
-as.factor(country)_Ecuador                 Binary  -0.015     0    
-as.factor(country)_El Salvador             Binary  -0.001     0    
-as.factor(country)_Guatemala               Binary  -0.004     0    
-as.factor(country)_Guyana                  Binary  -0.017     0    
-as.factor(country)_Honduras                Binary   0.042     -0   
-as.factor(country)_Mexico                  Binary  -0.166     0    
-as.factor(country)_Nicaragua               Binary  -0.007     0    
-as.factor(country)_Panama                  Binary  -0.003     0    
-as.factor(country)_Peru                    Binary  -0.078     0    
-fc_area_matchingyear                       Contin.  3.021   -0.031 
-sum_fcl_matchingyear_tmax                  Contin. -1.133   -0.014 
--------------------------------------------------------------------</code></pre>
-<p><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-16-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-16-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-16-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-16-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-16-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-16-7.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
-<div id="psm-7" class="section level3">
-<h3>PSM</h3>
-<pre class="r"><code>build_plots_psm(2011)</code></pre>
-<pre><code>
-Balance before and after PSM for matching frame 2011
-====================================================================
-                                             Type   Diff.Un Diff.Adj
---------------------------------------------------------------------
-distance                                   Distance  1.531   0.013  
-travel_time_to_nearby_cities_min_5k_100mio Contin.   1.044   0.054  
-clay_content_10_cm                         Contin.  -0.340   -0.076 
-terrain_ruggedness_index_mean              Contin.  -0.500   -0.008 
-elevation_mean                             Contin.  -0.717   0.081  
-as.factor(country)_Belize                   Binary  -0.0004    0    
-as.factor(country)_Bolivia                  Binary   0.378     -0   
-as.factor(country)_Brazil                   Binary  -0.065     -0   
-as.factor(country)_Colombia                 Binary  -0.073     0    
-as.factor(country)_Dominican Republic       Binary   0.009     0    
-as.factor(country)_Ecuador                  Binary  -0.015     0    
-as.factor(country)_El Salvador              Binary  -0.001     0    
-as.factor(country)_Guatemala                Binary  -0.004     -0   
-as.factor(country)_Guyana                   Binary  -0.017     0    
-as.factor(country)_Honduras                 Binary   0.042     0    
-as.factor(country)_Mexico                   Binary  -0.166     0    
-as.factor(country)_Nicaragua                Binary  -0.007     0    
-as.factor(country)_Panama                   Binary  -0.003     0    
-as.factor(country)_Peru                     Binary  -0.078     -0   
-fc_area_matchingyear                       Contin.   3.021   -0.113 
-sum_fcl_matchingyear_tmax                  Contin.  -1.133   0.024  
---------------------------------------------------------------------</code></pre>
-<p><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-17-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-17-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-17-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-17-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-17-6.png" width="672" style="display: block; margin: auto;" /></p>
-<pre><code>Warning: Removed 20284 rows containing non-finite values (stat_density).</code></pre>
-<pre><code>Warning: Removed 78 rows containing non-finite values (stat_density).</code></pre>
-<p><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-17-7.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
+Balance (raw means) before and after CEM and PSM for matching frame 2011
+========================================================================
+                                      Type    Diff.Un  Diff.CEM Diff.PSM
+------------------------------------------------------------------------
+traveltime_5k_110mio                 Contin. -219.005   5.856   -26.688 
+soil_5_15cm_clay                     Contin. 1,218.788  59.967   -0.824 
+terrain_ruggedness_index_mean        Contin.  15.999    3.579    0.993  
+elevation_mean                       Contin.  27.599   -79.952   47.359 
+as.factor(NAME_0)_Belize             Binary   -0.001      0        0    
+as.factor(NAME_0)_Bolivia            Binary   -0.073      0        0    
+as.factor(NAME_0)_Brazil             Binary   -0.560      0        0    
+as.factor(NAME_0)_Colombia           Binary   -0.077      0        0    
+as.factor(NAME_0)_Costa Rica         Binary   -0.004      0        0    
+as.factor(NAME_0)_Dominican Republic Binary   -0.003      0        0    
+as.factor(NAME_0)_Ecuador            Binary   -0.017      0        0    
+as.factor(NAME_0)_El Salvador        Binary   -0.001      0        0    
+as.factor(NAME_0)_Guatemala          Binary   -0.008      0        0    
+as.factor(NAME_0)_Guyana             Binary   -0.014      0        0    
+as.factor(NAME_0)_Honduras           Binary    0.993      0        0    
+as.factor(NAME_0)_Mexico             Binary   -0.136      0        0    
+as.factor(NAME_0)_Nicaragua          Binary   -0.008      0        0    
+as.factor(NAME_0)_Panama             Binary   -0.005      0        0    
+as.factor(NAME_0)_Peru               Binary   -0.085      0        0    
+treecover                            Contin.  155.120   0.698    8.688  
+loss_t3                              Contin.  -0.588    0.890    -0.108 
+------------------------------------------------------------------------
+
+Balance (standardized means) before and after CEM and PSM for matching frame 2011
+======================================================================
+                                      Type   Diff.Un Diff.CEM Diff.PSM
+----------------------------------------------------------------------
+traveltime_5k_110mio                 Contin. -0.405   0.011    -0.049 
+soil_5_15cm_clay                     Contin.  2.235   0.110    -0.002 
+terrain_ruggedness_index_mean        Contin.  1.428   0.320    0.089  
+elevation_mean                       Contin.  0.038   -0.110   0.065  
+as.factor(NAME_0)_Belize             Binary  -0.001     0        0    
+as.factor(NAME_0)_Bolivia            Binary  -0.073     0        0    
+as.factor(NAME_0)_Brazil             Binary  -0.560     0        0    
+as.factor(NAME_0)_Colombia           Binary  -0.077     0        0    
+as.factor(NAME_0)_Costa Rica         Binary  -0.004     0        0    
+as.factor(NAME_0)_Dominican Republic Binary  -0.003     0        0    
+as.factor(NAME_0)_Ecuador            Binary  -0.017     0        0    
+as.factor(NAME_0)_El Salvador        Binary  -0.001     0        0    
+as.factor(NAME_0)_Guatemala          Binary  -0.008     0        0    
+as.factor(NAME_0)_Guyana             Binary  -0.014     0        0    
+as.factor(NAME_0)_Honduras           Binary   0.993     0        0    
+as.factor(NAME_0)_Mexico             Binary  -0.136     0        0    
+as.factor(NAME_0)_Nicaragua          Binary  -0.008     0        0    
+as.factor(NAME_0)_Panama             Binary  -0.005     0        0    
+as.factor(NAME_0)_Peru               Binary  -0.085     0        0    
+treecover                            Contin.  0.919   0.004    0.051  
+loss_t3                              Contin. -0.052   0.079    -0.010 
+----------------------------------------------------------------------</code></pre>
+<pre><code>Warning: Large mean differences detected; you may not be using standardized mean differences for continuous variables.</code></pre>
+<p><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202011-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202011-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202011-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202011-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202011-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202011-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202011-7.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="matching-frame-2012" class="section level2">
 <h2>Matching frame 2012</h2>
-<div id="cem-8" class="section level3">
-<h3>CEM</h3>
-<pre class="r"><code>build_plots_cem(2012)</code></pre>
 <pre><code>
-Balance before and after CEM for matching frame 2012
-===================================================================
-                                            Type   Diff.Un Diff.Adj
--------------------------------------------------------------------
-travel_time_to_nearby_cities_min_5k_100mio Contin.  1.019   0.068  
-clay_content_10_cm                         Contin. -0.359   0.0002 
-terrain_ruggedness_index_mean              Contin. -0.272   -0.070 
-elevation_mean                             Contin. -0.436   0.023  
-as.factor(country)_Belize                  Binary  -0.0004    0    
-as.factor(country)_Bolivia                 Binary   0.367     0    
-as.factor(country)_Brazil                  Binary  -0.077     0    
-as.factor(country)_Colombia                Binary  -0.045     0    
-as.factor(country)_Dominican Republic      Binary   0.009     0    
-as.factor(country)_Ecuador                 Binary  -0.015     0    
-as.factor(country)_El Salvador             Binary  -0.001     0    
-as.factor(country)_Guatemala               Binary  -0.004     0    
-as.factor(country)_Guyana                  Binary  -0.017     0    
-as.factor(country)_Honduras                Binary   0.037     0    
-as.factor(country)_Mexico                  Binary  -0.166     0    
-as.factor(country)_Nicaragua               Binary  -0.007     0    
-as.factor(country)_Panama                  Binary  -0.003     0    
-as.factor(country)_Peru                    Binary  -0.078     0    
-fc_area_matchingyear                       Contin.  2.521   -0.024 
-sum_fcl_matchingyear_tmax                  Contin. -1.151   -0.014 
--------------------------------------------------------------------</code></pre>
-<p><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-18-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-18-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-18-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-18-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-18-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-18-7.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
-<div id="psm-8" class="section level3">
-<h3>PSM</h3>
-<pre class="r"><code>build_plots_psm(2012)</code></pre>
-<pre><code>
-Balance before and after PSM for matching frame 2012
-====================================================================
-                                             Type   Diff.Un Diff.Adj
---------------------------------------------------------------------
-distance                                   Distance  1.554   0.002  
-travel_time_to_nearby_cities_min_5k_100mio Contin.   1.019   0.132  
-clay_content_10_cm                         Contin.  -0.359   -0.222 
-terrain_ruggedness_index_mean              Contin.  -0.272   -0.264 
-elevation_mean                             Contin.  -0.436   -0.040 
-as.factor(country)_Belize                   Binary  -0.0004    0    
-as.factor(country)_Bolivia                  Binary   0.367     0    
-as.factor(country)_Brazil                   Binary  -0.077     0    
-as.factor(country)_Colombia                 Binary  -0.045     0    
-as.factor(country)_Dominican Republic       Binary   0.009     0    
-as.factor(country)_Ecuador                  Binary  -0.015     0    
-as.factor(country)_El Salvador              Binary  -0.001     0    
-as.factor(country)_Guatemala                Binary  -0.004     0    
-as.factor(country)_Guyana                   Binary  -0.017     0    
-as.factor(country)_Honduras                 Binary   0.037     0    
-as.factor(country)_Mexico                   Binary  -0.166     0    
-as.factor(country)_Nicaragua                Binary  -0.007     0    
-as.factor(country)_Panama                   Binary  -0.003     0    
-as.factor(country)_Peru                     Binary  -0.078     0    
-fc_area_matchingyear                       Contin.   2.521   -0.112 
-sum_fcl_matchingyear_tmax                  Contin.  -1.151   0.005  
---------------------------------------------------------------------</code></pre>
-<p><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-19-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-19-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-19-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-19-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-19-6.png" width="672" style="display: block; margin: auto;" /></p>
-<pre><code>Warning: Removed 20287 rows containing non-finite values (stat_density).</code></pre>
-<pre><code>Warning: Removed 78 rows containing non-finite values (stat_density).</code></pre>
-<p><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-19-7.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
+Balance (raw means) before and after CEM and PSM for matching frame 2012
+========================================================================
+                                      Type    Diff.Un  Diff.CEM Diff.PSM
+------------------------------------------------------------------------
+traveltime_5k_110mio                 Contin.  -68.355   8.730    -8.323 
+soil_5_15cm_clay                     Contin.  158.748  -16.652  -57.343 
+terrain_ruggedness_index_mean        Contin.  23.276    5.334    -0.895 
+elevation_mean                       Contin. 1,464.577  30.469  153.366 
+as.factor(NAME_0)_Belize             Binary   -0.001      0        0    
+as.factor(NAME_0)_Bolivia            Binary   -0.073      0        0    
+as.factor(NAME_0)_Brazil             Binary   -0.560      0        0    
+as.factor(NAME_0)_Colombia           Binary    0.923      0        0    
+as.factor(NAME_0)_Costa Rica         Binary   -0.004      0        0    
+as.factor(NAME_0)_Dominican Republic Binary   -0.003      0        0    
+as.factor(NAME_0)_Ecuador            Binary   -0.017      0        0    
+as.factor(NAME_0)_El Salvador        Binary   -0.001      0        0    
+as.factor(NAME_0)_Guatemala          Binary   -0.008      0        0    
+as.factor(NAME_0)_Guyana             Binary   -0.014      0        0    
+as.factor(NAME_0)_Honduras           Binary   -0.007      0        0    
+as.factor(NAME_0)_Mexico             Binary   -0.136      0        0    
+as.factor(NAME_0)_Nicaragua          Binary   -0.008      0        0    
+as.factor(NAME_0)_Panama             Binary   -0.005      0        0    
+as.factor(NAME_0)_Peru               Binary   -0.085      0        0    
+treecover                            Contin.  31.982    -0.611   -7.182 
+loss_t3                              Contin.   2.404    0.450    0.142  
+------------------------------------------------------------------------
+
+Balance (standardized means) before and after CEM and PSM for matching frame 2012
+======================================================================
+                                      Type   Diff.Un Diff.CEM Diff.PSM
+----------------------------------------------------------------------
+traveltime_5k_110mio                 Contin. -0.122   0.016    -0.026 
+soil_5_15cm_clay                     Contin.  0.251   -0.026   -0.114 
+terrain_ruggedness_index_mean        Contin.  1.883   0.431    -0.059 
+elevation_mean                       Contin.  1.273   0.026    0.112  
+as.factor(NAME_0)_Belize             Binary  -0.001     0        0    
+as.factor(NAME_0)_Bolivia            Binary  -0.073     0        0    
+as.factor(NAME_0)_Brazil             Binary  -0.560     0        0    
+as.factor(NAME_0)_Colombia           Binary   0.923     0        0    
+as.factor(NAME_0)_Costa Rica         Binary  -0.004     0        0    
+as.factor(NAME_0)_Dominican Republic Binary  -0.003     0        0    
+as.factor(NAME_0)_Ecuador            Binary  -0.017     0        0    
+as.factor(NAME_0)_El Salvador        Binary  -0.001     0        0    
+as.factor(NAME_0)_Guatemala          Binary  -0.008     0        0    
+as.factor(NAME_0)_Guyana             Binary  -0.014     0        0    
+as.factor(NAME_0)_Honduras           Binary  -0.007     0        0    
+as.factor(NAME_0)_Mexico             Binary  -0.136     0        0    
+as.factor(NAME_0)_Nicaragua          Binary  -0.008     0        0    
+as.factor(NAME_0)_Panama             Binary  -0.005     0        0    
+as.factor(NAME_0)_Peru               Binary  -0.085     0        0    
+treecover                            Contin.  0.156   -0.003   -0.036 
+loss_t3                              Contin.  0.235   0.044    0.051  
+----------------------------------------------------------------------</code></pre>
+<p><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202012-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202012-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202012-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202012-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202012-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202012-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202012-7.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="matching-frame-2013" class="section level2">
 <h2>Matching frame 2013</h2>
-<div id="cem-9" class="section level3">
-<h3>CEM</h3>
-<pre class="r"><code>build_plots_cem(2013)</code></pre>
 <pre><code>
-Balance before and after CEM for matching frame 2013
-===================================================================
-                                            Type   Diff.Un Diff.Adj
--------------------------------------------------------------------
-travel_time_to_nearby_cities_min_5k_100mio Contin.  1.039   0.068  
-clay_content_10_cm                         Contin. -0.320   0.001  
-terrain_ruggedness_index_mean              Contin. -0.560   -0.108 
-elevation_mean                             Contin. -0.733   0.028  
-as.factor(country)_Belize                  Binary  -0.0004    0    
-as.factor(country)_Bolivia                 Binary   0.377     0    
-as.factor(country)_Brazil                  Binary  -0.066     -0   
-as.factor(country)_Colombia                Binary  -0.073     0    
-as.factor(country)_Dominican Republic      Binary   0.009     0    
-as.factor(country)_Ecuador                 Binary  -0.015     0    
-as.factor(country)_El Salvador             Binary  -0.001     0    
-as.factor(country)_Guatemala               Binary  -0.004     0    
-as.factor(country)_Guyana                  Binary  -0.017     0    
-as.factor(country)_Honduras                Binary   0.038     0    
-as.factor(country)_Mexico                  Binary  -0.159     0    
-as.factor(country)_Nicaragua               Binary  -0.007     0    
-as.factor(country)_Panama                  Binary  -0.003     0    
-as.factor(country)_Peru                    Binary  -0.078     0    
-fc_area_matchingyear                       Contin.  2.917   -0.027 
-sum_fcl_matchingyear_tmax                  Contin. -1.137   -0.009 
--------------------------------------------------------------------</code></pre>
-<p><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-20-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-20-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-20-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-20-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-20-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-20-7.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
-<div id="psm-9" class="section level3">
-<h3>PSM</h3>
-<pre class="r"><code>build_plots_psm(2013)</code></pre>
-<pre><code>
-Balance before and after PSM for matching frame 2013
-====================================================================
-                                             Type   Diff.Un Diff.Adj
---------------------------------------------------------------------
-distance                                   Distance  1.512   0.011  
-travel_time_to_nearby_cities_min_5k_100mio Contin.   1.039   0.042  
-clay_content_10_cm                         Contin.  -0.320   -0.044 
-terrain_ruggedness_index_mean              Contin.  -0.560   -0.018 
-elevation_mean                             Contin.  -0.733   0.080  
-as.factor(country)_Belize                   Binary  -0.0004    0    
-as.factor(country)_Bolivia                  Binary   0.377     0    
-as.factor(country)_Brazil                   Binary  -0.066     0    
-as.factor(country)_Colombia                 Binary  -0.073     0    
-as.factor(country)_Dominican Republic       Binary   0.009     0    
-as.factor(country)_Ecuador                  Binary  -0.015     0    
-as.factor(country)_El Salvador              Binary  -0.001     0    
-as.factor(country)_Guatemala                Binary  -0.004     0    
-as.factor(country)_Guyana                   Binary  -0.017     0    
-as.factor(country)_Honduras                 Binary   0.038     -0   
-as.factor(country)_Mexico                   Binary  -0.159     0    
-as.factor(country)_Nicaragua                Binary  -0.007     0    
-as.factor(country)_Panama                   Binary  -0.003     0    
-as.factor(country)_Peru                     Binary  -0.078     0    
-fc_area_matchingyear                       Contin.   2.917   -0.103 
-sum_fcl_matchingyear_tmax                  Contin.  -1.137   0.012  
---------------------------------------------------------------------</code></pre>
-<p><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-21-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-21-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-21-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-21-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-21-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-21-6.png" width="672" style="display: block; margin: auto;" /></p>
-<pre><code>Warning: Removed 20288 rows containing non-finite values (stat_density).</code></pre>
-<pre><code>Warning: Removed 78 rows containing non-finite values (stat_density).</code></pre>
-<p><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-21-7.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
+Balance (raw means) before and after CEM and PSM for matching frame 2013
+========================================================================
+                                      Type    Diff.Un  Diff.CEM Diff.PSM
+------------------------------------------------------------------------
+traveltime_5k_110mio                 Contin. -262.269   14.187  -20.565 
+soil_5_15cm_clay                     Contin. 1,280.506 480.597  -171.083
+terrain_ruggedness_index_mean        Contin.  -4.994    -0.687   0.216  
+elevation_mean                       Contin. -607.790  -81.365   -3.081 
+as.factor(NAME_0)_Belize             Binary    0.008      -0       0    
+as.factor(NAME_0)_Bolivia            Binary   -0.073      0        0    
+as.factor(NAME_0)_Brazil             Binary   -0.560      0        0    
+as.factor(NAME_0)_Colombia           Binary   -0.077      0        0    
+as.factor(NAME_0)_Costa Rica         Binary   -0.004      0        0    
+as.factor(NAME_0)_Dominican Republic Binary   -0.003      0        0    
+as.factor(NAME_0)_Ecuador            Binary   -0.017      0        0    
+as.factor(NAME_0)_El Salvador        Binary   -0.001      0        0    
+as.factor(NAME_0)_Guatemala          Binary    0.183      0        0    
+as.factor(NAME_0)_Guyana             Binary   -0.014      0        0    
+as.factor(NAME_0)_Honduras           Binary   -0.007      0        0    
+as.factor(NAME_0)_Mexico             Binary    0.664      0        0    
+as.factor(NAME_0)_Nicaragua          Binary   -0.008      0        0    
+as.factor(NAME_0)_Panama             Binary   -0.005      0        0    
+as.factor(NAME_0)_Peru               Binary   -0.085      0        0    
+treecover                            Contin.  48.250    -0.365  -38.292 
+loss_t3                              Contin.   0.370    0.960    0.367  
+------------------------------------------------------------------------
+
+Balance (standardized means) before and after CEM and PSM for matching frame 2013
+======================================================================
+                                      Type   Diff.Un Diff.CEM Diff.PSM
+----------------------------------------------------------------------
+traveltime_5k_110mio                 Contin. -0.503   0.027    -0.177 
+soil_5_15cm_clay                     Contin.  1.941   0.728    -0.302 
+terrain_ruggedness_index_mean        Contin. -0.756   -0.104   0.059  
+elevation_mean                       Contin. -0.977   -0.131   -0.098 
+as.factor(NAME_0)_Belize             Binary   0.008     -0       0    
+as.factor(NAME_0)_Bolivia            Binary  -0.073     0        0    
+as.factor(NAME_0)_Brazil             Binary  -0.560     0        0    
+as.factor(NAME_0)_Colombia           Binary  -0.077     0        0    
+as.factor(NAME_0)_Costa Rica         Binary  -0.004     0        0    
+as.factor(NAME_0)_Dominican Republic Binary  -0.003     0        0    
+as.factor(NAME_0)_Ecuador            Binary  -0.017     0        0    
+as.factor(NAME_0)_El Salvador        Binary  -0.001     0        0    
+as.factor(NAME_0)_Guatemala          Binary   0.183     0        0    
+as.factor(NAME_0)_Guyana             Binary  -0.014     0        0    
+as.factor(NAME_0)_Honduras           Binary  -0.007     0        0    
+as.factor(NAME_0)_Mexico             Binary   0.664     0        0    
+as.factor(NAME_0)_Nicaragua          Binary  -0.008     0        0    
+as.factor(NAME_0)_Panama             Binary  -0.005     0        0    
+as.factor(NAME_0)_Peru               Binary  -0.085     0        0    
+treecover                            Contin.  0.257   -0.002   -0.234 
+loss_t3                              Contin.  0.029   0.076    0.043  
+----------------------------------------------------------------------</code></pre>
+<p><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202013-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202013-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202013-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202013-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202013-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202013-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202013-7.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="matching-frame-2014" class="section level2">
 <h2>Matching frame 2014</h2>
-<div id="cem-10" class="section level3">
-<h3>CEM</h3>
-<pre class="r"><code>build_plots_cem(2014)</code></pre>
 <pre><code>
-Balance before and after CEM for matching frame 2014
-===================================================================
-                                            Type   Diff.Un Diff.Adj
--------------------------------------------------------------------
-travel_time_to_nearby_cities_min_5k_100mio Contin.  1.050   0.068  
-clay_content_10_cm                         Contin. -0.345   0.001  
-terrain_ruggedness_index_mean              Contin. -0.555   -0.104 
-elevation_mean                             Contin. -0.727   0.030  
-as.factor(country)_Belize                  Binary  -0.0004    0    
-as.factor(country)_Bolivia                 Binary   0.381     0    
-as.factor(country)_Brazil                  Binary  -0.063     0    
-as.factor(country)_Colombia                Binary  -0.073     0    
-as.factor(country)_Dominican Republic      Binary   0.009     0    
-as.factor(country)_Ecuador                 Binary  -0.015     0    
-as.factor(country)_El Salvador             Binary  -0.001     0    
-as.factor(country)_Guatemala               Binary  -0.004     0    
-as.factor(country)_Guyana                  Binary  -0.017     0    
-as.factor(country)_Honduras                Binary   0.038     0    
-as.factor(country)_Mexico                  Binary  -0.166     0    
-as.factor(country)_Nicaragua               Binary  -0.007     0    
-as.factor(country)_Panama                  Binary  -0.003     0    
-as.factor(country)_Peru                    Binary  -0.078     0    
-fc_area_matchingyear                       Contin.  3.028   -0.027 
-sum_fcl_matchingyear_tmax                  Contin. -1.133   -0.006 
--------------------------------------------------------------------</code></pre>
-<p><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-22-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-22-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-22-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-22-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-22-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-22-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-22-7.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
-<div id="psm-10" class="section level3">
-<h3>PSM</h3>
-<pre class="r"><code>build_plots_psm(2014)</code></pre>
-<pre><code>
-Balance before and after PSM for matching frame 2014
-====================================================================
-                                             Type   Diff.Un Diff.Adj
---------------------------------------------------------------------
-distance                                   Distance  1.529   0.013  
-travel_time_to_nearby_cities_min_5k_100mio Contin.   1.050   0.053  
-clay_content_10_cm                         Contin.  -0.345   -0.038 
-terrain_ruggedness_index_mean              Contin.  -0.555   -0.049 
-elevation_mean                             Contin.  -0.727   0.068  
-as.factor(country)_Belize                   Binary  -0.0004    0    
-as.factor(country)_Bolivia                  Binary   0.381     0    
-as.factor(country)_Brazil                   Binary  -0.063     0    
-as.factor(country)_Colombia                 Binary  -0.073     0    
-as.factor(country)_Dominican Republic       Binary   0.009     0    
-as.factor(country)_Ecuador                  Binary  -0.015     0    
-as.factor(country)_El Salvador              Binary  -0.001     0    
-as.factor(country)_Guatemala                Binary  -0.004     0    
-as.factor(country)_Guyana                   Binary  -0.017     0    
-as.factor(country)_Honduras                 Binary   0.038     0    
-as.factor(country)_Mexico                   Binary  -0.166     0    
-as.factor(country)_Nicaragua                Binary  -0.007     0    
-as.factor(country)_Panama                   Binary  -0.003     0    
-as.factor(country)_Peru                     Binary  -0.078     0    
-fc_area_matchingyear                       Contin.   3.028   -0.119 
-sum_fcl_matchingyear_tmax                  Contin.  -1.133   0.028  
---------------------------------------------------------------------</code></pre>
-<p><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-23-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-23-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-23-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-23-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-23-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-23-6.png" width="672" style="display: block; margin: auto;" /></p>
-<pre><code>Warning: Removed 20290 rows containing non-finite values (stat_density).</code></pre>
-<pre><code>Warning: Removed 78 rows containing non-finite values (stat_density).</code></pre>
-<p><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-23-7.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
+Balance (raw means) before and after CEM and PSM for matching frame 2014
+=======================================================================
+                                      Type   Diff.Un  Diff.CEM Diff.PSM
+-----------------------------------------------------------------------
+traveltime_5k_110mio                 Contin. -273.806  23.093   28.436 
+soil_5_15cm_clay                     Contin. 776.945  -183.482 263.443 
+terrain_ruggedness_index_mean        Contin.  -6.146   -0.522   0.092  
+elevation_mean                       Contin. -616.679 -53.238   1.020  
+as.factor(NAME_0)_Belize             Binary   -0.001     0        0    
+as.factor(NAME_0)_Bolivia            Binary   -0.073     0        0    
+as.factor(NAME_0)_Brazil             Binary   -0.560     0        0    
+as.factor(NAME_0)_Colombia           Binary   -0.077     0        0    
+as.factor(NAME_0)_Costa Rica         Binary   -0.004     0        0    
+as.factor(NAME_0)_Dominican Republic Binary   -0.003     0        0    
+as.factor(NAME_0)_Ecuador            Binary   -0.017     0        0    
+as.factor(NAME_0)_El Salvador        Binary   -0.001     0        0    
+as.factor(NAME_0)_Guatemala          Binary   -0.008     0        0    
+as.factor(NAME_0)_Guyana             Binary   -0.014     0        0    
+as.factor(NAME_0)_Honduras           Binary   -0.007     0        0    
+as.factor(NAME_0)_Mexico             Binary   0.864      0        0    
+as.factor(NAME_0)_Nicaragua          Binary   -0.008     0        0    
+as.factor(NAME_0)_Panama             Binary   -0.005     0        0    
+as.factor(NAME_0)_Peru               Binary   -0.085     0        0    
+treecover                            Contin.  86.985   0.371    -8.321 
+loss_t3                              Contin.  1.660    0.618    -0.443 
+-----------------------------------------------------------------------
+
+Balance (standardized means) before and after CEM and PSM for matching frame 2014
+=======================================================================
+                                      Type   Diff.Un  Diff.CEM Diff.PSM
+-----------------------------------------------------------------------
+traveltime_5k_110mio                 Contin.  -4.317   0.364    0.448  
+soil_5_15cm_clay                     Contin.  1.687    -0.398   0.572  
+terrain_ruggedness_index_mean        Contin. -25.986   -2.209   0.389  
+elevation_mean                       Contin. -141.987 -12.258   0.235  
+as.factor(NAME_0)_Belize             Binary   -0.001     0        0    
+as.factor(NAME_0)_Bolivia            Binary   -0.073     0        0    
+as.factor(NAME_0)_Brazil             Binary   -0.560     0        0    
+as.factor(NAME_0)_Colombia           Binary   -0.077     0        0    
+as.factor(NAME_0)_Costa Rica         Binary   -0.004     0        0    
+as.factor(NAME_0)_Dominican Republic Binary   -0.003     0        0    
+as.factor(NAME_0)_Ecuador            Binary   -0.017     0        0    
+as.factor(NAME_0)_El Salvador        Binary   -0.001     0        0    
+as.factor(NAME_0)_Guatemala          Binary   -0.008     0        0    
+as.factor(NAME_0)_Guyana             Binary   -0.014     0        0    
+as.factor(NAME_0)_Honduras           Binary   -0.007     0        0    
+as.factor(NAME_0)_Mexico             Binary   0.864      0        0    
+as.factor(NAME_0)_Nicaragua          Binary   -0.008     0        0    
+as.factor(NAME_0)_Panama             Binary   -0.005     0        0    
+as.factor(NAME_0)_Peru               Binary   -0.085     0        0    
+treecover                            Contin.  0.546    0.002    -0.052 
+loss_t3                              Contin.  0.223    0.083    -0.059 
+-----------------------------------------------------------------------</code></pre>
+<pre><code>Warning: Large mean differences detected; you may not be using standardized mean differences for continuous variables.</code></pre>
+<p><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202014-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202014-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202014-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202014-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202014-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202014-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202014-7.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="matching-frame-2015" class="section level2">
 <h2>Matching frame 2015</h2>
-<div id="cem-11" class="section level3">
-<h3>CEM</h3>
-<pre class="r"><code>build_plots_cem(2015)</code></pre>
 <pre><code>
-Balance before and after CEM for matching frame 2015
-===================================================================
-                                            Type   Diff.Un Diff.Adj
--------------------------------------------------------------------
-travel_time_to_nearby_cities_min_5k_100mio Contin.  1.203   0.028  
-clay_content_10_cm                         Contin.  0.400   0.012  
-terrain_ruggedness_index_mean              Contin. -0.263   0.150  
-elevation_mean                             Contin. -1.347   0.175  
-as.factor(country)_Belize                  Binary  -0.0004    0    
-as.factor(country)_Bolivia                 Binary   0.042     0    
-as.factor(country)_Brazil                  Binary   0.294     0    
-as.factor(country)_Colombia                Binary  -0.048     0    
-as.factor(country)_Dominican Republic      Binary   0.001     -0   
-as.factor(country)_Ecuador                 Binary  -0.015     0    
-as.factor(country)_El Salvador             Binary  -0.001     0    
-as.factor(country)_Guatemala               Binary  -0.005     0    
-as.factor(country)_Guyana                  Binary  -0.017     0    
-as.factor(country)_Honduras                Binary   0.012     0    
-as.factor(country)_Mexico                  Binary  -0.166     0    
-as.factor(country)_Nicaragua               Binary  -0.007     0    
-as.factor(country)_Panama                  Binary  -0.003     0    
-as.factor(country)_Peru                    Binary  -0.087     0    
-fc_area_matchingyear                       Contin.  3.788   -0.019 
-sum_fcl_matchingyear_tmax                  Contin. -1.052   -0.001 
--------------------------------------------------------------------</code></pre>
-<p><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-24-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-24-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-24-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-24-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-24-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-24-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-24-7.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
-<div id="psm-11" class="section level3">
-<h3>PSM</h3>
-<pre class="r"><code>build_plots_psm(2015)</code></pre>
-<pre><code>
-Balance before and after PSM for matching frame 2015
-====================================================================
-                                             Type   Diff.Un Diff.Adj
---------------------------------------------------------------------
-distance                                   Distance  1.770   0.003  
-travel_time_to_nearby_cities_min_5k_100mio Contin.   1.203   -0.195 
-clay_content_10_cm                         Contin.   0.400   0.179  
-terrain_ruggedness_index_mean              Contin.  -0.263   0.117  
-elevation_mean                             Contin.  -1.347   0.033  
-as.factor(country)_Belize                   Binary  -0.0004    0    
-as.factor(country)_Bolivia                  Binary   0.042     0    
-as.factor(country)_Brazil                   Binary   0.294     -0   
-as.factor(country)_Colombia                 Binary  -0.048     0    
-as.factor(country)_Dominican Republic       Binary   0.001     0    
-as.factor(country)_Ecuador                  Binary  -0.015     0    
-as.factor(country)_El Salvador              Binary  -0.001     0    
-as.factor(country)_Guatemala                Binary  -0.005     0    
-as.factor(country)_Guyana                   Binary  -0.017     0    
-as.factor(country)_Honduras                 Binary   0.012     0    
-as.factor(country)_Mexico                   Binary  -0.166     0    
-as.factor(country)_Nicaragua                Binary  -0.007     0    
-as.factor(country)_Panama                   Binary  -0.003     0    
-as.factor(country)_Peru                     Binary  -0.087     0    
-fc_area_matchingyear                       Contin.   3.788   0.027  
-sum_fcl_matchingyear_tmax                  Contin.  -1.052   -0.001 
---------------------------------------------------------------------</code></pre>
-<p><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-25-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-25-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-25-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-25-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-25-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-25-6.png" width="672" style="display: block; margin: auto;" /></p>
-<pre><code>Warning: Removed 20392 rows containing non-finite values (stat_density).</code></pre>
-<pre><code>Warning: Removed 286 rows containing non-finite values (stat_density).</code></pre>
-<p><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-25-7.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
+Balance (raw means) before and after CEM and PSM for matching frame 2015
+=======================================================================
+                                      Type   Diff.Un  Diff.CEM Diff.PSM
+-----------------------------------------------------------------------
+traveltime_5k_110mio                 Contin. 853.334   0.182    -7.831 
+soil_5_15cm_clay                     Contin. 269.410  109.129   11.262 
+terrain_ruggedness_index_mean        Contin.  -1.455   0.043    0.033  
+elevation_mean                       Contin. -393.709  -1.154  -10.081 
+as.factor(NAME_0)_Belize             Binary   -0.001     0        0    
+as.factor(NAME_0)_Bolivia            Binary   -0.072     -0       -0   
+as.factor(NAME_0)_Brazil             Binary   0.374      0        -0   
+as.factor(NAME_0)_Colombia           Binary   -0.023     -0       -0   
+as.factor(NAME_0)_Costa Rica         Binary   -0.004     0        0    
+as.factor(NAME_0)_Dominican Republic Binary   -0.003     0        0    
+as.factor(NAME_0)_Ecuador            Binary   -0.017     0        0    
+as.factor(NAME_0)_El Salvador        Binary   -0.001     0        0    
+as.factor(NAME_0)_Guatemala          Binary   -0.008     0        0    
+as.factor(NAME_0)_Guyana             Binary   -0.012     -0       -0   
+as.factor(NAME_0)_Honduras           Binary   -0.001     -0       -0   
+as.factor(NAME_0)_Mexico             Binary   -0.136     0        0    
+as.factor(NAME_0)_Nicaragua          Binary   -0.008     0        0    
+as.factor(NAME_0)_Panama             Binary   -0.005     0        0    
+as.factor(NAME_0)_Peru               Binary   -0.082     -0       -0   
+treecover                            Contin. 220.098   0.230    -0.616 
+loss_t3                              Contin.  2.545    0.176    0.012  
+-----------------------------------------------------------------------
+
+Balance (standardized means) before and after CEM and PSM for matching frame 2015
+======================================================================
+                                      Type   Diff.Un Diff.CEM Diff.PSM
+----------------------------------------------------------------------
+traveltime_5k_110mio                 Contin.  1.077   0.0002   -0.009 
+soil_5_15cm_clay                     Contin.  0.416   0.168    0.021  
+terrain_ruggedness_index_mean        Contin. -0.197   0.006    0.006  
+elevation_mean                       Contin. -0.589   -0.002   -0.029 
+as.factor(NAME_0)_Belize             Binary  -0.001     0        0    
+as.factor(NAME_0)_Bolivia            Binary  -0.072     -0       -0   
+as.factor(NAME_0)_Brazil             Binary   0.374     0        -0   
+as.factor(NAME_0)_Colombia           Binary  -0.023     -0       -0   
+as.factor(NAME_0)_Costa Rica         Binary  -0.004     0        0    
+as.factor(NAME_0)_Dominican Republic Binary  -0.003     0        0    
+as.factor(NAME_0)_Ecuador            Binary  -0.017     0        0    
+as.factor(NAME_0)_El Salvador        Binary  -0.001     0        0    
+as.factor(NAME_0)_Guatemala          Binary  -0.008     0        0    
+as.factor(NAME_0)_Guyana             Binary  -0.012     -0       -0   
+as.factor(NAME_0)_Honduras           Binary  -0.001     -0       -0   
+as.factor(NAME_0)_Mexico             Binary  -0.136     0        0    
+as.factor(NAME_0)_Nicaragua          Binary  -0.008     0        0    
+as.factor(NAME_0)_Panama             Binary  -0.005     0        0    
+as.factor(NAME_0)_Peru               Binary  -0.082     -0       -0   
+treecover                            Contin.  1.373   0.001    -0.007 
+loss_t3                              Contin.  0.221   0.015    0.002  
+----------------------------------------------------------------------</code></pre>
+<p><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202015-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202015-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202015-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202015-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202015-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202015-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202015-7.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="matching-frame-2016" class="section level2">
 <h2>Matching frame 2016</h2>
-<div id="cem-12" class="section level3">
-<h3>CEM</h3>
-<pre class="r"><code>build_plots_cem(2016)</code></pre>
 <pre><code>
-Balance before and after CEM for matching frame 2016
-===================================================================
-                                            Type   Diff.Un Diff.Adj
--------------------------------------------------------------------
-travel_time_to_nearby_cities_min_5k_100mio Contin.  1.015   0.067  
-clay_content_10_cm                         Contin. -0.302   0.003  
-terrain_ruggedness_index_mean              Contin. -0.500   -0.090 
-elevation_mean                             Contin. -0.733   0.032  
-as.factor(country)_Belize                  Binary  -0.0004    0    
-as.factor(country)_Bolivia                 Binary   0.370     0    
-as.factor(country)_Brazil                  Binary  -0.051     0    
-as.factor(country)_Colombia                Binary  -0.073     0    
-as.factor(country)_Dominican Republic      Binary   0.009     -0   
-as.factor(country)_Ecuador                 Binary  -0.015     0    
-as.factor(country)_El Salvador             Binary  -0.001     0    
-as.factor(country)_Guatemala               Binary  -0.004     -0   
-as.factor(country)_Guyana                  Binary  -0.017     0    
-as.factor(country)_Honduras                Binary   0.037     -0   
-as.factor(country)_Mexico                  Binary  -0.166     0    
-as.factor(country)_Nicaragua               Binary  -0.007     0    
-as.factor(country)_Panama                  Binary  -0.003     0    
-as.factor(country)_Peru                    Binary  -0.078     0    
-fc_area_matchingyear                       Contin.  3.016   -0.027 
-sum_fcl_matchingyear_tmax                  Contin. -1.142   -0.013 
--------------------------------------------------------------------</code></pre>
-<p><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-26-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-26-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-26-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-26-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-26-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-26-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-26-7.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
-<div id="psm-12" class="section level3">
-<h3>PSM</h3>
-<pre class="r"><code>build_plots_psm(2016)</code></pre>
-<pre><code>
-Balance before and after PSM for matching frame 2016
-====================================================================
-                                             Type   Diff.Un Diff.Adj
---------------------------------------------------------------------
-distance                                   Distance  1.529   0.012  
-travel_time_to_nearby_cities_min_5k_100mio Contin.   1.015   0.043  
-clay_content_10_cm                         Contin.  -0.302   -0.037 
-terrain_ruggedness_index_mean              Contin.  -0.500   -0.102 
-elevation_mean                             Contin.  -0.733   0.049  
-as.factor(country)_Belize                   Binary  -0.0004    0    
-as.factor(country)_Bolivia                  Binary   0.370     0    
-as.factor(country)_Brazil                   Binary  -0.051     0    
-as.factor(country)_Colombia                 Binary  -0.073     0    
-as.factor(country)_Dominican Republic       Binary   0.009     0    
-as.factor(country)_Ecuador                  Binary  -0.015     0    
-as.factor(country)_El Salvador              Binary  -0.001     0    
-as.factor(country)_Guatemala                Binary  -0.004     -0   
-as.factor(country)_Guyana                   Binary  -0.017     0    
-as.factor(country)_Honduras                 Binary   0.037     0    
-as.factor(country)_Mexico                   Binary  -0.166     0    
-as.factor(country)_Nicaragua                Binary  -0.007     0    
-as.factor(country)_Panama                   Binary  -0.003     0    
-as.factor(country)_Peru                     Binary  -0.078     -0   
-fc_area_matchingyear                       Contin.   3.016   -0.119 
-sum_fcl_matchingyear_tmax                  Contin.  -1.142   -0.015 
---------------------------------------------------------------------</code></pre>
-<p><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-27-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-27-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-27-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-27-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-27-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-27-6.png" width="672" style="display: block; margin: auto;" /></p>
-<pre><code>Warning: Removed 20284 rows containing non-finite values (stat_density).</code></pre>
-<pre><code>Warning: Removed 78 rows containing non-finite values (stat_density).</code></pre>
-<p><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-27-7.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
+Balance (raw means) before and after CEM and PSM for matching frame 2016
+=======================================================================
+                                      Type   Diff.Un  Diff.CEM Diff.PSM
+-----------------------------------------------------------------------
+traveltime_5k_110mio                 Contin. -360.453 -13.733   8.148  
+soil_5_15cm_clay                     Contin. 771.542  461.809  -20.032 
+terrain_ruggedness_index_mean        Contin.  6.167    2.244    -0.197 
+elevation_mean                       Contin. -312.409 -76.775   -6.001 
+as.factor(NAME_0)_Belize             Binary   -0.001     0        0    
+as.factor(NAME_0)_Bolivia            Binary   -0.073     0        0    
+as.factor(NAME_0)_Brazil             Binary   0.402      0        0    
+as.factor(NAME_0)_Colombia           Binary   -0.077     0        0    
+as.factor(NAME_0)_Costa Rica         Binary   -0.004     0        0    
+as.factor(NAME_0)_Dominican Republic Binary   -0.003     0        0    
+as.factor(NAME_0)_Ecuador            Binary   -0.017     0        0    
+as.factor(NAME_0)_El Salvador        Binary   -0.001     0        0    
+as.factor(NAME_0)_Guatemala          Binary   -0.008     0        0    
+as.factor(NAME_0)_Guyana             Binary   -0.014     0        0    
+as.factor(NAME_0)_Honduras           Binary   -0.007     0        0    
+as.factor(NAME_0)_Mexico             Binary   -0.136     0        0    
+as.factor(NAME_0)_Nicaragua          Binary   -0.008     0        0    
+as.factor(NAME_0)_Panama             Binary   0.033      -0       0    
+as.factor(NAME_0)_Peru               Binary   -0.085     0        0    
+treecover                            Contin. 160.939   1.488    6.315  
+loss_t3                              Contin.  1.788    1.156    0.308  
+-----------------------------------------------------------------------
+
+Balance (standardized means) before and after CEM and PSM for matching frame 2016
+======================================================================
+                                      Type   Diff.Un Diff.CEM Diff.PSM
+----------------------------------------------------------------------
+traveltime_5k_110mio                 Contin. -3.543   -0.135   0.080  
+soil_5_15cm_clay                     Contin.  1.171   0.701    -0.030 
+terrain_ruggedness_index_mean        Contin.  0.605   0.220    -0.019 
+elevation_mean                       Contin. -0.796   -0.196   -0.015 
+as.factor(NAME_0)_Belize             Binary  -0.001     0        0    
+as.factor(NAME_0)_Bolivia            Binary  -0.073     0        0    
+as.factor(NAME_0)_Brazil             Binary   0.402     0        0    
+as.factor(NAME_0)_Colombia           Binary  -0.077     0        0    
+as.factor(NAME_0)_Costa Rica         Binary  -0.004     0        0    
+as.factor(NAME_0)_Dominican Republic Binary  -0.003     0        0    
+as.factor(NAME_0)_Ecuador            Binary  -0.017     0        0    
+as.factor(NAME_0)_El Salvador        Binary  -0.001     0        0    
+as.factor(NAME_0)_Guatemala          Binary  -0.008     0        0    
+as.factor(NAME_0)_Guyana             Binary  -0.014     0        0    
+as.factor(NAME_0)_Honduras           Binary  -0.007     0        0    
+as.factor(NAME_0)_Mexico             Binary  -0.136     0        0    
+as.factor(NAME_0)_Nicaragua          Binary  -0.008     0        0    
+as.factor(NAME_0)_Panama             Binary   0.033     -0       0    
+as.factor(NAME_0)_Peru               Binary  -0.085     0        0    
+treecover                            Contin.  1.248   0.012    0.049  
+loss_t3                              Contin.  0.343   0.222    0.059  
+----------------------------------------------------------------------</code></pre>
+<p><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202016-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202016-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202016-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202016-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202016-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202016-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202016-7.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="matching-frame-2019" class="section level2">
 <h2>Matching frame 2019</h2>
-<div id="cem-13" class="section level3">
-<h3>CEM</h3>
-<pre class="r"><code>build_plots_cem(2019)</code></pre>
 <pre><code>
-Balance before and after CEM for matching frame 2019
-===================================================================
-                                            Type   Diff.Un Diff.Adj
--------------------------------------------------------------------
-travel_time_to_nearby_cities_min_5k_100mio Contin.  1.026   0.067  
-clay_content_10_cm                         Contin. -0.282   0.004  
-terrain_ruggedness_index_mean              Contin. -0.465   -0.088 
-elevation_mean                             Contin. -0.711   0.029  
-as.factor(country)_Belize                  Binary  -0.0004    0    
-as.factor(country)_Bolivia                 Binary   0.368     0    
-as.factor(country)_Brazil                  Binary  -0.076     0    
-as.factor(country)_Colombia                Binary  -0.073     0    
-as.factor(country)_Costa Rica              Binary   0.005     0    
-as.factor(country)_Dominican Republic      Binary   0.009     0    
-as.factor(country)_Ecuador                 Binary  -0.015     0    
-as.factor(country)_El Salvador             Binary  -0.001     0    
-as.factor(country)_Guatemala               Binary   0.001     0    
-as.factor(country)_Guyana                  Binary  -0.017     0    
-as.factor(country)_Honduras                Binary   0.037     0    
-as.factor(country)_Mexico                  Binary  -0.166     0    
-as.factor(country)_Nicaragua               Binary   0.010     0    
-as.factor(country)_Panama                  Binary  -0.003     0    
-as.factor(country)_Peru                    Binary  -0.078     0    
-fc_area_matchingyear                       Contin.  2.843   -0.026 
-sum_fcl_matchingyear_tmax                  Contin. -0.541   0.001  
--------------------------------------------------------------------</code></pre>
-<p><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-28-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-28-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-28-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-28-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-28-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-28-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-28-7.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
-<div id="psm-13" class="section level3">
-<h3>PSM</h3>
-<pre class="r"><code>build_plots_psm(2019)</code></pre>
-<pre><code>
-Balance before and after PSM for matching frame 2019
-====================================================================
-                                             Type   Diff.Un Diff.Adj
---------------------------------------------------------------------
-distance                                   Distance  1.333   0.014  
-travel_time_to_nearby_cities_min_5k_100mio Contin.   1.026   0.044  
-clay_content_10_cm                         Contin.  -0.282   -0.031 
-terrain_ruggedness_index_mean              Contin.  -0.465   -0.036 
-elevation_mean                             Contin.  -0.711   0.044  
-as.factor(country)_Belize                   Binary  -0.0004    0    
-as.factor(country)_Bolivia                  Binary   0.368     0    
-as.factor(country)_Brazil                   Binary  -0.076     0    
-as.factor(country)_Colombia                 Binary  -0.073     0    
-as.factor(country)_Costa Rica               Binary   0.005     0    
-as.factor(country)_Dominican Republic       Binary   0.009     0    
-as.factor(country)_Ecuador                  Binary  -0.015     0    
-as.factor(country)_El Salvador              Binary  -0.001     0    
-as.factor(country)_Guatemala                Binary   0.001     0    
-as.factor(country)_Guyana                   Binary  -0.017     0    
-as.factor(country)_Honduras                 Binary   0.037     0    
-as.factor(country)_Mexico                   Binary  -0.166     0    
-as.factor(country)_Nicaragua                Binary   0.010     0    
-as.factor(country)_Panama                   Binary  -0.003     0    
-as.factor(country)_Peru                     Binary  -0.078     0    
-fc_area_matchingyear                       Contin.   2.843   -0.088 
-sum_fcl_matchingyear_tmax                  Contin.  -0.541   0.044  
---------------------------------------------------------------------</code></pre>
-<p><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-29-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-29-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-29-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-29-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-29-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-29-6.png" width="672" style="display: block; margin: auto;" /></p>
-<pre><code>Warning: Removed 20311 rows containing non-finite values (stat_density).</code></pre>
-<pre><code>Warning: Removed 120 rows containing non-finite values (stat_density).</code></pre>
-<p><img src="figure/analysis_03_descriptives.Rmd/unnamed-chunk-29-7.png" width="672" style="display: block; margin: auto;" /></p>
+Balance (raw means) before and after CEM and PSM for matching frame 2019
+======================================================================
+                                      Type   Diff.Un Diff.CEM Diff.PSM
+----------------------------------------------------------------------
+traveltime_5k_110mio                 Contin. 16.666   15.065   94.847 
+soil_5_15cm_clay                     Contin. 559.470 -35.663   63.214 
+terrain_ruggedness_index_mean        Contin.  7.060   0.053    1.430  
+elevation_mean                       Contin. 18.108   7.883    1.297  
+as.factor(NAME_0)_Belize             Binary   0.012     0        -0   
+as.factor(NAME_0)_Bolivia            Binary  -0.073     0        0    
+as.factor(NAME_0)_Brazil             Binary  -0.560     0        0    
+as.factor(NAME_0)_Colombia           Binary  -0.077     0        0    
+as.factor(NAME_0)_Costa Rica         Binary   0.441     0        0    
+as.factor(NAME_0)_Dominican Republic Binary  -0.003     0        0    
+as.factor(NAME_0)_Ecuador            Binary  -0.017     0        0    
+as.factor(NAME_0)_El Salvador        Binary   0.003     0        0    
+as.factor(NAME_0)_Guatemala          Binary   0.055     0        0    
+as.factor(NAME_0)_Guyana             Binary  -0.014     0        0    
+as.factor(NAME_0)_Honduras           Binary   0.020     0        0    
+as.factor(NAME_0)_Mexico             Binary  -0.136     0        0    
+as.factor(NAME_0)_Nicaragua          Binary   0.397     0        0    
+as.factor(NAME_0)_Panama             Binary   0.036     -0       0    
+as.factor(NAME_0)_Peru               Binary  -0.085     0        0    
+treecover                            Contin. 150.965  0.398    40.664 
+loss_t3                              Contin. -69.675 -20.334   28.089 
+----------------------------------------------------------------------
+
+Balance (standardized means) before and after CEM and PSM for matching frame 2019
+======================================================================
+                                      Type   Diff.Un Diff.CEM Diff.PSM
+----------------------------------------------------------------------
+traveltime_5k_110mio                 Contin.  0.030   0.027    0.170  
+soil_5_15cm_clay                     Contin.  0.989   -0.063   0.112  
+terrain_ruggedness_index_mean        Contin.  0.677   0.005    0.137  
+elevation_mean                       Contin.  0.021   0.009    0.001  
+as.factor(NAME_0)_Belize             Binary   0.012     0        -0   
+as.factor(NAME_0)_Bolivia            Binary  -0.073     0        0    
+as.factor(NAME_0)_Brazil             Binary  -0.560     0        0    
+as.factor(NAME_0)_Colombia           Binary  -0.077     0        0    
+as.factor(NAME_0)_Costa Rica         Binary   0.441     0        0    
+as.factor(NAME_0)_Dominican Republic Binary  -0.003     0        0    
+as.factor(NAME_0)_Ecuador            Binary  -0.017     0        0    
+as.factor(NAME_0)_El Salvador        Binary   0.003     0        0    
+as.factor(NAME_0)_Guatemala          Binary   0.055     0        0    
+as.factor(NAME_0)_Guyana             Binary  -0.014     0        0    
+as.factor(NAME_0)_Honduras           Binary   0.020     0        0    
+as.factor(NAME_0)_Mexico             Binary  -0.136     0        0    
+as.factor(NAME_0)_Nicaragua          Binary   0.397     0        0    
+as.factor(NAME_0)_Panama             Binary   0.036     -0       0    
+as.factor(NAME_0)_Peru               Binary  -0.085     0        0    
+treecover                            Contin.  0.859   0.002    0.231  
+loss_t3                              Contin. -0.720   -0.210   0.290  
+----------------------------------------------------------------------</code></pre>
+<p><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202019-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202019-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202019-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202019-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202019-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202019-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202019-7.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>Time difference of 73.48781 mins</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1519,7 +1427,6 @@ sum_fcl_matchingyear_tmax                  Contin.  -0.541   0.044
 </button>
 </p>
 <div id="workflowr-sessioninfo" class="collapse">
-<pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 3.6.3 (2020-02-29)
 Platform: x86_64-pc-linux-gnu (64-bit)
 Running under: Ubuntu 18.04.6 LTS
@@ -1536,20 +1443,18 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] gridExtra_2.3   cobalt_4.3.2    optmatch_0.9-15 survival_3.2-13 MatchIt_4.3.0   forcats_0.5.1   stringr_1.4.0   purrr_0.3.4     readr_1.4.0     tidyr_1.2.0     tibble_3.1.6    ggplot2_3.3.4  
+ [1] gridExtra_2.3   cobalt_4.3.2    optmatch_0.9-15 survival_3.2-13 MatchIt_4.3.0   forcats_0.5.1   stringr_1.4.0   purrr_0.3.4     readr_2.1.2     tidyr_1.2.0     tibble_3.1.6    ggplot2_3.3.4  
 [13] tidyverse_1.3.1 stargazer_5.2.2 plm_2.4-3       dplyr_1.0.8    
 
 loaded via a namespace (and not attached):
- [1] nlme_3.1-155      svd_0.5           fs_1.5.0          lubridate_1.7.10  httr_1.4.2        rprojroot_2.0.2   RItools_0.1-17    tools_3.6.3       backports_1.2.1   bslib_0.2.5.1    
-[11] utf8_1.2.2        R6_2.5.1          DBI_1.1.2         colorspace_2.0-1  withr_2.4.2       tidyselect_1.1.2  compiler_3.6.3    git2r_0.28.0      cli_3.2.0         rvest_1.0.0      
-[21] SparseM_1.78      xml2_1.3.2        sandwich_3.0-0    labeling_0.4.2    sass_0.4.0        scales_1.1.1      lmtest_0.9-38     digest_0.6.29     rmarkdown_2.11    pkgconfig_2.0.3  
-[31] htmltools_0.5.1.1 highr_0.8         dbplyr_2.1.1      rlang_1.0.2       readxl_1.3.1      rstudioapi_0.13   farver_2.1.0      jquerylib_0.1.4   generics_0.1.2    zoo_1.8-8        
-[41] jsonlite_1.7.2    magrittr_2.0.2    Formula_1.2-4     Matrix_1.4-0      Rcpp_1.0.8.3      munsell_0.5.0     fansi_1.0.3       abind_1.4-5       lifecycle_1.0.1   stringi_1.7.6    
-[51] yaml_2.2.1        MASS_7.3-55       grid_3.6.3        promises_1.2.0.1  bdsmatrix_1.3-4   crayon_1.5.0      lattice_0.20-45   haven_2.3.1       splines_3.6.3     hms_1.1.1        
-[61] knitr_1.34        pillar_1.7.0      reprex_2.0.0      glue_1.6.2        evaluate_0.14     mitools_2.4       modelr_0.1.8      vctrs_0.3.8       httpuv_1.6.1      Rdpack_2.1.2     
-[71] miscTools_0.6-26  cellranger_1.1.0  gtable_0.3.0      assertthat_0.2.1  xfun_0.24         rbibutils_2.2.4   xtable_1.8-4      broom_0.7.6       survey_4.1-1      later_1.2.0      
-[81] workflowr_1.6.2   maxLik_1.5-2      ellipsis_0.3.2   </code></pre>
-</div>
+ [1] svd_0.5          nlme_3.1-155     fs_1.5.0         lubridate_1.7.10 httr_1.4.2       rprojroot_2.0.2  RItools_0.1-17   tools_3.6.3      backports_1.2.1  bslib_0.2.5.1    utf8_1.2.2      
+[12] R6_2.5.1         DBI_1.1.2        colorspace_2.0-1 withr_2.4.2      tidyselect_1.1.2 compiler_3.6.3   git2r_0.28.0     cli_3.2.0        rvest_1.0.0      SparseM_1.78     xml2_1.3.2      
+[23] sandwich_3.0-0   labeling_0.4.2   sass_0.4.0       scales_1.1.1     lmtest_0.9-38    digest_0.6.29    rmarkdown_2.11   pkgconfig_2.0.3  htmltools_0.5.2  highr_0.8        dbplyr_2.1.1    
+[34] fastmap_1.1.0    rlang_1.0.2      readxl_1.3.1     rstudioapi_0.13  farver_2.1.0     jquerylib_0.1.4  generics_0.1.2   zoo_1.8-8        jsonlite_1.7.2   magrittr_2.0.3   Formula_1.2-4   
+[45] Matrix_1.4-0     Rcpp_1.0.8.3     munsell_0.5.0    fansi_1.0.3      abind_1.4-5      lifecycle_1.0.1  stringi_1.7.6    whisker_0.4      yaml_2.2.1       MASS_7.3-55      grid_3.6.3      
+[56] promises_1.2.0.1 bdsmatrix_1.3-4  crayon_1.5.1     lattice_0.20-45  haven_2.3.1      splines_3.6.3    hms_1.1.1        knitr_1.34       pillar_1.7.0     reprex_2.0.0     glue_1.6.2      
+[67] evaluate_0.14    mitools_2.4      modelr_0.1.8     vctrs_0.4.0      tzdb_0.1.2       httpuv_1.6.1     Rdpack_2.1.2     miscTools_0.6-26 cellranger_1.1.0 gtable_0.3.0     assertthat_0.2.1
+[78] xfun_0.24        rbibutils_2.2.4  xtable_1.8-4     broom_0.7.6      survey_4.1-1     later_1.2.0      workflowr_1.6.2  maxLik_1.5-2     ellipsis_0.3.2  </code></pre>
 </div>
 </div>
 
