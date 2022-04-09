@@ -3,11 +3,12 @@
   # ... for treatment and controls cells (based on KfWs project documentation) 
 
 # author: Johannes Schielein 
-# last modification: 2022-004-01
+# last modification: 2022-04-08
 
 # call relevant libs. 
 library("sf")
 library("tidyverse")
+library("mapview")
 options(scipen =999) # disable sicentific notation
 
 
@@ -45,6 +46,13 @@ project.data.reduced<-
 wdpa_kfw<-
   read_sf("../../datalake/mapme.protectedareas/input/wdpa_kfw/wdpa_kfw_spatial_latinamerica_2021-02-01_supportedPAs_unique.gpkg")
 
+wdpa_kfw <-
+  wdpa_kfw %>%
+  filter(DESIG_ENG != "UNESCO-MAB Biosphere Reserve") %>%
+  filter(STATUS != "Proposed") %>%
+  filter(GEOMETRY_TYPE != "POINT")
+
+
 # transform bmz table to long
 wdpa_kfw_long <-
   wdpa_kfw %>%
@@ -61,6 +69,7 @@ grid_intersection <-
 
 grid_intersection$treated <-
   ifelse(grid_intersection$WDPAID %in% wdpa_kfw_long$WDPAID, 1, 0)
+
 
 # ---- (3) Match Project Start and End Information to the sampling AOIs -----
 ## write a function to create columns that will indicate whether data should be sampled for a specific year or not. 
@@ -87,6 +96,54 @@ f.matchingyear <- function(matching.year) {
 
 # apply the function for all years
 matching.frame<-do.call(rbind,lapply(2000:2020,f.matchingyear))
+# table(matching.frame$matching_year)
+# head(matching.frame)
+
+########### compare against original treated cells ############ 
+# intersect_results_df<-
+#   read_csv("../../datalake/mapme.protectedareas/processing/fishnet/honeycomb_5_sqkm_subset_intersect_wdpa_long.csv")
+# 
+# nrow(intersect_results_df)
+# table(matching.frame$poly_id%in%boarder_results_df$poly_id)
+# 
+# honeycomb_subeset<-
+#   read_sf("../../datalake/mapme.protectedareas/processing/fishnet/honeycomb_5_sqkm_subset.gpkg")
+# 
+# honeycomb_subeset$poly_id<-1:nrow(honeycomb_subeset)
+# honeycomb_subeset_merge<-
+#   merge(honeycomb_subeset,boarder_results_df,by="poly_id")
+# 
+
+honeycomb_subeset_merge2<-
+  merge(honeycomb_subeset,matching.frame,by="poly_id")
+
+library(mapview)
+
+wdpa_LA<-
+  st_read("../../datalake/mapme.protectedareas/input/wdpa_kfw/wdpa_kfw_spatial_latinamerica_2021-04-22_allPAs_valid_simplified.gpkg")
+
+wdpa_LA <-
+  wdpa_LA %>%
+  filter(DESIG_ENG != "UNESCO-MAB Biosphere Reserve") %>%
+  filter(STATUS != "Proposed") %>%
+  filter(GEOMETRY_TYPE != "POINT")
+
+# make valid
+wdpa_LA<-
+  st_make_valid(wdpa_LA)
+
+# subset for treated
+wdpa_kfw_treated <-
+  wdpa_LA %>%
+  filter(!is.na(bmz_n_1))
+
+nrow(wdpa_kfw_treated)
+mapView(wdpa_kfw_treated)+mapView(honeycomb_subeset_merge2,zcol = "matching_year", legend = TRUE)
+
+wdpa_kfw2<-
+  read_sf("../../datalake/mapme.protectedareas/input/wdpa_kfw/wdpa_kfw_spatial_latinamerica_2021-02-01_supportedPAs_unique.gpkg")
+
+mapView(wdpa_kfw)+mapView(wdpa_kfw2,col.regions="red")
 
 # ----- (4) Load matching variables, clean data, create additional variables and merge final results-----
 ## Forest area and emisssions
@@ -121,7 +178,7 @@ input_gfw_wide <- cbind(input_gfw_wide, lossdata_t3)
 colnames(input_gfw_wide)
 
 rm(input_gfw)
-save.image("../../datalake/mapme.protectedareas/output/matching/matching_frames/full_database_2022-03-31.Rdata")
+# save.image("../../datalake/mapme.protectedareas/output/matching/matching_frames/full_database_2022-03-31.Rdata")
 
 ## Accessibility
 # needed for matching frames: minimum Accessibility 5k_110mio (currently only mean)
@@ -205,13 +262,13 @@ database_complete <-
   df_list %>% 
   reduce(full_join, by = colnames(input_srtm_wide)[1])
 
-
-write_rds(database_complete,
-          "../../datalake/mapme.protectedareas/output/matching/matching_frames/full_database.rds")
+# eventually save processed results
+# write_rds(database_complete,
+#           "../../datalake/mapme.protectedareas/output/matching/matching_frames/full_database.rds")
 
 # ---- (4) create year-specific matching frames and save results---- 
 ## move files if they had been already created
-newdirname="../../datalake/mapme.protectedareas/output/matching/matching_frames/arquived_2022-04-01"
+newdirname="../../datalake/mapme.protectedareas/output/matching/matching_frames/arquived_2022-04-08"
 dir.create(newdirname)
 oldfiles=list.files("../../datalake/mapme.protectedareas/output/matching/matching_frames/",full.names = T,pattern = "matching_frame_")
 sapply(oldfiles,
@@ -220,28 +277,48 @@ sapply(oldfiles,
          file.remove(x)})
 
 ## function to create year specific matching frames
-for (i in 2004:2020){
-  print(paste("Starting to process year",i))
-  # choose year
+# get control cells
+controls<-
+  read_csv("../../datalake/mapme.protectedareas/processing/fishnet/honeycomb_5_sqkm_subset_within_treated_buff50km_long.csv")
+
+
+
+# note: LOOP Currently fails for years with no data. 
+
+for (i in c(2004:2017,2019)) {
+  ## filter complete database to include only polygons from the treatment cells in a specific year
+  print(paste("Starting year",i))
+  # define year
   my_year <- i
-  ## 1. Subset the data to contain only matching observations from the respective year
-  # get the unique ids of all AOIs that are not from the chosen year from the data matching.frame
+  
+  # filter complete database to exclude all PAs and their buffer zones
+  source("code/processing-scripts/03.2_db_creation_buffer.R")
+  
+  database_complete_subset<-
+    database_complete %>%
+    filter(!.assetid%in%tmp_no_controls)
+  # creat treatment column
+  database_complete_subset$treament=0
+  
+  # get poly_ids
   tmp_uids <-
     matching.frame %>%
-    filter(., matching_year != my_year) %>%
+    filter(., matching_year == my_year) %>%
     pull(poly_id)
   
-  # remove those from the matching data set
-  database_complete_tmp <-
+  database_complete_subset_2 <-
     database_complete %>%
-    filter(.,!.assetid %in% tmp_uids)
+    filter(.assetid %in% tmp_uids)
   
-  # create column that indicates if the poly id is a treatment
-  database_complete_tmp$treatment<-
-    ifelse(database_complete_tmp$.assetid%in%matching.frame$poly_id,1,0)
-
+  # creat treatment column
+  database_complete_subset_2$treament = 1
+  
+  # bind both datasets
+  tmp_database_complete <-
+    rbind(database_complete_subset, database_complete_subset_2)
+  
   write_rds(
-    database_complete_tmp,
+    tmp_database_complete,
     paste(
       "../../datalake/mapme.protectedareas/output/matching/matching_frames/matching_frame_",
       my_year,
@@ -252,18 +329,97 @@ for (i in 2004:2020){
 }
 
 
-# compare
-# matching.new.2005=
-#   read_rds("../../datalake/mapme.protectedareas/output/matching/matching_frames/matching_frame_2005.rds")
-# 
-# table(matching.new.2005$treatment)
-# colnames(matching.new.2005)
-# 
-# matching.new.2015=
-#   read_rds("../../datalake/mapme.protectedareas/output/matching/matching_frames/matching_frame_2015.rds")
-# 
-# table(matching.new.2015$treatment)
 
+
+# ---- check output results -----
+# year to check
+my_year<-2011
+
+# load data
+matching_new_check=
+  read_rds(paste("../../datalake/mapme.protectedareas/output/matching/matching_frames/matching_frame_",my_year,".rds",sep=""))
+# table the number of treatment polygons in the matching frame
+table(matching_new_check$treament)
+
+# # load full grid
+# honeycomb_subeset<-
+#   read_sf("../../datalake/mapme.protectedareas/processing/fishnet/honeycomb_5_sqkm_subset.gpkg")
+# # create ids
+# honeycomb_subeset$poly_id<-1:nrow(honeycomb_subeset)
+
+# load treated areas data
+wdpa_LA<-
+  st_read("../../datalake/mapme.protectedareas/input/wdpa_kfw/wdpa_kfw_spatial_latinamerica_2021-04-22_allPAs_valid_simplified.gpkg")
+
+# clean data
+wdpa_LA <-
+  wdpa_LA %>%
+  filter(DESIG_ENG != "UNESCO-MAB Biosphere Reserve") %>%
+  filter(STATUS != "Proposed") %>%
+  filter(GEOMETRY_TYPE != "POINT")
+
+# subset for treated
+wdpa_kfw_treated <-
+  wdpa_LA %>%
+  filter(!is.na(bmz_n_1))
+
+# shape to long to add start date
+wdpa_kfw_treated_long <- 
+  wdpa_kfw_treated %>% 
+  pivot_longer(.,
+               cols = starts_with("bmz_n"),
+               values_to = "bmz_nummer")
+
+# filter out such that were not treated
+wdpa_kfw_treated_long <-
+  wdpa_kfw_treated_long %>% 
+  filter(!is.na(bmz_nummer))
+
+# match start year
+wdpa_kfw_treated_long<- project.data.reduced %>% 
+  select(bmz_nummer,first_year,last_year) %>% 
+  merge(wdpa_kfw_treated_long,.,by="bmz_nummer")
+
+# subset for the specified year
+wdpa_kfw_treated_long <- 
+  wdpa_kfw_treated_long %>% 
+  filter(first_year==my_year)
+
+# filter matching data
+matching_new_check_treated<- matching_new_check %>% 
+  filter(treament==1)
+
+# merge data
+honeycomb_subeset_merge2<-
+  merge(honeycomb_subeset,matching_new_check_treated,by.y=".assetid",by.x="poly_id",)
+
+# show in map
+mapview::mapView(wdpa_kfw_treated_long)+mapView(honeycomb_subeset_merge2,col.regions ="red")
+# clean up memory 
+gc()
+
+
+## export data for qgis check
+honeycomb_subeset_merge2<-
+  merge(honeycomb_subeset,matching_new_check,by.y=".assetid",by.x="poly_id",)
+
+# get centroids
+honeycomb_subeset_merge2_centroids<-
+  st_centroid(honeycomb_subeset_merge2)
+
+# select only relevant vars for check
+honeycomb_subeset_merge2_centroids<-
+  honeycomb_subeset_merge2_centroids %>% 
+  select(poly_id,treament,geometry)
+
+
+# show in map
+#mapView(wdpa_kfw_treated_long)+mapView(honeycomb_subeset_merge2_centroids,zcol="treament")
+# clean up memory 
+write_sf(honeycomb_subeset_merge2_centroids,
+         paste("../../datalake/mapme.protectedareas/output/matching/matching_frames/matching_frame_",my_year,".gpkg",sep=""))
+
+gc()
 
 
 
