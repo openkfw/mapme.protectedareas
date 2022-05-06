@@ -1,0 +1,30 @@
+---
+title: "Regressions"
+author: "Melvin HL Wong"
+date: "12 4 2022"
+output: workflowr::wflow_html
+---
+
+This file runs the panel regressions analysing if areas with financing of forest protection have a higher forest cover compared to similar control areas. That is, the underlying database has performed the matching already.
+
+Limitation
+```{r include=FALSE}
+#### ---- clean workspace, set options -----
+rm(list=ls())
+options(scipen = 999)
+# get packages
+lop <- c("dplyr", "plm", "stargazer", "tidyverse", "cem")
+newp <- lop[!(lop %in% installed.packages()[,"Package"])]
+if(length(newp)) install.packages(newp)
+lapply(lop, require, character.only = TRUE)
+
+# set working directory
+setwd("~/shared/datalake/mapme.protectedareas")
+
+
+```
+
+```{r}
+
+```
+
