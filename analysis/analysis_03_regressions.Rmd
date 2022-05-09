@@ -7,24 +7,124 @@ output: workflowr::wflow_html
 
 This file runs the panel regressions analysing if areas with financing of forest protection have a higher forest cover compared to similar control areas. That is, the underlying database has performed the matching already.
 
-Limitation
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE)
+knitr::opts_knit$set(root.dir = "~/shared/datalake/mapme.protectedareas")
+```
+
 ```{r include=FALSE}
 #### ---- clean workspace, set options -----
 rm(list=ls())
 options(scipen = 999)
 # get packages
-lop <- c("dplyr", "plm", "stargazer", "tidyverse", "cem")
+lop <- c("dplyr", "plm", "stargazer", "tidyverse", "cem", "multiwayvcov", "modelsummary", "fixest")
 newp <- lop[!(lop %in% installed.packages()[,"Package"])]
 if(length(newp)) install.packages(newp)
 lapply(lop, require, character.only = TRUE)
 
-# set working directory
-setwd("~/shared/datalake/mapme.protectedareas")
-
 
 ```
 
+```{r include=FALSE}
+# #### ---- Load dataset -----
+# t=2006
+# panel.df <- read.csv(paste0("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/cem_matched_panel_", t, ".csv"), sep = ",", stringsAsFactors = F)
+# 
+# # create time varying treatment variable
+# panel.df <- panel.df %>% 
+#   mutate(treatment_disb = (treatment==1 & year_standard>=0)) %>% 
+#   rename(., weights_cem=weights) # rename weights
+# 
+# 
+# #### ---- Panel estimation -----
+# m1 <- feols(fc_loss ~ treatment_disb | .assetid, data = panel.df, panel.id = ~.assetid+year)
+# 
+# m2 <- feols(fc_loss ~ treatment_disb | .assetid, data = panel.df, weights = panel.df$weights_cem, panel.id = ~.assetid+year)
+# 
+# m3 <- feols(fc_loss ~ treatment_disb | .assetid + year, data = panel.df, weights = panel.df$weights_cem, panel.id = ~.assetid+year, cluster = ~.assetid)
+# 
+# 
+# m4 <- feols(fc_area ~ treatment_disb | .assetid, data = panel.df, panel.id = ~.assetid+year)
+# 
+# m5 <- feols(fc_area ~ treatment_disb | .assetid, data = panel.df, weights = panel.df$weights_cem, panel.id = ~.assetid+year)
+# 
+# m6 <- feols(fc_area ~ treatment_disb | .assetid + year, data = panel.df, weights = panel.df$weights_cem, panel.id = ~.assetid+year, cluster = ~.assetid)
+# 
+# 
+# m_list <- list(m1, m2, m3, m4, m5, m6)
+# modelsummary(dvnames(m_list),
+#              coef_rename = c("fc_loss" = "Forest cover loss", 
+#                              "treatment_disbTRUE" = "KfW support"),
+#              stars = TRUE,
+#              gof_map = c("nobs", "adj.r.squared", "vcov.type", "FE: .assetid", "FE: year"),
+#              title = paste0("Matching frame: ", t)
+#              )
+# 
+# 
+
+#### ---- Create table for all years with fc_loss as depvar -----
+all_years <- c(2004:2016, 2019)
+for (t in all_years) {
+    print(t)
+panel.df <- read.csv(paste0("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/cem_matched_panel_", t, ".csv"), sep = ",", stringsAsFactors = F)
+
+# create time varying treatment variable
+panel.df <- panel.df %>% 
+  mutate(treatment_disb = (treatment==1 & year_standard>=0)) %>% 
+  rename(., weights_cem=weights) # rename weights
+
+assign(paste0("m",t), feols(fc_loss ~ treatment_disb | .assetid + year, data = panel.df, weights = panel.df$weights_cem, panel.id = ~.assetid+year, cluster = ~.assetid) )
+
+
+  }
+
+m_list1 <- list(get(paste0("m", all_years)))
+names(m_list1) <- all_years
+
+
+
+
+#### ---- Create table for all years with fc_area as depvar -----
+all_years <- c(2004:2016, 2019)
+for (t in all_years) {
+    print(t)
+panel.df <- read.csv(paste0("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/cem_matched_panel_", t, ".csv"), sep = ",", stringsAsFactors = F)
+
+# create time varying treatment variable
+panel.df <- panel.df %>% 
+  mutate(treatment_disb = (treatment==1 & year_standard>=0)) %>% 
+  rename(., weights_cem=weights) # rename weights
+
+assign(paste0("m",t), feols(fc_area ~ treatment_disb | .assetid + year, data = panel.df, weights = panel.df$weights_cem, panel.id = ~.assetid+year, cluster = ~.assetid) )
+
+
+  }
+
+m_list2 <- list(get(paste0("m", all_years)))
+names(m_list2) <- all_years
+
+```
 ```{r}
+modelsummary(m_list1,
+             coef_rename = c("fc_loss" = "Forest cover loss", 
+                             "treatment_disbTRUE" = "KfW support"),
+             stars = TRUE,
+             gof_map = c("nobs", "adj.r.squared", "vcov.type", "FE: .assetid", "FE: year"),
+             title = paste0("Dependent variable: Forest cover loss")
+             )
+
+
+modelsummary(m_list2,
+             coef_rename = c("fc_loss" = "Forest cover loss", 
+                             "treatment_disbTRUE" = "KfW support"),
+             stars = TRUE,
+             gof_map = c("nobs", "adj.r.squared", "vcov.type", "FE: .assetid", "FE: year"),
+             title = paste0("Dependent variable: Forest cover area")
+             )
+
 
 ```
+
+
 
