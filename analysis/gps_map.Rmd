@@ -20,14 +20,21 @@ This is a test map to check GPS support in leaflet. Enable location sharing in y
 
 ```{r projectmap, echo=FALSE, warning=FALSE,  fig.width=8}
 map <- leaflet() %>% 
-  addProviderTiles(providers$CartoDB.Positron, group="CartoDB") %>%
-  addProviderTiles(providers$Esri.WorldImagery, group="Satellite") %>%
-  addProviderTiles(providers$Esri.WorldShadedRelief, group="Topography") %>%
-  addProviderTiles(providers$NASAGIBS.ViirsEarthAtNight2012, group="Nightlights") %>%
+  addProviderTiles(providers$CartoDB.Positron, group="OSM Roads") %>%
+  addTiles("http://mt0.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}&s=Ga",
+           group="Google Roads",attribution = "©Google") %>%
+  addTiles("http://mt0.google.com/vt/lyrs=y&hl=en&x={x}&y={y}&z={z}",
+           group="Google Hybrid",attribution = "©Google") %>%
+  addProviderTiles(providers$Esri.WorldImagery, group="ESRI Satellite") %>%
+  addProviderTiles(providers$Esri.WorldShadedRelief, group="ESRI Topography") %>%
+  addProviderTiles(providers$NASAGIBS.ViirsEarthAtNight2012, group="NASA Nightlights") %>%
+  addProviderTiles(providers$HERE, group="HERE Maps") %>%
+
+
   # fullscreen control
   addFullscreenControl() %>%
   addLayersControl(
-  baseGroups = c("CartoDB","Satellite","Topography","Nightlights"))
+  baseGroups = c("Google Roads","Google Hybrid","OSM Roads","ESRI Satellite","ESRI Topography","NASA Nightlights","HERE Maps"))
 
 map <- addControlGPS(map, options = gpsOptions(position = "bottomleft", activate = TRUE, 
                                                autoCenter = TRUE, maxZoom = 10, 
