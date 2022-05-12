@@ -16,6 +16,7 @@ library("leaflet.extras")
 library("leaflet.extras2")
 ```
 
+This is a test map to check GPS support in leaflet. Enable location sharing in your mobile devices settings for the utilized browser. 
 
 ```{r projectmap, echo=FALSE, warning=FALSE,  fig.width=8}
 map <- leaflet() %>% 
@@ -26,9 +27,9 @@ map <- leaflet() %>%
   # fullscreen control
   addFullscreenControl() %>%
   addLayersControl(
-  baseGroups = c("CartoDB","OpenStreetMap","Satellite","Topography","Nightlights"))
+  baseGroups = c("CartoDB","Satellite","Topography","Nightlights"))
 
-map <- addControlGPS(map, options = gpsOptions(position = "topleft", activate = TRUE, 
+map <- addControlGPS(map, options = gpsOptions(position = "bottomleft", activate = TRUE, 
                                                autoCenter = TRUE, maxZoom = 10, 
                                                setView = TRUE))
 activateGPS(map)
