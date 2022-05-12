@@ -46,6 +46,8 @@
 <script src="site_libs/leaflet-binding-2.0.4.1/leaflet.js"></script>
 <script src="site_libs/leaflet-providers-1.9.0/leaflet-providers_1.9.0.js"></script>
 <script src="site_libs/leaflet-providers-plugin-2.0.4.1/leaflet-providers-plugin.js"></script>
+<link href="site_libs/lfx-fullscreen-1.0.2/lfx-fullscreen-prod.css" rel="stylesheet" />
+<script src="site_libs/lfx-fullscreen-1.0.2/lfx-fullscreen-prod.js"></script>
 <link href="site_libs/lfx-gps-1.7.0/lfx-gps-prod.css" rel="stylesheet" />
 <script src="site_libs/lfx-gps-1.7.0/lfx-gps-prod.js"></script>
 <script src="site_libs/lfx-gps-1.7.0/lfx-gps-bindings.js"></script>
@@ -419,7 +421,7 @@ This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a> analysi
 </div>
 <div id="strongRMarkdownfilestronguncommittedchanges" class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown is untracked by Git. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
+<p>The R Markdown file has unstaged changes. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
 </div>
 </div>
 </div>
@@ -486,16 +488,16 @@ This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a> analysi
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastree905c1e0f881929f025d46c02fad0a63a3a9849d8targetblank905c1e0a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/openkfw/mapme.protectedareas/tree/905c1e0f881929f025d46c02fad0a63a3a9849d8" target="_blank">905c1e0</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastree4534565b8915d17521c5908d71cb544415f1efdctargetblank4534565a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/openkfw/mapme.protectedareas/tree/4534565b8915d17521c5908d71cb544415f1efdc" target="_blank">4534565</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastree905c1e0f881929f025d46c02fad0a63a3a9849d8targetblank905c1e0a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastree4534565b8915d17521c5908d71cb544415f1efdctargetblank4534565a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/openkfw/mapme.protectedareas/tree/905c1e0f881929f025d46c02fad0a63a3a9849d8" target="_blank">905c1e0</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/openkfw/mapme.protectedareas/tree/4534565b8915d17521c5908d71cb544415f1efdc" target="_blank">4534565</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -510,9 +512,9 @@ Ignored files:
 
 Untracked files:
     Untracked:  analysis/gps_map.R
-    Untracked:  analysis/gps_map.Rmd
 
 Unstaged changes:
+    Modified:   analysis/gps_map.Rmd
     Modified:   analysis/projects_map.Rmd
     Modified:   code/processing-scripts/03_db_creation.R
 
@@ -527,15 +529,75 @@ Note that any generated files, e.g. HTML, png, CSS, etc., are not included in t
 <hr>
 </div>
 <div id="versions" class="tab-pane fade">
+
 <p>
-There are no past versions. Publish this analysis with <code>wflow_publish()</code> to start tracking its development.
+These are the previous versions of the repository in which changes were made to the R Markdown (<code>analysis/gps_map.Rmd</code>) and HTML (<code>docs/gps_map.html</code>) files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view the files as they were in that past version.
 </p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/4534565b8915d17521c5908d71cb544415f1efdc/analysis/gps_map.Rmd" target="_blank">4534565</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2022-05-12
+</td>
+<td>
+add gps map test
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/openkfw/mapme.protectedareas/4534565b8915d17521c5908d71cb544415f1efdc/docs/gps_map.html" target="_blank">4534565</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2022-05-12
+</td>
+<td>
+add gps map test
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 <hr>
 </div>
 </div>
 </div>
 <div id="htmlwidget-7c455f3454d9ef7fbcc7" style="width:768px;height:480px;" class="leaflet html-widget"></div>
-<script type="application/json" data-for="htmlwidget-7c455f3454d9ef7fbcc7">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addProviderTiles","args":["CartoDB.Positron",null,"CartoDB",{"errorTileUrl":"","noWrap":false,"detectRetina":false}]},{"method":"addProviderTiles","args":["Esri.WorldImagery",null,"Satellite",{"errorTileUrl":"","noWrap":false,"detectRetina":false}]},{"method":"addProviderTiles","args":["Esri.WorldShadedRelief",null,"Topography",{"errorTileUrl":"","noWrap":false,"detectRetina":false}]},{"method":"addProviderTiles","args":["NASAGIBS.ViirsEarthAtNight2012",null,"Nightlights",{"errorTileUrl":"","noWrap":false,"detectRetina":false}]},{"method":"addLayersControl","args":[["CartoDB","OpenStreetMap","Satellite","Topography","Nightlights"],[],{"collapsed":true,"autoZIndex":true,"position":"topright"}]},{"method":"addControlGPS","args":[{"position":"topleft","activate":true,"autoCenter":true,"maxZoom":10,"setView":true}]},{"method":"activateGPS","args":[]}]},"evals":[],"jsHooks":[]}</script>
+<script type="application/json" data-for="htmlwidget-7c455f3454d9ef7fbcc7">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}},"fullscreenControl":{"position":"topleft","pseudoFullscreen":false}},"calls":[{"method":"addProviderTiles","args":["CartoDB.Positron",null,"CartoDB",{"errorTileUrl":"","noWrap":false,"detectRetina":false}]},{"method":"addProviderTiles","args":["Esri.WorldImagery",null,"Satellite",{"errorTileUrl":"","noWrap":false,"detectRetina":false}]},{"method":"addProviderTiles","args":["Esri.WorldShadedRelief",null,"Topography",{"errorTileUrl":"","noWrap":false,"detectRetina":false}]},{"method":"addProviderTiles","args":["NASAGIBS.ViirsEarthAtNight2012",null,"Nightlights",{"errorTileUrl":"","noWrap":false,"detectRetina":false}]},{"method":"addLayersControl","args":[["CartoDB","OpenStreetMap","Satellite","Topography","Nightlights"],[],{"collapsed":true,"autoZIndex":true,"position":"topright"}]},{"method":"addControlGPS","args":[{"position":"topleft","activate":true,"autoCenter":true,"maxZoom":10,"setView":true}]},{"method":"activateGPS","args":[]}]},"evals":[],"jsHooks":[]}</script>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -576,23 +638,23 @@ loaded via a namespace (and not attached):
 [13] promises_1.2.0.1        rvest_1.0.0             colorspace_2.0-1       
 [16] leaflet.providers_1.9.0 htmltools_0.5.2         httpuv_1.6.1           
 [19] pkgconfig_2.0.3         broom_0.7.6             haven_2.3.1            
-[22] scales_1.1.1            later_1.2.0             tzdb_0.1.2             
-[25] git2r_0.28.0            proxy_0.4-26            generics_0.1.1         
-[28] ellipsis_0.3.2          withr_2.4.2             cli_3.1.0              
-[31] magrittr_2.0.3          crayon_1.4.2            readxl_1.3.1           
-[34] evaluate_0.14           fs_1.5.0                fansi_1.0.3            
-[37] xml2_1.3.3              class_7.3-20            tools_3.6.3            
-[40] hms_1.1.1               lifecycle_1.0.1         munsell_0.5.0          
-[43] reprex_2.0.0            compiler_3.6.3          jquerylib_0.1.4        
-[46] e1071_1.7-9             rlang_1.0.2             classInt_0.4-3         
-[49] units_0.7-2             grid_3.6.3              rstudioapi_0.13        
-[52] htmlwidgets_1.5.3       crosstalk_1.1.1         rmarkdown_2.11         
-[55] gtable_0.3.0            DBI_1.1.2               R6_2.5.1               
-[58] lubridate_1.7.10        knitr_1.37              fastmap_1.1.0          
-[61] utf8_1.2.2              workflowr_1.7.0         rprojroot_2.0.2        
-[64] KernSmooth_2.23-20      stringi_1.7.6           Rcpp_1.0.8.3           
-[67] vctrs_0.4.0             dbplyr_2.1.1            tidyselect_1.1.2       
-[70] xfun_0.29              </code></pre>
+[22] scales_1.1.1            whisker_0.4             later_1.2.0            
+[25] tzdb_0.1.2              git2r_0.28.0            proxy_0.4-26           
+[28] generics_0.1.1          ellipsis_0.3.2          withr_2.4.2            
+[31] cli_3.1.0               magrittr_2.0.3          crayon_1.4.2           
+[34] readxl_1.3.1            evaluate_0.14           fs_1.5.0               
+[37] fansi_1.0.3             xml2_1.3.3              class_7.3-20           
+[40] tools_3.6.3             hms_1.1.1               lifecycle_1.0.1        
+[43] munsell_0.5.0           reprex_2.0.0            compiler_3.6.3         
+[46] jquerylib_0.1.4         e1071_1.7-9             rlang_1.0.2            
+[49] classInt_0.4-3          units_0.7-2             grid_3.6.3             
+[52] rstudioapi_0.13         htmlwidgets_1.5.3       crosstalk_1.1.1        
+[55] rmarkdown_2.11          gtable_0.3.0            DBI_1.1.2              
+[58] R6_2.5.1                lubridate_1.7.10        knitr_1.37             
+[61] fastmap_1.1.0           utf8_1.2.2              workflowr_1.7.0        
+[64] rprojroot_2.0.2         KernSmooth_2.23-20      stringi_1.7.6          
+[67] Rcpp_1.0.8.3            vctrs_0.4.0             dbplyr_2.1.1           
+[70] tidyselect_1.1.2        xfun_0.29              </code></pre>
 </div>
 
 
