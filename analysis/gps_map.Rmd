@@ -34,7 +34,7 @@ map <- leaflet() %>%
   # fullscreen control
   addFullscreenControl() %>%
   addLayersControl(
-  baseGroups = c("Google Roads","Google Hybrid","OSM Roads","ESRI Satellite","ESRI Topography","NASA Nightlights","HERE Maps"))
+  baseGroups = c("OSM Roads","ESRI Satellite","ESRI Topography","NASA Nightlights","HERE Maps")) # "Google Roads","Google Hybrid"
 
 map <- addControlGPS(map, options = gpsOptions(position = "bottomleft", activate = TRUE, 
                                                autoCenter = TRUE, maxZoom = 10, 
