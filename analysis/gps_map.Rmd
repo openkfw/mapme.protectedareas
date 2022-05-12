@@ -23,6 +23,8 @@ map <- leaflet() %>%
   addProviderTiles(providers$Esri.WorldImagery, group="Satellite") %>%
   addProviderTiles(providers$Esri.WorldShadedRelief, group="Topography") %>%
   addProviderTiles(providers$NASAGIBS.ViirsEarthAtNight2012, group="Nightlights") %>%
+  # fullscreen control
+  addFullscreenControl() %>%
   addLayersControl(
   baseGroups = c("CartoDB","OpenStreetMap","Satellite","Topography","Nightlights"))
 
