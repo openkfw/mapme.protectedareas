@@ -35,8 +35,6 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
-<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
@@ -474,16 +472,16 @@ This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a> analysi
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastreebc91f00e84551c07cc60cc36a3db010826547cbetargetblankbc91f00a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/openkfw/mapme.protectedareas/tree/bc91f00e84551c07cc60cc36a3db010826547cbe" target="_blank">bc91f00</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastree7a438c147891a35f08c84e01c3ba5ef7609caefetargetblank7a438c1a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/openkfw/mapme.protectedareas/tree/7a438c147891a35f08c84e01c3ba5ef7609caefe" target="_blank">7a438c1</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastreebc91f00e84551c07cc60cc36a3db010826547cbetargetblankbc91f00a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastree7a438c147891a35f08c84e01c3ba5ef7609caefetargetblank7a438c1a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/openkfw/mapme.protectedareas/tree/bc91f00e84551c07cc60cc36a3db010826547cbe" target="_blank">bc91f00</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/openkfw/mapme.protectedareas/tree/7a438c147891a35f08c84e01c3ba5ef7609caefe" target="_blank">7a438c1</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -492,11 +490,10 @@ Note that you need to be careful to ensure that all relevant files for the analy
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-
-Untracked files:
-    Untracked:  analysis/analysis_03_regressions.R
+    Ignored:    output/regression_output/
 
 Unstaged changes:
+    Modified:   analysis/analysis_03_regressions.R
     Modified:   analysis/analysis_03_regressions.Rmd
 
 </code></pre>
@@ -541,6 +538,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/7a438c147891a35f08c84e01c3ba5ef7609caefe/analysis/analysis_03_regressions.Rmd" target="_blank">7a438c1</a>
+</td>
+<td>
+melvinhlwong
+</td>
+<td>
+2022-05-09
+</td>
+<td>
+run first regressions
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/openkfw/mapme.protectedareas/7a438c147891a35f08c84e01c3ba5ef7609caefe/docs/analysis_03_regressions.html" target="_blank">7a438c1</a>
+</td>
+<td>
+melvinhlwong
+</td>
+<td>
+2022-05-09
+</td>
+<td>
+run first regressions
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/cb3dc6da8672af4be51dee1c6cc4362100072c21/analysis/analysis_03_regressions.Rmd" target="_blank">cb3dc6d</a>
 </td>
 <td>
@@ -578,84 +609,6 @@ update html
 </div>
 </div>
 <p>This file runs the panel regressions analysing if areas with financing of forest protection have a higher forest cover compared to similar control areas. That is, the underlying database has performed the matching already.</p>
-<table style="NAborder-bottom: 0; width: auto !important; margin-left: auto; margin-right: auto;" class="table">
-<caption>
-Matching frame: 2004
-</caption>
-<thead>
-<tr>
-<th style="text-align:left;">
-</th>
-<th style="text-align:center;">
-2004
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-KfW support
-</td>
-<td style="text-align:center;">
-−2.491***
-</td>
-</tr>
-<tr>
-<td style="text-align:left;box-shadow: 0px 1px">
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(0.221)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Num.Obs.
-</td>
-<td style="text-align:center;">
-4452180
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-R2 Adj.
-</td>
-<td style="text-align:center;">
-0.068
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Std.Errors
-</td>
-<td style="text-align:center;">
-by: .assetid
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-FE: .assetid
-</td>
-<td style="text-align:center;">
-X
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-FE: year
-</td>
-<td style="text-align:center;">
-X
-</td>
-</tr>
-</tbody>
-<tfoot>
-<tr>
-<td style="padding: 0; " colspan="100%">
-<sup></sup> + p &lt; 0.1, * p &lt; 0.05, ** p &lt; 0.01, *** p &lt; 0.001
-</td>
-</tr>
-</tfoot>
-</table>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">

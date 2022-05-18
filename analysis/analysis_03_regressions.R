@@ -56,3 +56,68 @@ modelplot(m_list1)
 
 
 
+#### ---- Create table for all years -----
+
+## WDPA data
+wdpa <- read_csv("../../datalake/mapme.protectedareas/processing/fishnet/honeycomb_5_sqkm_subset_intersect_wdpa_long.csv") %>% 
+  rename(.assetid=poly_id) %>% 
+  select(.assetid, WDPAID) %>% 
+  distinct
+
+
+panel_new.df <- merge(panel.df, wdpa, all = T)
+
+
+
+t=2006
+assign(paste0("m1_",t), feols(fc_loss ~ treatment_disb | .assetid + year, data = panel_new.df, weights = panel.df$weights_cem, panel.id = ~.assetid+year, cluster = ~.assetid) )
+
+
+
+
+
+
+
+#### ---- Create table for case study Colombia-----
+t <- 2013
+panel.df <- read.csv(paste0("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/cem_matched_panel_", t, ".csv"), sep = ",", stringsAsFactors = F)
+
+# create time varying treatment variable
+panel_br.df <- panel.df %>% 
+  mutate(treatment_disb = (treatment==1 & year_standard>=0)) %>% 
+  rename(., weights_cem=weights)  %>% 
+  subset(NAME_0=="Brazil")
+
+
+m1 <- feols(fc_loss ~ treatment_disb | .assetid + year, data = panel_br.df, weights = panel_br.df$weights_cem, panel.id = ~.assetid+year, cluster = ~.assetid)
+
+m2 <- feols(fc_area ~ treatment_disb | .assetid + year, data = panel_br.df, weights = panel_br.df$weights_cem, panel.id = ~.assetid+year, cluster = ~.assetid)
+
+
+m_list_br <- list(m1, m2)
+
+modelsummary(dvnames(m_list_br),
+             output = "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/table_br.html",
+             coef_rename = c("fc_loss" = "Forest cover loss", 
+                             "treatment_disbTRUE" = "KfW support"),
+             stars = TRUE,
+             gof_map = c("nobs", "adj.r.squared", "vcov.type", "FE: .assetid", "FE: year"),
+             title = paste0("Matching frame 2015: Brazil only")
+)
+
+
+modelsummary(dvnames(m_list_br),
+             coef_rename = c("fc_loss" = "Forest cover loss", 
+                             "treatment_disbTRUE" = "KfW support"),
+             stars = TRUE,
+             gof_map = c("nobs", "adj.r.squared", "vcov.type", "FE: .assetid", "FE: year"),
+             title = paste0("Matching frame 2015: Brazil only")
+)
+
+
+
+
+
+
+
+
