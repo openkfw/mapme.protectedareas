@@ -1,0 +1,285 @@
+---
+title: "Balance Descriptives"
+author: "Yota"
+date: "28 3 2022"
+output: workflowr::wflow_html
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE)
+knitr::opts_knit$set(root.dir = "~/shared/datalake/mapme.protectedareas")
+```
+
+```{r include=FALSE}
+# clean workspace, set options
+rm(list=ls())
+options(scipen=999)
+options(width = 200)
+
+# get packages
+lop <- c("dplyr", "plm", "stargazer", "tidyverse", "MatchIt", "glm", "optmatch", "cobalt", "gridExtra")
+newp <- lop[!(lop %in% installed.packages()[,"Package"])]
+if(length(newp)) install.packages(newp)
+lapply(lop, require, character.only = TRUE)
+
+```
+
+<style>
+pre {
+  overflow-x: auto;
+}
+pre code {
+  word-wrap: normal;
+  white-space: pre;
+}
+</style>
+
+```{r prepare table }
+# Timer
+start_time <- Sys.time()
+
+# Years with matching frames. Years without treatment starting years (no BMZ number started in these years) 2003, 2017, 2018, 2020
+T_year <- c(2004:2016, 2019)
+# T_year <- c(2005)
+
+obs_table <- matrix(, nrow = 11, ncol = length(T_year))
+colnames(obs_table) <- T_year
+rownames(obs_table) <- c("MF obs total", "MF obs treat", "MF obs control",
+                         "After CEM",
+                         "CEM obs total", "CEM obs treat", "CEM obs control",
+                         "After PSM",
+                         "PSM obs total", "PSM obs treat", "PSM obs control")
+
+# Add lines to separation lines 
+obs_table[4,] <- rep(" ", length(T_year))
+obs_table[8,] <- rep(" ", length(T_year))
+
+for (i in T_year) {
+  
+  m_out1 <- read_rds(paste0("../../datalake/mapme.protectedareas/output/matching/matchit_objects/CEM/m_cem_", i, ".rds"))
+  # filename <- paste0("m_cem_",i)
+  # assign(filename, m_out1)
+  
+  bal_table <- bal.tab(m_out1, un = TRUE)
+  
+  # add to obs table (all cells)
+  obs_table[1,paste0(i)] <- bal_table$Observations[1,1] + bal_table$Observations[1,2]
+  obs_table[2,paste0(i)] <- bal_table$Observations[1,2]
+  obs_table[3,paste0(i)] <- bal_table$Observations[1,1]
+  
+  # CEM 
+  obs_table[5,paste0(i)] <- bal_table$Observations[3,1] + bal_table$Observations[3,2]
+  obs_table[6,paste0(i)] <- bal_table$Observations[3,2]
+  obs_table[7,paste0(i)] <- bal_table$Observations[3,1]
+  
+  m_out1 <- read_rds(paste0("../../datalake/mapme.protectedareas/output/matching/matchit_objects/PSM/m_psm_", i, ".rds"))
+  # filename <- paste0("m_psm_",i)
+  # assign(filename, m_out1)
+  
+  bal_table <- bal.tab(m_out1, un = TRUE)
+  
+  # PSM 
+  obs_table[9,paste0(i)] <- bal_table$Observations[3,1] + bal_table$Observations[3,2]
+  obs_table[10,paste0(i)] <- bal_table$Observations[3,2]
+  obs_table[11,paste0(i)] <- bal_table$Observations[3,1]
+}
+
+```
+
+
+```{r obs table}
+# Print table
+stargazer(obs_table,
+          summary=FALSE,
+          type="text",
+          title = paste0("Number of observations after before and after CEM and PSM, respectively"))
+```
+
+```{r function for descriptives}
+get_descriptives <- function(year) {
+  
+  # read matchit objects
+  m_psm <- 
+    read_rds(paste0("../../datalake/mapme.protectedareas/output/matching/matchit_objects/PSM/m_psm_", year, ".rds"))
+  m_cem <- 
+    read_rds(paste0("../../datalake/mapme.protectedareas/output/matching/matchit_objects/CEM/m_cem_", year, ".rds"))
+
+  data <- cbind(m_cem$treat, m_cem$X) %>% 
+    rename("treat" = "m_cem$treat")
+  covs <- subset(data, select = -c(treat))
+  
+  # Balance table raw values
+  bal_table_raw <- bal.tab(treat ~ covs, 
+                       data = data, 
+                       weights = list(CEM = m_cem, 
+                                      PSM = m_psm),
+                       un = TRUE,
+                       continuous = "raw")
+  
+  stargazer(bal_table_raw$Balance,
+            summary=FALSE,
+            type="text",
+            title = paste0("Balance (raw means) before and after CEM and PSM for matching frame ", year))
+  
+  # Balance table standardized values
+  bal_table <- bal.tab(treat ~ covs, 
+                       data = data, 
+                       weights = list(CEM = m_cem, 
+                                      PSM = m_psm),
+                       un = TRUE)
+  
+  stargazer(bal_table$Balance,
+            summary=FALSE,
+            type="text",
+            title = paste0("Balance (standardized means) before and after CEM and PSM for matching frame ", year))
+  
+  
+  # Love plot
+  plot_love <- love.plot(treat ~ covs, 
+                         data = data, 
+                         weights = list(CEM = m_cem, 
+                                        PSM = m_psm), 
+                         binary = "std",
+                         alpha = 0.8)
+
+  # Balance plot (density)
+  ### Travel time
+  plot_tt <- bal.plot(treat ~ covs, 
+                      data = data, 
+                      weights = list(CEM = m_cem, 
+                                     PSM = m_psm), 
+                      var.name = "traveltime_5k_110mio", which = "both")
+  ### Clay content
+  plot_cc <- bal.plot(treat ~ covs, 
+                      data = data, 
+                      weights = list(CEM = m_cem, 
+                                     PSM = m_psm), 
+                      var.name = "soil_5_15cm_clay", which = "both")
+  ### Terrain ruggedness
+  plot_tr <- bal.plot(treat ~ covs, 
+                      data = data, 
+                      weights = list(CEM = m_cem, 
+                                     PSM = m_psm), 
+                      var.name = "terrain_ruggedness_index_mean", which = "both")
+  ### Elevation mean
+  plot_em <- bal.plot(treat ~ covs, 
+                      data = data, 
+                      weights = list(CEM = m_cem, 
+                                     PSM = m_psm), 
+                      var.name = "elevation_mean", which = "both")
+  ### FC area matchingyear
+  plot_fcarea <- bal.plot(treat ~ covs, 
+                          data = data, 
+                          weights = list(CEM = m_cem, 
+                                         PSM = m_psm), 
+                          var.name = "treecover", which = "both")
+  ### Sum FC losses (tmax)
+  plot_sumfcl <- bal.plot(treat ~ covs, 
+                          data = data, 
+                          weights = list(CEM = m_cem, 
+                                         PSM = m_psm), 
+                          var.name = "loss_t3", which = "both")
+
+  plot(plot_love)
+  plot(plot_tt)
+  plot(plot_cc)
+  plot(plot_tr)
+  plot(plot_em)
+  plot(plot_fcarea)
+  plot(plot_sumfcl)
+  
+}
+```
+
+## Matching frame 2004
+
+```{r matching frame 2004}
+get_descriptives(2004)
+```
+ 
+## Matching frame 2005
+ 
+```{r matching frame 2005}
+get_descriptives(2005)
+```
+ 
+## Matching frame 2006
+
+```{r matching frame 2006}
+get_descriptives(2006)
+```
+
+## Matching frame 2007
+
+```{r matching frame 2007}
+get_descriptives(2007)
+```
+
+## Matching frame 2008
+
+```{r matching frame 2008}
+get_descriptives(2008)
+```
+
+## Matching frame 2009
+
+```{r matching frame 2009}
+get_descriptives(2009)
+```
+
+## Matching frame 2010
+
+```{r matching frame 2010}
+get_descriptives(2010)
+```
+
+## Matching frame 2011
+
+```{r matching frame 2011}
+get_descriptives(2011)
+```
+
+## Matching frame 2012
+
+```{r matching frame 2012}
+get_descriptives(2012)
+```
+
+## Matching frame 2013
+
+```{r matching frame 2013}
+get_descriptives(2013)
+```
+
+## Matching frame 2014
+
+```{r matching frame 2014}
+get_descriptives(2014)
+```
+
+## Matching frame 2015
+
+```{r matching frame 2015}
+get_descriptives(2015)
+```
+
+## Matching frame 2016
+
+```{r matching frame 2016}
+get_descriptives(2016)
+```
+
+## Matching frame 2019
+
+```{r matching frame 2019}
+get_descriptives(2019)
+```
+
+```{r timer}
+# Timer
+end_time <- Sys.time()
+
+duration <- difftime(end_time, start_time, units='mins')
+duration
+```
+
