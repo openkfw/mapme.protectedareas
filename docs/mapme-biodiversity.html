@@ -11,7 +11,7 @@
 
 
 
-<title>Home</title>
+<title>The mapme.biodiversity package in R</title>
 
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -277,35 +277,16 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Home</h1>
+<h1 class="title toc-ignore">The mapme.biodiversity package in R</h1>
 
 </div>
 
 
-<p>Welcome to the <strong>KfW Protected Areas Database</strong>. Here you can find routines and datasources that we are using to analyze our protected areas portfolio with open data and free and open source software tecnologies. This project is intented to create insights into our own work and propose data products that can be utilized along the whole project cycle in financial cooperation projects (project planning, monitoring, evaluation and portfolio reporting).</p>
-<p>This project was created as a reproducible research project using the <em>workflowr</em> package. For more information please visit <a href="https://github.com/jdblischak/workflowr">workflowr</a> website. In order to use our routines you can read our documentation below or and can check out our R-codes from our <a href="https://github.com/openkfw/mapme.protectedareas">Github repository</a>.</p>
-<p>The website is structured to show data-sources, routines for creating a database and methodologies to analyze the data. The <strong>KfW Protected Areas Database</strong> is a work in progress project and part of the <a href="https://mapme-initiative.org/">MAPME initiative</a> to promote the use of open geodata and open-source GIS tecnologies in international development cooperation. We invite others to leave constructive feedback on our work while we are in the doing and get in touch with us on our initiative.</p>
-<p>Chapters:</p>
-<ul>
-<li>Creating a database
-<ul>
-<li><a href="dopa-rest.html">The mapme.biodiversity package in R</a></li>
-<li><a href="dopa-rest.html">Querying data from DOPA Rest API (DOPA/JRC)</a></li>
-</ul></li>
-<li>Planning
-<ul>
-<li><a href="threat_assessment.html">Threat Assessment</a></li>
-<li><a href="rapid-assessment_centralamerica.html">Regional use case: Threat Assessment in Central America</a></li>
-</ul></li>
-<li>Monitoring</li>
-<li>Evaluation</li>
-<li>Portfolio Analysis
-<ul>
-<li><a href="portfolio_analysis.html">Ecosystem Assessment</a></li>
-</ul></li>
-<li><p><a href="README.html">About this project</a></p></li>
-<li><p><a href="contribute.html">How to contribute</a></p></li>
-</ul>
+<p>In order to analyze your projects you will need geodata that represents your project area of interest (AOI). We matched our whole portfolio to the <a href="https://www.iucn.org/theme/protected-areas/our-work/quality-and-effectiveness/world-database-protected-areas-wdpa">World Database on Protected Areas (WDPA)</a> from IUCN. You can use this database if you are working with protected areas and if you are aware of their name and location. There is also a R package called <a href="https://cran.r-project.org/web/packages/wdpar/index.html">wdpar</a> that helps you to download the data in R and preprocess it to make it analysis ready.</p>
+<p>The WDPA already contains lots of meta-information about the protected areas which you can consult in the <a href="https://www.ibat-alliance.org/pdf/wdpa_manual.pdf">WDPA manual</a>.<br />
+If you are working purely with protected areas from the WDPA you might also want to use data from the <a href="https://dopa.jrc.ec.europa.eu/dopa/">Digital Observatory of Protected Areas (DOPA)</a> from the Joint Research Center of the European Union. We have create routines to download data which you can find in the other chapter (-&gt;Querying data from DOPA Rest API).</p>
+<p>We created an own R package to preprocess several variables relevant to biodiversity and conservation, the <a href="https://cran.r-project.org/web/packages/mapme.biodiversity/index.html">mapme.biodiversity package</a>. It contains different data-sets that are automatically downloaded for an area of interest and allows you to calculate summary statistics for your AOI (independently if your data comes from the WDPA or not). Currently our packages covers variables such as <code>tree cover</code> and <code>tree cover loss</code> from the <a href="https://www.globalforestwatch.org/">Global Forest Watch</a>, <code>accessibility</code>, <code>elevation</code>, <code>climatic variables</code>, <code>land-cover</code> and others. Furthermore, we are also continously trying to add new variables. You can see planned improvements and suggest additional variables at our <a href="https://github.com/mapme-initiative/mapme.biodiversity">github repository</a> in the “Issues” section. Using our package to create your own database is easy if you follow our <a href="https://mapme-initiative.github.io/mapme.biodiversity/index.html">online-tutorials</a>.</p>
+<p>A unique feature of our package is that it allows you to analyse very large portfolios using cloud-tecnologies and parallel processing approaches. It is furthermore convient to use, since it downloads data automatically for your AOI only which saves you manual downloading time and a lot of preprocessing routines such as stitching the data together and bringing them to a structured output format.</p>
 
 
 <!-- Adjust MathJax settings so that all math formulae are shown using

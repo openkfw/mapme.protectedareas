@@ -10,54 +10,26 @@ workflowr:
   suppress_report: TRUE
 ---
 
-Welcome to the **KfW Protected Areas Database**. Here you can find all routines for datasources that were used to create the KfW PA database. This project was created as a reproducible research project using the *workflowr* package. For more information please visit [workflowr](https://github.com/jdblischak/workflowr) website. In order to reproduce the analysis in this script and work with our routines, you can either just follow the tutorials below or you can check out codes from our [Github repository](https://github.com/openkfw/mapme.protectedareas). 
+Welcome to the **KfW Protected Areas Database**. Here you can find routines and datasources that we are using to analyze our protected areas portfolio with open data and free and open source software tecnologies. This project is intented to create insights into our own work and propose data products that can be utilized along the whole project cycle in financial cooperation projects (project planning, monitoring, evaluation and portfolio reporting).
 
-This website is structured to show you the routines for each data-sources one by one with reproducible data-sets. Data routines range from processing raw data with geospatial techniques up to using API services that query existing data-sources such as the [DOPA Explorer from EU/JRC](https://dopa-explorer.jrc.ec.europa.eu/). All processing is done with *R*. To get more information please visit our Github repository and leave a comment or issue. You can also contribute to this repository (details see below).
+This project was created as a reproducible research project using the *workflowr* package. For more information please visit [workflowr](https://github.com/jdblischak/workflowr) website. In order to use our routines you can read our documentation below or and can check out our R-codes from our [Github repository](https://github.com/openkfw/mapme.protectedareas). 
 
-The **KfW Protected Areas Database** is a work in progress project and part of the [MAPME initiative](https://mapme-initiative.org/) to promote the use of open geodata and open-source GIS tecnologies in international development cooperation. We invite others to leave constructive feedback on our work while we are in the doing and get in touch with us on our initiative. 
+The website is structured to show data-sources, routines for creating a database and methodologies to analyze the data. The **KfW Protected Areas Database** is a work in progress project and part of the [MAPME initiative](https://mapme-initiative.org/) to promote the use of open geodata and open-source GIS tecnologies in international development cooperation. We invite others to leave constructive feedback on our work while we are in the doing and get in touch with us on our initiative. 
 
 Chapters:
 
+
+- Creating a database
+  - [The mapme.biodiversity package in R](mapme-biodiversity.html)
+  - [Querying data from DOPA Rest API (DOPA/JRC)](dopa-rest.html)
+- Planning
+  - [Threat Assessment](threat_assessment.html)
+  - [Regional use case: Threat Assessment in Central America](rapid-assessment_centralamerica.html)
+- Monitoring
+- Evaluation
+- Portfolio Analysis
+  - [Ecosystem Assessment](portfolio_analysis.html)
+  
 - [About this project](README.html)
 
 - [How to contribute](contribute.html)
-
-- [Querying data from DOPA Rest API (DOPA/JRC)](dopa-rest.html)
-
-- Processing Individual Datasets
-
-  - [TEOW Ecoregions (WWF/TEOW)](wwf_teow.html)
-
-  - [Net forest carbon flux (Harris et al., 2021)](carbon-flux.html)
-  
-  - [Mangrove Gain and Loss (WWF/Global Mangrove Watch)](gmw-mangrove.html)
-  
-  - [WorldPop Population Count (worldpop.org)](worldpop-population-count.html)
-
-  - [Copernicus Global Land Cover (ESA)](copernicus-land-cover.html)
-
-  - [Terrain Ruggedness Index (NASA/SRTM)](terrain_ruggedness_index.html)
-  
-  - [Accessibility to Cities (Weiss et al., 2018)](accessibility.html)
-  
-  - [Global Forest Watch (Hansen et al., 2013)](gfw.html)
-  
-  - [Clay content in the soil (OpenLandMap.org)](clay-content.html)
-  
-  - [Number of fire events occured in a year (VIIRS)](fire_event.html)
-  
-  - [Climatic variables - Precipitation and temperature (WorldClim)](climatic-variables.html)
-  
-- [Analysis of KfW Portfolio](portfolio_analysis.html)
-
-- [Map of KfW Supported Areas](projects_map.html)
-
-- [Map of GIZ Supported Areas](projects_map_giz.html)
-
-- [Threat Assessment for Protected Areas](threat_assessment.html)
-
-- [Rapid Assessment - Central America](rapid-assessment_centralamerica.html)
-
-
-
-
