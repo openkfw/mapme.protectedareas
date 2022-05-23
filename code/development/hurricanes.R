@@ -1,6 +1,9 @@
 ## Processing routine for hurricane data
-# download data from arquive
+# Author: Johannes Schielein
+# Last Edit: 2022-05-23
 
+
+# download data from arquive
 # dir.create("../../datalake/mapme.protectedareas/input/hurricanes/2022-02-21/")
 # download.file(
 #   "https://www.ncei.noaa.gov/data/international-best-track-archive-for-climate-stewardship-ibtracs/v04r00/access/shapefile/IBTrACS.since1980.list.v04r00.lines.zip",
