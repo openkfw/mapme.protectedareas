@@ -41,7 +41,7 @@ classified_raster <-
   rast("../test/hurricane_classified/cropped/classified_hurricane_2000.tif")
 
 # create processing routine to get the area affected and not affected by hurricanes
-hurricane_stats <- pbmclapply(420000:421000, function(i) {
+hurricane_stats <- pbmclapply(1:nrow(aoi), function(i) {
 
   # crop the classified raster to the polygon
   crop <- terra::crop(
