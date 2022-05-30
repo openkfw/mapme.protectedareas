@@ -1,6 +1,6 @@
 ## Processing hurricane data for spatial impact evaluation
 # Author: Johannes Schielein
-# Last Edit: 2022-05-26
+# Last Edit: 2022-05-30
 
 # call libraries
 library(terra)
@@ -11,33 +11,46 @@ library(pbmcapply)
 aoi <-
   vect("../test/honeycomb_5_sqkm_subset_crs_polyid.gpkg")
 # hurricane data
-  # note: the preprocessed data is not available online. It was created with an own cript 
-  # Ths script is part of the repository available under "code/development/hurricanes.R"  
-hurricanes<-
-  rast("../../datalake/mapme.protectedareas/processing/hurricanes/2000-2020_V01/max_likely_windspeed_H01_global_2000-2020.tif")
+# note: the preprocessed data is not available online. It was created with an own cript
+# Ths script is part of the repository available under "code/development/hurricanes.R"
+# hurricanes <-
+#   rast("../../datalake/mapme.protectedareas/processing/hurricanes/2000-2020_V01/max_likely_windspeed_H01_global_2000-2020.tif")
 # since the hurricane raster contains 21 raster layers from years 2000-2020
 # lets get raster layer for year 2000 first
-l1 <- hurricanes[[1]]
+# l1 <- hurricanes[[1]]
 # the raster values range from 64 to 120 - which indicates the speed and also NA values denoting no hurricane at all
 # classify the hurricane raster into two classes 0 and 1 - 0 for NAs and 1 for value range (64-120)
-m <- c(
-  NA, 0, 0,
-  62, 153, 1
-)
-# create a classification matrix
-rclmat <- matrix(m,
-                 ncol = 3,
-                 byrow = TRUE)
-# classify the raster using the matrix
-classified_raster <- classify(l1,
-                              rclmat)
+# m <- c(
+#   NA, 0, 0,
+#   62, 153, 1
+# )
+# # create a classification matrix
+# rclmat <- matrix(m,
+#   ncol = 3,
+#   byrow = TRUE
+# )
+# # classify the raster using the matrix
+# classified_raster <- classify(
+#   l1,
+#   rclmat
+# )
+
+## Updates:
+# The hurricane rasters are already classified and saved as tif and the resolution has been rescaled to higher pixel values.
+classified_raster <- 
+  rast("../test/hurricane_classified/cropped/classified_hurricane_2000.tif")
 
 # create processing routine to get the area affected and not affected by hurricanes
-hurricane_stats <- pbmclapply(1:nrow(aoi), function(i) {
+hurricane_stats <- pbmclapply(420000:421000, function(i) {
 
-  # mask the classified raster to the polygon
-  mask <- mask(
+  # crop the classified raster to the polygon
+  crop <- terra::crop(
     classified_raster,
+    aoi[i, ]
+  )
+  # mask the classified raster to the polygon
+  mask <- terra::mask(
+    crop,
     aoi[i, ]
   )
   # compute area raster
@@ -66,7 +79,8 @@ hurricane_stats <- pbmclapply(1:nrow(aoi), function(i) {
   out$poly_id <- aoi[i, ]$poly_id
   # pivot to long format
   result <- tidyr::pivot_longer(out,
-                                cols = "area")
+    cols = "area"
+  )
   result
 }, mc.cores = 8)
 
@@ -74,10 +88,9 @@ hurricane_stats <- pbmclapply(1:nrow(aoi), function(i) {
 final <- dplyr::bind_rows(hurricane_stats)
 
 # NOTE:
- # The scripts above process only for year 2000. 
- # To process for other years (say 2001), replace the line `23` as  **l2 <- hurricanes[[2]]**
- # similarly, for year 2000, it will be **l21 <- hurricanes[[21]]**
- # Then, generate the classified raster for this new hurricane year layer and then proceed further.
+# The scripts above process only for year 2000.
+# To process for other years (say 2001), replace the file name in line `41` to **classified_hurricane_2001.tif**
+# similarly, for year 2020, it will be **classified_hurricane_2020.tif**
 
 # directory to save the results
 # saveRDS(data, "../../datalake/mapme.protectedareas/output/polygon/grids/500m/data/honeycomb_5sqkm_hurricanes.rds")
