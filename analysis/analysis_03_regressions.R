@@ -17,11 +17,21 @@ for (t in all_years) {
   
   # create time varying treatment variable
   panel.df <- panel.df %>% 
-    mutate(treatment_disb = (treatment==1 & year_standard>=0)) %>% 
+    mutate(treatment_disb = (treatment==1 & year_standard>=0),
+           emissions_kg = emissions*1000000*500) %>% 
     rename(., weights_cem=weights) # rename weights
   
   assign(paste0("m1_",t), feols(fc_loss ~ treatment_disb | .assetid + year, data = panel.df, weights = panel.df$weights_cem, panel.id = ~.assetid+year, cluster = ~.assetid) )
   assign(paste0("m2_",t), feols(fc_area ~ treatment_disb | .assetid + year, data = panel.df, weights = panel.df$weights_cem, panel.id = ~.assetid+year, cluster = ~.assetid) )
+  
+  
+  feols(emissions ~ treatment_disb | .assetid + year, data = panel.df, weights = panel.df$weights_cem, panel.id = ~.assetid+year, cluster = ~.assetid)
+  feols(emissions_kg ~ treatment_disb | .assetid + year, data = panel.df, weights = panel.df$weights_cem, panel.id = ~.assetid+year, cluster = ~.assetid)
+  
+  feols(log(emissions_kg) ~ treatment_disb | .assetid + year, data = panel.df, weights = panel.df$weights_cem, panel.id = ~.assetid+year, cluster = ~.assetid)
+  
+  feols(fc_loss ~ treatment_disb | .assetid + year, data = panel.df, weights = panel.df$weights_cem, panel.id = ~.assetid+year, cluster = ~.assetid)
+  feols(log(fc_loss) ~ treatment_disb | .assetid + year, data = panel.df, weights = panel.df$weights_cem, panel.id = ~.assetid+year, cluster = ~.assetid)
   
   
 }
@@ -79,7 +89,7 @@ assign(paste0("m1_",t), feols(fc_loss ~ treatment_disb | .assetid + year, data =
 
 
 #### ---- Create table for case study Colombia-----
-t <- 2013
+t <- 2015
 panel.df <- read.csv(paste0("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/cem_matched_panel_", t, ".csv"), sep = ",", stringsAsFactors = F)
 
 # create time varying treatment variable
