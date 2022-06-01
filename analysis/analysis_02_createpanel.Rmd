@@ -47,6 +47,10 @@ fcl <- read_rds("../../datalake/mapme.protectedareas/output/matching/matching_fr
          starts_with("maxprec"),
          starts_with("wetness")) %>%
   select(-starts_with("loss_t3"))
+
+# change variable names to facilitate long format conversion in code below
+ colnames(fcl) <-  sub("*_anomaly*", "", colnames(fcl))
+ colnames(fcl) <-  sub("*_min*", "", colnames(fcl))
   
 ```
 
@@ -68,7 +72,10 @@ for (i in T_year) {
       rename("m_treecover" = "treecover",
              "m_loss" = "loss",
              "m_loss_t3" = "loss_t3")
-    
+    # change variable names to facilitate long format conversion in code below
+    colnames(m_data) <-  sub("*_anomaly*", "", colnames(m_data))
+    colnames(m_data) <-  sub("*_min*", "", colnames(m_data))    
+ 
     # Merge matched data with 
     # merged_data <- 
     #   left_join(m_data, fcl_data,
@@ -81,9 +88,8 @@ for (i in T_year) {
     #   rename("fc_area" = "area",
     #          "fc_loss" = "loss")
     merged_data <- 
-      left_join(m_data, fcl,
-                             by=c(".assetid")) %>% 
-      pivot_longer(cols = c(starts_with("treecover") | starts_with("loss") | starts_with("minprec") | starts_with("maxprec") | starts_with("wetnes")),
+      left_join(m_data, fcl, by=c(".assetid")) %>% 
+      pivot_longer(cols = c(starts_with("treecover") | starts_with("loss") | starts_with("minprec") | starts_with("maxprec") | starts_with("wetness")),
                    names_to = c(".value", "year"),
                    names_sep = "_") %>% 
       mutate(year_standard = as.numeric(year) - i) %>% 
@@ -120,7 +126,10 @@ for (i in T_year) {
       rename("m_treecover" = "treecover",
              "m_loss" = "loss",
              "m_loss_t3" = "loss_t3")
-        
+    # change variable names to facilitate long format conversion in code below
+    colnames(m_data) <-  sub("*_anomaly*", "", colnames(m_data))
+    colnames(m_data) <-  sub("*_min*", "", colnames(m_data))    
+    
     # Merge matched data with 
     # merged_data <- 
     #   left_join(m_data, fcl_data,
@@ -136,7 +145,7 @@ for (i in T_year) {
     merged_data <- 
       left_join(m_data, fcl,
                              by=c(".assetid")) %>% 
-      pivot_longer(cols = c(starts_with("treecover") | starts_with("loss") | starts_with("minprec") | starts_with("maxprec") | starts_with("wetnes")),
+      pivot_longer(cols = c(starts_with("treecover") | starts_with("loss") | starts_with("minprec") | starts_with("maxprec") | starts_with("wetness")),
                    names_to = c(".value", "year"),
                    names_sep = "_") %>% 
       mutate(year_standard = as.numeric(year) - i) %>% 
