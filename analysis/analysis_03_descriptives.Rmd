@@ -39,8 +39,9 @@ pre code {
 start_time <- Sys.time()
 
 # Years with matching frames. Years without treatment starting years (no BMZ number started in these years) 2003, 2017, 2018, 2020
-T_year <- c(2004:2016, 2019)
+# T_year <- c(2004:2016, 2019)
 # T_year <- c(2005)
+T_year <- c(2004:2014, 2016, 2019)
 
 obs_table <- matrix(, nrow = 11, ncol = length(T_year))
 colnames(obs_table) <- T_year
@@ -144,29 +145,42 @@ get_descriptives <- function(year) {
 
   # Balance plot (density)
   ### Travel time
+  xmax <- max(quantile(m_psm$X$traveltime_5k_110mio, .9, na.rm = TRUE), quantile(m_cem$X$traveltime_5k_110mio, .9, na.rm = TRUE))
+  
   plot_tt <- bal.plot(treat ~ covs, 
                       data = data, 
                       weights = list(CEM = m_cem, 
                                      PSM = m_psm), 
-                      var.name = "traveltime_5k_110mio", which = "both")
+                      var.name = "traveltime_5k_110mio", which = "both") +
+    coord_cartesian(xlim = c(0, xmax))
+  
   ### Clay content
   plot_cc <- bal.plot(treat ~ covs, 
                       data = data, 
                       weights = list(CEM = m_cem, 
                                      PSM = m_psm), 
                       var.name = "soil_5_15cm_clay", which = "both")
+  
   ### Terrain ruggedness
+  xmax <- max(quantile(m_psm$X$terrain_ruggedness_index_mean, .9, na.rm = TRUE), quantile(m_cem$X$terrain_ruggedness_index_mean, .9, na.rm = TRUE))
+
   plot_tr <- bal.plot(treat ~ covs, 
                       data = data, 
                       weights = list(CEM = m_cem, 
                                      PSM = m_psm), 
-                      var.name = "terrain_ruggedness_index_mean", which = "both")
+                      var.name = "terrain_ruggedness_index_mean", which = "both") +
+    coord_cartesian(xlim = c(0, xmax))
+  
   ### Elevation mean
+  xmax <- max(quantile(m_psm$X$elevation_mean, .9, na.rm = TRUE), quantile(m_cem$X$elevation_mean, .9, na.rm = TRUE))
+
   plot_em <- bal.plot(treat ~ covs, 
                       data = data, 
                       weights = list(CEM = m_cem, 
                                      PSM = m_psm), 
-                      var.name = "elevation_mean", which = "both")
+                      var.name = "elevation_mean", which = "both") +
+    coord_cartesian(xlim = c(0, xmax))
+  
   ### FC area matchingyear
   plot_fcarea <- bal.plot(treat ~ covs, 
                           data = data, 
@@ -174,11 +188,14 @@ get_descriptives <- function(year) {
                                          PSM = m_psm), 
                           var.name = "treecover", which = "both")
   ### Sum FC losses (tmax)
+  xmax <- max(quantile(m_psm$X$loss_t3, .9, na.rm = TRUE), quantile(m_cem$X$loss_t3, .9, na.rm = TRUE))
+
   plot_sumfcl <- bal.plot(treat ~ covs, 
                           data = data, 
                           weights = list(CEM = m_cem, 
                                          PSM = m_psm), 
-                          var.name = "loss_t3", which = "both")
+                          var.name = "loss_t3", which = "both") +
+    coord_cartesian(xlim = c(0, xmax))
 
   plot(plot_love)
   plot(plot_tt)
