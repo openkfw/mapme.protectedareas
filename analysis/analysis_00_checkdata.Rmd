@@ -190,7 +190,7 @@ mf_fishnet <- st_transform(mf_fishnet,crs = st_crs(wdpa_kfw))
 
 # Load full database
 df <- 
-  read_rds("../../datalake/mapme.protectedareas/output/matching/matching_frames/full_database.rds") %>% 
+  read_rds("~/shared/datalake/mapme.protectedareas/output/matching/matching_frames/full_database.rds") %>% 
   rename("poly_id" = ".assetid") 
 
 # Treecover, emissions, losses etc.
@@ -314,7 +314,7 @@ for (i in T_year) {
   # mf_fishnet <- inner_join(mf_fishnet, df, by=c("poly_id"))
   
   df <- 
-    read_rds(paste0("../../datalake/mapme.protectedareas/output/matching/matching_frames/matching_frame_",i,".rds")) %>% 
+    read_rds(paste0("~/shared/datalake/mapme.protectedareas/output/matching/matching_frames/matching_frame_",i,".rds")) %>% 
     select(.assetid, treatment) %>% 
     rename("poly_id" = ".assetid") %>% 
     mutate(matching_year = i)
