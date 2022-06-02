@@ -3,7 +3,7 @@
   # ... for treatment and controls cells (based on KfWs project documentation) 
 
 # author: Johannes Schielein 
-# last modification: 2022-04-11
+# last modification: 2022-05-31
 
 # call relevant libs. 
 library("sf")
@@ -104,14 +104,14 @@ matching.frame<-do.call(rbind,lapply(2000:2020,f.matchingyear))
   ## what is needed for matching frame: Forest area + forest cover loss before treatment (t-1 till t-3)
 # load data
 input_gfw<-
-  readRDS("../../datalake/mapme.protectedareas/output/polygon/grids/500m/data/honeycomb_5sqkm_treeloss.rds")
+  readRDS("../../datalake/mapme.protectedareas/output/polygon/grids/500m/data/honeycomb_5_sqkm_subset_gfw_treeloss.rds")
 # drop the geometry
 input_gfw <- st_drop_geometry(input_gfw)
 # unnest the relevant indicators
 input_gfw <-
   input_gfw %>% unnest(treeloss)
 
-# create longtable
+# create widetable
 input_gfw_wide <-
   input_gfw %>%
   pivot_wider(names_from = years,
@@ -148,7 +148,7 @@ input_accessibility <- st_drop_geometry(input_accessibility)
 input_accessibility <-
   input_accessibility %>% unnest(accessibility)
 
-# create longtable
+# create widetable
 input_accessibility_wide <-
   input_accessibility %>%
   select(.assetid,minutes_mean,distance) %>% 
@@ -163,11 +163,12 @@ input_srtm<-
   readRDS("../../datalake/mapme.protectedareas/output/polygon/grids/500m/data/honeycomb_5sqkm_srtm.rds")
 # drop the geometry
 input_srtm <- st_drop_geometry(input_srtm)
+
 # unnest the relevant indicators
 input_srtm <-
   input_srtm %>% unnest(c(tri,elevation))
 
-colnames(input_srtm)
+# colnames(input_srtm)
 
 # needed for matching Frame: Elevation and TRI 
 input_srtm_wide <-
@@ -199,23 +200,63 @@ input_soils_wide <-
 colnames(input_soils_wide)[-1]<-paste("soil_5_15cm_",colnames(input_soils_wide)[-1],sep="")
 rm(input_soils)
 
-## Countries 
+## 4.5 Countries 
 input_countries_wide <-
   read.csv(
     "../../datalake/mapme.protectedareas/processing/fishnet/honeycomb_5_sqkm_subset_countries.csv"
   )
+
+# change column name for merging later
 colnames(input_countries_wide)[1]<-colnames(input_srtm_wide)[1]
 
 # needed for matching Frame: Country names
 
 
-## merge input data
+## 4.6 Precipitation anomalies
+  # note: There is a preprocessing script to aggregate the output data called 02_prec_parameters_aggregation.R
+input_prec <-
+  readRDS("../../datalake/mapme.protectedareas/output/polygon/grids/500m/data/prec/honeycomb_prec_aggregated.rds")
+
+# create widetable
+input_prec_wide <-
+  input_prec %>%
+  pivot_wider(names_from = years,
+              values_from = c(minprec_anomaly, maxprec_anomaly))
+
+head(input_prec_wide)
+
+rm(input_prec)
+
+## 4.7 NASA Grace Shallow Groundwater anomalies
+  # note: There is a preprocessing script to aggregate the output data called 02_drought_parameters_aggregation.R
+input_grace <-
+  readRDS("../../datalake/mapme.protectedareas/output/polygon/grids/500m/data/drought/honeycomb_drought_aggregated.rds")
+
+# transform date and rename columns
+input_grace$date  <- format(as.Date(input_grace$date, format="%Y-%m-%d"),"%Y")
+colnames(input_grace)[2]<-"years"
+
+input_grace_wide <-
+  input_grace %>%
+  pivot_wider(names_from = years,
+              values_from = c(wetness_min),
+              names_prefix = "wetness_min_")
+
+rm(input_grace)
+# head(input_grace_wide)
+
+## 4.8 merge input data
 # put all data frames into list
 df_list <- list(input_gfw_wide, 
                 input_accessibility_wide,
                 input_srtm_wide,
                 input_countries_wide,
-                input_soils_wide)
+                input_soils_wide,
+                input_prec_wide,
+                input_grace_wide)
+
+## AT THIS POINT: EVENTUALLY MOVE OLD DATABASE FILES TO AN ARQUIVE
+  # see script code/development/move_matchingframes.R
 
 #merge all data frames in list
 database_complete <-
@@ -226,16 +267,7 @@ database_complete <-
 write_rds(database_complete,
           "../../datalake/mapme.protectedareas/output/matching/matching_frames/full_database.rds")
 
-# ---- (4) create year-specific matching frames and save results---- 
-## move files if they had been already created
-newdirname="../../datalake/mapme.protectedareas/output/matching/matching_frames/arquived_2022-04-08"
-dir.create(newdirname)
-oldfiles=list.files("../../datalake/mapme.protectedareas/output/matching/matching_frames/",full.names = T,pattern = "matching_frame_")
-sapply(oldfiles,
-       function(x){
-         file.copy(x,newdirname)
-         file.remove(x)})
-
+# ---- (5) create year-specific matching frames and save results---- 
 ## function to create year specific matching frames
 # get control cells
 controls<-
@@ -244,13 +276,14 @@ controls<-
 wdpa_LA<-
   st_read("../../datalake/mapme.protectedareas/input/wdpa_kfw/wdpa_kfw_spatial_latinamerica_2021-04-22_allPAs_valid_simplified.gpkg")
 
+# subset the data only for relevant areas
 wdpa_LA <-
   wdpa_LA %>%
   filter(DESIG_ENG != "UNESCO-MAB Biosphere Reserve") %>%
   filter(STATUS != "Proposed") %>%
   filter(GEOMETRY_TYPE != "POINT")
 
-# make valid
+# make geometries valid
 wdpa_LA<-
   st_make_valid(wdpa_LA)
 
@@ -259,15 +292,15 @@ wdpa_kfw_treated <-
   wdpa_LA %>%
   filter(!is.na(bmz_n_1))
 
-
-# # load full grid
+# load full grid
 honeycomb_subeset<-
   read_sf("../../datalake/mapme.protectedareas/processing/fishnet/honeycomb_5_sqkm_subset.gpkg")
+
 # create ids
-honeycomb_subeset$poly_id<-1:nrow(honeycomb_subeset)
+honeycomb_subeset$poly_id <- 
+  1:nrow(honeycomb_subeset)
 
 # note: LOOP Currently fails for years with no data. 
-
 for (i in c(2004:2017,2019)) {
   ## filter complete database to include only polygons from the treatment cells in a specific year
   print(paste("Starting year",i))
@@ -314,7 +347,7 @@ for (i in c(2004:2017,2019)) {
 
 # ---- check Matching frames against original polygon data in R -----
 # year to check
-my_year<-2007
+my_year<-2012
 
 # load data
 matching_new_check=
