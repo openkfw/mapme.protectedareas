@@ -98,7 +98,7 @@ lapply(2000:2020, function(i) {
       error = function(e) {
         message('Error in this line!')}
     )
-  }, mc.cores = 8)
+  }, mc.cores = 14)
     # unlist the list as data frame
     final <- dplyr::bind_rows(area_stats)
     # write result to disk
@@ -107,6 +107,10 @@ lapply(2000:2020, function(i) {
       paste0("../../datalake/mapme.protectedareas/output/polygon/grids/500m/data/hurricane/honeycomb_5sqkm_hurricanes_", i, ".csv"),
       row.names = FALSE
     )
+    # remove temp files
+    unlink(paste0(tempdir(),"/spat*"), recursive = T)
+    unlink(paste0(tempdir(),"/file*"), recursive = T)
+    # message
     print(paste0("Done processing for year", i, sep=" "))
 })
 
