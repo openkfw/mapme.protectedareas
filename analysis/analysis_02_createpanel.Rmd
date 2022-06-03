@@ -39,7 +39,7 @@ start_time <- Sys.time()
 #   select(poly_id,id.x,treatment.x, starts_with("area"), starts_with("loss"))
 
 # Forest loss data
-fcl <- read_rds("../../datalake/mapme.protectedareas/output/matching/matching_frames/full_database.rds") %>%
+fcl <- read_rds("/datadrive/datalake/mapme.protectedareas/output/matching/matching_frames/full_database.rds") %>%
   select(.assetid,
          starts_with("treecover"),
          starts_with("loss"),
@@ -160,7 +160,10 @@ for (i in T_year) {
                    names_sep = "_") %>% 
       mutate(year_standard = as.numeric(year) - i) %>% 
       rename("fc_area" = "treecover",
-             "fc_loss" = "loss")
+             "fc_loss" = "loss") %>% 
+      left_join(., keys_assetid_wdpa,
+                by=c(".assetid")) %>% 
+      mutate(WDPAID = ifelse(treatment == 0, 9999999999, WDPAID))
     
     ## Export data
     write_csv(merged_data, 
