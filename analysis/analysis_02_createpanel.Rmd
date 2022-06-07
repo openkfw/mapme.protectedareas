@@ -43,6 +43,7 @@ fcl <- read_rds("/datadrive/datalake/mapme.protectedareas/output/matching/matchi
   select(.assetid,
          starts_with("treecover"),
          starts_with("loss"),
+         starts_with("emissions"),
          starts_with("minprec"),
          starts_with("maxprec"),
          starts_with("wetness")) %>%
@@ -77,7 +78,8 @@ for (i in T_year) {
       read_rds(paste0("../../datalake/mapme.protectedareas/output/tabular/regression_input/PSM/psm_matched_data_", i, ".rds")) %>%
       rename("m_treecover" = "treecover",
              "m_loss" = "loss",
-             "m_loss_t3" = "loss_t3")
+             "m_loss_t3" = "loss_t3",
+             "m_emissions" = "emissions")
     # change variable names to facilitate long format conversion in code below
     colnames(m_data) <-  sub("*_anomaly*", "", colnames(m_data))
     colnames(m_data) <-  sub("*_min*", "", colnames(m_data))    
@@ -134,7 +136,8 @@ for (i in T_year) {
         read_rds(paste0("../../datalake/mapme.protectedareas/output/tabular/regression_input/CEM/cem_matched_data_", i, ".rds")) %>%
       rename("m_treecover" = "treecover",
              "m_loss" = "loss",
-             "m_loss_t3" = "loss_t3")
+             "m_loss_t3" = "loss_t3",
+             "m_emissions" = "emissions")
     # change variable names to facilitate long format conversion in code below
     colnames(m_data) <-  sub("*_anomaly*", "", colnames(m_data))
     colnames(m_data) <-  sub("*_min*", "", colnames(m_data))    
