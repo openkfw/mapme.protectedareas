@@ -30,7 +30,7 @@ lapply(lop, require, character.only = TRUE)
 Note: Values correspond to weighted averages of absolute forest cover in treatment and control cells, respectively. 
 
 ```{r create plots in pdf, include=TRUE}
-T_year <- c(2003:2017, 2019)
+T_year <- c(2004:2017, 2019)
 # T_year <- c(2014)
 
 # create PDF with plots
@@ -52,8 +52,8 @@ for (i in T_year) {
     group_by(year, treatment) %>% 
     summarise(mean_fca = mean(fc_area_weighted))
   
-  cem_min <- min(mp_summarized_cem$mean_fca)
-  cem_max <- max(mp_summarized_cem$mean_fca)
+  cem_min <- min(mp_summarized_cem$mean_fca, na.rm = TRUE)
+  cem_max <- max(mp_summarized_cem$mean_fca, na.rm = TRUE)
   
   
 
@@ -69,8 +69,8 @@ for (i in T_year) {
     group_by(year, treatment) %>% 
       summarise(mean_fca = mean(fc_area_weighted))
   
-  psm_min <- min(mp_summarized_psm$mean_fca)
-  psm_max <- max(mp_summarized_psm$mean_fca)
+  psm_min <- min(mp_summarized_psm$mean_fca, na.rm = TRUE)
+  psm_max <- max(mp_summarized_psm$mean_fca, na.rm = TRUE)
   
   
   
@@ -118,7 +118,7 @@ for (i in T_year) {
 ## Relative forest cover area
 
 ```{r create plots (relative forest cover), include=TRUE}
-T_year <- c(2003:2017, 2019)
+T_year <- c(2004:2016, 2019)
 # T_year <- c(2014)
 
 # create PDF with plots
@@ -150,8 +150,8 @@ for (i in T_year) {
     group_by(year, treatment) %>% 
     summarise(mean_fca = weighted.mean(rel_fca, weights))
   
-  cem_min <- min(mp_summarized_cem$mean_fca)
-  cem_max <- max(mp_summarized_cem$mean_fca)
+  cem_min <- min(mp_summarized_cem$mean_fca, na.rm = TRUE)
+  cem_max <- max(mp_summarized_cem$mean_fca, na.rm = TRUE)
   
   
 
@@ -176,8 +176,8 @@ for (i in T_year) {
     group_by(year, treatment) %>% 
       summarise(mean_fca = weighted.mean(rel_fca, weights))
   
-  psm_min <- min(mp_summarized_psm$mean_fca)
-  psm_max <- max(mp_summarized_psm$mean_fca)
+  psm_min <- min(mp_summarized_psm$mean_fca, na.rm = TRUE)
+  psm_max <- max(mp_summarized_psm$mean_fca, na.rm = TRUE)
   
   
   

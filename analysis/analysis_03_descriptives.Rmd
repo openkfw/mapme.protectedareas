@@ -209,12 +209,6 @@ get_descriptives <- function(year) {
 ```
 
 
-## Matching frame 2003
-
-```{r matching frame 2003}
-get_descriptives(2003)
-```
-
 ## Matching frame 2004
 
 ```{r matching frame 2004}

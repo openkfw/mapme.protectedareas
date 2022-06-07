@@ -62,9 +62,11 @@ keys_assetid_wdpa <-
   
 ```
 
+## Panelize PSM data
+
 ```{r Panelize PSM data}
 # Years with matching frames:
- T_year <- c(2004:2016, 2019)
+ T_year <- c(2004:2017, 2019)
 # T_year <- c(2015)
 
 for (i in T_year) {
@@ -117,11 +119,11 @@ for (i in T_year) {
 }
 ```
 
-
+## Panelize CEM data
 
 ```{r Panelize CEM data}
 # Years with matching frames:
-T_year <- c(2004:2016, 2019)
+T_year <- c(2004:2017, 2019)
 # T_year <- c(2015)
 # T_year <- c(2004:2014, 2016, 2019)
 

@@ -28,7 +28,7 @@ lapply(lop, require, character.only = TRUE)
 #------- Load matching frames --------
 
 # Years with matching frames:
-T_year <- c(2003:2017, 2019)
+T_year <- c(2004:2017, 2019)
 # T_year <- c(2005)
 
 # Create table rows
@@ -36,9 +36,9 @@ count_na_row <- c()
 count_na_treat_row <- c() 
 count_na_control_row <- c()
 
-complete_table <- rep(NA,12)
-treat_na_pct_table <- rep(NA,12)
-control_na_pct_table <- rep(NA,12)
+complete_table <- rep(NA,length(T_year))
+treat_na_pct_table <- rep(NA,length(T_year))
+control_na_pct_table <- rep(NA,length(T_year))
 
 for (i in T_year) {
   file <- paste0("matching_frame_",i)
