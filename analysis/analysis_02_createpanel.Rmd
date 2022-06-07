@@ -7,7 +7,7 @@ output: workflowr::wflow_html
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-knitr::opts_knit$set(root.dir = "~/shared/datalake/mapme.protectedareas")
+knitr::opts_knit$set(root.dir = "/datadrive/datalake/mapme.protectedareas")
 ```
 
 
@@ -64,7 +64,7 @@ keys_assetid_wdpa <-
 
 ```{r Panelize PSM data}
 # Years with matching frames:
- T_year <- c(2003:2017, 2019)
+ T_year <- c(2004:2016, 2019)
 # T_year <- c(2015)
 
 for (i in T_year) {
@@ -97,7 +97,7 @@ for (i in T_year) {
     #          "fc_loss" = "loss")
     merged_data <- 
       left_join(m_data, fcl, by=c(".assetid")) %>% 
-      pivot_longer(cols = c(starts_with("treecover") | starts_with("loss") | starts_with("minprec") | starts_with("maxprec") | starts_with("wetness")),
+      pivot_longer(cols = c(starts_with("treecover") | starts_with("loss") | starts_with("emissions") | starts_with("emissions") | starts_with("minprec") | starts_with("maxprec") | starts_with("wetness")),
                    names_to = c(".value", "year"),
                    names_sep = "_") %>% 
       mutate(year_standard = as.numeric(year) - i) %>% 
@@ -121,7 +121,7 @@ for (i in T_year) {
 
 ```{r Panelize CEM data}
 # Years with matching frames:
-T_year <- c(2003:2017, 2019)
+T_year <- c(2004:2016, 2019)
 # T_year <- c(2015)
 # T_year <- c(2004:2014, 2016, 2019)
 
@@ -133,7 +133,7 @@ for (i in T_year) {
     # m_data <- 
     #     read_csv(paste0("../../datalake/mapme.protectedareas/output/tabular/regression_input/CEM/ce_matched_data_", i, ".csv"))
     m_data <- 
-        read_rds(paste0("datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/cem_matched_data_", i, ".rds")) %>%
+        read_rds(paste0("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/cem_matched_data_", i, ".rds")) %>%
       rename("m_treecover" = "treecover",
              "m_loss" = "loss",
              "m_loss_t3" = "loss_t3",
@@ -157,7 +157,7 @@ for (i in T_year) {
     merged_data <- 
       left_join(m_data, fcl,
                              by=c(".assetid")) %>% 
-      pivot_longer(cols = c(starts_with("treecover") | starts_with("loss") | starts_with("minprec") | starts_with("maxprec") | starts_with("wetness")),
+      pivot_longer(cols = c(starts_with("treecover") | starts_with("loss") | starts_with("emissions") | starts_with("emissions") | starts_with("minprec") | starts_with("maxprec") | starts_with("wetness")),
                    names_to = c(".value", "year"),
                    names_sep = "_") %>% 
       mutate(year_standard = as.numeric(year) - i) %>% 
@@ -169,7 +169,7 @@ for (i in T_year) {
     
     ## Export data
     write_csv(merged_data, 
-              paste0("datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/cem_matched_panel_", i, ".csv"))
+              paste0("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/cem_matched_panel_", i, ".csv"))
   
   # }, error=function(e){cat("ERROR :",conditionMessage(e), "\n")})
     
