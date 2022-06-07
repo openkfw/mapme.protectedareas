@@ -30,7 +30,7 @@ lapply(lop, require, character.only = TRUE)
 Note: Values correspond to weighted averages of absolute forest cover in treatment and control cells, respectively. 
 
 ```{r create plots in pdf, include=TRUE}
-T_year <- c(2004:2016, 2019)
+T_year <- c(2003:2017, 2019)
 # T_year <- c(2014)
 
 # create PDF with plots
@@ -118,7 +118,7 @@ for (i in T_year) {
 ## Relative forest cover area
 
 ```{r create plots (relative forest cover), include=TRUE}
-T_year <- c(2004:2016, 2019)
+T_year <- c(2003:2017, 2019)
 # T_year <- c(2014)
 
 # create PDF with plots

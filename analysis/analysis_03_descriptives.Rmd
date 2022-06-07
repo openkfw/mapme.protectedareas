@@ -41,7 +41,7 @@ start_time <- Sys.time()
 # Years with matching frames. Years without treatment starting years (no BMZ number started in these years) 2003, 2017, 2018, 2020
 # T_year <- c(2004:2016, 2019)
 # T_year <- c(2005)
-T_year <- c(2004:2014, 2016, 2019)
+T_year <- c(2003:2017, 2019)
 
 obs_table <- matrix(, nrow = 11, ncol = length(T_year))
 colnames(obs_table) <- T_year
@@ -208,6 +208,13 @@ get_descriptives <- function(year) {
 }
 ```
 
+
+## Matching frame 2003
+
+```{r matching frame 2003}
+get_descriptives(2003)
+```
+
 ## Matching frame 2004
 
 ```{r matching frame 2004}
@@ -284,6 +291,12 @@ get_descriptives(2015)
 
 ```{r matching frame 2016}
 get_descriptives(2016)
+```
+
+## Matching frame 2017
+
+```{r matching frame 2017}
+get_descriptives(2017)
 ```
 
 ## Matching frame 2019

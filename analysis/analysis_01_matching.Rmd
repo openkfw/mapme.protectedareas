@@ -33,9 +33,7 @@ start_time <- Sys.time()
 #------- Select years and prepare table -------
 
 # Years with matching frames. Years without treatment starting years (no BMZ number started in these years) 2003, 2017, 2018, 2020
-# T_year <- c(2004:2016, 2019)
-T_year <- c(2015)
-# T_year <- c(2004:2014, 2016, 2019)
+T_year <- c(2003:2017, 2019)
 
 for (i in T_year) {
   
@@ -241,6 +239,19 @@ custom_cem <- function(year, cutoffs_travel_time, cutoffs_loss_t3, cutoffs_eleva
   #   c(0.0000,  509.4486, 1018.8973, 1528.3459, 2037.7946, 2547.2432, 3056.6918, 3566.1405, 4075.5891, 4585.0378, 5094.4864, 5603.9350, 6113.3837, 6622.8323, 7132.2810, 7641.7296, 8151.1782, 8660.6269)
 ```
 
+## Matching frame 2003
+ 
+```{r matching frame 2003}
+# Assign values to input parameters
+cutoffs_travel_time <- c()
+cutoffs_loss_t3 <- c()
+cutoffs_elevation <- c()
+cutoffs_tri <- c()
+cutoffs_soil <- c()
+year <- 2003
+# Call function
+custom_cem(year = year, cutoffs_travel_time = cutoffs_travel_time, cutoffs_loss_t3 = cutoffs_loss_t3,cutoffs_elevation = cutoffs_elevation)
+```
 
 ## Matching frame 2004
  
@@ -420,6 +431,20 @@ cutoffs_elevation <- c()
 cutoffs_tri <- c()
 cutoffs_soil <- c()
 year <- 2016
+# Call function
+custom_cem(year = year, cutoffs_travel_time = cutoffs_travel_time, cutoffs_loss_t3 = cutoffs_loss_t3,cutoffs_elevation = cutoffs_elevation)
+```
+
+## Matching frame 2017
+ 
+```{r matching frame 2017}
+# Assign values to input parameters
+cutoffs_travel_time <- c()
+cutoffs_loss_t3 <- c()
+cutoffs_elevation <- c()
+cutoffs_tri <- c()
+cutoffs_soil <- c()
+year <- 2017
 # Call function
 custom_cem(year = year, cutoffs_travel_time = cutoffs_travel_time, cutoffs_loss_t3 = cutoffs_loss_t3,cutoffs_elevation = cutoffs_elevation)
 ```
