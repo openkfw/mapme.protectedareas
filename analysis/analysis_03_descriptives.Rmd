@@ -85,6 +85,10 @@ for (i in T_year) {
   obs_table[11,paste0(i)] <- bal_table$Observations[3,1]
 }
 
+# Save table
+write_rds(obs_table, 
+            paste0("/datadrive/datalake/mapme.protectedareas/output/matching/output_tables/observations_table.rds"))
+
 ```
 
 
