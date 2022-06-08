@@ -1,6 +1,6 @@
 ## Processing routine for hurricane data
 # Author: Johannes Schielein
-# Last Edit: 2022-05-23
+# Last Edit: 2022-06-02
 
 
 # download IBTracs data from arquive
@@ -19,6 +19,8 @@ library("terra")
 library("dplyr")
 library("mapview")
 
+# set the temporary directory in order to avoid disk usage problems. 
+terraOptions(tempdir="../../datalake/tempdir/")
 
 # load data 
 hurricanes_raw <-
@@ -92,36 +94,36 @@ hurricanes_subset$R64_combined_model <-
   )
 
 # ---- regional subset (if desired) -----
-# # load data for the subset
-# # load wdpa with kfw areas
-# wdpa_LA<-
-#   st_read("../../datalake/mapme.protectedareas/input/wdpa_kfw/wdpa_kfw_spatial_latinamerica_2021-04-22_allPAs_valid_simplified.gpkg")
-# 
-# # load  countries
-# gadm_SA<-
-#   readRDS("../../datalake/mapme.protectedareas/input/gadm/gadm_3_6-2022-02-26/gadm36_adm0_r5_pk.rds")
-# 
-# gadm_SA<-terra::vect(gadm_SA)
-# gadm_SA<-st_as_sf(gadm_SA)
-# 
-# # subset countries
-# country_index<-
-#   which(gadm_SA$GID_0%in%unique(wdpa_LA$ISO3))
-# 
-# gadm_SA<-
-#   gadm_SA[country_index,]
-# 
-# # change gadm crs to intersect
-# gadm_SA<-
-#   st_transform(gadm_SA,crs = st_crs(hurricanes_subset))
-# 
-# # intersection hurricane line data with supported countries
-# intersection_results<- 
-#   st_intersection(hurricanes_subset,
-#                   gadm_SA)
-# 
-# # mapView(intersection_results)+mapView(gadm_SA)
-# hurricanes_subset<-intersection_results
+# load data for the subset
+# load wdpa with kfw areas
+wdpa_LA<-
+  st_read("../../datalake/mapme.protectedareas/input/wdpa_kfw/wdpa_kfw_spatial_latinamerica_2021-04-22_allPAs_valid_simplified.gpkg")
+
+# load  countries
+gadm_SA<-
+  readRDS("../../datalake/mapme.protectedareas/input/gadm/gadm_3_6-2022-02-26/gadm36_adm0_r5_pk.rds")
+
+gadm_SA<-terra::vect(gadm_SA)
+gadm_SA<-st_as_sf(gadm_SA)
+
+# subset countries
+country_index<-
+  which(gadm_SA$GID_0%in%unique(wdpa_LA$ISO3))
+
+gadm_SA<-
+  gadm_SA[country_index,]
+
+# change gadm crs to intersect
+gadm_SA<-
+  st_transform(gadm_SA,crs = st_crs(hurricanes_subset))
+
+# intersection hurricane line data with supported countries
+intersection_results<-
+  st_intersection(hurricanes_subset,
+                  gadm_SA)
+
+# mapView(intersection_results)+mapView(gadm_SA)
+hurricanes_subset<-intersection_results
 
 # ---- buffer values based un radii -----
 # reproject
@@ -153,9 +155,9 @@ hurricanes_subset_buf<-
 # make as much as possible geoms valid
 hurricanes_subset_buf<-
   st_make_valid(hurricanes_subset_buf)
-# delete invalid geoms
-hurricanes_subset_buf <-
-  hurricanes_subset_buf[-which(st_is_valid(hurricanes_subset_buf) == F), ]
+# delete invalid geoms (if necessary for dateline wrapping)
+# hurricanes_subset_buf <-
+#   hurricanes_subset_buf[-which(st_is_valid(hurricanes_subset_buf) == F), ]
 
 # wrap dateline geometries
 hurricanes_subset_buf<- hurricanes_subset_buf%>%
@@ -180,9 +182,9 @@ mapView(hurricanes_subset,zcol = "wind_combinded", at = seq(64, 185, 20), legend
 # proposed output data: maximum (likely) windspeed that affected a given region due to a storm of the category hurricane (at least H1 or 64 knts. windspeed)
 # st_interpolate_aw(x, to, extensive=F)
 aux_grid <-
-  rast(vect(hurricanes_subset_buf), resolution = 0.005)
+  rast(vect(hurricanes_subset_buf), resolution = 0.001)
 
-results_list<-as.list(vector(length=length(2000:2020)))
+results_list <- as.list(vector(length=length(2000:2020)))
 
 f_rast_calc <- function(my_season)
 {# subset data for season
@@ -201,7 +203,12 @@ f_rast_calc <- function(my_season)
           filter(SID == unique(.$SID)[i]) %>%
           arrange(desc(ISO_TIME)) %>% # arrange polygons by time for rasterization
           vect(.) %>%
-          terra::rasterize(., aux_grid, field = "wind_combinded")
+          terra::rasterize(., aux_grid, 
+                           field = "wind_combinded",
+                           # filename= paste("../../datalake/mapme.protectedareas/processing/hurricanes/raster", i, "_", my_season, ".tif",sep = "")
+                           )
+        # remove tempfiles to avoid memory issues
+        # tmpFiles(remove = T)
       }, error = function(e){
         print("Problem with data. Please check.") 
         return(NA)})
@@ -214,10 +221,10 @@ f_rast_calc <- function(my_season)
   
 }
 
-f_rast_calc(2010)
+
 
 ## Apply function for all years
-# dir.create("../../datalake/mapme.protectedareas/processing/hurricanes/2000-2020_V01")
+# dir.create("../../datalake/mapme.protectedareas/processing/hurricanes/2000-2020_V03")
 
 for(i in 2000:2020) {
   # test function
@@ -236,7 +243,7 @@ for(i in 2000:2020) {
   # dir.create("../../datalake/mapme.protectedareas/processing/hurricanes/test/")
   writeRaster(
     rast_result_reduce,
-    paste("../../datalake/mapme.protectedareas/processing/hurricanes/2000-2020_V02/max_likely_windspeed_H01_global_",i,".tif"),
+    paste("../../datalake/mapme.protectedareas/processing/hurricanes/2000-2020_V03/max_likely_windspeed_H01_global_",i,".tif"),
     overwrite = T,
     datatype = "INT1U",
     memfrac = 0.8
@@ -247,29 +254,24 @@ for(i in 2000:2020) {
 
 # stack data and write out as a rater stack
 rast_result_stack<-
-  rast(list.files("../../datalake/mapme.protectedareas/processing/hurricanes/2000-2020_V02/", full.names = TRUE))
+  rast(list.files("../../datalake/mapme.protectedareas/processing/hurricanes/2000-2020_V03/", full.names = TRUE, pattern=".tif"))
 
 writeRaster(
   rast_result_stack,
-  "../../datalake/mapme.protectedareas/processing/hurricanes/2000-2020_V02/max_likely_windspeed_H01_global_2000-2020.tif",
+  "../../datalake/mapme.protectedareas/processing/hurricanes/2000-2020_V03/max_likely_windspeed_H01_global_2000-2020.tif",
   overwrite = T,
   datatype = "INT1U",
   memfrac = 0.8)
 
-# reduce to max from all years
-rast_result_stack_reduce <- app(rast_result_stack,
-                                fun = "max", na.rm = T)
+# # reduce to max from all years
+# rast_result_stack_reduce <- app(rast_result_stack,
+#                                 fun = "max", na.rm = T,
+#                                 filename=  "../../datalake/mapme.protectedareas/processing/hurricanes/2000-2020_V03/max_likely_windspeed_H01_global_2000-2020_reduced.tif",
+#                                 overwrite=T)
 
-writeRaster(
-  rast_result_stack_reduce,
-  "../../datalake/mapme.protectedareas/processing/hurricanes/2000-2020_V02/max_likely_windspeed_H01_global_2000-2020_reduced.tif",
-  overwrite = T,
-  datatype = "INT1U",
-  memfrac = 0.8)
-
-# export original line-data for display purposes
-write_sf(hurricanes_subset,
-         "../../datalake/mapme.protectedareas/processing/hurricanes/2000-2020_V02/max_likely_windspeed_H01_global_2000-2020_lines.gpkg")
+# # export original line-data for display purposes
+# write_sf(hurricanes_subset,
+#          "../../datalake/mapme.protectedareas/processing/hurricanes/2000-2020_V03/max_likely_windspeed_H01_global_2000-2020_lines.gpkg")
 
 # mapView(hurricanes_subset,zcol = "wind_combinded", at = seq(64, 185, 20), legend = TRUE) + 
 #   mapView(rast_result_stack_reduce)
