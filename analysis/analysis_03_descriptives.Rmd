@@ -105,6 +105,8 @@ stargazer(obs_table,
 ```{r function for descriptives}
 get_descriptives <- function(year) {
   
+  
+  
   # read matchit objects
   m_psm <- 
     read_rds(paste0("/datadrive/datalake/mapme.protectedareas/output/matching/matchit_objects/PSM/m_psm_", year, ".rds"))
@@ -211,6 +213,9 @@ get_descriptives <- function(year) {
   plot(plot_fcarea)
   plot(plot_sumfcl)
   
+  
+  #clear environment
+  rm(list=ls())
 }
 ```
 
