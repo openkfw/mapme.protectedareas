@@ -18,7 +18,7 @@ for (t in all_years) {
   # create time varying treatment variable
   panel.df <- panel.df %>% 
     mutate(treatment_disb = (treatment==1 & year_standard>=0),
-           emissions_kg = emissions*1000000*500,
+           emissions_tha = emissions/500,
            NAME_0_num = as.numeric(as.factor(NAME_0))) %>% 
     rename(., weights_cem=weights) # rename weights
   # create WDPA cluster that are country specific (important for control group, as all controll cells belong to ID 9999999999 regardless of the country. Now the control cells are clustered for each country.)
@@ -158,9 +158,6 @@ modelsummary(dvnames(m_list_br),
              gof_map = c("nobs", "adj.r.squared", "vcov.type", "FE: .assetid", "FE: year"),
              title = paste0("Matching frame 2015: Brazil only")
 )
-
-
-
 
 
 
