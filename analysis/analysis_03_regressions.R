@@ -51,6 +51,14 @@ names(m_list1) <- all_years
 names(m_list2) <- all_years
 names(m_list3) <- all_years
 
+# Observations
+
+observations_table <- readRDS("/datadrive/datalake/mapme.protectedareas/output/matching/output_tables/observations_table.rds")
+
+cem_obs <- as_tibble(observations_table[5:7 , ]) 
+
+attr(cem_obs, 'position') <- c(4)
+
 # Output: fc_loss
 modelsummary(m_list1,
              output = "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/table1_cluster.html",
@@ -58,7 +66,8 @@ modelsummary(m_list1,
                              "treatment_disbTRUE" = "KfW support"),
              stars = TRUE,
              gof_map = c("nobs", "adj.r.squared", "vcov.type", "FE: .assetid", "FE: year"),
-             title = paste0("Dependent variable: Forest cover loss")
+             title = paste0("Dependent variable: Forest cover loss"),
+             add_rows = cem_obs
 )
 
 modelsummary(m_list1_compare,

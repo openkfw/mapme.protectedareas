@@ -222,3 +222,92 @@ for (i in T_year) {
 
 ```
 
+## Absolute forest cover loss 
+
+Note: Values correspond to weighted averages of absolute forest cover loss in treatment and control cells, respectively. 
+
+```{r absolute forest cover loss, include=TRUE}
+T_year <- c(2004:2017, 2019)
+# T_year <- c(2014)
+
+# create PDF with plots
+# pdfpath <- "../../datalake/mapme.protectedareas/output/plots/propensity_scores/prs_plots.pdf"
+# pdfpath <- "../../yota/plots/difference_in_means/absolute_fca.pdf"
+# pdf(file=pdfpath, paper = "a4r")
+
+for (i in T_year) {
+  
+  # Load CEM panel
+  
+  mp_cem <- 
+    read_csv(paste0("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/cem_matched_panel_", i, ".csv")) %>% 
+    mutate(fc_loss_weighted = fc_loss * weights)
+  
+  
+  mp_summarized_cem <- 
+    mp_cem %>% 
+    group_by(year, treatment) %>% 
+    summarise(mean_fcl = mean(fc_loss_weighted))
+  
+  cem_min <- min(mp_summarized_cem$mean_fcl, na.rm = TRUE)
+  cem_max <- max(mp_summarized_cem$mean_fcl, na.rm = TRUE)
+  
+  
+
+  # Load PSM panel 
+  
+  mp_psm <- 
+    read_csv(paste0("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/PSM/psm_matched_panel_", i, ".csv")) %>% 
+    mutate(fc_loss_weighted = fc_loss * weights)
+  
+  
+  mp_summarized_psm <- 
+    mp_psm %>% 
+    group_by(year, treatment) %>% 
+      summarise(mean_fcl = mean(fc_loss_weighted))
+  
+  psm_min <- min(mp_summarized_psm$mean_fcl, na.rm = TRUE)
+  psm_max <- max(mp_summarized_psm$mean_fcl, na.rm = TRUE)
+  
+  
+  
+  # Create plots
+  
+  ymin <- min(cem_min, psm_min)
+  ymax <- max(cem_max, psm_max)
+  
+  avg_plot_cem <- 
+    mp_summarized_cem %>% 
+    ggplot() +
+    geom_line(aes(x = year, 
+                  y = mean_fcl,
+                  col = as.factor(treatment))) + 
+    geom_vline(xintercept = i, col = "red", linetype = "dashed") +
+    coord_cartesian(ylim = c(ymin, ymax)) +
+    labs(title=paste0("CEM (Year: ", i, ")"),
+         x ="Year", y = "Absolute forest cover loss (ha)") +
+    theme(legend.position = "bottom") +
+    scale_colour_discrete(name= "", breaks=c("0", "1"),
+                          labels=c("Control", "Treated"))
+  
+  avg_plot_psm <- 
+    mp_summarized_psm %>% 
+    ggplot() +
+    geom_line(aes(x = year, 
+                  y = mean_fcl,
+                  col = as.factor(treatment))) + 
+    geom_vline(xintercept = i, col = "red", linetype = "dashed") +
+    coord_cartesian(ylim = c(ymin, ymax)) +
+    labs(title=paste0("PSM (Year: ", i, ")"),
+         x ="Year", y = "") +
+    theme(legend.position = "bottom") +
+    scale_colour_discrete(name= "", breaks=c("0", "1"),
+                          labels=c("Control", "Treated"))
+  
+  grid.arrange(avg_plot_cem, avg_plot_psm, 
+               ncol = 2)
+}
+
+# dev.off()
+
+```
