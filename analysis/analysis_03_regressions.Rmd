@@ -17,7 +17,7 @@ options(scipen=999)
 options(width = 200)
 
 # get packages
-lop <- c("dplyr", "plm", "stargazer", "tidyverse", "cem", "multiwayvcov", "modelsummary", "fixest")
+lop <- c("dplyr", "plm", "stargazer", "tidyverse", "cem", "multiwayvcov", "modelsummary", "fixest", "kableExtra")
 newp <- lop[!(lop %in% installed.packages()[,"Package"])]
 if(length(newp)) install.packages(newp)
 lapply(lop, require, character.only = TRUE)
@@ -45,9 +45,9 @@ all_years <- c(2004:2017, 2019)
 obs_table <- matrix(NA, nrow = 3, ncol = length(all_years)+1)
 colnames(obs_table) <- c("name", all_years)
 # rownames(obs_table) <- c("CEM obs total", "--obs treat", "--obs control")
-obs_table[1,1] <- "CEM obs total"
-obs_table[2,1] <- "--obs treat"
-obs_table[3,1] <- "--obs control"
+obs_table[1,1] <- "Total num. cells"
+obs_table[2,1] <- "--treated"
+obs_table[3,1] <- "--control"
 
 obs_table_m11 <- obs_table
 obs_table_m21 <- obs_table
@@ -146,6 +146,26 @@ modelsummary(m_list1,
              notes = list('Standard errors clustered by zones of forest protected areas (WDPA).'),
              add_rows = as.data.frame(obs_table_m12)
 )
+
+# Example code for adjustments in html output
+# More adjustments can be made via kableExtra package
+# Commented for now (untested)
+
+# m12_output <- modelsummary(m_list1,
+#                coef_rename = c("fc_loss" = "Forest cover loss", 
+#                                "treatment_disbTRUE" = "KfW support"),
+#                stars = TRUE,
+#                gof_map = c("nobs", "adj.r.squared", "FE: .assetid", "FE: year"),
+#                title = paste0("Dependent variable: Forest cover loss"),
+#                notes = list('Standard errors clustered by zones of forest protected areas (WDPA).'),
+#                add_rows = as.data.frame(obs_table_m12)
+#               )
+# m12_output %>% 
+#   kable_classic(full_width = F, html_font = "Cambria") %>% 
+#   column_spec(1, width = "8em") %>% 
+#   save_kable(file = "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/table1_cluster_style.html", self_contained = T)
+
+
 
 # modelsummary(m_list1_compare,
 #              output = "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/table1_cluster_compare.html",

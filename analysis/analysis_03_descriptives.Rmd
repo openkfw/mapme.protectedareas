@@ -43,7 +43,7 @@ start_time <- Sys.time()
 # T_year <- c(2005)
 T_year <- c(2004:2017, 2019)
 
-obs_table <- matrix(, nrow = 11, ncol = length(T_year))
+obs_table <- matrix(NA, nrow = 11, ncol = length(T_year))
 colnames(obs_table) <- T_year
 rownames(obs_table) <- c("MF obs total", "MF obs treat", "MF obs control",
                          "After CEM",
