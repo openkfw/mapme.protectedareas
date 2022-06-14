@@ -110,9 +110,9 @@ for (t in all_years) {
 # m_list1_compare <- list(m11_2004, m12_2004, m11_2005, m12_2005, m11_2006, m12_2006, m11_2007, m12_2007, m11_2008, m12_2008, m11_2009, m12_2009, m11_2010, m12_2010, m11_2011, m12_2011, m11_2012, m12_2012, m11_2013, m12_2013, m11_2014, m12_2014, m11_2015, m12_2015, m11_2016, m12_2016, m11_2019, m12_2019)
 # m_list2_compare <- list(m21_2004, m22_2004, m21_2005, m22_2005, m21_2006, m22_2006, m21_2007, m22_2007, m21_2008, m22_2008, m21_2009, m22_2009, m21_2010, m22_2010, m21_2011, m22_2011, m21_2012, m22_2012, m21_2013, m22_2013, m21_2014, m22_2014, m21_2015, m22_2015, m21_2016, m22_2016, m21_2019, m22_2019)
 
-m_list1 <- list(m12_2004, m12_2005, m12_2006, m12_2007, m12_2008, m12_2009, m12_2010, m12_2011, m12_2012, m12_2013, m12_2014, m12_2015, m12_2016, m12_2019)
-m_list2 <- list(m22_2004, m22_2005, m22_2006, m22_2007, m22_2008, m22_2009, m22_2010, m22_2011, m22_2012, m22_2013, m22_2014, m22_2015, m22_2016, m22_2019)
-m_list3 <- list(m32_2004, m32_2005, m32_2006, m32_2007, m32_2008, m32_2009, m32_2010, m32_2011, m32_2012, m32_2013, m32_2014, m32_2015, m32_2016, m32_2019)
+m_list1 <- list(m12_2004, m12_2005, m12_2006, m12_2007, m12_2008, m12_2009, m12_2010, m12_2011, m12_2012, m12_2013, m12_2014, m12_2015, m12_2016, m12_2017, m12_2019)
+m_list2 <- list(m22_2004, m22_2005, m22_2006, m22_2007, m22_2008, m22_2009, m22_2010, m22_2011, m22_2012, m22_2013, m22_2014, m22_2015, m22_2016, m22_2017, m22_2019)
+m_list3 <- list(m32_2004, m32_2005, m32_2006, m32_2007, m32_2008, m32_2009, m32_2010, m32_2011, m32_2012, m32_2013, m32_2014, m32_2015, m32_2016, m32_2019, m32_2019)
 
 
 # names(m_list1_compare) <- sort(c(all_years, all_years))
@@ -151,19 +151,19 @@ modelsummary(m_list1,
 # More adjustments can be made via kableExtra package
 # Commented for now (untested)
 
-# m12_output <- modelsummary(m_list1,
-#                coef_rename = c("fc_loss" = "Forest cover loss", 
-#                                "treatment_disbTRUE" = "KfW support"),
-#                stars = TRUE,
-#                gof_map = c("nobs", "adj.r.squared", "FE: .assetid", "FE: year"),
-#                title = paste0("Dependent variable: Forest cover loss"),
-#                notes = list('Standard errors clustered by zones of forest protected areas (WDPA).'),
-#                add_rows = as.data.frame(obs_table_m12)
-#               )
-# m12_output %>% 
-#   kable_classic(full_width = F, html_font = "Cambria") %>% 
-#   column_spec(1, width = "8em") %>% 
-#   save_kable(file = "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/table1_cluster_style.html", self_contained = T)
+m12_output <- modelsummary(m_list1,
+               coef_rename = c("fc_loss" = "Forest cover loss",
+                               "treatment_disbTRUE" = "KfW support"),
+               stars = TRUE,
+               gof_map = c("nobs", "adj.r.squared", "FE: .assetid", "FE: year"),
+               title = paste0("Dependent variable: Forest cover loss"),
+               notes = list('Standard errors clustered by zones of forest protected areas (WDPA).'),
+               add_rows = as.data.frame(obs_table_m12)
+              )
+m12_output %>%
+  kable_classic(full_width = F, html_font = "Cambria") %>%
+  column_spec(1, width = "8em") %>%
+  save_kable(file = "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/table1_cluster_style.html", self_contained = T)
 
 
 
