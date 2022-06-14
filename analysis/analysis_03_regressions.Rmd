@@ -39,7 +39,22 @@ pre code {
 
 
 #### ---- Create table for all years -----
-all_years <- c(2004:2016, 2019)
+all_years <- c(2004:2017, 2019)
+
+# Prepare observations table
+obs_table <- matrix(NA, nrow = 3, ncol = length(all_years)+1)
+colnames(obs_table) <- c("name", all_years)
+# rownames(obs_table) <- c("CEM obs total", "--obs treat", "--obs control")
+obs_table[1,1] <- "CEM obs total"
+obs_table[2,1] <- "--obs treat"
+obs_table[3,1] <- "--obs control"
+
+obs_table_m11 <- obs_table
+obs_table_m21 <- obs_table
+obs_table_m12 <- obs_table
+obs_table_m22 <- obs_table
+obs_table_m32 <- obs_table
+
 for (t in all_years) {
   print(t)
   panel.df <- read.csv(paste0("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/cem_matched_panel_", t, ".csv"), sep = ",", stringsAsFactors = F)
@@ -61,8 +76,34 @@ for (t in all_years) {
   assign(paste0("m22_",t), feols(fc_area ~ treatment_disb | .assetid + year, data = panel.df, weights = panel.df$weights_cem, panel.id = ~.assetid+year, cluster = ~WDPAID_cluster) )
   
   assign(paste0("m32_",t), feols(emissions_tha ~ treatment_disb | .assetid + year, data = panel.df, weights = panel.df$weights_cem, panel.id = ~.assetid+year, cluster = ~WDPAID_cluster) )
+
+  # Fill observations table for all regressions. Comments show procedure for m12
+    
+  # m12  
+  regyears <- length(unique(panel.df[get(paste0("m12_",t))$obs_selection$obsRemoved,]$year))
+  # regyears extracts the number of years that enter the regression for the respective model specification
   
+  obs_table_m12[1,paste0(t)] <- nrow(panel.df[get(paste0("m12_",t))$obs_selection$obsRemoved,])/regyears
+  obs_table_m12[2,paste0(t)] <- table(panel.df[get(paste0("m12_",t))$obs_selection$obsRemoved,]$treatment)[2]/regyears
+  obs_table_m12[3,paste0(t)] <- table(panel.df[get(paste0("m12_",t))$obs_selection$obsRemoved,]$treatment)[1]/regyears
+  # object m12_t is the regression model. Obs_selection$obsRemoved gives a vector of observation IDs that were removed in the regression. 
+  # The IDs in the vector have a negative sign -> code above selects only observations that entered the regression
+  # nrow gives the total number of obs in the regression
+  # number of treatment and control cells are extracted using table() 
   
+  # m22
+  regyears <- length(unique(panel.df[get(paste0("m22_",t))$obs_selection$obsRemoved,]$year))
+  
+  obs_table_m22[1,paste0(t)] <- nrow(panel.df[get(paste0("m22_",t))$obs_selection$obsRemoved,])/regyears
+  obs_table_m22[2,paste0(t)] <- table(panel.df[get(paste0("m22_",t))$obs_selection$obsRemoved,]$treatment)[2]/regyears
+  obs_table_m22[3,paste0(t)] <- table(panel.df[get(paste0("m22_",t))$obs_selection$obsRemoved,]$treatment)[1]/regyears
+  
+  # m32
+  regyears <- length(unique(panel.df[get(paste0("m32_",t))$obs_selection$obsRemoved,]$year))
+  
+  obs_table_m32[1,paste0(t)] <- nrow(panel.df[get(paste0("m32_",t))$obs_selection$obsRemoved,])/regyears
+  obs_table_m32[2,paste0(t)] <- table(panel.df[get(paste0("m32_",t))$obs_selection$obsRemoved,]$treatment)[2]/regyears
+  obs_table_m32[3,paste0(t)] <- table(panel.df[get(paste0("m32_",t))$obs_selection$obsRemoved,]$treatment)[1]/regyears
   
   
 }
@@ -93,7 +134,8 @@ modelsummary(m_list1,
              stars = TRUE,
              gof_map = c("nobs", "adj.r.squared", "FE: .assetid", "FE: year"),
              title = paste0("Dependent variable: Forest cover loss"),
-             notes = list('Standard errors clustered by zones of forest protected areas (WDPA).')
+             notes = list('Standard errors clustered by zones of forest protected areas (WDPA).'),
+             add_rows = as.data.frame(obs_table_m12)
 )
 modelsummary(m_list1,
              coef_rename = c("fc_loss" = "Forest cover loss", 
@@ -101,7 +143,8 @@ modelsummary(m_list1,
              stars = TRUE,
              gof_map = c("nobs", "adj.r.squared", "FE: .assetid", "FE: year"),
              title = paste0("Dependent variable: Forest cover loss"),
-             notes = list('Standard errors clustered by zones of forest protected areas (WDPA).')
+             notes = list('Standard errors clustered by zones of forest protected areas (WDPA).'),
+             add_rows = as.data.frame(obs_table_m12)
 )
 
 # modelsummary(m_list1_compare,
@@ -128,7 +171,8 @@ modelsummary(m_list2,
              stars = TRUE,
              gof_map = c("nobs", "adj.r.squared", "FE: .assetid", "FE: year"),
              title = paste0("Dependent variable: Forest cover area"),
-             notes = list('Standard errors clustered by zones of forest protected areas (WDPA).')
+             notes = list('Standard errors clustered by zones of forest protected areas (WDPA).'),
+             add_rows = as.data.frame(obs_table_m22)
 )
 modelsummary(m_list2,
              coef_rename = c("fc_area" = "Forest cover area", 
@@ -136,7 +180,8 @@ modelsummary(m_list2,
              stars = TRUE,
              gof_map = c("nobs", "adj.r.squared", "FE: .assetid", "FE: year"),
              title = paste0("Dependent variable: Forest cover area"),
-             notes = list('Standard errors clustered by zones of forest protected areas (WDPA).')
+             notes = list('Standard errors clustered by zones of forest protected areas (WDPA).'),
+             add_rows = as.data.frame(obs_table_m22)
 )
 
 # modelsummary(m_list2_compare,
@@ -163,7 +208,8 @@ modelsummary(m_list3,
              stars = TRUE,
              gof_map = c("nobs", "adj.r.squared", "FE: .assetid", "FE: year"),
              title = paste0("Dependent variable: Forest cover area"),
-             notes = list('Standard errors clustered by zones of forest protected areas (WDPA).')
+             notes = list('Standard errors clustered by zones of forest protected areas (WDPA).'),
+             add_rows = as.data.frame(obs_table_m32)
 )
 modelsummary(m_list3,
              coef_rename = c("emissions" = "Emissions from deforestation", 
@@ -171,7 +217,8 @@ modelsummary(m_list3,
              stars = TRUE,
              gof_map = c("nobs", "adj.r.squared", "FE: .assetid", "FE: year"),
              title = paste0("Dependent variable: Forest cover area"),
-             notes = list('Standard errors clustered by zones of forest protected areas (WDPA).')
+             notes = list('Standard errors clustered by zones of forest protected areas (WDPA).'),
+             add_rows = as.data.frame(obs_table_m32)
 )
 
 
