@@ -17,7 +17,7 @@ rm(list=ls())
 options(scipen=999)
 
 # get packages
-lop <- c("tidyverse", "sf")
+lop <- c("tidyverse", "sf", "units")
 newp <- lop[!(lop %in% installed.packages()[,"Package"])]
 if(length(newp)) install.packages(newp)
 lapply(lop, require, character.only = TRUE)
@@ -60,6 +60,77 @@ keys_assetid_wdpa <-
   rename(".assetid" = "poly_id") %>% 
   st_drop_geometry()
   
+```
+
+
+```{r load disbursement data}
+projectdata_database<-
+  read_csv("/datadrive/datalake/mapme.protectedareas/output/matching/model_frames/projectdata_supported.csv")
+
+## reshape
+projectdata_database_reshaped <- projectdata_database %>%
+  gather(name, disbursement, 21:52) %>%
+  mutate(year = as.numeric(substr(name, 14,17))) %>%
+  select(-name)
+## remove if BMZ==NA
+projectdata_database_reshaped <- as.data.frame(projectdata_database_reshaped[-which(is.na(projectdata_database_reshaped$bmz_nummer)),])
+## aggregate by BMZ-year
+project_agg <- projectdata_database_reshaped %>%
+    dplyr::group_by(bmz_nummer, year, first_year) %>% # check whether this makes sense
+    dplyr::summarize(disbursement_proj = sum(disbursement))
+
+
+## create treatment variable for disbursement
+project_agg$treatment_disb_duringproj <- ifelse(project_agg$disbursement_proj > 0, 1, 0)
+
+
+# merge WDPA with project data and UID
+## load
+keys_database <-
+  read_csv("../../datalake/mapme.protectedareas/output/matching/model_frames/keys_wdpaid_bmz.csv") %>% 
+  dplyr::rename(., bmz_nummer=value)
+
+bmz_wdpa.df <- merge(keys_database, project_agg,  by=c("bmz_nummer"))
+
+
+## load area data
+keys_assetid_wdpa <- 
+  read_sf("~/shared/datalake/mapme.protectedareas/processing/fishnet/honeycomb_5_sqkm_kfw.gpkg") %>% 
+  select(poly_id, WDPAID) %>% 
+  rename(".assetid" = "poly_id") %>% 
+  mutate(area_km2=set_units(st_area(.), km^2))
+
+bmz_wdpa.df<-bmz_wdpa.df %>% 
+  left_join(.,st_drop_geometry(keys_assetid_wdpa),by="WDPAID")
+
+## merge and calculate total BMZ project area
+area.agg<- bmz_wdpa.df %>% 
+  # st_drop_geometry() %>% 
+  filter(treatment_disb_duringproj==1) %>% 
+  group_by(year,bmz_nummer) %>% 
+  summarize(area_total=sum(area_km2))
+
+# finance per total area  
+bmz_wdpa.df<-bmz_wdpa.df %>% 
+  left_join(.,area.agg,by=c("bmz_nummer","year"))
+
+
+bmz_wdpa.df$area_total[is.na(bmz_wdpa.df$area_total)==T]<-0 # fill out NA in project area with 0.
+
+
+bmz_wdpa.df$disbursement_sqkm <-bmz_wdpa.df$disbursement_proj/bmz_wdpa.df$area_total # calculate disbursement per sqkm
+bmz_wdpa.df$disbursement_5sqkmcell <-bmz_wdpa.df$disbursement_proj/bmz_wdpa.df$area_total*bmz_wdpa.df$area_km2 # calculate disbursements per cell
+
+## recode NaN as 0 (since we divided by 0)
+bmz_wdpa.df$disbursement_sqkm [is.nan(bmz_wdpa.df$disbursement_sqkm )]<-0
+bmz_wdpa.df$disbursement_5sqkmcell [is.nan(bmz_wdpa.df$disbursement_5sqkmcell )]<-0
+
+
+## calculate disbursement in each cell by year
+cell.agg<- bmz_wdpa.df %>% 
+  group_by(.assetid, year) %>% 
+  summarize(cell_disb=sum(disbursement_5sqkmcell))
+
 ```
 
 ## Panelize PSM data
