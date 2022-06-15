@@ -365,7 +365,7 @@ div.tocify {
 
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
-<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 </button>
 </p>
 <div id="workflowr-report" class="collapse">
@@ -374,7 +374,7 @@ div.tocify {
 <a data-toggle="tab" href="#summary">Summary</a>
 </li>
 <li>
-<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> </a>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -383,10 +383,10 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2022-06-03
+<strong>Last updated:</strong> 2022-06-14
 </p>
 <p>
-<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 1
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
 </p>
 <p>
 <strong>Knit directory:</strong> <code>mapme.protectedareas/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
@@ -402,12 +402,12 @@ This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a> analysi
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges"> <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted changes </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguncommittedchanges" class="panel-collapse collapse">
+<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown file has unstaged changes. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
 </div>
 </div>
 </div>
@@ -474,30 +474,25 @@ This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a> analysi
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastreee9e0c0954ae762cef38121e7a1cc722c0856bb09targetblanke9e0c09a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/openkfw/mapme.protectedareas/tree/e9e0c0954ae762cef38121e7a1cc722c0856bb09" target="_blank">e9e0c09</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastree68291fa9c29c38868ec53a6c13c65966e5916a87targetblank68291faa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/openkfw/mapme.protectedareas/tree/68291fa9c29c38868ec53a6c13c65966e5916a87" target="_blank">68291fa</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastreee9e0c0954ae762cef38121e7a1cc722c0856bb09targetblanke9e0c09a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastree68291fa9c29c38868ec53a6c13c65966e5916a87targetblank68291faa" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/openkfw/mapme.protectedareas/tree/e9e0c0954ae762cef38121e7a1cc722c0856bb09" target="_blank">e9e0c09</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/openkfw/mapme.protectedareas/tree/68291fa9c29c38868ec53a6c13c65966e5916a87" target="_blank">68291fa</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 </p>
 <pre><code>
 Ignored files:
+    Ignored:    .RData
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-    Ignored:    output/regression_output/
-
-Unstaged changes:
-    Modified:   analysis/analysis_02_createpanel.Rmd
-    Modified:   analysis/analysis_03_regressions.R
-    Modified:   analysis/analysis_03_regressions.Rmd
 
 </code></pre>
 <p>
@@ -536,6 +531,125 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/68291fa9c29c38868ec53a6c13c65966e5916a87/analysis/analysis_03_regressions.Rmd" target="_blank">68291fa</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-14
+</td>
+<td>
+add 2017 and uncomment
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/31f3e1fe4c86a08f3ccb80c1e6969f0498b3fd3d/analysis/analysis_03_regressions.Rmd" target="_blank">31f3e1f</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-14
+</td>
+<td>
+Minor changes and example code for output style
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/14180ffad75125346362f11ce329e01ca2618993/analysis/analysis_03_regressions.Rmd" target="_blank">14180ff</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-14
+</td>
+<td>
+Add observations table in Rmd file and delete .R file
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/ba5770092854a97ff2084d9c3740d5d40bdea014/analysis/analysis_03_regressions.Rmd" target="_blank">ba57700</a>
+</td>
+<td>
+melvinhlwong
+</td>
+<td>
+2022-06-13
+</td>
+<td>
+small changes
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/9a5275c44a16f721e1c71168a6cf3a6265cf0ad9/analysis/analysis_03_regressions.Rmd" target="_blank">9a5275c</a>
+</td>
+<td>
+melvinhlwong
+</td>
+<td>
+2022-06-13
+</td>
+<td>
+make a cleaner version for reporting regressions
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/openkfw/mapme.protectedareas/4ed6003b42f32a65fd751011c7cea834a5694296/docs/analysis_03_regressions.html" target="_blank">4ed6003</a>
+</td>
+<td>
+melvinhlwong
+</td>
+<td>
+2022-06-07
+</td>
+<td>
+regression results after clustering
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/1c1381a53444bd91810cddda216f1b405a7139f9/analysis/analysis_03_regressions.Rmd" target="_blank">1c1381a</a>
+</td>
+<td>
+melvinhlwong
+</td>
+<td>
+2022-06-03
+</td>
+<td>
+WDPAID clustered standard errors. Rmd file to display outputs
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -667,8 +781,9 @@ pre code {
 [1] 2014
 [1] 2015
 [1] 2016
+[1] 2017
 [1] 2019</code></pre>
-<table style="NAborder-bottom: 0; width: auto !important; margin-left: auto; margin-right: auto;" class="table">
+<table style="NAborder-bottom: 0;border-bottom: 0; width: auto !important; margin-left: auto; margin-right: auto;" class="table">
 <caption>
 Dependent variable: Forest cover loss
 </caption>
@@ -716,436 +831,7 @@ Dependent variable: Forest cover loss
 2016
 </th>
 <th style="text-align:center;">
-2019
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-KfW support
-</td>
-<td style="text-align:center;">
-−1.959***
-</td>
-<td style="text-align:center;">
-−0.279
-</td>
-<td style="text-align:center;">
-−0.200***
-</td>
-<td style="text-align:center;">
-−0.450**
-</td>
-<td style="text-align:center;">
-−0.052
-</td>
-<td style="text-align:center;">
-0.951+
-</td>
-<td style="text-align:center;">
-0.842**
-</td>
-<td style="text-align:center;">
-−0.400
-</td>
-<td style="text-align:center;">
-−0.400
-</td>
-<td style="text-align:center;">
-−0.016
-</td>
-<td style="text-align:center;">
-0.493***
-</td>
-<td style="text-align:center;">
-−0.791***
-</td>
-<td style="text-align:center;">
-−1.668***
-</td>
-<td style="text-align:center;">
-−2.581
-</td>
-</tr>
-<tr>
-<td style="text-align:left;box-shadow: 0px 1px">
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(0.205)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(0.226)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(0.027)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(0.134)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(0.421)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(0.490)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(0.032)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(0.586)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(0.586)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(0.057)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(0.000)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(0.117)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(0.129)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(2.281)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Num.Obs.
-</td>
-<td style="text-align:center;">
-4656940
-</td>
-<td style="text-align:center;">
-5486020
-</td>
-<td style="text-align:center;">
-3112200
-</td>
-<td style="text-align:center;">
-13318020
-</td>
-<td style="text-align:center;">
-5327580
-</td>
-<td style="text-align:center;">
-286800
-</td>
-<td style="text-align:center;">
-8568720
-</td>
-<td style="text-align:center;">
-1432720
-</td>
-<td style="text-align:center;">
-1432720
-</td>
-<td style="text-align:center;">
-6783300
-</td>
-<td style="text-align:center;">
-1041160
-</td>
-<td style="text-align:center;">
-20218980
-</td>
-<td style="text-align:center;">
-12081960
-</td>
-<td style="text-align:center;">
-173020
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-R2 Adj.
-</td>
-<td style="text-align:center;">
-0.081
-</td>
-<td style="text-align:center;">
-0.082
-</td>
-<td style="text-align:center;">
-0.192
-</td>
-<td style="text-align:center;">
-0.055
-</td>
-<td style="text-align:center;">
-0.145
-</td>
-<td style="text-align:center;">
-0.148
-</td>
-<td style="text-align:center;">
-0.039
-</td>
-<td style="text-align:center;">
-0.124
-</td>
-<td style="text-align:center;">
-0.124
-</td>
-<td style="text-align:center;">
-0.162
-</td>
-<td style="text-align:center;">
-0.056
-</td>
-<td style="text-align:center;">
-0.059
-</td>
-<td style="text-align:center;">
-0.063
-</td>
-<td style="text-align:center;">
-0.178
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Std.Errors
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-FE: .assetid
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-FE: year
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-</tr>
-</tbody>
-<tfoot>
-<tr>
-<td style="padding: 0; " colspan="100%">
-<sup></sup> + p &lt; 0.1, * p &lt; 0.05, ** p &lt; 0.01, *** p &lt; 0.001
-</td>
-</tr>
-</tfoot>
-</table>
-<table style="NAborder-bottom: 0; width: auto !important; margin-left: auto; margin-right: auto;" class="table">
-<caption>
-Dependent variable: Forest cover loss
-</caption>
-<thead>
-<tr>
-<th style="text-align:left;">
-</th>
-<th style="text-align:center;">
-2004
-</th>
-<th style="text-align:center;">
-2004
-</th>
-<th style="text-align:center;">
-2005
-</th>
-<th style="text-align:center;">
-2005
-</th>
-<th style="text-align:center;">
-2006
-</th>
-<th style="text-align:center;">
-2006
-</th>
-<th style="text-align:center;">
-2007
-</th>
-<th style="text-align:center;">
-2007
-</th>
-<th style="text-align:center;">
-2008
-</th>
-<th style="text-align:center;">
-2008
-</th>
-<th style="text-align:center;">
-2009
-</th>
-<th style="text-align:center;">
-2009
-</th>
-<th style="text-align:center;">
-2010
-</th>
-<th style="text-align:center;">
-2010
-</th>
-<th style="text-align:center;">
-2011
-</th>
-<th style="text-align:center;">
-2011
-</th>
-<th style="text-align:center;">
-2012
-</th>
-<th style="text-align:center;">
-2012
-</th>
-<th style="text-align:center;">
-2013
-</th>
-<th style="text-align:center;">
-2013
-</th>
-<th style="text-align:center;">
-2014
-</th>
-<th style="text-align:center;">
-2014
-</th>
-<th style="text-align:center;">
-2015
-</th>
-<th style="text-align:center;">
-2015
-</th>
-<th style="text-align:center;">
-2016
-</th>
-<th style="text-align:center;">
-2016
-</th>
-<th style="text-align:center;">
-2019
+2017
 </th>
 <th style="text-align:center;">
 2019
@@ -1158,55 +844,25 @@ Dependent variable: Forest cover loss
 KfW support
 </td>
 <td style="text-align:center;">
-−1.959***
-</td>
-<td style="text-align:center;">
-−1.959***
-</td>
-<td style="text-align:center;">
-−0.279***
+−1.959
 </td>
 <td style="text-align:center;">
 −0.279
 </td>
 <td style="text-align:center;">
-−0.200***
+−0.200**
 </td>
 <td style="text-align:center;">
-−0.200***
-</td>
-<td style="text-align:center;">
-−0.450***
-</td>
-<td style="text-align:center;">
-−0.450**
+−0.450+
 </td>
 <td style="text-align:center;">
 −0.052
 </td>
 <td style="text-align:center;">
-−0.052
+0.951
 </td>
 <td style="text-align:center;">
-0.951*
-</td>
-<td style="text-align:center;">
-0.951+
-</td>
-<td style="text-align:center;">
-0.842***
-</td>
-<td style="text-align:center;">
-0.842**
-</td>
-<td style="text-align:center;">
-−0.400***
-</td>
-<td style="text-align:center;">
-−0.400
-</td>
-<td style="text-align:center;">
-−0.400***
+0.996
 </td>
 <td style="text-align:center;">
 −0.400
@@ -1215,28 +871,19 @@ KfW support
 −0.016
 </td>
 <td style="text-align:center;">
-−0.016
+−0.527
 </td>
 <td style="text-align:center;">
 0.493
 </td>
 <td style="text-align:center;">
-0.493***
-</td>
-<td style="text-align:center;">
 −0.791***
 </td>
 <td style="text-align:center;">
-−0.791***
+−1.668**
 </td>
 <td style="text-align:center;">
-−1.668***
-</td>
-<td style="text-align:center;">
-−1.668***
-</td>
-<td style="text-align:center;">
-−2.581***
+−0.006
 </td>
 <td style="text-align:center;">
 −2.581
@@ -1246,88 +893,46 @@ KfW support
 <td style="text-align:left;box-shadow: 0px 1px">
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
-(0.196)
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
-(0.205)
+(0.268)
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
-(0.031)
+(0.001)
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
-(0.226)
+(0.165)
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
-(0.013)
+(0.294)
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
-(0.027)
+(0.690)
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
-(0.015)
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
-(0.134)
+(0.330)
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
-(0.043)
+(0.050)
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
-(0.421)
+(0.716)
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
-(0.375)
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
-(0.490)
+(0.102)
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
-(0.047)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(0.032)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(0.098)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(0.586)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(0.098)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(0.586)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(0.018)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(0.057)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(0.651)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(0.000)
+(0.096)
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
 (0.023)
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
-(0.117)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(0.074)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(0.129)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(0.371)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(2.281)
+(1.774)
 </td>
 </tr>
 <tr>
@@ -1338,16 +943,7 @@ Num.Obs.
 4656940
 </td>
 <td style="text-align:center;">
-4656940
-</td>
-<td style="text-align:center;">
 5486020
-</td>
-<td style="text-align:center;">
-5486020
-</td>
-<td style="text-align:center;">
-3112200
 </td>
 <td style="text-align:center;">
 3112200
@@ -1356,34 +952,13 @@ Num.Obs.
 13318020
 </td>
 <td style="text-align:center;">
-13318020
-</td>
-<td style="text-align:center;">
-5327580
-</td>
-<td style="text-align:center;">
 5327580
 </td>
 <td style="text-align:center;">
 286800
 </td>
 <td style="text-align:center;">
-286800
-</td>
-<td style="text-align:center;">
-8568720
-</td>
-<td style="text-align:center;">
-8568720
-</td>
-<td style="text-align:center;">
-1432720
-</td>
-<td style="text-align:center;">
-1432720
-</td>
-<td style="text-align:center;">
-1432720
+1722860
 </td>
 <td style="text-align:center;">
 1432720
@@ -1392,10 +967,7 @@ Num.Obs.
 6783300
 </td>
 <td style="text-align:center;">
-6783300
-</td>
-<td style="text-align:center;">
-1041160
+1293660
 </td>
 <td style="text-align:center;">
 1041160
@@ -1404,16 +976,10 @@ Num.Obs.
 20218980
 </td>
 <td style="text-align:center;">
-20218980
-</td>
-<td style="text-align:center;">
 12081960
 </td>
 <td style="text-align:center;">
-12081960
-</td>
-<td style="text-align:center;">
-173020
+5068760
 </td>
 <td style="text-align:center;">
 173020
@@ -1427,16 +993,7 @@ R2 Adj.
 0.081
 </td>
 <td style="text-align:center;">
-0.081
-</td>
-<td style="text-align:center;">
 0.082
-</td>
-<td style="text-align:center;">
-0.082
-</td>
-<td style="text-align:center;">
-0.192
 </td>
 <td style="text-align:center;">
 0.192
@@ -1445,34 +1002,13 @@ R2 Adj.
 0.055
 </td>
 <td style="text-align:center;">
-0.055
-</td>
-<td style="text-align:center;">
-0.145
-</td>
-<td style="text-align:center;">
 0.145
 </td>
 <td style="text-align:center;">
 0.148
 </td>
 <td style="text-align:center;">
-0.148
-</td>
-<td style="text-align:center;">
-0.039
-</td>
-<td style="text-align:center;">
-0.039
-</td>
-<td style="text-align:center;">
-0.124
-</td>
-<td style="text-align:center;">
-0.124
-</td>
-<td style="text-align:center;">
-0.124
+0.034
 </td>
 <td style="text-align:center;">
 0.124
@@ -1481,10 +1017,7 @@ R2 Adj.
 0.162
 </td>
 <td style="text-align:center;">
-0.162
-</td>
-<td style="text-align:center;">
-0.056
+0.084
 </td>
 <td style="text-align:center;">
 0.056
@@ -1493,152 +1026,18 @@ R2 Adj.
 0.059
 </td>
 <td style="text-align:center;">
-0.059
-</td>
-<td style="text-align:center;">
 0.063
 </td>
 <td style="text-align:center;">
-0.063
+0.180
 </td>
 <td style="text-align:center;">
 0.178
-</td>
-<td style="text-align:center;">
-0.178
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Std.Errors
-</td>
-<td style="text-align:center;">
-by: .assetid
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: .assetid
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: .assetid
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: .assetid
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: .assetid
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: .assetid
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: .assetid
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: .assetid
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: .assetid
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: .assetid
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: .assetid
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: .assetid
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: .assetid
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: .assetid
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 FE: .assetid
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
 </td>
 <td style="text-align:center;">
 X
@@ -1735,44 +1134,155 @@ X
 <td style="text-align:center;">
 X
 </td>
-<td style="text-align:center;">
-X
+</tr>
+<tr>
+<td style="text-align:left;">
+Total num. cells
 </td>
 <td style="text-align:center;">
-X
+232847
 </td>
 <td style="text-align:center;">
-X
+274301
 </td>
 <td style="text-align:center;">
-X
+155610
 </td>
 <td style="text-align:center;">
-X
+665901
 </td>
 <td style="text-align:center;">
-X
+266379
 </td>
 <td style="text-align:center;">
-X
+14340
 </td>
 <td style="text-align:center;">
-X
+86143
 </td>
 <td style="text-align:center;">
-X
+71636
 </td>
 <td style="text-align:center;">
-X
+339165
 </td>
 <td style="text-align:center;">
-X
+64683
 </td>
 <td style="text-align:center;">
-X
+52058
 </td>
 <td style="text-align:center;">
-X
+1010949
+</td>
+<td style="text-align:center;">
+604098
+</td>
+<td style="text-align:center;">
+253438
+</td>
+<td style="text-align:center;">
+8651
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+–treated
+</td>
+<td style="text-align:center;">
+300
+</td>
+<td style="text-align:center;">
+1430
+</td>
+<td style="text-align:center;">
+15780
+</td>
+<td style="text-align:center;">
+39930
+</td>
+<td style="text-align:center;">
+14458
+</td>
+<td style="text-align:center;">
+553
+</td>
+<td style="text-align:center;">
+1761
+</td>
+<td style="text-align:center;">
+5546
+</td>
+<td style="text-align:center;">
+20929
+</td>
+<td style="text-align:center;">
+529
+</td>
+<td style="text-align:center;">
+128
+</td>
+<td style="text-align:center;">
+139029
+</td>
+<td style="text-align:center;">
+3461
+</td>
+<td style="text-align:center;">
+15854
+</td>
+<td style="text-align:center;">
+669
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+–control
+</td>
+<td style="text-align:center;">
+232547
+</td>
+<td style="text-align:center;">
+272871
+</td>
+<td style="text-align:center;">
+139830
+</td>
+<td style="text-align:center;">
+625971
+</td>
+<td style="text-align:center;">
+251921
+</td>
+<td style="text-align:center;">
+13787
+</td>
+<td style="text-align:center;">
+84382
+</td>
+<td style="text-align:center;">
+66090
+</td>
+<td style="text-align:center;">
+318236
+</td>
+<td style="text-align:center;">
+64154
+</td>
+<td style="text-align:center;">
+51930
+</td>
+<td style="text-align:center;">
+871920
+</td>
+<td style="text-align:center;">
+600637
+</td>
+<td style="text-align:center;">
+237584
+</td>
+<td style="text-align:center;">
+7982
 </td>
 </tr>
 </tbody>
@@ -1783,8 +1293,15 @@ X
 </td>
 </tr>
 </tfoot>
+<tfoot>
+<tr>
+<td style="padding: 0; " colspan="100%">
+<sup></sup> Standard errors clustered by zones of forest protected areas (WDPA).
+</td>
+</tr>
+</tfoot>
 </table>
-<table style="NAborder-bottom: 0; width: auto !important; margin-left: auto; margin-right: auto;" class="table">
+<table style="NAborder-bottom: 0;border-bottom: 0; width: auto !important; margin-left: auto; margin-right: auto;" class="table">
 <caption>
 Dependent variable: Forest cover area
 </caption>
@@ -1832,6 +1349,9 @@ Dependent variable: Forest cover area
 2016
 </th>
 <th style="text-align:center;">
+2017
+</th>
+<th style="text-align:center;">
 2019
 </th>
 </tr>
@@ -1842,16 +1362,16 @@ Dependent variable: Forest cover area
 KfW support
 </td>
 <td style="text-align:center;">
-16.819***
+16.819
 </td>
 <td style="text-align:center;">
 3.226
 </td>
 <td style="text-align:center;">
-1.311***
+1.311**
 </td>
 <td style="text-align:center;">
-3.125*
+3.125+
 </td>
 <td style="text-align:center;">
 −0.770
@@ -1860,19 +1380,19 @@ KfW support
 −13.065
 </td>
 <td style="text-align:center;">
-3.596**
+5.362
 </td>
 <td style="text-align:center;">
 2.910
 </td>
 <td style="text-align:center;">
-2.910
+0.716*
 </td>
 <td style="text-align:center;">
-0.716
+11.892+
 </td>
 <td style="text-align:center;">
-8.137***
+8.137
 </td>
 <td style="text-align:center;">
 3.129**
@@ -1881,53 +1401,56 @@ KfW support
 8.933***
 </td>
 <td style="text-align:center;">
-5.040
+0.705*
+</td>
+<td style="text-align:center;">
+5.040**
 </td>
 </tr>
 <tr>
 <td style="text-align:left;box-shadow: 0px 1px">
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
-(1.203)
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
-(2.026)
+(2.176)
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
-(0.311)
+(0.003)
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
-(1.411)
+(1.075)
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
-(4.586)
+(2.496)
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
-(13.224)
+(5.793)
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
-(0.129)
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
-(6.457)
+(2.635)
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
-(6.457)
+(0.215)
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
-(1.423)
+(3.250)
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
-(0.000)
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
-(1.071)
+(0.570)
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
-(1.262)
+(0.131)
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
-(12.813)
+(0.039)
+</td>
+<td style="text-align:center;box-shadow: 0px 1px">
+(1.151)
 </td>
 </tr>
 <tr>
@@ -1953,16 +1476,16 @@ Num.Obs.
 301140
 </td>
 <td style="text-align:center;">
-8997156
-</td>
-<td style="text-align:center;">
-1504356
+1809003
 </td>
 <td style="text-align:center;">
 1504356
 </td>
 <td style="text-align:center;">
 7122465
+</td>
+<td style="text-align:center;">
+1358343
 </td>
 <td style="text-align:center;">
 1093218
@@ -1972,6 +1495,9 @@ Num.Obs.
 </td>
 <td style="text-align:center;">
 12686058
+</td>
+<td style="text-align:center;">
+5322198
 </td>
 <td style="text-align:center;">
 181671
@@ -2000,16 +1526,16 @@ R2 Adj.
 0.942
 </td>
 <td style="text-align:center;">
-0.942
-</td>
-<td style="text-align:center;">
-0.987
+0.917
 </td>
 <td style="text-align:center;">
 0.987
 </td>
 <td style="text-align:center;">
 0.999
+</td>
+<td style="text-align:center;">
+0.972
 </td>
 <td style="text-align:center;">
 0.976
@@ -2021,740 +1547,15 @@ R2 Adj.
 0.979
 </td>
 <td style="text-align:center;">
+0.999
+</td>
+<td style="text-align:center;">
 0.945
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Std.Errors
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 FE: .assetid
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-FE: year
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-</tr>
-</tbody>
-<tfoot>
-<tr>
-<td style="padding: 0; " colspan="100%">
-<sup></sup> + p &lt; 0.1, * p &lt; 0.05, ** p &lt; 0.01, *** p &lt; 0.001
-</td>
-</tr>
-</tfoot>
-</table>
-<table style="NAborder-bottom: 0; width: auto !important; margin-left: auto; margin-right: auto;" class="table">
-<caption>
-Dependent variable: Forest cover area
-</caption>
-<thead>
-<tr>
-<th style="text-align:left;">
-</th>
-<th style="text-align:center;">
-2004
-</th>
-<th style="text-align:center;">
-2004
-</th>
-<th style="text-align:center;">
-2005
-</th>
-<th style="text-align:center;">
-2005
-</th>
-<th style="text-align:center;">
-2006
-</th>
-<th style="text-align:center;">
-2006
-</th>
-<th style="text-align:center;">
-2007
-</th>
-<th style="text-align:center;">
-2007
-</th>
-<th style="text-align:center;">
-2008
-</th>
-<th style="text-align:center;">
-2008
-</th>
-<th style="text-align:center;">
-2009
-</th>
-<th style="text-align:center;">
-2009
-</th>
-<th style="text-align:center;">
-2010
-</th>
-<th style="text-align:center;">
-2010
-</th>
-<th style="text-align:center;">
-2011
-</th>
-<th style="text-align:center;">
-2011
-</th>
-<th style="text-align:center;">
-2012
-</th>
-<th style="text-align:center;">
-2012
-</th>
-<th style="text-align:center;">
-2013
-</th>
-<th style="text-align:center;">
-2013
-</th>
-<th style="text-align:center;">
-2014
-</th>
-<th style="text-align:center;">
-2014
-</th>
-<th style="text-align:center;">
-2015
-</th>
-<th style="text-align:center;">
-2015
-</th>
-<th style="text-align:center;">
-2016
-</th>
-<th style="text-align:center;">
-2016
-</th>
-<th style="text-align:center;">
-2019
-</th>
-<th style="text-align:center;">
-2019
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-KfW support
-</td>
-<td style="text-align:center;">
-16.819***
-</td>
-<td style="text-align:center;">
-16.819***
-</td>
-<td style="text-align:center;">
-3.226***
-</td>
-<td style="text-align:center;">
-3.226
-</td>
-<td style="text-align:center;">
-1.311***
-</td>
-<td style="text-align:center;">
-1.311***
-</td>
-<td style="text-align:center;">
-3.125***
-</td>
-<td style="text-align:center;">
-3.125*
-</td>
-<td style="text-align:center;">
-−0.770*
-</td>
-<td style="text-align:center;">
-−0.770
-</td>
-<td style="text-align:center;">
-−13.065***
-</td>
-<td style="text-align:center;">
-−13.065
-</td>
-<td style="text-align:center;">
-3.596***
-</td>
-<td style="text-align:center;">
-3.596**
-</td>
-<td style="text-align:center;">
-2.910***
-</td>
-<td style="text-align:center;">
-2.910
-</td>
-<td style="text-align:center;">
-2.910***
-</td>
-<td style="text-align:center;">
-2.910
-</td>
-<td style="text-align:center;">
-0.716***
-</td>
-<td style="text-align:center;">
-0.716
-</td>
-<td style="text-align:center;">
-8.137*
-</td>
-<td style="text-align:center;">
-8.137***
-</td>
-<td style="text-align:center;">
-3.129***
-</td>
-<td style="text-align:center;">
-3.129**
-</td>
-<td style="text-align:center;">
-8.933***
-</td>
-<td style="text-align:center;">
-8.933***
-</td>
-<td style="text-align:center;">
-5.040*
-</td>
-<td style="text-align:center;">
-5.040
-</td>
-</tr>
-<tr>
-<td style="text-align:left;box-shadow: 0px 1px">
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(0.846)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(1.203)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(0.258)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(2.026)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(0.120)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(0.311)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(0.112)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(1.411)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(0.333)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(4.586)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(2.878)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(13.224)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(0.281)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(0.129)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(0.627)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(6.457)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(0.627)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(6.457)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(0.112)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(1.423)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(3.438)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(0.000)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(0.120)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(1.071)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(0.370)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(1.262)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(2.118)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(12.813)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Num.Obs.
-</td>
-<td style="text-align:center;">
-4889787
-</td>
-<td style="text-align:center;">
-4889787
-</td>
-<td style="text-align:center;">
-5760321
-</td>
-<td style="text-align:center;">
-5760321
-</td>
-<td style="text-align:center;">
-3267810
-</td>
-<td style="text-align:center;">
-3267810
-</td>
-<td style="text-align:center;">
-13983921
-</td>
-<td style="text-align:center;">
-13983921
-</td>
-<td style="text-align:center;">
-5593959
-</td>
-<td style="text-align:center;">
-5593959
-</td>
-<td style="text-align:center;">
-301140
-</td>
-<td style="text-align:center;">
-301140
-</td>
-<td style="text-align:center;">
-8997156
-</td>
-<td style="text-align:center;">
-8997156
-</td>
-<td style="text-align:center;">
-1504356
-</td>
-<td style="text-align:center;">
-1504356
-</td>
-<td style="text-align:center;">
-1504356
-</td>
-<td style="text-align:center;">
-1504356
-</td>
-<td style="text-align:center;">
-7122465
-</td>
-<td style="text-align:center;">
-7122465
-</td>
-<td style="text-align:center;">
-1093218
-</td>
-<td style="text-align:center;">
-1093218
-</td>
-<td style="text-align:center;">
-21229929
-</td>
-<td style="text-align:center;">
-21229929
-</td>
-<td style="text-align:center;">
-12686058
-</td>
-<td style="text-align:center;">
-12686058
-</td>
-<td style="text-align:center;">
-181671
-</td>
-<td style="text-align:center;">
-181671
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-R2 Adj.
-</td>
-<td style="text-align:center;">
-0.938
-</td>
-<td style="text-align:center;">
-0.938
-</td>
-<td style="text-align:center;">
-0.992
-</td>
-<td style="text-align:center;">
-0.992
-</td>
-<td style="text-align:center;">
-0.997
-</td>
-<td style="text-align:center;">
-0.997
-</td>
-<td style="text-align:center;">
-0.991
-</td>
-<td style="text-align:center;">
-0.991
-</td>
-<td style="text-align:center;">
-0.995
-</td>
-<td style="text-align:center;">
-0.995
-</td>
-<td style="text-align:center;">
-0.942
-</td>
-<td style="text-align:center;">
-0.942
-</td>
-<td style="text-align:center;">
-0.942
-</td>
-<td style="text-align:center;">
-0.942
-</td>
-<td style="text-align:center;">
-0.987
-</td>
-<td style="text-align:center;">
-0.987
-</td>
-<td style="text-align:center;">
-0.987
-</td>
-<td style="text-align:center;">
-0.987
-</td>
-<td style="text-align:center;">
-0.999
-</td>
-<td style="text-align:center;">
-0.999
-</td>
-<td style="text-align:center;">
-0.976
-</td>
-<td style="text-align:center;">
-0.976
-</td>
-<td style="text-align:center;">
-0.969
-</td>
-<td style="text-align:center;">
-0.969
-</td>
-<td style="text-align:center;">
-0.979
-</td>
-<td style="text-align:center;">
-0.979
-</td>
-<td style="text-align:center;">
-0.945
-</td>
-<td style="text-align:center;">
-0.945
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Std.Errors
-</td>
-<td style="text-align:center;">
-by: .assetid
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: .assetid
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: .assetid
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: .assetid
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: .assetid
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: .assetid
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: .assetid
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: .assetid
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: .assetid
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: .assetid
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: .assetid
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: .assetid
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: .assetid
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: .assetid
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-FE: .assetid
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
 </td>
 <td style="text-align:center;">
 X
@@ -2851,44 +1652,155 @@ X
 <td style="text-align:center;">
 X
 </td>
-<td style="text-align:center;">
-X
+</tr>
+<tr>
+<td style="text-align:left;">
+Total num. cells
 </td>
 <td style="text-align:center;">
-X
+232847
 </td>
 <td style="text-align:center;">
-X
+274301
 </td>
 <td style="text-align:center;">
-X
+155610
 </td>
 <td style="text-align:center;">
-X
+665901
 </td>
 <td style="text-align:center;">
-X
+266379
 </td>
 <td style="text-align:center;">
-X
+14340
 </td>
 <td style="text-align:center;">
-X
+86143
 </td>
 <td style="text-align:center;">
-X
+71636
 </td>
 <td style="text-align:center;">
-X
+339165
 </td>
 <td style="text-align:center;">
-X
+64683
 </td>
 <td style="text-align:center;">
-X
+52058
 </td>
 <td style="text-align:center;">
-X
+1010949
+</td>
+<td style="text-align:center;">
+604098
+</td>
+<td style="text-align:center;">
+253438
+</td>
+<td style="text-align:center;">
+8651
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+–treated
+</td>
+<td style="text-align:center;">
+300
+</td>
+<td style="text-align:center;">
+1430
+</td>
+<td style="text-align:center;">
+15780
+</td>
+<td style="text-align:center;">
+39930
+</td>
+<td style="text-align:center;">
+14458
+</td>
+<td style="text-align:center;">
+553
+</td>
+<td style="text-align:center;">
+1761
+</td>
+<td style="text-align:center;">
+5546
+</td>
+<td style="text-align:center;">
+20929
+</td>
+<td style="text-align:center;">
+529
+</td>
+<td style="text-align:center;">
+128
+</td>
+<td style="text-align:center;">
+139029
+</td>
+<td style="text-align:center;">
+3461
+</td>
+<td style="text-align:center;">
+15854
+</td>
+<td style="text-align:center;">
+669
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+–control
+</td>
+<td style="text-align:center;">
+232547
+</td>
+<td style="text-align:center;">
+272871
+</td>
+<td style="text-align:center;">
+139830
+</td>
+<td style="text-align:center;">
+625971
+</td>
+<td style="text-align:center;">
+251921
+</td>
+<td style="text-align:center;">
+13787
+</td>
+<td style="text-align:center;">
+84382
+</td>
+<td style="text-align:center;">
+66090
+</td>
+<td style="text-align:center;">
+318236
+</td>
+<td style="text-align:center;">
+64154
+</td>
+<td style="text-align:center;">
+51930
+</td>
+<td style="text-align:center;">
+871920
+</td>
+<td style="text-align:center;">
+600637
+</td>
+<td style="text-align:center;">
+237584
+</td>
+<td style="text-align:center;">
+7982
 </td>
 </tr>
 </tbody>
@@ -2899,8 +1811,15 @@ X
 </td>
 </tr>
 </tfoot>
+<tfoot>
+<tr>
+<td style="padding: 0; " colspan="100%">
+<sup></sup> Standard errors clustered by zones of forest protected areas (WDPA).
+</td>
+</tr>
+</tfoot>
 </table>
-<table style="NAborder-bottom: 0; width: auto !important; margin-left: auto; margin-right: auto;" class="table">
+<table style="NAborder-bottom: 0;border-bottom: 0; width: auto !important; margin-left: auto; margin-right: auto;" class="table">
 <caption>
 Dependent variable: Forest cover area
 </caption>
@@ -2948,6 +1867,9 @@ Dependent variable: Forest cover area
 2016
 </th>
 <th style="text-align:center;">
+2017
+</th>
+<th style="text-align:center;">
 2019
 </th>
 </tr>
@@ -2958,92 +1880,95 @@ Dependent variable: Forest cover area
 KfW support
 </td>
 <td style="text-align:center;">
-0.000
+−1.872
 </td>
 <td style="text-align:center;">
-0.000
+−0.337
 </td>
 <td style="text-align:center;">
-0.000
+−0.246**
 </td>
 <td style="text-align:center;">
-0.000
+−0.465*
 </td>
 <td style="text-align:center;">
-0.000*
+−0.056
 </td>
 <td style="text-align:center;">
-0.000
+1.165
 </td>
 <td style="text-align:center;">
-0.000**
+0.642
 </td>
 <td style="text-align:center;">
-0.000***
+−0.480
 </td>
 <td style="text-align:center;">
-0.000***
+−0.018
 </td>
 <td style="text-align:center;">
-0.000***
+−0.747
 </td>
 <td style="text-align:center;">
-0.000
+0.073
 </td>
 <td style="text-align:center;">
-0.000*
+−0.955***
 </td>
 <td style="text-align:center;">
-0.000*
+−2.025**
 </td>
 <td style="text-align:center;">
-0.000
+−2.963
+</td>
+<td style="text-align:center;">
+−2.963
 </td>
 </tr>
 <tr>
 <td style="text-align:left;box-shadow: 0px 1px">
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
-(0.000)
+</td>
+<td style="text-align:center;box-shadow: 0px 1px">
+(0.309)
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
 (0.000)
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
-(0.000)
+(0.129)
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
-(0.000)
+(0.378)
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
-(0.000)
+(1.004)
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
-(0.000)
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
-(0.000)
+(0.379)
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
-(0.000)
+(0.046)
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
-(0.000)
+(0.637)
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
-(0.000)
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
-(0.000)
+(0.118)
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
-(0.000)
+(0.121)
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
-(0.000)
+(2.040)
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
-(0.000)
+(2.040)
 </td>
 </tr>
 <tr>
@@ -3069,16 +1994,16 @@ Num.Obs.
 301140
 </td>
 <td style="text-align:center;">
-8997156
-</td>
-<td style="text-align:center;">
-1504356
+1809003
 </td>
 <td style="text-align:center;">
 1504356
 </td>
 <td style="text-align:center;">
 7122465
+</td>
+<td style="text-align:center;">
+1358343
 </td>
 <td style="text-align:center;">
 1093218
@@ -3092,104 +2017,66 @@ Num.Obs.
 <td style="text-align:center;">
 181671
 </td>
+<td style="text-align:center;">
+181671
+</td>
 </tr>
 <tr>
 <td style="text-align:left;">
 R2 Adj.
 </td>
 <td style="text-align:center;">
-1.000
+0.089
 </td>
 <td style="text-align:center;">
-1.000
+0.080
 </td>
 <td style="text-align:center;">
-1.000
+0.198
 </td>
 <td style="text-align:center;">
-1.000
+0.061
 </td>
 <td style="text-align:center;">
-1.000
+0.127
 </td>
 <td style="text-align:center;">
-1.000
+0.173
 </td>
 <td style="text-align:center;">
-1.000
+0.034
 </td>
 <td style="text-align:center;">
-1.000
+0.108
 </td>
 <td style="text-align:center;">
-1.000
+0.161
 </td>
 <td style="text-align:center;">
-1.000
+0.096
 </td>
 <td style="text-align:center;">
-1.000
+0.057
 </td>
 <td style="text-align:center;">
-1.000
+0.061
 </td>
 <td style="text-align:center;">
-1.000
+0.064
 </td>
 <td style="text-align:center;">
-1.000
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Std.Errors
+0.188
 </td>
 <td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
-</td>
-<td style="text-align:center;">
-by: WDPAID_cluster
+0.188
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 FE: .assetid
+</td>
+<td style="text-align:center;">
+X
 </td>
 <td style="text-align:center;">
 X
@@ -3280,6 +2167,159 @@ X
 <td style="text-align:center;">
 X
 </td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Total num. cells
+</td>
+<td style="text-align:center;">
+232847
+</td>
+<td style="text-align:center;">
+274301
+</td>
+<td style="text-align:center;">
+155610
+</td>
+<td style="text-align:center;">
+665901
+</td>
+<td style="text-align:center;">
+266379
+</td>
+<td style="text-align:center;">
+14340
+</td>
+<td style="text-align:center;">
+86143
+</td>
+<td style="text-align:center;">
+71636
+</td>
+<td style="text-align:center;">
+339165
+</td>
+<td style="text-align:center;">
+64683
+</td>
+<td style="text-align:center;">
+52058
+</td>
+<td style="text-align:center;">
+1010949
+</td>
+<td style="text-align:center;">
+604098
+</td>
+<td style="text-align:center;">
+253438
+</td>
+<td style="text-align:center;">
+8651
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+–treated
+</td>
+<td style="text-align:center;">
+300
+</td>
+<td style="text-align:center;">
+1430
+</td>
+<td style="text-align:center;">
+15780
+</td>
+<td style="text-align:center;">
+39930
+</td>
+<td style="text-align:center;">
+14458
+</td>
+<td style="text-align:center;">
+553
+</td>
+<td style="text-align:center;">
+1761
+</td>
+<td style="text-align:center;">
+5546
+</td>
+<td style="text-align:center;">
+20929
+</td>
+<td style="text-align:center;">
+529
+</td>
+<td style="text-align:center;">
+128
+</td>
+<td style="text-align:center;">
+139029
+</td>
+<td style="text-align:center;">
+3461
+</td>
+<td style="text-align:center;">
+15854
+</td>
+<td style="text-align:center;">
+669
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+–control
+</td>
+<td style="text-align:center;">
+232547
+</td>
+<td style="text-align:center;">
+272871
+</td>
+<td style="text-align:center;">
+139830
+</td>
+<td style="text-align:center;">
+625971
+</td>
+<td style="text-align:center;">
+251921
+</td>
+<td style="text-align:center;">
+13787
+</td>
+<td style="text-align:center;">
+84382
+</td>
+<td style="text-align:center;">
+66090
+</td>
+<td style="text-align:center;">
+318236
+</td>
+<td style="text-align:center;">
+64154
+</td>
+<td style="text-align:center;">
+51930
+</td>
+<td style="text-align:center;">
+871920
+</td>
+<td style="text-align:center;">
+600637
+</td>
+<td style="text-align:center;">
+237584
+</td>
+<td style="text-align:center;">
+7982
+</td>
 </tr>
 </tbody>
 <tfoot>
@@ -3289,8 +2329,91 @@ X
 </td>
 </tr>
 </tfoot>
+<tfoot>
+<tr>
+<td style="padding: 0; " colspan="100%">
+<sup></sup> Standard errors clustered by zones of forest protected areas (WDPA).
+</td>
+</tr>
+</tfoot>
 </table>
-<p><img src="figure/analysis_03_regressions.Rmd/Display%20results-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_regressions.Rmd/Display%20results-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/analysis_03_regressions.Rmd/Display%20results-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Display-results-1">
+Past versions of “Display results-1.png”
+</button>
+</p>
+<div id="fig-no-spaces-Display-results-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/4ed6003b42f32a65fd751011c7cea834a5694296/docs/figure/analysis_03_regressions.Rmd/Display results-1.png" target="_blank">4ed6003</a>
+</td>
+<td>
+melvinhlwong
+</td>
+<td>
+2022-06-07
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/analysis_03_regressions.Rmd/Display%20results-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Display-results-2">
+Past versions of “Display results-2.png”
+</button>
+</p>
+<div id="fig-no-spaces-Display-results-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/4ed6003b42f32a65fd751011c7cea834a5694296/docs/figure/analysis_03_regressions.Rmd/Display results-2.png" target="_blank">4ed6003</a>
+</td>
+<td>
+melvinhlwong
+</td>
+<td>
+2022-06-07
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/analysis_03_regressions.Rmd/Display%20results-3.png" width="672" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -3314,8 +2437,8 @@ attached base packages:
 [1] tcltk     stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] fixest_0.10.4       modelsummary_0.10.0 multiwayvcov_1.2.3  cem_1.1.29          lattice_0.20-45     forcats_0.5.1       stringr_1.4.0       purrr_0.3.4         readr_2.1.2        
-[10] tidyr_1.2.0         tibble_3.1.7        ggplot2_3.3.4       tidyverse_1.3.1     stargazer_5.2.2     plm_2.4-3           dplyr_1.0.9        
+ [1] kableExtra_1.3.4    fixest_0.10.4       modelsummary_0.10.0 multiwayvcov_1.2.3  cem_1.1.29          lattice_0.20-45     forcats_0.5.1       stringr_1.4.0       purrr_0.3.4        
+[10] readr_2.1.2         tidyr_1.2.0         tibble_3.1.7        ggplot2_3.3.4       tidyverse_1.3.1     stargazer_5.2.2     plm_2.4-3           dplyr_1.0.9        
 
 loaded via a namespace (and not attached):
  [1] nlme_3.1-155        fs_1.5.0            lubridate_1.7.10    insight_0.17.0      webshot_0.5.2       httr_1.4.3          rprojroot_2.0.2     dreamerr_1.2.3      numDeriv_2016.8-1.1
@@ -3323,12 +2446,12 @@ loaded via a namespace (and not attached):
 [19] compiler_3.6.3      git2r_0.28.0        cli_3.3.0           rvest_1.0.2         xml2_1.3.3          sandwich_3.0-0      labeling_0.4.2      bayestestR_0.12.1   sass_0.4.0         
 [28] checkmate_2.0.0     scales_1.1.1        lmtest_0.9-38       randomForest_4.6-14 tables_0.9.6        systemfonts_1.0.2   digest_0.6.29       svglite_2.0.0       rmarkdown_2.11     
 [37] pkgconfig_2.0.3     htmltools_0.5.2     highr_0.8           dbplyr_2.1.1        fastmap_1.1.0       rlang_1.0.2         readxl_1.3.1        rstudioapi_0.13     farver_2.1.0       
-[46] jquerylib_0.1.4     generics_0.1.2      zoo_1.8-8           combinat_0.0-8      jsonlite_1.8.0      magrittr_2.0.3      kableExtra_1.3.4    Formula_1.2-4       parameters_0.17.0  
-[55] Rcpp_1.0.8.3        munsell_0.5.0       fansi_1.0.3         lifecycle_1.0.1     stringi_1.7.6       whisker_0.4         yaml_2.2.1          MASS_7.3-55         grid_3.6.3         
-[64] parallel_3.6.3      promises_1.2.0.1    bdsmatrix_1.3-4     crayon_1.5.1        haven_2.3.1         hms_1.1.1           knitr_1.34          pillar_1.7.0        boot_1.3-28        
-[73] reprex_2.0.0        glue_1.6.2          evaluate_0.14       modelr_0.1.8        vctrs_0.4.1         tzdb_0.1.2          httpuv_1.6.1        Rdpack_2.1.2        miscTools_0.6-26   
-[82] cellranger_1.1.0    gtable_0.3.0        datawizard_0.4.0    assertthat_0.2.1    xfun_0.24           rbibutils_2.2.4     broom_0.7.6         later_1.2.0         viridisLite_0.4.0  
-[91] workflowr_1.7.0     maxLik_1.5-2        MatchIt_4.3.0       ellipsis_0.3.2     </code></pre>
+[46] jquerylib_0.1.4     generics_0.1.2      zoo_1.8-8           combinat_0.0-8      jsonlite_1.8.0      magrittr_2.0.3      Formula_1.2-4       parameters_0.17.0   Rcpp_1.0.8.3       
+[55] munsell_0.5.0       fansi_1.0.3         lifecycle_1.0.1     stringi_1.7.6       whisker_0.4         yaml_2.2.1          MASS_7.3-55         grid_3.6.3          parallel_3.6.3     
+[64] promises_1.2.0.1    bdsmatrix_1.3-4     crayon_1.5.1        haven_2.3.1         hms_1.1.1           knitr_1.34          pillar_1.7.0        boot_1.3-28         reprex_2.0.0       
+[73] glue_1.6.2          evaluate_0.14       modelr_0.1.8        vctrs_0.4.1         tzdb_0.1.2          httpuv_1.6.1        Rdpack_2.1.2        miscTools_0.6-26    cellranger_1.1.0   
+[82] gtable_0.3.0        datawizard_0.4.0    assertthat_0.2.1    xfun_0.24           rbibutils_2.2.4     broom_0.7.6         later_1.2.0         viridisLite_0.4.0   workflowr_1.7.0    
+[91] maxLik_1.5-2        MatchIt_4.3.0       ellipsis_0.3.2     </code></pre>
 </div>
 
 
