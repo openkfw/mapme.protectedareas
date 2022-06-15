@@ -1,0 +1,110 @@
+---
+title: "WDPA Data Missings"
+author: "Yota"
+date: "14 6 2022"
+output: workflowr::wflow_html
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE)
+knitr::opts_knit$set(root.dir = "/datadrive/datalake/mapme.protectedareas")
+```
+
+```{r packages and workspace, include=FALSE}
+# clean workspace, set options
+rm(list=ls())
+options(scipen=999)
+options(width = 200)
+
+# get packages
+lop <- c("tidyverse", "sf")
+newp <- lop[!(lop %in% installed.packages()[,"Package"])]
+if(length(newp)) install.packages(newp)
+lapply(lop, require, character.only = TRUE)
+
+```
+
+```{r load wdpa and kfw data}
+##  Protected areas
+wdpa_kfw<-
+  read_sf("~/shared/datalake/mapme.protectedareas/input/wdpa_kfw/wdpa_kfw_spatial_latinamerica_2021-02-01_supportedPAs_unique.gpkg")
+
+# Load KfW finance data 
+kfw_finance <- 
+  read_csv("~/shared/datalake/mapme.protectedareas/input/kfw_finance/mapme.protectedareas_kfw-finance-2021-03-17.csv") %>% 
+  filter(! is.na(bmz_nummer))
+
+#Load wdpa bmz keys
+keys_wdpaid_bmz <- read_csv("~/shared/datalake/mapme.protectedareas/output/matching/model_frames/keys_wdpaid_bmz.csv") %>% 
+  rename("bmz_nummer" = "value")
+
+# merge wdpa_kfw with keys
+wdpa_kfw <- left_join(wdpa_kfw, keys_wdpaid_bmz,
+                      by=c("WDPAID"))
+
+#add kfw_finance data to wdpa_kfw
+wdpa_kfw <- left_join(wdpa_kfw, kfw_finance, 
+                      by=c("bmz_nummer"))
+
+wdpa_kfw <- wdpa_kfw %>%
+  filter(DESIG_ENG != "UNESCO-MAB Biosphere Reserve") %>%
+  filter(STATUS != "Proposed") %>%
+  filter(GEOMETRY_TYPE != "POINT") %>% 
+  st_drop_geometry()
+
+# Load link between assetid and WDPA ID
+# keys_assetid_wdpa <- 
+#   read_sf("~/shared/datalake/mapme.protectedareas/processing/fishnet/honeycomb_5_sqkm_kfw.gpkg") %>% 
+#   select(poly_id, WDPAID) %>% 
+#   rename(".assetid" = "poly_id") %>% 
+#   st_drop_geometry()
+```
+
+## Designation 
+
+```{r }
+data.frame(table(wdpa_kfw$DESIG_ENG))
+table(is.na(wdpa_kfw$DESIG_ENG))
+```
+
+## Designation type
+
+```{r }
+data.frame(table(wdpa_kfw$DESIG_TYPE))
+table(is.na(wdpa_kfw$DESIG_TYPE))
+```
+
+## IUCN category 
+
+```{r }
+data.frame(table(wdpa_kfw$IUCN_CAT))
+table(is.na(wdpa_kfw$IUCN_CAT))
+```
+
+## Gov type 
+
+```{r }
+data.frame(table(wdpa_kfw$GOV_TYPE))
+table(is.na(wdpa_kfw$GOV_TYPE))
+```
+
+## Own type 
+
+```{r }
+data.frame(table(wdpa_kfw$OWN_TYPE))
+table(is.na(wdpa_kfw$OWN_TYPE))
+```
+
+## Type KfW 
+
+```{r }
+data.frame(table(wdpa_kfw$type_kfw))
+table(is.na(wdpa_kfw$type_kfw))
+```
+
+## Ecosystem KfW
+
+```{r }
+data.frame(table(wdpa_kfw$ecosystem_kfw))
+table(is.na(wdpa_kfw$ecosystem_kfw))
+```

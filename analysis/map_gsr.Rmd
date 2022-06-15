@@ -1,0 +1,229 @@
+---
+title: "Map for Green Sector Retreat"
+author: "Yota"
+date: "12 5 2022"
+output: workflowr::wflow_html
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE)
+knitr::opts_knit$set(root.dir = "~/shared/datalake/mapme.protectedareas")
+```
+
+```{r workspace setup, include=FALSE}
+# clean workspace, set options
+rm(list=ls())
+options(scipen=999)
+
+# get packages
+lop <- c("tidyverse", "sf", "leaflet", "leaflet.extras", "leaflet.extras2", "ggsci", "scales", "htmltools", "RColorBrewer", "raster", "rgdal", "stars")
+newp <- lop[!(lop %in% installed.packages()[,"Package"])]
+if(length(newp)) install.packages(newp)
+lapply(lop, require, character.only = TRUE)
+
+# set working directory
+# setwd("~/shared/datalake/mapme.protectedareas")
+```
+
+```{r load data, include=FALSE}
+
+##  Protected areas
+wdpa_kfw<-
+  read_sf("~/shared/datalake/mapme.protectedareas/input/wdpa_kfw/wdpa_kfw_spatial_latinamerica_2021-02-01_supportedPAs_unique.gpkg")
+
+# Load KfW finance data 
+kfw_finance <- 
+  read_csv("~/shared/datalake/mapme.protectedareas/input/kfw_finance/mapme.protectedareas_kfw-finance-2021-03-17.csv") %>% 
+  filter(! is.na(bmz_nummer))
+
+#Load wdpa bmz keys
+keys_wdpaid_bmz <- read_csv("~/shared/datalake/mapme.protectedareas/output/matching/model_frames/keys_wdpaid_bmz.csv") %>% 
+  rename("bmz_nummer" = "value")
+
+# merge wdpa_kfw with keys
+wdpa_kfw <- left_join(wdpa_kfw, keys_wdpaid_bmz,
+                      by=c("WDPAID"))
+
+#add kfw_finance data to wdpa_kfw
+wdpa_kfw <- left_join(wdpa_kfw, kfw_finance, 
+                      by=c("bmz_nummer")) 
+
+# filter wdpa_kfw as needed
+wdpa_kfw <- 
+  wdpa_kfw %>% 
+  filter(first_year == 2008,
+         ISO3 == "PER")
+
+# Load fishnet
+# fishnet_all <- read_sf("~/shared/datalake/mapme.protectedareas/processing/fishnet/honeycomb_5_sqkm.gpkg")
+fishnet_all <- read_sf("~/shared/datalake/mapme.protectedareas/processing/fishnet/honeycomb_5_sqkm_subset_intersect.gpkg") #%>% 
+  # select(geom)
+
+fishnet_named <- cbind(rownames(fishnet_all),fishnet_all)
+
+colnames(fishnet_named) <- c(".assetid", colnames(fishnet_all))
+
+
+# Load accessibility raster
+accessibility <- raster("~/shared/datalake/mapme.protectedareas/input/accessibility_to_cities/2015/acc_5k_110mio_Peru.tif",
+                        varname = "acc_5k_110m")
+
+```
+
+```{r load matching frame}
+
+df <- 
+  read_rds(paste0("../../datalake/mapme.protectedareas/output/tabular/regression_input/PSM/psm_matched_data_2008.rds")) %>% 
+  mutate(.assetid = as.factor(.assetid)) %>% 
+  filter(NAME_0 == "Peru") # Select only Cells in Peru
+
+mf_fishnet <- inner_join(fishnet_named, df,
+                         by=c(".assetid"))
+
+mf_fishnet <- st_transform(mf_fishnet,crs = st_crs(wdpa_kfw))  %>% 
+  st_centroid
+
+mf_treated <- mf_fishnet %>% 
+  filter(treatment == 1)
+
+mf_control <- mf_fishnet %>% 
+  filter(treatment == 0)
+
+```
+
+## Map 
+
+The following displays the matched treatment and control cells of protected areas in Peru. The treatment cells correspond to the protected areas that were supported via projects starting in the year 2008. 
+
+```{r}
+#------- Color palettes --------
+
+# create colorramp2
+pal_2008 <- colorFactor(
+  palette = c("darkblue","orange"),
+  domain = mf_fishnet$treatment
+)
+
+# color palette, which is interpolated ?
+# pal <- colorNumeric(palette = "Spectral", #c("#000000", "#666666", "#FFFFFF"), 
+#                     values(accessibility),
+#                     na.color = "transparent")
+
+pal <- colorQuantile(palette = "Oranges", #c("#000000", "#666666", "#FFFFFF"),
+                    values(accessibility),
+                    n = 8,
+                    probs = c(seq(0, 0.8, 0.1),1),#seq(0, 1, length.out = 9),
+                    na.color = "transparent")
+
+# the extra code building off the existing pal
+pal_colors <- unique(pal(sort(values(accessibility)))) # hex codes
+pal_labs <- quantile(values(accessibility), c(seq(0, 0.8, 0.1),1), na.rm = TRUE) # depends on n from pal
+# pal_labs <- paste(lag(pal_labs), pal_labs, sep = " - ")[-1] # first lag is NA
+
+lab_lower <- pal_labs[1:9]
+lab_upper <- pal_labs[-1]
+pal_labs <- paste(lab_lower, lab_upper, sep = " - ")
+
+# pal <- colorBin(palette = "RdGy", #c("#000000", "#666666", "#FFFFFF"), 
+#                     values(accessibility),
+#                     bins = 10,
+#                     pretty = TRUE,
+#                     na.color = "transparent")
+
+#------- Map --------
+
+## Create map
+my_map_matching <-
+  leaflet() %>%
+  # add external map providers
+  addTiles(group = "OpenStreetMap") %>%
+  addProviderTiles(providers$CartoDB.Positron, group="CartoDB") %>%
+  addProviderTiles(providers$Esri.WorldImagery, group="Satellite") %>%
+  addProviderTiles(providers$Esri.WorldShadedRelief, group="Topography") %>%
+  addProviderTiles(providers$NASAGIBS.ViirsEarthAtNight2012, group="Nightlights") %>%
+  addTiles("https://tiles.globalforestwatch.org/umd_tree_cover_loss/latest/dynamic/{z}/{x}/{y}/2000/2008.png",
+           group="Forest Cover Loss (2001-2020)",
+           #options=tileOptions(opacity = 0.7),
+           attribution = "Hansen, M. C., P. V. Potapov, R. Moore, M. Hancher, S. A. Turubanova, A. Tyukavina, D. Thau, S. V. Stehman, S. J. Goetz, T. R. Loveland, A. Kommareddy, A. Egorov, L. Chini, C. O. Justice, and J. R. G. Townshend. 2013. “High-Resolution Global Maps of 21st-Century Forest Cover Change.” Science 342 (15 November): 850–53. Data available on-line from: http://earthenginepartners.appspot.com/science-2013-global-forest.")%>%
+  addTiles("https://tiles.globalforestwatch.org/umd_tree_cover_density_2000/latest/dynamic/{z}/{x}/{y}/2000/2008.png",
+           group="Forest Cover Density (2000)",
+           #options=tileOptions(opacity = 0.7),
+           attribution = "Hansen, M. C., P. V. Potapov, R. Moore, M. Hancher, S. A. Turubanova, A. Tyukavina, D. Thau, S. V. Stehman, S. J. Goetz, T. R. Loveland, A. Kommareddy, A. Egorov, L. Chini, C. O. Justice, and J. R. G. Townshend. 2013. “High-Resolution Global Maps of 21st-Century Forest Cover Change.” Science 342 (15 November): 850–53. Data available on-line from: http://earthenginepartners.appspot.com/science-2013-global-forest.")%>%
+  addRasterImage(accessibility, 
+                 colors=pal, 
+                 opacity = 0.8, 
+                 group = "Accessibility to Cities") %>% 
+  # add own data
+  addPolygons(data = wdpa_kfw,
+              opacity = 0.8,
+              color = "orange", 
+              group = "PA Boundaries",
+              label = ~htmlEscape(DESIG_ENG),
+              weight = 1) %>%
+  # addCircleMarkers(data = mf_fishnet,
+  #                  opacity = mf_fishnet$weights,
+  #                  color = ~pal_2008(treatment),
+  #                  group = "Matched cells 2008",
+  #                  label = ~htmlEscape(treatment),
+  #                  weight = 1,
+  #                  radius = 1) %>%
+  addCircleMarkers(data = mf_treated,
+                   # opacity = mf_treated$weights,
+                   opacity = 0.8,
+                   color = "green",
+                   group = "Matched cells 2008 in Peru (treated)",
+                   label = ~htmlEscape(treatment),
+                   weight = 1,
+                   radius = 2) %>%
+  addCircleMarkers(data = mf_control,
+                   # opacity = mf_control$weights,
+                   opacity = 0.8,
+                   color = "blue",
+                   group = "Matched cells 2008 in Peru (control)",
+                   label = ~htmlEscape(treatment),
+                   weight = 1,
+                   radius = 2) %>%
+  addFullscreenControl() %>%
+  addLegend("bottomright",
+            data = mf_treated,
+            col = "green",
+            # values = ~treatment,
+            labels = c("Treatment"),
+            title = "Matched treated cells 2008 (Peru)",
+            opacity = 1,
+            group = "Matched cells 2008 in Peru (treated)") %>%
+  addLegend("bottomright",
+          data = mf_control,
+          col = "blue",
+          # values = ~treatment,
+          labels = c("Control"),
+          title = "Matched control cells 2008 (Peru)",
+          opacity = 1,
+          group = "Matched cells 2008 in Peru (control)") %>%
+  # addLegend("bottomright",
+  #         data = accessibility,
+  #         pal = pal,
+  #         values = values(accessibility),
+  #         # labels = c("Treatment"),
+  #         title = "Accessibility to Cities (minutes)",
+  #         opacity = 1,
+  #         group = "Accessibility to Cities") %>%
+    addLegend("bottomright",
+          colors = pal_colors,
+          labels = pal_labs,
+          title = "Travel time to cities (minutes)",
+          opacity = 1,
+          group = "Accessibility to Cities") %>%
+  # add layers control to define which data is shown or ommited in default view
+  addLayersControl(
+    baseGroups = c("CartoDB","OpenStreetMap","Satellite","Topography","Nightlights", "Forest Cover Loss (2001-2020)", 
+                   "Forest Cover Density (2000)"), #"Toner",,"Regional Primary Forests (2001)"
+    overlayGroups = c("Accessibility to Cities", "PA Boundaries", "Matched cells 2008 in Peru (treated)", "Matched cells 2008 in Peru (control)"),
+    options = layersControlOptions(collapsed = FALSE)) %>%
+    # omit certain layers
+    hideGroup(group = c("Matched cells 2008 in Peru (treated)", "Matched cells 2008 in Peru (control)", "Accessibility to Cities"))
+
+my_map_matching
+
+
+```

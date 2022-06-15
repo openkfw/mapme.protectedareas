@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Yota" />
+
+
+<title>WDPA Data Missings</title>
+
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">mapme.protectedareas</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/openkfw/mapme-protectedareas">
+    <span class="fa fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">WDPA Data Missings</h1>
+<h4 class="author">Yota</h4>
+<h4 class="date">14 6 2022</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2022-06-15
+</p>
+<p>
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 1
+</p>
+<p>
+<strong>Knit directory:</strong> <code>mapme.protectedareas/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version 1.7.0). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges"> <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted changes </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguncommittedchanges" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The R Markdown is untracked by Git. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20210305code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(20210305)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20210305code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20210305)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastree582f93b9b2dde77b4a9cf00d74de36e6c625f45atargetblank582f93ba"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/openkfw/mapme.protectedareas/tree/582f93b9b2dde77b4a9cf00d74de36e6c625f45a" target="_blank">582f93b</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastree582f93b9b2dde77b4a9cf00d74de36e6c625f45atargetblank582f93ba" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version <a href="https://github.com/openkfw/mapme.protectedareas/tree/582f93b9b2dde77b4a9cf00d74de36e6c625f45a" target="_blank">582f93b</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .RData
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+
+Untracked files:
+    Untracked:  analysis/check_heterogeneity_variables.Rmd
+    Untracked:  analysis/map_gsr.Rmd
+    Untracked:  code/development/getkeys_assetid_bmz.R
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+<p>
+There are no past versions. Publish this analysis with <code>wflow_publish()</code> to start tracking its development.
+</p>
+<hr>
+</div>
+</div>
+</div>
+<div id="designation" class="section level2">
+<h2>Designation</h2>
+<pre><code>                                                   Var1 Freq
+1                         Andean Fauna National Reserve    2
+2                                Archaeological Reserve    1
+3                  Area of Relevant Ecological Interest    3
+4                                    Biological Reserve   18
+5                                     Biosphere Reserve    3
+6            Biosphere Reserve and Indigenous Territory    1
+7                  Botanical Garden and Research Center    1
+8                          Civil Society Nature Reserve    1
+9                                      Communal Reserve    5
+10                              Ecological Conservation    1
+11                                   Ecological Station   21
+12                        Environmental Protection Area   17
+13                                   Extractive Reserve   43
+14                            Fauna and Flora Sanctuary    7
+15                                      Fauna Sanctuary    1
+16                      Flora and Fauna Protection Area   12
+17                                               Forest    1
+18                                       Forest Reserve    5
+19                                   Historic Sanctuary    2
+20                                     Hunting Preserve    1
+21                                      Indigenous Area    1
+22                                    Landscape Reserve    1
+23                            Managed Resource Use Area    8
+24                                 Marine National Park    1
+25                              Marine Natural Monument    1
+26                                       Marine Reserve    3
+27                                    Multiple Use Area    2
+28                     National Flora and Fauna Reserve    2
+29          National Natural Integrated Management Area    1
+30                                National Natural Park   30
+31                                        National Park   40
+32 National Park and Integrated Management Natural Area    2
+33                                     National Reserve    7
+34                                   National Sanctuary    6
+35                             National Wildlife Refuge    1
+36                            National Wildlife Reserve    1
+37                     Natural Heritage Private Reserve   10
+38 Natural Integrated Management Area and National Park    1
+39                                     Natural Monument    1
+40                    Natural Resources Protection Area    4
+41                                       Nature Reserve    1
+42                                                 Park   57
+43                                             Park Way    1
+44                            Private Conservation Area   14
+45                              Private Natural Reserve    1
+46                                      Private Reserve    1
+47                                    Protection Forest    3
+48     Ramsar Site, Wetland of International Importance    8
+49                           Regional Conservation Area   12
+50                              Regional Municipal Park    6
+51                                      Restricted Zone    3
+52                                   Scientific Reserve    1
+53                      Sustainable Development Reserve   20
+54                                  Unique Natural Area    1
+55                         Watershed Protection Reserve    1
+56                                              Wetland    1
+57                                      Wildlife Refuge   11
+58                                   Wildlife Sanctuary    2
+59               World Heritage Site (natural or mixed)    3</code></pre>
+<pre><code>
+FALSE 
+  416 </code></pre>
+</div>
+<div id="designation-type" class="section level2">
+<h2>Designation type</h2>
+<pre><code>           Var1 Freq
+1 International   11
+2      National  405</code></pre>
+<pre><code>
+FALSE 
+  416 </code></pre>
+</div>
+<div id="iucn-category" class="section level2">
+<h2>IUCN category</h2>
+<pre><code>             Var1 Freq
+1              Ia   39
+2              Ib    1
+3              II  123
+4             III   17
+5              IV   40
+6  Not Applicable    3
+7    Not Assigned    3
+8    Not Reported   28
+9               V   19
+10             VI  143</code></pre>
+<pre><code>
+FALSE 
+  416 </code></pre>
+</div>
+<div id="gov-type" class="section level2">
+<h2>Gov type</h2>
+<pre><code>                                    Var1 Freq
+1               Collaborative governance    5
+2 Federal or national ministry or agency  250
+3        Government-delegated management   15
+4                     Indigenous peoples    2
+5                  Individual landowners    7
+6                      Local communities    8
+7               Non-profit organisations    6
+8                           Not Reported   13
+9        Sub-national ministry or agency  110</code></pre>
+<pre><code>
+FALSE 
+  416 </code></pre>
+</div>
+<div id="own-type" class="section level2">
+<h2>Own type</h2>
+<pre><code>                      Var1 Freq
+1                 Communal    8
+2    Individual landowners    2
+3          Joint ownership    4
+4       Multiple ownership   19
+5 Non-profit organisations    1
+6             Not Reported  282
+7                    State  100</code></pre>
+<pre><code>
+FALSE 
+  416 </code></pre>
+</div>
+<div id="type-kfw" class="section level2">
+<h2>Type KfW</h2>
+<pre><code>                                                 Var1 Freq
+1                        Área de Conservación Privada   14
+2                       Área de Conservación Regional   12
+3                          Área de Proteção Ambiental    2
+4                          Área De Proteção Ambiental    1
+5                 Área de Protección de Flora y Fauna   12
+6            Área de Protección de Recursos Naturales    2
+7                                Área de Uso multiple    1
+8            Area Natural de Manejo Integado Nacional    1
+9  Area Natural de Manejo Integrado y Parque Nacional    1
+10                                  Biosphere Reserve    1
+11                               Bosque de Protección    3
+12                                       Coto de Caza    1
+13                                               ESEC    7
+14                         Estação Ecológica Estadual    1
+15                          Flora and Fauna Sanctuary    8
+16                                  Floresta Estadual    1
+17                                            Humedal    1
+18                          Managed Resource Use Area    4
+19                                     Marine Reserve    3
+20                                  Monumento Natural    1
+21                                      National Park  192
+22                                             Parque    3
+23                                             PARQUE   17
+24                                    Parque Estadual    7
+25                               Parque Internacional    1
+26                                    Parque Nacional   35
+27 Parque Nacional y Area Natural de Manejo Integrado    2
+28                                    Private Reserve    1
+29                                     Protected Area    1
+30                                                RDS   10
+31                                              REBIO    1
+32                          Refugio de Vida Silvestre    3
+33                 Refugio Nacional de Vida Silvestre    1
+34                 Rerserva Protectora de Manantiales    1
+35                                  Reserva Biologica    2
+36                                  Reserva Biológica    3
+37                         Reserva Biológica Estadual    2
+38                                 Reserva Cientifica    1
+39                                    Reserva Comunal    5
+40                                Reserva de Biósfera    1
+41             Reserva de Desenvolvimento Sustentável    2
+42             Reserva De Desenvolvimento Sustentável    1
+43       Reserva de la Biósfera y Territorio Indígena    1
+44                                   Reserva Nacional    7
+45                   Reserva Nacional de Fauna Andina    2
+46                  Reserva Nacional de Flora y Fauna    2
+47       Reserva Nacional de Vida Silvestre Amazónica    1
+48                                    Reserva Natural    1
+49                               Reserva Paisajistica    1
+50                                              RESEX   13
+51                                Santuario Histórico    2
+52                                 Santuario Nacional    6
+53                                     Terra Indígena    1
+54                                 Unique Nature Area    1
+55                                         Vía Parque    1
+56                                            Wetland    1
+57                                   Wildlife Reserve    1
+58                                 Wildlife Sanctuary    2
+59                                World Heritage Site    1
+60                                     Zona Reservada    2
+61               Zona Sujeta a Conservación Ecológica    1</code></pre>
+<pre><code>
+FALSE 
+  416 </code></pre>
+</div>
+<div id="ecosystem-kfw" class="section level2">
+<h2>Ecosystem KfW</h2>
+<pre><code>            Var1 Freq
+1 Binnengewässer    2
+2    Hochgebirge   20
+3          Küste   45
+4    Küste + EEZ    5
+5  Küste und EEZ    8
+6           Meer    4
+7        Savanne   10
+8         Steppe    5
+9           Wald  317</code></pre>
+<pre><code>
+FALSE 
+  416 </code></pre>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre><code>R version 3.6.3 (2020-02-29)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 18.04.6 LTS
+
+Matrix products: default
+BLAS:   /usr/lib/x86_64-linux-gnu/openblas/libblas.so.3
+LAPACK: /usr/lib/x86_64-linux-gnu/libopenblasp-r0.2.20.so
+
+locale:
+ [1] LC_CTYPE=C.UTF-8       LC_NUMERIC=C           LC_TIME=C.UTF-8        LC_COLLATE=C.UTF-8     LC_MONETARY=C.UTF-8    LC_MESSAGES=C.UTF-8    LC_PAPER=C.UTF-8       LC_NAME=C             
+ [9] LC_ADDRESS=C           LC_TELEPHONE=C         LC_MEASUREMENT=C.UTF-8 LC_IDENTIFICATION=C   
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] sf_1.0-7        forcats_0.5.1   stringr_1.4.0   dplyr_1.0.9     purrr_0.3.4     readr_2.1.2     tidyr_1.2.0     tibble_3.1.7    ggplot2_3.3.4   tidyverse_1.3.1
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_1.0.8.3       lubridate_1.7.10   class_7.3-20       assertthat_0.2.1   rprojroot_2.0.2    digest_0.6.29      utf8_1.2.2         R6_2.5.1           cellranger_1.1.0   backports_1.2.1   
+[11] reprex_2.0.0       e1071_1.7-11       evaluate_0.14      httr_1.4.3         pillar_1.7.0       rlang_1.0.2        readxl_1.3.1       rstudioapi_0.13    jquerylib_0.1.4    rmarkdown_2.11    
+[21] bit_4.0.4          munsell_0.5.0      proxy_0.4-27       broom_0.7.6        compiler_3.6.3     httpuv_1.6.1       modelr_0.1.8       xfun_0.24          pkgconfig_2.0.3    htmltools_0.5.2   
+[31] tidyselect_1.1.2   workflowr_1.7.0    fansi_1.0.3        crayon_1.5.1       tzdb_0.1.2         dbplyr_2.1.1       withr_2.4.2        later_1.2.0        grid_3.6.3         jsonlite_1.8.0    
+[41] gtable_0.3.0       lifecycle_1.0.1    DBI_1.1.2          git2r_0.28.0       magrittr_2.0.3     units_0.8-0        scales_1.1.1       KernSmooth_2.23-20 vroom_1.5.7        cli_3.3.0         
+[51] stringi_1.7.6      fs_1.5.0           promises_1.2.0.1   xml2_1.3.3         bslib_0.2.5.1      ellipsis_0.3.2     generics_0.1.2     vctrs_0.4.1        tools_3.6.3        bit64_4.0.5       
+[61] glue_1.6.2         hms_1.1.1          parallel_3.6.3     fastmap_1.1.0      yaml_2.2.1         colorspace_2.0-1   classInt_0.4-7     rvest_1.0.2        knitr_1.34         haven_2.3.1       
+[71] sass_0.4.0        </code></pre>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
