@@ -1,12 +1,17 @@
-# script to create the database for the matching process
+# script to create the database for the matching process (matching frames)
+# Goal: Matching frames should be created on an annual base. Each matching frame should contain year-specific matching variables...
+  # ... for treatment and controls cells (based on KfWs project documentation) 
+
 # author: Johannes Schielein 
+# last modification: 2022-004-01
 
 # call relevant libs. 
 library("sf")
 library("tidyverse")
+options(scipen =999) # disable sicentific notation
 
 
-# ----- (1) Load and combine input data-----
+# ----- (1) Load and combine KfW input data-----
 # load and process project data
 project.data<-
   readxl::read_xlsx("../../datalake/mapme.protectedareas/input/kfw_finance/Portfolio_Auszahlungen.xlsx", skip = 4)
@@ -28,74 +33,18 @@ projectsbefore<-
   project.data.reduced$bmz_nummer[which(project.data.reduced$first_year<2000)]
 
 # see how many projects area affected by this
-unique(projectsbefore)
+unique(projectsbefore) #  3 projects are kicked out. 
 
 project.data.reduced<-
   project.data.reduced%>%
   filter(!bmz_nummer%in%projectsbefore)
 
-# load original fishnet grid
-fishnet_complete<-
-  read_sf("../../datalake/mapme.protectedareas/output/polygon/sampling/fishnets/fishnet_all_update_Dec-07.gpkg")
 
-# load GFW
-GFW_wide<-
-  read_sf("../../datalake/mapme.protectedareas/output/polygon/sampling/fishnets/dec_08/gfw/gfw_complete.gpkg")
-
-# load supported area polygons
+# ----- (2) get WDPA IDs for grids  -----
+# get kfw treated polygons
 wdpa_kfw<-
   read_sf("../../datalake/mapme.protectedareas/input/wdpa_kfw/wdpa_kfw_spatial_latinamerica_2021-02-01_supportedPAs_unique.gpkg")
 
-sampling.ids<-
-  fishnet_complete%>%
-  filter(treatment==1)
-
-sampling.ids<-
-  st_centroid(sampling.ids)
-
-sampling.ids<-st_transform(sampling.ids,crs=st_crs(wdpa_kfw))
-
-# get intersection with wdpa data
-sampling.interserctions<-
-  st_intersects(sampling.ids,wdpa_kfw)
-
-# see how many sampling points fall within more than one treated area
-table(unlist(lapply(sampling.interserctions,function(x)length(x))))
-
-# eliminate them from the sampling (and those that do not have an intersection)
-intersection.elimination.candidates<-
-  which(unlist(lapply(sampling.interserctions,function(x)length(x)))!=1)
-
-# repeat the whole process
-sampling.ids<-
-  sampling.ids[-intersection.elimination.candidates,]
-
-# get intersection
-sampling.interserctions<-
-  st_intersects(sampling.ids,wdpa_kfw)
-
-# see how many sampling points fall within more than one treated area
-table(unlist(lapply(sampling.interserctions,function(x)length(x))))
-# if all are 1 then it is fine. 
-
-# attach to the remaining the wdpa id
-sampling.ids <-
-  sampling.ids %>%
-  add_column(wdpa_id = as.integer(unlist(st_drop_geometry(wdpa_kfw[unlist(sampling.interserctions), "WDPAID"]))))
-
-# check results
-wdpa_kfw%>%
-  filter(WDPAID==31)%>%
-  st_geometry%>%
-  plot()
-
-sampling.ids%>%
-  filter(wdpa_id==31)%>%
-  st_geometry%>%
-  plot(.,add=T)
-
-
-# ---- (2) Match Project Start and End Information to the sampling AOIs -----
 # transform bmz table to long
 wdpa_kfw_long <-
   wdpa_kfw %>%
@@ -104,6 +53,16 @@ wdpa_kfw_long <-
   pivot_longer(., cols = starts_with("bmz_n"), ) %>%
   filter(!is.na(value))
 
+# get intersection ids
+grid_intersection <-
+  read.csv(
+    "../../datalake/mapme.protectedareas/processing/fishnet/honeycomb_5_sqkm_subset_intersect_wdpa_long.csv"
+  )
+
+grid_intersection$treated <-
+  ifelse(grid_intersection$WDPAID %in% wdpa_kfw_long$WDPAID, 1, 0)
+
+# ---- (3) Match Project Start and End Information to the sampling AOIs -----
 ## write a function to create columns that will indicate whether data should be sampled for a specific year or not. 
 f.matchingyear <- function(matching.year) {
   # get relevant bmz number for year
@@ -117,254 +76,176 @@ f.matchingyear <- function(matching.year) {
     filter(value %in% bmz_number)%>%
     pull(WDPAID)
   # get relevant unique ids from sampling frame
-  sampling.ids.filter <-
-    sampling.ids %>%
-    filter(wdpa_id %in% matching.ids) %>%
+  grid_intersection.filter <-
+    grid_intersection %>%
+    filter(WDPAID %in% matching.ids) %>%
     mutate(matching_year = matching.year)
   
   #  write into the AOI Frame the sampling year
-  return(sampling.ids.filter)
+  return(grid_intersection.filter)
 }
 
 # apply the function for all years
 matching.frame<-do.call(rbind,lapply(2000:2020,f.matchingyear))
 
-# ---- (3) Load data, merge, clean and create additional variables for matchting ----
-# load again sampling ids
-sampling.ids.original<-
-  read_sf("../../datalake/mapme.protectedareas/output/polygon/sampling/fishnets/fishnet_all_update_Dec-07.gpkg")
-# function to load matching data and transform to wide
-f.load <- function(my_data_dir)
-{ my_data<-read.csv(my_data_dir) %>% 
-  distinct() %>% 
-  pivot_wider(id_cols = "id")
-}
-
-# apply on all relevant datasets which are structured in long
-matching_data <-
-  lapply(
-    c(
-      "../../datalake/mapme.protectedareas/output/polygon/sampling/fishnets/dec_08_Om/accessibility_5k_110mio_min.csv",
-      "../../datalake/mapme.protectedareas/output/polygon/sampling/fishnets/dec_08_Om/accessibility_20k_110mio_min.csv",
-      "../../datalake/mapme.protectedareas/output/polygon/sampling/fishnets/dec_08_Om/clay_content_depth_10_cm.csv",
-      "../../datalake/mapme.protectedareas/output/polygon/sampling/fishnets/dec_08_Om/teow_ecoregions_biomes.csv",
-      "../../datalake/mapme.protectedareas/output/polygon/sampling/fishnets/dec_08_Om/terrain_ruggedness_index.csv",
-      "../../datalake/mapme.protectedareas/output/polygon/sampling/fishnets/dec_08_Om/worldpop_final.csv"
-    ),
-    f.load
-  )
-# left join all of the data
-matching_data_combined <-
-  matching_data %>%
-  reduce(left_join, by = "id")
-# add treatment variable
-matching_data_combined <-
-  left_join(matching_data_combined,
-            sampling.ids.original)
-
-# remove irrelevant columns
-matching_data_combined <-
-  matching_data_combined %>%
-  select(-c(
-    #geom,
-    # clay_content_10_cm,
-    starts_with("teow_intersect"),
-    # biome_intersect_sqkm_,
-    terrain_ruggedness_index_median,
-    terrain_ruggedness_index_standard_deviation
-  ))
-
-# rename columns
-colnames(matching_data_combined)
-matching_data_combined<-
-  dplyr::rename(matching_data_combined,
-                travel_time_to_nearby_cities_min_5k_100mio=travel_time_to_nearby_cities_min.x,
-                travel_time_to_nearby_cities_min_20l_100mio=travel_time_to_nearby_cities_min.y)
-
-## replace NAs in biomes data with zero
-matching_data_combined <-
-  matching_data_combined %>%
-  mutate(across(starts_with("biome_"), ~ replace_na(.x, 0)))
-
-# create function to get dominant biome
-matching_data_combined %>%
-  select(starts_with("biome_intersect")) %>%
-  max.col(., ties.method = "random")
-
-matching_data_combined$biome_max <-
-  matching_data_combined %>%
-  select(starts_with("biome_intersect")) %>%
-  rownames_to_column() %>%
-  gather(volumn, value, -rowname) %>%
-  group_by(rowname) %>%
-  filter(rank(-value, ties.method = "random") == 1) %>%
-  pull(volumn)
-
-# random selection if there are two maxima
-matching_data_combined$biome_max <-
-  gsub("biome_intersect_sqkm_",
-       "",
-       matching_data_combined$biome_max)
-
-# remove other biome columns
-matching_data_combined <-
-  matching_data_combined %>%
-  select(-starts_with("biome_intersect_sqkm_"))
-
-
-## ADMIN AREAS 
-countries<-list.files("../../datalake/mapme.protectedareas/input/GADM/shp//")
-## First approach. we will only match on country level (gadm 0), not lower admin areas
-countries<-
-  countries[which(grepl("0.shp$",countries)==TRUE)] # level 0 for countrym, level 1 for states, etc. see GADM metadata
-
-
+# ----- (4) Load matching variables, clean data, create additional variables and merge final results-----
+## Forest area and emisssions
+  ## what is needed for matching frame: Forest area + forest cover loss before treatment (t-1 till t-3)
 # load data
-countries <-
-  lapply(countries, function(x) {
-    read_sf(paste(
-      "../../datalake/mapme.protectedareas/input/GADM/shp/",
-      x,
-      sep = ""
-    ))
-  })
+input_gfw<-
+  readRDS("../../datalake/mapme.protectedareas/output/polygon/grids/500m/data/honeycomb_5sqkm_treeloss.rds")
+# drop the geometry
+input_gfw <- st_drop_geometry(input_gfw)
+# unnest the relevant indicators
+input_gfw <-
+  input_gfw %>% unnest(treeloss)
 
-countries<-
-  do.call(rbind,countries)
+# create longtable
+input_gfw_wide <-
+  input_gfw %>%
+  pivot_wider(names_from = years,
+              values_from = c(treecover, emissions))
 
-# get intersection (needs to be done on centroids to avoid boarder crossings)
-country.intersections<-
-  st_intersects(st_transform(st_centroid(st_as_sf(matching_data_combined)),st_crs(countries)),
-                countries,sparse=T)
+# create lossdata
+lossdata<-input_gfw_wide[3:22] - input_gfw_wide[(3:22) - 1]
+colnames(lossdata)<-gsub("treecover","loss",colnames(lossdata))
 
-# subsitute null values with NAs in results
-vector.missings<-which(unlist(lapply(country.intersections,length))==0)
-country.intersections[vector.missings]<-NA
+# create lossdata for t-1 till t-3
+input_gfw_wide <- cbind(input_gfw_wide, lossdata)
 
-# add column to data
-matching_data_combined$country<-unlist(country.intersections)
+# create lossdata for t-3
+lossdata_t3<- lossdata[(4:20) - 1] + lossdata[(4:20) - 2] +  lossdata[(4:20) - 3]
+colnames(lossdata_t3)<-paste("loss_t3_",2004:2020,sep="")
 
-# recode the column 
-a = matching_data_combined$country
-a_levels = sort(unique(matching_data_combined$country))
-a_labels = countries$NAME_0
-matching_data_combined$country<-
-  a_labels[ match(a,a_levels) ]
+input_gfw_wide <- cbind(input_gfw_wide, lossdata_t3)
+colnames(input_gfw_wide)
 
-rm(a,a_labels,a_levels)
+rm(input_gfw)
+save.image("../../datalake/mapme.protectedareas/output/matching/matching_frames/full_database_2022-03-31.Rdata")
 
-## add GFW data
-colnames(matching_data_combined)
+## Accessibility
+# needed for matching frames: minimum Accessibility 5k_110mio (currently only mean)
+input_accessibility<-
+  readRDS("../../datalake/mapme.protectedareas/output/polygon/grids/500m/data/honeycomb_5sqkm_accessibility.rds")
 
-matching_data_combined<-
-  left_join(matching_data_combined,st_drop_geometry(GFW_wide),"poly_id")
+# drop the geometry
+input_accessibility <- st_drop_geometry(input_accessibility)
+# unnest the relevant indicators
+input_accessibility <-
+  input_accessibility %>% unnest(accessibility)
 
-colnames(matching_data_combined)
+# create longtable
+input_accessibility_wide <-
+  input_accessibility %>%
+  select(.assetid,minutes_mean,distance) %>% 
+  pivot_wider(names_from = distance,
+              values_from = minutes_mean)
 
-## drop some unnecessary columns
-matching_data_combined<-matching_data_combined %>% 
-  select(.,-c(left:bottom)) %>% 
-  select(.,-c(geom)) %>% 
-  select(.,-c(id.x:treatment.y))
+colnames(input_accessibility_wide)[-1]<-paste("traveltime",colnames(input_accessibility_wide)[-1],sep="_")
+rm(input_accessibility)
 
-colnames(matching_data_combined)
+## Elevation and TRI 
+input_srtm<-
+  readRDS("../../datalake/mapme.protectedareas/output/polygon/grids/500m/data/honeycomb_5sqkm_srtm.rds")
+# drop the geometry
+input_srtm <- st_drop_geometry(input_srtm)
+# unnest the relevant indicators
+input_srtm <-
+  input_srtm %>% unnest(c(tri,elevation))
 
+colnames(input_srtm)
+
+# needed for matching Frame: Elevation and TRI 
+input_srtm_wide <-
+  input_srtm %>%
+  select(.assetid,terrain_ruggedness_index_mean,elevation_mean)
+
+rm(input_srtm)
+
+## Soil characteristics
+input_soils<-
+  readRDS("../../datalake/mapme.protectedareas/output/polygon/grids/500m/data/honeycomb_5sqkm_soil_merged.rds")
+# drop the geometry
+input_soils <- st_drop_geometry(input_soils)
+# unnest the relevant indicators
+input_soils <-
+  input_soils %>% unnest(soilproperties)
+# transform to wide
+
+input_soils_wide <-
+  input_soils %>%
+  filter(depth=="5-15cm") %>% 
+  select(.assetid,layer,mean) %>% 
+  pivot_wider(names_from = layer,
+              values_from = mean)
+
+colnames(input_soils_wide)[-1]<-paste("soil_5_15cm_",colnames(input_soils_wide)[-1],sep="")
+rm(input_soils)
+
+## Countries 
+input_countries_wide <-
+  read.csv(
+    "../../datalake/mapme.protectedareas/processing/fishnet/honeycomb_5_sqkm_subset_countries.csv"
+  )
+colnames(input_countries_wide)[1]<-colnames(input_srtm_wide)[1]
+
+# needed for matching Frame: Country names
+
+
+## merge input data
+# put all data frames into list
+df_list <- list(input_gfw_wide, 
+                input_accessibility_wide,
+                input_srtm_wide,
+                input_countries_wide,
+                input_soils_wide)
+
+#merge all data frames in list
+database_complete <-
+  df_list %>% 
+  reduce(full_join, by = colnames(input_srtm_wide)[1])
+
+
+write_rds(database_complete,
+          "../../datalake/mapme.protectedareas/output/matching/matching_frames/full_database.rds")
 
 # ---- (4) create year-specific matching frames and save results---- 
 ## move files if they had been already created
-newdirname="../../datalake/mapme.protectedareas/output/matching/matching_frames/arquived_2022-01-03"
+newdirname="../../datalake/mapme.protectedareas/output/matching/matching_frames/arquived_2022-04-01"
 dir.create(newdirname)
-oldfiles=list.files("../../datalake/mapme.protectedareas/output/matching/matching_frames/",full.names = T)
+oldfiles=list.files("../../datalake/mapme.protectedareas/output/matching/matching_frames/",full.names = T,pattern = "matching_frame_")
 sapply(oldfiles,
        function(x){
          file.copy(x,newdirname)
          file.remove(x)})
 
-##
-for (i in 2003:2020){
+## function to create year specific matching frames
+for (i in 2004:2020){
   print(paste("Starting to process year",i))
   # choose year
   my_year <- i
-  ## 1. Create speciic FOREST COVER AND FOREST COVER LOSS variables
-  # calculate average forest cover loss over past three years before start
-  matching_data_combined$sum_fcl_matchingyear_tmax <-
-    matching_data_combined %>%
-    select(starts_with("loss") &
-             ends_with(as.character(c(
-               my_year-1:2001 # this routine (A) suggest to take trend since 2001 as pre treatment trend
-               # my_year, my_year - 1, my_year - 2 # this alternative routine (B) suggest to take 3 years as pre-treatment trend
-             )))) %>%
-    rowSums(na.rm = T)
-  # 
-  matching_data_combined$sum_fcl_matchingyear_t3 <-
-    matching_data_combined %>%
-    select(starts_with("loss") &
-             ends_with(as.character(c(
-               my_year, my_year - 1, my_year - 2 # this alternative routine (B) suggest to take 3 years as pre-treatment trend
-             )))) %>%
-    rowSums(na.rm = T)
-  
-  # short note: for routine A the number of years differs from year to year
-  
-  # remove all other loss variables from the matching frame
-  matching_data_combined_tmp <-
-    matching_data_combined %>%
-    select(-c(starts_with("loss")))%>%
-    select(-c(starts_with("co2")))
-  
-  # remove all area columns but the one with fc from respective year
-  matching_data_combined_tmp <-
-    matching_data_combined_tmp %>%
-    select(-c(starts_with("area") &
-                !ends_with(as.character(my_year))))
-  
-  # rename the forest cover column
-  matching_data_combined_tmp <-
-    matching_data_combined_tmp %>%
-    rename(fc_area_matchingyear = names(select(., starts_with("area"))))
-  
-  ## 2. Create specific POPULATION GROWTH variables
-  # calculate average population growth
-  tmp_pop <- matching_data_combined_tmp %>%
-    select(.,
-           starts_with("population") & ends_with(as.character(c(
-             my_year, my_year - 2
-           ))))
-  colnames(tmp_pop) <- c("last", "first")
-  
-  matching_data_combined_tmp <-
-    matching_data_combined_tmp %>%
-    mutate(average_popgrowth = tmp_pop$last - tmp_pop$first)
-  
-  # delete all other popvars
-  matching_data_combined_tmp <-
-    matching_data_combined_tmp %>%
-    select(-starts_with("population"))
-  
-  # delete tmpdata
-  rm(tmp_pop)
-  
-  ## 3. Subset the data to contain only matching observations from the respective year
+  ## 1. Subset the data to contain only matching observations from the respective year
   # get the unique ids of all AOIs that are not from the chosen year from the data matching.frame
   tmp_uids <-
     matching.frame %>%
     filter(., matching_year != my_year) %>%
-    pull(id)
+    pull(poly_id)
   
   # remove those from the matching data set
-  matching_data_combined_tmp <-
-    matching_data_combined_tmp %>%
-    filter(.,!id %in% tmp_uids)
+  database_complete_tmp <-
+    database_complete %>%
+    filter(.,!.assetid %in% tmp_uids)
   
-  ## 4. Export the final matchingframes
-  # delte geom_column
-  matching_data_combined_tmp$geom <- NULL
-  write_csv(
-    matching_data_combined_tmp,
+  # create column that indicates if the poly id is a treatment
+  database_complete_tmp$treatment<-
+    ifelse(database_complete_tmp$.assetid%in%matching.frame$poly_id,1,0)
+
+  write_rds(
+    database_complete_tmp,
     paste(
       "../../datalake/mapme.protectedareas/output/matching/matching_frames/matching_frame_",
       my_year,
-      ".csv",
+      ".rds",
       sep = ""
     )
   )
@@ -372,144 +253,17 @@ for (i in 2003:2020){
 
 
 # compare
-
-
-matching.new.2015=
-  read_csv("../../datalake/mapme.protectedareas/output/matching/matching_frames/matching_frame_2015.csv")
-
-summary(matching.new.2015$sum_fcl_matchingyear_t3)
-summary(matching.new.2015$sum_fcl_matchingyear_tmax)
-
-test=read_csv("../../datalake/mapme.protectedareas/input/kfw_finance/mapme.protectedareas_kfw-finance-2021-03-17.csv")
-
-table(test$first_year==2015)
-table(test$first_year==2007)
-
-
-# ----- (5) Export data for the model -----
-# colnames(matching_data_combined)
-# model_data <-
-#   matching_data_combined %>%
-#   select(UID, starts_with("loss"))
+# matching.new.2005=
+#   read_rds("../../datalake/mapme.protectedareas/output/matching/matching_frames/matching_frame_2005.rds")
 # 
-# write_csv(
-#   model_data,
-#   "../../datalake/mapme.protectedareas/output/matching/model_frames/fcl_supported_AND_nonPas.csv"
-# )
+# table(matching.new.2005$treatment)
+# colnames(matching.new.2005)
 # 
-# # add financial data
-# write_csv(
-#   project.data.reduced,
-#   "../../datalake/mapme.protectedareas/output/matching/model_frames/projectdata_supported.csv"
-# )
+# matching.new.2015=
+#   read_rds("../../datalake/mapme.protectedareas/output/matching/matching_frames/matching_frame_2015.rds")
 # 
-# write_csv(
-#   wdpa_kfw_long,
-#   "../../datalake/mapme.protectedareas/output/matching/model_frames/keys_wdpaid_bmz.csv"
-# )
-# add PA specific data
-
-# add treatment type variables 
-
-# export data
+# table(matching.new.2015$treatment)
 
 
 
 
-
-
-
-# ---- ARQUIVE -----
-# 1) Get WDPA IDs for Sample data and delete sample AOIs that are within overlapping supported PAs
-# load and process project data
-project.data<-
-  readxl::read_xlsx("../../datalake/mapme.protectedareas/input/kfw_finance/Portfolio_Auszahlungen.xlsx", skip = 4)
-
-project.data.reduced<-
-  read.csv("../../datalake/mapme.protectedareas/input/kfw_finance/mapme.protectedareas_kfw-finance-2021-03-17.csv")
-
-## note: the scripts for creating the reduced project data are on private PC
-
-# join
-names(project.data)[5]<-"bmz_nummer"
-
-project.data.reduced<-
-  left_join(project.data.reduced,
-            project.data,by="bmz_nummer")
-
-# remove those projects, where the first disbursement was made before 2000
-projectsbefore<-
-  project.data.reduced$bmz_nummer[which(project.data.reduced$first_year<2000)]
-
-# see how many projects area affected by this
-unique(projectsbefore)
-
-project.data.reduced<-
-  project.data.reduced%>%
-  filter(!bmz_nummer%in%projectsbefore)
-
-# find out how many PAs will be removed from the sample 
-supportedPAs<-
-  read_sf("../../datalake/mapme.protectedareas/input/wdpa_kfw/wdpa_kfw_spatial_latinamerica_2021-02-01_supportedPAs_unique.gpkg")
-
-# connect sampling points to strata
-sampling.ids<-
-  read_sf("../../Om/test/sampling_October-20-2021.gpkg")
-
-sampling.ids<-
-  st_centroid(sampling.ids)
-
-wdpa_kfw<-
-  read_sf("../../datalake/mapme.protectedareas/input/wdpa_kfw/wdpa_kfw_spatial_latinamerica_2021-02-01_supportedPAs_unique.gpkg")
-
-sampling.ids<-
-  sampling.ids%>%
-  filter(strata=="supported")
-
-# get intersection
-sampling.interserctions<-
-  st_intersects(sampling.ids,wdpa_kfw)
-
-# see how many sampling points fall within more than one treated area
-table(unlist(lapply(sampling.interserctions,function(x)length(x))))
-
-# eliminate them from the sampling (and those that do not have an intersection)
-intersection.elimination.candidates<-
-  which(unlist(lapply(sampling.interserctions,function(x)length(x)))!=1)
-
-# repeat the whole process
-sampling.ids<-
-  sampling.ids[-intersection.elimination.candidates,]
-
-# get intersection
-sampling.interserctions<-
-  st_intersects(sampling.ids,wdpa_kfw)
-
-# see how many sampling points fall within more than one treated area
-table(unlist(lapply(sampling.interserctions,function(x)length(x))))
-# if all are 1 then it is fine. 
-
-# attach to the remaining the wdpa id
-sampling.ids <-
-  sampling.ids %>%
-  add_column(wdpa_id = as.integer(unlist(st_drop_geometry(wdpa_kfw[unlist(sampling.interserctions), "WDPAID"]))))
-
-# check results
-wdpa_kfw%>%
-  filter(WDPAID==31)%>%
-  st_geometry%>%
-  plot()
-
-sampling.ids%>%
-  filter(wdpa_id==31)%>%
-  st_geometry%>%
-  plot(.,add=T)
-
-# export results
-# st_write(
-#   sampling.ids,
-#   dsn = paste("../../datalake/mapme.protectedareas/output/polygon/sampling/sampling_AOIs_",
-#               format(Sys.time(), "%B-%d-%Y-%H:%M:%S"),
-#               "_SUPPORTED_INDEXED.gpkg",
-#               sep=""),
-#   driver = "GPKG")
