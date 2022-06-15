@@ -66,7 +66,7 @@ for (t in all_years) {
            NAME_0_num = as.numeric(as.factor(NAME_0))) %>% 
     rename(., weights_cem=weights) # rename weights
   # create WDPA cluster that are country specific (important for control group, as all controll cells belong to ID 9999999999 regardless of the country. Now the control cells are clustered for each country.)
-  panel.df$WDPAID_cluster <- as.numeric(paste0(panel.df$NAME_0_num, panel.df$WDPAID_cluster)) 
+  panel.df$WDPAID_cluster <- as.numeric(paste0(panel.df$NAME_0_num, panel.df$WDPAID)) 
   
   
   # assign(paste0("m11_",t), feols(fc_loss ~ treatment_disb | .assetid + year, data = panel.df, weights = panel.df$weights_cem, panel.id = ~.assetid+year, cluster = ~.assetid) )
