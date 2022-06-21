@@ -17,6 +17,6 @@ lapply(files, file.copy, to = newdir)
 list.files(newdir)
 
 # delete the old files
-lapply(files, file.remove, recursive=T)
+# lapply(files, file.remove, recursive=T)
 
 
