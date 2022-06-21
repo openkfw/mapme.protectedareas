@@ -131,7 +131,15 @@ input_gfw_wide <- cbind(input_gfw_wide, lossdata)
 lossdata_t3<- lossdata[(4:20) - 1] + lossdata[(4:20) - 2] +  lossdata[(4:20) - 3]
 colnames(lossdata_t3)<-paste("loss_t3_",2004:2020,sep="")
 
+# create lossdata for t-n
+lossdata_tn<- lossdata
+
+for (i in 2:ncol(lossdata_tn)){lossdata_tn[,i]<-rowSums(lossdata[,1:i])}
+colnames(lossdata_tn)<-paste("loss_tn_",2001:2020,sep="")
+colnames(lossdata_tn)
+
 input_gfw_wide <- cbind(input_gfw_wide, lossdata_t3)
+input_gfw_wide <- cbind(input_gfw_wide, lossdata_tn)
 colnames(input_gfw_wide)
 
 rm(input_gfw)
@@ -230,7 +238,7 @@ rm(input_prec)
 ## 4.7 NASA Grace Shallow Groundwater anomalies
   # note: There is a preprocessing script to aggregate the output data called 02_drought_parameters_aggregation.R
 input_grace <-
-  readRDS("../../datalake/mapme.protectedareas/output/polygon/grids/500m/data/drought/honeycomb_drought_aggregated.rds")
+  readRDS("../../datalake/mapme.protectedareas/opppputput/polygon/grids/500m/data/drought/honeycomb_drought_aggregated.rds")
 
 # transform date and rename columns
 input_grace$date  <- format(as.Date(input_grace$date, format="%Y-%m-%d"),"%Y")
@@ -245,7 +253,40 @@ input_grace_wide <-
 rm(input_grace)
 # head(input_grace_wide)
 
-## 4.8 merge input data
+## 4.8 Hurricanes
+  # note: There are two different pre-processing scripts in the code folder 
+input_hurricanes<-list.files("../../datalake/mapme.protectedareas/output/polygon/grids/500m/data/hurricane/", 
+                             pattern=".csv", full.names = T)
+  
+input_hurricanes<-lapply(input_hurricanes,read.csv)
+for(i in 1:length(input_hurricanes)){
+  tmp<-2000:2020
+  input_hurricanes[[i]]$year<-tmp[i]}
+
+input_hurricanes<-lapply(input_hurricanes, pivot_wider,names_from = classes, values_from = value)
+
+
+for(i in 1:length(input_hurricanes)){
+  input_hurricanes[[i]]$affected[which(is.na(input_hurricanes[[i]]$affected))]<-0}
+
+input_hurricanes <- do.call(rbind, input_hurricanes)
+colnames(input_hurricanes)
+
+input_hurricanes_wide <-
+  input_hurricanes %>%
+  pivot_wider(
+    names_from = year,
+    values_from = c(not_affected, affected),
+    names_prefix = "hurricane_area_"
+  )
+
+
+input_hurricanes_wide$name<-NULL
+colnames(input_hurricanes_wide)[1]<-".assetid"
+
+table(input_gfw_wide$.assetid%in%input_hurricanes_wide$.assetid)
+
+## 4.9 merge input data
 # put all data frames into list
 df_list <- list(input_gfw_wide, 
                 input_accessibility_wide,
@@ -253,7 +294,8 @@ df_list <- list(input_gfw_wide,
                 input_countries_wide,
                 input_soils_wide,
                 input_prec_wide,
-                input_grace_wide)
+                input_grace_wide, 
+                input_hurricanes_wide)
 
 ## AT THIS POINT: EVENTUALLY MOVE OLD DATABASE FILES TO AN ARQUIVE
   # see script code/development/move_matchingframes.R
