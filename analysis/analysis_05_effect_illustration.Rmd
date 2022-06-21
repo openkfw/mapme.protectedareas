@@ -1,0 +1,84 @@
+---
+title: "Treatment Effect Illustration"
+author: "Yota"
+date: "21 6 2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+knitr::opts_knit$set(root.dir = "~/shared/datalake/mapme.protectedareas")
+```
+
+```{r options and workspace, include=FALSE}
+# clean workspace, set options
+rm(list=ls())
+options(scipen=999)
+
+# get packages
+lop <- c("dplyr", "plm", "stargazer", "tidyverse", "MatchIt", "optmatch", "cobalt", "gridExtra", "grid", "gtable")
+newp <- lop[!(lop %in% installed.packages()[,"Package"])]
+if(length(newp)) install.packages(newp)
+lapply(lop, require, character.only = TRUE)
+
+```
+
+```{r load data}
+
+internal_data <- read_csv("/datadrive/datalake/mapme.protectedareas/output/matching/model_frames/projectdata_supported.csv") 
+
+internal_data_year <- 
+  internal_data %>% 
+  group_by(first_year) %>% 
+  summarize(total_disbursed = mean(total_disbursed))
+
+# Observations tables
+obs_table_loss <- 
+  read_rds("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/obs_table_m12")
+
+obs_table_emissions <- 
+  read_rds("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/obs_table_m32")
+
+# Estimate tables
+est_table_loss <- 
+  read_rds("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/est_table_m12")
+
+est_table_emissions <- 
+  read_rds("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/est_table_m32")
+
+```
+
+
+```{r create table}
+# rbind tables
+
+
+# emissions
+# emissions_avoided <- as.vector(est_table_emissions[1,2:(length(all_years) + 1)])
+
+# multiply obs X treatment effect 
+total_loss_avoided <- as.vector(est_table_loss[1,2:(length(all_years) + 1)]) * as.vector(obs_table_loss[2,2:(length(all_years) + 1)])
+
+total_emissions_avoided <- as.vector(est_table_emissions[1,2:(length(all_years) + 1)]) * as.vector(obs_table_emissions[2,2:(length(all_years) + 1)])
+
+# add total amount of disbursement
+disbursement <- internal_data_year$total_disbursed
+
+# divide emissions (total) by disbursed euro
+emissions_avoided_per_eur <- total_emissions_avoided/disbursement
+
+# rbind tables
+effects_table <- rbind(est_table_loss,
+                       est_table_emissions,
+                       obs_table_loss,
+                       total_loss_avoided,
+                       total_emissions_avoided,
+                       disbursement,
+                       emissions_avoided_per_eur)
+
+stargazer(effects_table,
+          type="text")
+
+```
+
+
