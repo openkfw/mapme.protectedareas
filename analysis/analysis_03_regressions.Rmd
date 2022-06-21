@@ -6,7 +6,7 @@ output: workflowr::wflow_html
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, message = FALSE)
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 knitr::opts_knit$set(root.dir = "~/shared/datalake/mapme.protectedareas")
 ```
 
@@ -41,6 +41,15 @@ pre code {
 #### ---- Create table for all years -----
 all_years <- c(2004:2017, 2019)
 
+# Prepare estimates table
+est_table <- matrix(NA, nrow = 1, ncol = length(all_years)+1)
+colnames(est_table) <- c("name", all_years)
+est_table[1,1] <- "Treatment effect estimate"
+
+est_table_m12 <- est_table
+est_table_m22 <- est_table
+est_table_m32 <- est_table
+
 # Prepare observations table
 obs_table <- matrix(NA, nrow = 3, ncol = length(all_years)+1)
 colnames(obs_table) <- c("name", all_years)
@@ -49,8 +58,8 @@ obs_table[1,1] <- "Total num. cells"
 obs_table[2,1] <- "--treated"
 obs_table[3,1] <- "--control"
 
-obs_table_m11 <- obs_table
-obs_table_m21 <- obs_table
+# obs_table_m11 <- obs_table
+# obs_table_m21 <- obs_table
 obs_table_m12 <- obs_table
 obs_table_m22 <- obs_table
 obs_table_m32 <- obs_table
@@ -105,6 +114,16 @@ for (t in all_years) {
   obs_table_m32[2,paste0(t)] <- table(panel.df[get(paste0("m32_",t))$obs_selection$obsRemoved,]$treatment)[2]/regyears
   obs_table_m32[3,paste0(t)] <- table(panel.df[get(paste0("m32_",t))$obs_selection$obsRemoved,]$treatment)[1]/regyears
   
+  # Fill estimates
+  
+  #m12
+  est_table_m12[1,paste0(t)] <- get(paste0("m12_",t))$coeftable[1]
+  
+  #m22
+  est_table_m22[1,paste0(t)] <- get(paste0("m22_",t))$coeftable[1]
+  
+  #m32
+  est_table_m32[1,paste0(t)] <- get(paste0("m32_",t))$coeftable[1]
   
 }
 # m_list1_compare <- list(m11_2004, m12_2004, m11_2005, m12_2005, m11_2006, m12_2006, m11_2007, m12_2007, m11_2008, m12_2008, m11_2009, m12_2009, m11_2010, m12_2010, m11_2011, m12_2011, m11_2012, m12_2012, m11_2013, m12_2013, m11_2014, m12_2014, m11_2015, m12_2015, m11_2016, m12_2016, m11_2019, m12_2019)
@@ -121,6 +140,31 @@ m_list3 <- list(m32_2004, m32_2005, m32_2006, m32_2007, m32_2008, m32_2009, m32_
 names(m_list1) <- all_years
 names(m_list2) <- all_years
 names(m_list3) <- all_years
+```
+
+```{r save obs and est table}
+
+# Observations tables
+write_rds(obs_table_m12,
+          "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/obs_table_m12.rds")
+
+write_rds(obs_table_m22,
+          "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/obs_table_m22.rds")
+
+write_rds(obs_table_m32,
+          "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/obs_table_m32.rds")
+
+# Estimate tables
+write_rds(est_table_m12,
+          "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/est_table_m12.rds")
+
+write_rds(est_table_m22,
+          "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/est_table_m22.rds")
+
+write_rds(est_table_m32,
+          "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/est_table_m32.rds")
+
+
 ```
 
 
