@@ -43,6 +43,9 @@ README.html
 contributing.html
 docs/sampling.html
 
+# large html files
+docs/projects_map.html
+
 # mac folders
 *.DS_Store
 
