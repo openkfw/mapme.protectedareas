@@ -365,7 +365,7 @@ div.tocify {
 
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
-<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
 </button>
 </p>
 <div id="workflowr-report" class="collapse">
@@ -374,7 +374,7 @@ div.tocify {
 <a data-toggle="tab" href="#summary">Summary</a>
 </li>
 <li>
-<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> </a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -383,10 +383,10 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2022-06-14
+<strong>Last updated:</strong> 2022-06-21
 </p>
 <p>
-<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 1
 </p>
 <p>
 <strong>Knit directory:</strong> <code>mapme.protectedareas/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
@@ -402,12 +402,12 @@ This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a> analysi
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges"> <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted changes </a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div id="strongRMarkdownfilestronguncommittedchanges" class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+<p>The R Markdown file has unstaged changes. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
 </div>
 </div>
 </div>
@@ -474,16 +474,16 @@ This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a> analysi
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastree68291fa9c29c38868ec53a6c13c65966e5916a87targetblank68291faa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/openkfw/mapme.protectedareas/tree/68291fa9c29c38868ec53a6c13c65966e5916a87" target="_blank">68291fa</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastree56110ba631cb171e7d1cd441cec377c9c69b0b6ftargetblank56110baa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/openkfw/mapme.protectedareas/tree/56110ba631cb171e7d1cd441cec377c9c69b0b6f" target="_blank">56110ba</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastree68291fa9c29c38868ec53a6c13c65966e5916a87targetblank68291faa" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastree56110ba631cb171e7d1cd441cec377c9c69b0b6ftargetblank56110baa" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/openkfw/mapme.protectedareas/tree/68291fa9c29c38868ec53a6c13c65966e5916a87" target="_blank">68291fa</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/openkfw/mapme.protectedareas/tree/56110ba631cb171e7d1cd441cec377c9c69b0b6f" target="_blank">56110ba</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -493,6 +493,12 @@ Ignored files:
     Ignored:    .RData
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+
+Untracked files:
+    Untracked:  analysis/analysis_05_effect_illustration.Rmd
+
+Unstaged changes:
+    Modified:   analysis/analysis_03_regressions.Rmd
 
 </code></pre>
 <p>
@@ -531,6 +537,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/openkfw/mapme.protectedareas/56110ba631cb171e7d1cd441cec377c9c69b0b6f/docs/analysis_03_regressions.html" target="_blank">56110ba</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-15
+</td>
+<td>
+regressions output
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -2362,6 +2385,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/56110ba631cb171e7d1cd441cec377c9c69b0b6f/docs/figure/analysis_03_regressions.Rmd/Display results-1.png" target="_blank">56110ba</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-15
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/4ed6003b42f32a65fd751011c7cea834a5694296/docs/figure/analysis_03_regressions.Rmd/Display results-1.png" target="_blank">4ed6003</a>
 </td>
 <td>
@@ -2400,6 +2434,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/56110ba631cb171e7d1cd441cec377c9c69b0b6f/docs/figure/analysis_03_regressions.Rmd/Display results-2.png" target="_blank">56110ba</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-15
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/4ed6003b42f32a65fd751011c7cea834a5694296/docs/figure/analysis_03_regressions.Rmd/Display results-2.png" target="_blank">4ed6003</a>
 </td>
 <td>
@@ -2414,6 +2459,43 @@ melvinhlwong
 </div>
 </div>
 <p><img src="figure/analysis_03_regressions.Rmd/Display%20results-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Display-results-3">
+Past versions of “Display results-3.png”
+</button>
+</p>
+<div id="fig-no-spaces-Display-results-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/56110ba631cb171e7d1cd441cec377c9c69b0b6f/docs/figure/analysis_03_regressions.Rmd/Display results-3.png" target="_blank">56110ba</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-15
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -2442,7 +2524,7 @@ other attached packages:
 
 loaded via a namespace (and not attached):
  [1] nlme_3.1-155        fs_1.5.0            lubridate_1.7.10    insight_0.17.0      webshot_0.5.2       httr_1.4.3          rprojroot_2.0.2     dreamerr_1.2.3      numDeriv_2016.8-1.1
-[10] tools_3.6.3         backports_1.2.1     bslib_0.2.5.1       utf8_1.2.2          R6_2.5.1            DBI_1.1.2           colorspace_2.0-1    withr_2.4.2         tidyselect_1.1.2   
+[10] tools_3.6.3         backports_1.2.1     bslib_0.2.5.1       utf8_1.2.2          R6_2.5.1            DBI_1.1.3           colorspace_2.0-1    withr_2.4.2         tidyselect_1.1.2   
 [19] compiler_3.6.3      git2r_0.28.0        cli_3.3.0           rvest_1.0.2         xml2_1.3.3          sandwich_3.0-0      labeling_0.4.2      bayestestR_0.12.1   sass_0.4.0         
 [28] checkmate_2.0.0     scales_1.1.1        lmtest_0.9-38       randomForest_4.6-14 tables_0.9.6        systemfonts_1.0.2   digest_0.6.29       svglite_2.0.0       rmarkdown_2.11     
 [37] pkgconfig_2.0.3     htmltools_0.5.2     highr_0.8           dbplyr_2.1.1        fastmap_1.1.0       rlang_1.0.2         readxl_1.3.1        rstudioapi_0.13     farver_2.1.0       

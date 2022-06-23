@@ -363,7 +363,7 @@ div.tocify {
 
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
-<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
 </button>
 </p>
 <div id="workflowr-report" class="collapse">
@@ -372,7 +372,7 @@ div.tocify {
 <a data-toggle="tab" href="#summary">Summary</a>
 </li>
 <li>
-<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> </a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -381,10 +381,10 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2022-06-07
+<strong>Last updated:</strong> 2022-06-23
 </p>
 <p>
-<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 1
 </p>
 <p>
 <strong>Knit directory:</strong> <code>mapme.protectedareas/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
@@ -400,12 +400,12 @@ This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a> analysi
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges"> <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted changes </a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div id="strongRMarkdownfilestronguncommittedchanges" class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+<p>The R Markdown file has unstaged changes. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
 </div>
 </div>
 </div>
@@ -472,16 +472,16 @@ This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a> analysi
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastree624825353a4d7083303d13ad1342ada233b799e1targetblank6248253a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/openkfw/mapme.protectedareas/tree/624825353a4d7083303d13ad1342ada233b799e1" target="_blank">6248253</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastree1dfb8aae4a51d8abccebf9dadb4ab0d85a476af9targetblank1dfb8aaa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/openkfw/mapme.protectedareas/tree/1dfb8aae4a51d8abccebf9dadb4ab0d85a476af9" target="_blank">1dfb8aa</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastree624825353a4d7083303d13ad1342ada233b799e1targetblank6248253a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastree1dfb8aae4a51d8abccebf9dadb4ab0d85a476af9targetblank1dfb8aaa" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/openkfw/mapme.protectedareas/tree/624825353a4d7083303d13ad1342ada233b799e1" target="_blank">6248253</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/openkfw/mapme.protectedareas/tree/1dfb8aae4a51d8abccebf9dadb4ab0d85a476af9" target="_blank">1dfb8aa</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -492,24 +492,10 @@ Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
 
-Untracked files:
-    Untracked:  Rplot.pdf
-
 Unstaged changes:
-    Deleted:    analysis/figure/analysis_04_plot_paralleltrends.Rmd/create plots in pdf-1.png
-    Deleted:    analysis/figure/analysis_04_plot_paralleltrends.Rmd/create plots in pdf-10.png
-    Deleted:    analysis/figure/analysis_04_plot_paralleltrends.Rmd/create plots in pdf-11.png
-    Deleted:    analysis/figure/analysis_04_plot_paralleltrends.Rmd/create plots in pdf-12.png
-    Deleted:    analysis/figure/analysis_04_plot_paralleltrends.Rmd/create plots in pdf-13.png
-    Deleted:    analysis/figure/analysis_04_plot_paralleltrends.Rmd/create plots in pdf-14.png
-    Deleted:    analysis/figure/analysis_04_plot_paralleltrends.Rmd/create plots in pdf-2.png
-    Deleted:    analysis/figure/analysis_04_plot_paralleltrends.Rmd/create plots in pdf-3.png
-    Deleted:    analysis/figure/analysis_04_plot_paralleltrends.Rmd/create plots in pdf-4.png
-    Deleted:    analysis/figure/analysis_04_plot_paralleltrends.Rmd/create plots in pdf-5.png
-    Deleted:    analysis/figure/analysis_04_plot_paralleltrends.Rmd/create plots in pdf-6.png
-    Deleted:    analysis/figure/analysis_04_plot_paralleltrends.Rmd/create plots in pdf-7.png
-    Deleted:    analysis/figure/analysis_04_plot_paralleltrends.Rmd/create plots in pdf-8.png
-    Deleted:    analysis/figure/analysis_04_plot_paralleltrends.Rmd/create plots in pdf-9.png
+    Modified:   analysis/analysis_02_createpanel.Rmd
+    Modified:   analysis/analysis_03_regressions.Rmd
+    Modified:   analysis/analysis_05_effect_illustration.Rmd
 
 </code></pre>
 <p>
@@ -548,6 +534,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/012c427f54a1d6b0e7cdd8139b7c64ac3a40a1f6/analysis/analysis_02_createpanel.Rmd" target="_blank">012c427</a>
+</td>
+<td>
+melvinhlwong
+</td>
+<td>
+2022-06-13
+</td>
+<td>
+draft first version to include BMZ disbursements on cell level
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/openkfw/mapme.protectedareas/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/analysis_02_createpanel.html" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+<td>
+output only
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -917,7 +937,7 @@ rm(list=ls())
 options(scipen=999)
 
 # get packages
-lop &lt;- c(&quot;tidyverse&quot;, &quot;sf&quot;)
+lop &lt;- c(&quot;tidyverse&quot;, &quot;sf&quot;, &quot;units&quot;)
 newp &lt;- lop[!(lop %in% installed.packages()[,&quot;Package&quot;])]
 if(length(newp)) install.packages(newp)
 lapply(lop, require, character.only = TRUE)</code></pre>
@@ -932,10 +952,15 @@ lapply(lop, require, character.only = TRUE)</code></pre>
 ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <pre><code>Loading required package: sf</code></pre>
 <pre><code>Linking to GEOS 3.8.0, GDAL 3.0.4, PROJ 7.0.0; sf_use_s2() is TRUE</code></pre>
+<pre><code>Loading required package: units</code></pre>
+<pre><code>udunits database from /usr/share/xml/udunits/udunits2.xml</code></pre>
 <pre><code>[[1]]
 [1] TRUE
 
 [[2]]
+[1] TRUE
+
+[[3]]
 [1] TRUE</code></pre>
 <pre class="r"><code># Timer
 start_time &lt;- Sys.time()
@@ -959,18 +984,129 @@ fcl &lt;- read_rds(&quot;/datadrive/datalake/mapme.protectedareas/output/matchin
          starts_with(&quot;minprec&quot;),
          starts_with(&quot;maxprec&quot;),
          starts_with(&quot;wetness&quot;)) %&gt;%
-  select(-starts_with(&quot;loss_t3&quot;))
+  select(-starts_with(&quot;loss_t3&quot;),
+         -starts_with(&quot;loss_tn&quot;))
 
 # change variable names to facilitate long format conversion in code below
  colnames(fcl) &lt;-  sub(&quot;*_anomaly*&quot;, &quot;&quot;, colnames(fcl))
  colnames(fcl) &lt;-  sub(&quot;*_min*&quot;, &quot;&quot;, colnames(fcl))
  
+##  Protected areas
+wdpa_kfw&lt;-
+  read_sf(&quot;~/shared/datalake/mapme.protectedareas/input/wdpa_kfw/wdpa_kfw_spatial_latinamerica_2021-02-01_supportedPAs_unique.gpkg&quot;)
+
+# Load KfW finance data 
+kfw_finance &lt;- 
+  read_csv(&quot;~/shared/datalake/mapme.protectedareas/input/kfw_finance/mapme.protectedareas_kfw-finance-2021-03-17.csv&quot;) %&gt;% 
+  filter(! is.na(bmz_nummer))</code></pre>
+<pre><code>Rows: 42 Columns: 4
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: &quot;,&quot;
+dbl (4): bmz_nummer, first_year, last_year, total_disbursed
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>#Load wdpa bmz keys
+keys_wdpaid_bmz &lt;- read_csv(&quot;~/shared/datalake/mapme.protectedareas/output/matching/model_frames/keys_wdpaid_bmz.csv&quot;) %&gt;% 
+  rename(&quot;bmz_nummer&quot; = &quot;value&quot;)</code></pre>
+<pre><code>Rows: 429 Columns: 3
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: &quot;,&quot;
+chr (1): name
+dbl (2): WDPAID, value
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code># merge wdpa_kfw with keys
+wdpa_kfw &lt;- left_join(wdpa_kfw, keys_wdpaid_bmz,
+                      by=c(&quot;WDPAID&quot;))
+
+#add kfw_finance data to wdpa_kfw
+wdpa_kfw &lt;- left_join(wdpa_kfw, kfw_finance, 
+                      by=c(&quot;bmz_nummer&quot;))
+
+wdpa_year &lt;- wdpa_kfw %&gt;% 
+  select(WDPAID, first_year) %&gt;% 
+  st_drop_geometry
+  
 # Load link between assetid and WDPA ID
 keys_assetid_wdpa &lt;- 
   read_sf(&quot;~/shared/datalake/mapme.protectedareas/processing/fishnet/honeycomb_5_sqkm_kfw.gpkg&quot;) %&gt;% 
   select(poly_id, WDPAID) %&gt;% 
   rename(&quot;.assetid&quot; = &quot;poly_id&quot;) %&gt;% 
-  st_drop_geometry()</code></pre>
+  st_drop_geometry()
+  
+keys_assetid_wdpa &lt;- keys_assetid_wdpa %&gt;% 
+  distinct(.assetid, WDPAID) %&gt;%  
+  left_join(., wdpa_year,
+            by=c(&quot;WDPAID&quot;)) %&gt;% 
+  select(.assetid, WDPAID, first_year)</code></pre>
+<pre class="r"><code>projectdata_database&lt;-
+  read_csv(&quot;/datadrive/datalake/mapme.protectedareas/output/matching/model_frames/projectdata_supported.csv&quot;)
+
+## reshape
+projectdata_database_reshaped &lt;- projectdata_database %&gt;%
+  gather(name, disbursement, 21:52) %&gt;%
+  mutate(year = as.numeric(substr(name, 14,17))) %&gt;%
+  select(-name)
+## remove if BMZ==NA
+projectdata_database_reshaped &lt;- as.data.frame(projectdata_database_reshaped[-which(is.na(projectdata_database_reshaped$bmz_nummer)),])
+## aggregate by BMZ-year
+project_agg &lt;- projectdata_database_reshaped %&gt;%
+    dplyr::group_by(bmz_nummer, year, first_year) %&gt;% # check whether this makes sense
+    dplyr::summarize(disbursement_proj = sum(disbursement))
+
+
+## create treatment variable for disbursement
+project_agg$treatment_disb_duringproj &lt;- ifelse(project_agg$disbursement_proj &gt; 0, 1, 0)
+
+
+# merge WDPA with project data and UID
+## load
+keys_database &lt;-
+  read_csv(&quot;../../datalake/mapme.protectedareas/output/matching/model_frames/keys_wdpaid_bmz.csv&quot;) %&gt;% 
+  dplyr::rename(., bmz_nummer=value)
+
+bmz_wdpa.df &lt;- merge(keys_database, project_agg,  by=c(&quot;bmz_nummer&quot;))
+
+
+## load area data
+keys_assetid_wdpa &lt;- 
+  read_sf(&quot;~/shared/datalake/mapme.protectedareas/processing/fishnet/honeycomb_5_sqkm_kfw.gpkg&quot;) %&gt;% 
+  select(poly_id, WDPAID) %&gt;% 
+  rename(&quot;.assetid&quot; = &quot;poly_id&quot;) %&gt;% 
+  mutate(area_km2=set_units(st_area(.), km^2))
+
+bmz_wdpa.df&lt;-bmz_wdpa.df %&gt;% 
+  left_join(.,st_drop_geometry(keys_assetid_wdpa),by=&quot;WDPAID&quot;)
+
+## merge and calculate total BMZ project area
+area.agg&lt;- bmz_wdpa.df %&gt;% 
+  # st_drop_geometry() %&gt;% 
+  filter(treatment_disb_duringproj==1) %&gt;% 
+  group_by(year,bmz_nummer) %&gt;% 
+  summarize(area_total=sum(area_km2))
+
+# finance per total area  
+bmz_wdpa.df&lt;-bmz_wdpa.df %&gt;% 
+  left_join(.,area.agg,by=c(&quot;bmz_nummer&quot;,&quot;year&quot;))
+
+
+bmz_wdpa.df$area_total[is.na(bmz_wdpa.df$area_total)==T]&lt;-0 # fill out NA in project area with 0.
+
+
+bmz_wdpa.df$disbursement_sqkm &lt;-bmz_wdpa.df$disbursement_proj/bmz_wdpa.df$area_total # calculate disbursement per sqkm
+bmz_wdpa.df$disbursement_5sqkmcell &lt;-bmz_wdpa.df$disbursement_proj/bmz_wdpa.df$area_total*bmz_wdpa.df$area_km2 # calculate disbursements per cell
+
+## recode NaN as 0 (since we divided by 0)
+bmz_wdpa.df$disbursement_sqkm [is.nan(bmz_wdpa.df$disbursement_sqkm )]&lt;-0
+bmz_wdpa.df$disbursement_5sqkmcell [is.nan(bmz_wdpa.df$disbursement_5sqkmcell )]&lt;-0
+
+
+## calculate disbursement in each cell by year
+cell.agg&lt;- bmz_wdpa.df %&gt;% 
+  group_by(.assetid, year) %&gt;% 
+  summarize(cell_disb=sum(disbursement_5sqkmcell))</code></pre>
 <div id="panelize-psm-data" class="section level2">
 <h2>Panelize PSM data</h2>
 <pre class="r"><code># Years with matching frames:
@@ -978,12 +1114,12 @@ keys_assetid_wdpa &lt;-
 # T_year &lt;- c(2015)
 
 for (i in T_year) {
-  
-  # tryCatch({
-  
+    
+    # prepare keys, keep keys only if corresponding WDPA-ID had project start in year i
+    keys &lt;- keys_assetid_wdpa %&gt;%   
+      filter(first_year == i)
+
     # Load matched data
-    # m_data &lt;-
-    #     read_csv(paste0(&quot;../../datalake/mapme.protectedareas/output/tabular/regression_input/PSM/ps_matched_data_&quot;, i, &quot;.csv&quot;))
     m_data &lt;-
       read_rds(paste0(&quot;/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/PSM/psm_matched_data_&quot;, i, &quot;.rds&quot;)) %&gt;%
       rename(&quot;m_treecover&quot; = &quot;treecover&quot;,
@@ -1005,6 +1141,8 @@ for (i in T_year) {
     #   mutate(year_standard = as.numeric(year) - i) %&gt;% 
     #   rename(&quot;fc_area&quot; = &quot;area&quot;,
     #          &quot;fc_loss&quot; = &quot;loss&quot;)
+    
+    # Merge data with panel data, reshape to long, join with keys and drop if year is NA (year 2021 from wetness)
     merged_data &lt;- 
       left_join(m_data, fcl, by=c(&quot;.assetid&quot;)) %&gt;% 
       pivot_longer(cols = c(starts_with(&quot;treecover&quot;) | starts_with(&quot;loss&quot;) | starts_with(&quot;emissions&quot;) | starts_with(&quot;emissions&quot;) | starts_with(&quot;minprec&quot;) | starts_with(&quot;maxprec&quot;) | starts_with(&quot;wetness&quot;)),
@@ -1013,20 +1151,256 @@ for (i in T_year) {
       mutate(year_standard = as.numeric(year) - i) %&gt;% 
       rename(&quot;fc_area&quot; = &quot;treecover&quot;,
              &quot;fc_loss&quot; = &quot;loss&quot;) %&gt;% 
-      left_join(., keys_assetid_wdpa,
-                by=c(&quot;.assetid&quot;)) %&gt;% 
-      mutate(WDPAID = ifelse(treatment == 0, 9999999999, WDPAID))
+      left_join(., keys,
+                by=c(&quot;.assetid&quot;)) %&gt;%
+      mutate(WDPAID = ifelse(treatment == 0, 9999999999, WDPAID)) %&gt;% 
+      filter(! is.na(year)) %&gt;% # new line
+      distinct(.assetid, year, .keep_all = TRUE) # adjust this as soon as we have a better solution
         
     ## Export data
     write_csv(merged_data,
               paste0(&quot;/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/PSM/psm_matched_panel_&quot;, i, &quot;.csv&quot;))
 
   
-  # }, error=function(e){cat(&quot;ERROR :&quot;,conditionMessage(e), &quot;\n&quot;)})
+    # Check duplicates
+    print(i)
+    print(paste(&quot;Unique assetids in matched data:&quot;,
+                (length(unique(m_data$.assetid)))
+                ))
+    print(paste(&quot;Unique assetids in matched data:&quot;,
+                (length(unique(merged_data$.assetid)))
+                ))
+    print(&quot;Number of treated cells in matched data:&quot;)
+    print(table(m_data$treatment))
+    print(&quot;Number of treated cells in panel data:&quot;)
+    print(table(subset(merged_data, treatment == 1)$year))
     
 }</code></pre>
-<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85, 107].
-Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85, 107].</code></pre>
+<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
+107].</code></pre>
+<pre><code>[1] 2004
+[1] &quot;Unique assetids in matched data: 577&quot;
+[1] &quot;Unique assetids in matched data: 577&quot;
+[1] &quot;Number of treated cells in matched data:&quot;
+
+  0   1 
+281 296 
+[1] &quot;Number of treated cells in panel data:&quot;
+
+2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015 
+ 296  296  296  296  296  296  296  296  296  296  296  296  296  296  296  296 
+2016 2017 2018 2019 2020 
+ 296  296  296  296  296 </code></pre>
+<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
+107].</code></pre>
+<pre><code>[1] 2005
+[1] &quot;Unique assetids in matched data: 1855&quot;
+[1] &quot;Unique assetids in matched data: 1855&quot;
+[1] &quot;Number of treated cells in matched data:&quot;
+
+  0   1 
+917 938 
+[1] &quot;Number of treated cells in panel data:&quot;
+
+2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015 
+ 938  938  938  938  938  938  938  938  938  938  938  938  938  938  938  938 
+2016 2017 2018 2019 2020 
+ 938  938  938  938  938 </code></pre>
+<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
+107].</code></pre>
+<pre><code>[1] 2006
+[1] &quot;Unique assetids in matched data: 21369&quot;
+[1] &quot;Unique assetids in matched data: 21369&quot;
+[1] &quot;Number of treated cells in matched data:&quot;
+
+    0     1 
+ 9506 11863 
+[1] &quot;Number of treated cells in panel data:&quot;
+
+ 2000  2001  2002  2003  2004  2005  2006  2007  2008  2009  2010  2011  2012 
+11863 11863 11863 11863 11863 11863 11863 11863 11863 11863 11863 11863 11863 
+ 2013  2014  2015  2016  2017  2018  2019  2020 
+11863 11863 11863 11863 11863 11863 11863 11863 </code></pre>
+<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
+107].</code></pre>
+<pre><code>[1] 2007
+[1] &quot;Unique assetids in matched data: 40962&quot;
+[1] &quot;Unique assetids in matched data: 40962&quot;
+[1] &quot;Number of treated cells in matched data:&quot;
+
+    0     1 
+18116 22846 
+[1] &quot;Number of treated cells in panel data:&quot;
+
+ 2000  2001  2002  2003  2004  2005  2006  2007  2008  2009  2010  2011  2012 
+22846 22846 22846 22846 22846 22846 22846 22846 22846 22846 22846 22846 22846 
+ 2013  2014  2015  2016  2017  2018  2019  2020 
+22846 22846 22846 22846 22846 22846 22846 22846 </code></pre>
+<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
+107].</code></pre>
+<pre><code>[1] 2008
+[1] &quot;Unique assetids in matched data: 18754&quot;
+[1] &quot;Unique assetids in matched data: 18754&quot;
+[1] &quot;Number of treated cells in matched data:&quot;
+
+   0    1 
+8888 9866 
+[1] &quot;Number of treated cells in panel data:&quot;
+
+2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015 
+9866 9866 9866 9866 9866 9866 9866 9866 9866 9866 9866 9866 9866 9866 9866 9866 
+2016 2017 2018 2019 2020 
+9866 9866 9866 9866 9866 </code></pre>
+<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
+107].</code></pre>
+<pre><code>[1] 2009
+[1] &quot;Unique assetids in matched data: 959&quot;
+[1] &quot;Unique assetids in matched data: 959&quot;
+[1] &quot;Number of treated cells in matched data:&quot;
+
+  0   1 
+411 548 
+[1] &quot;Number of treated cells in panel data:&quot;
+
+2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015 
+ 548  548  548  548  548  548  548  548  548  548  548  548  548  548  548  548 
+2016 2017 2018 2019 2020 
+ 548  548  548  548  548 </code></pre>
+<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
+107].</code></pre>
+<pre><code>[1] 2010
+[1] &quot;Unique assetids in matched data: 3559&quot;
+[1] &quot;Unique assetids in matched data: 3559&quot;
+[1] &quot;Number of treated cells in matched data:&quot;
+
+   0    1 
+1766 1793 
+[1] &quot;Number of treated cells in panel data:&quot;
+
+2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015 
+1793 1793 1793 1793 1793 1793 1793 1793 1793 1793 1793 1793 1793 1793 1793 1793 
+2016 2017 2018 2019 2020 
+1793 1793 1793 1793 1793 </code></pre>
+<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
+107].</code></pre>
+<pre><code>[1] 2011
+[1] &quot;Unique assetids in matched data: 6037&quot;
+[1] &quot;Unique assetids in matched data: 6037&quot;
+[1] &quot;Number of treated cells in matched data:&quot;
+
+   0    1 
+2867 3170 
+[1] &quot;Number of treated cells in panel data:&quot;
+
+2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015 
+3170 3170 3170 3170 3170 3170 3170 3170 3170 3170 3170 3170 3170 3170 3170 3170 
+2016 2017 2018 2019 2020 
+3170 3170 3170 3170 3170 </code></pre>
+<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
+107].</code></pre>
+<pre><code>[1] 2012
+[1] &quot;Unique assetids in matched data: 22436&quot;
+[1] &quot;Unique assetids in matched data: 22436&quot;
+[1] &quot;Number of treated cells in matched data:&quot;
+
+    0     1 
+10758 11678 
+[1] &quot;Number of treated cells in panel data:&quot;
+
+ 2000  2001  2002  2003  2004  2005  2006  2007  2008  2009  2010  2011  2012 
+11678 11678 11678 11678 11678 11678 11678 11678 11678 11678 11678 11678 11678 
+ 2013  2014  2015  2016  2017  2018  2019  2020 
+11678 11678 11678 11678 11678 11678 11678 11678 </code></pre>
+<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
+107].</code></pre>
+<pre><code>[1] 2013
+[1] &quot;Unique assetids in matched data: 875&quot;
+[1] &quot;Unique assetids in matched data: 875&quot;
+[1] &quot;Number of treated cells in matched data:&quot;
+
+  0   1 
+368 507 
+[1] &quot;Number of treated cells in panel data:&quot;
+
+2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015 
+ 507  507  507  507  507  507  507  507  507  507  507  507  507  507  507  507 
+2016 2017 2018 2019 2020 
+ 507  507  507  507  507 </code></pre>
+<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
+107].</code></pre>
+<pre><code>[1] 2014
+[1] &quot;Unique assetids in matched data: 247&quot;
+[1] &quot;Unique assetids in matched data: 247&quot;
+[1] &quot;Number of treated cells in matched data:&quot;
+
+  0   1 
+119 128 
+[1] &quot;Number of treated cells in panel data:&quot;
+
+2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015 
+ 128  128  128  128  128  128  128  128  128  128  128  128  128  128  128  128 
+2016 2017 2018 2019 2020 
+ 128  128  128  128  128 </code></pre>
+<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
+107].</code></pre>
+<pre><code>[1] 2015
+[1] &quot;Unique assetids in matched data: 196511&quot;
+[1] &quot;Unique assetids in matched data: 196511&quot;
+[1] &quot;Number of treated cells in matched data:&quot;
+
+     0      1 
+ 71648 124863 
+[1] &quot;Number of treated cells in panel data:&quot;
+
+  2000   2001   2002   2003   2004   2005   2006   2007   2008   2009   2010 
+124863 124863 124863 124863 124863 124863 124863 124863 124863 124863 124863 
+  2011   2012   2013   2014   2015   2016   2017   2018   2019   2020 
+124863 124863 124863 124863 124863 124863 124863 124863 124863 124863 </code></pre>
+<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
+107].</code></pre>
+<pre><code>[1] 2016
+[1] &quot;Unique assetids in matched data: 4991&quot;
+[1] &quot;Unique assetids in matched data: 4991&quot;
+[1] &quot;Number of treated cells in matched data:&quot;
+
+   0    1 
+2416 2575 
+[1] &quot;Number of treated cells in panel data:&quot;
+
+2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015 
+2575 2575 2575 2575 2575 2575 2575 2575 2575 2575 2575 2575 2575 2575 2575 2575 
+2016 2017 2018 2019 2020 
+2575 2575 2575 2575 2575 </code></pre>
+<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
+107].</code></pre>
+<pre><code>[1] 2017
+[1] &quot;Unique assetids in matched data: 15472&quot;
+[1] &quot;Unique assetids in matched data: 15472&quot;
+[1] &quot;Number of treated cells in matched data:&quot;
+
+   0    1 
+7552 7920 
+[1] &quot;Number of treated cells in panel data:&quot;
+
+2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015 
+7920 7920 7920 7920 7920 7920 7920 7920 7920 7920 7920 7920 7920 7920 7920 7920 
+2016 2017 2018 2019 2020 
+7920 7920 7920 7920 7920 </code></pre>
+<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
+107].</code></pre>
+<pre><code>[1] 2019
+[1] &quot;Unique assetids in matched data: 1989&quot;
+[1] &quot;Unique assetids in matched data: 1989&quot;
+[1] &quot;Number of treated cells in matched data:&quot;
+
+   0    1 
+ 688 1301 
+[1] &quot;Number of treated cells in panel data:&quot;
+
+2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015 
+1301 1301 1301 1301 1301 1301 1301 1301 1301 1301 1301 1301 1301 1301 1301 1301 
+2016 2017 2018 2019 2020 
+1301 1301 1301 1301 1301 </code></pre>
 </div>
 <div id="panelize-cem-data" class="section level2">
 <h2>Panelize CEM data</h2>
@@ -1037,11 +1411,12 @@ T_year &lt;- c(2004:2017, 2019)
 
 for (i in T_year) {
   
-  # tryCatch({
+    # prepare keys, keep keys only if corresponding WDPA-ID had project start in year i
+    keys &lt;- keys_assetid_wdpa %&gt;%   
+      filter(first_year == i)
+    
   
     # Load matched data
-    # m_data &lt;- 
-    #     read_csv(paste0(&quot;../../datalake/mapme.protectedareas/output/tabular/regression_input/CEM/ce_matched_data_&quot;, i, &quot;.csv&quot;))
     m_data &lt;- 
         read_rds(paste0(&quot;/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/cem_matched_data_&quot;, i, &quot;.rds&quot;)) %&gt;%
       rename(&quot;m_treecover&quot; = &quot;treecover&quot;,
@@ -1064,6 +1439,7 @@ for (i in T_year) {
     #   rename(&quot;fc_area&quot; = &quot;area&quot;,
     #          &quot;fc_loss&quot; = &quot;loss&quot;)
     
+    # Merge data with panel data, reshape to long, join with keys and drop if year is NA (year 2021 from wetness)
     merged_data &lt;- 
       left_join(m_data, fcl,
                              by=c(&quot;.assetid&quot;)) %&gt;% 
@@ -1073,38 +1449,262 @@ for (i in T_year) {
       mutate(year_standard = as.numeric(year) - i) %&gt;% 
       rename(&quot;fc_area&quot; = &quot;treecover&quot;,
              &quot;fc_loss&quot; = &quot;loss&quot;) %&gt;% 
-      left_join(., keys_assetid_wdpa,
-                by=c(&quot;.assetid&quot;)) %&gt;% 
-      mutate(WDPAID = ifelse(treatment == 0, 9999999999, WDPAID))
+      left_join(., keys,
+                by=c(&quot;.assetid&quot;)) %&gt;%
+      mutate(WDPAID = ifelse(treatment == 0, 9999999999, WDPAID)) %&gt;% 
+      filter(! is.na(year)) %&gt;% # new line
+      distinct(.assetid, year, .keep_all = TRUE) # adjust this as soon as we have a better solution # new line
     
     ## Export data
     write_csv(merged_data, 
               paste0(&quot;/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/cem_matched_panel_&quot;, i, &quot;.csv&quot;))
-  
-  # }, error=function(e){cat(&quot;ERROR :&quot;,conditionMessage(e), &quot;\n&quot;)})
+    
+    # Check duplicates
+    print(i)
+    print(paste(&quot;Unique assetids in matched data:&quot;,
+                (length(unique(m_data$.assetid)))
+                ))
+    print(paste(&quot;Unique assetids in matched data:&quot;,
+                (length(unique(merged_data$.assetid)))
+                ))
+    print(&quot;Number of treated cells in matched data:&quot;)
+    print(table(m_data$treatment))
+    print(&quot;Number of treated cells in panel data:&quot;)
+    print(table(subset(merged_data, treatment == 1)$year))
+    
     
 }</code></pre>
-<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85, 107].
-Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85, 107].
-Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85, 107].
-Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85, 107].
-Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85, 107].
-Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85, 107].
-Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85, 107].
-Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85, 107].
-Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85, 107].
-Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85, 107].
-Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85, 107].
-Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85, 107].
-Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85, 107].
-Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85, 107].
-Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85, 107].</code></pre>
+<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
+107].</code></pre>
+<pre><code>[1] 2004
+[1] &quot;Unique assetids in matched data: 232846&quot;
+[1] &quot;Unique assetids in matched data: 232846&quot;
+[1] &quot;Number of treated cells in matched data:&quot;
+
+     0      1 
+232546    300 
+[1] &quot;Number of treated cells in panel data:&quot;
+
+2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015 
+ 300  300  300  300  300  300  300  300  300  300  300  300  300  300  300  300 
+2016 2017 2018 2019 2020 
+ 300  300  300  300  300 </code></pre>
+<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
+107].</code></pre>
+<pre><code>[1] 2005
+[1] &quot;Unique assetids in matched data: 273763&quot;
+[1] &quot;Unique assetids in matched data: 273763&quot;
+[1] &quot;Number of treated cells in matched data:&quot;
+
+     0      1 
+272830    933 
+[1] &quot;Number of treated cells in panel data:&quot;
+
+2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015 
+ 933  933  933  933  933  933  933  933  933  933  933  933  933  933  933  933 
+2016 2017 2018 2019 2020 
+ 933  933  933  933  933 </code></pre>
+<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
+107].</code></pre>
+<pre><code>[1] 2006
+[1] &quot;Unique assetids in matched data: 150693&quot;
+[1] &quot;Unique assetids in matched data: 150693&quot;
+[1] &quot;Number of treated cells in matched data:&quot;
+
+     0      1 
+139295  11398 
+[1] &quot;Number of treated cells in panel data:&quot;
+
+ 2000  2001  2002  2003  2004  2005  2006  2007  2008  2009  2010  2011  2012 
+11398 11398 11398 11398 11398 11398 11398 11398 11398 11398 11398 11398 11398 
+ 2013  2014  2015  2016  2017  2018  2019  2020 
+11398 11398 11398 11398 11398 11398 11398 11398 </code></pre>
+<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
+107].</code></pre>
+<pre><code>[1] 2007
+[1] &quot;Unique assetids in matched data: 646855&quot;
+[1] &quot;Unique assetids in matched data: 646855&quot;
+[1] &quot;Number of treated cells in matched data:&quot;
+
+     0      1 
+624993  21862 
+[1] &quot;Number of treated cells in panel data:&quot;
+
+ 2000  2001  2002  2003  2004  2005  2006  2007  2008  2009  2010  2011  2012 
+21862 21862 21862 21862 21862 21862 21862 21862 21862 21862 21862 21862 21862 
+ 2013  2014  2015  2016  2017  2018  2019  2020 
+21862 21862 21862 21862 21862 21862 21862 21862 </code></pre>
+<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
+107].</code></pre>
+<pre><code>[1] 2008
+[1] &quot;Unique assetids in matched data: 260122&quot;
+[1] &quot;Unique assetids in matched data: 260122&quot;
+[1] &quot;Number of treated cells in matched data:&quot;
+
+     0      1 
+251088   9034 
+[1] &quot;Number of treated cells in panel data:&quot;
+
+2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015 
+9034 9034 9034 9034 9034 9034 9034 9034 9034 9034 9034 9034 9034 9034 9034 9034 
+2016 2017 2018 2019 2020 
+9034 9034 9034 9034 9034 </code></pre>
+<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
+107].</code></pre>
+<pre><code>[1] 2009
+[1] &quot;Unique assetids in matched data: 14300&quot;
+[1] &quot;Unique assetids in matched data: 14300&quot;
+[1] &quot;Number of treated cells in matched data:&quot;
+
+    0     1 
+13782   518 
+[1] &quot;Number of treated cells in panel data:&quot;
+
+2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015 
+ 518  518  518  518  518  518  518  518  518  518  518  518  518  518  518  518 
+2016 2017 2018 2019 2020 
+ 518  518  518  518  518 </code></pre>
+<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
+107].</code></pre>
+<pre><code>[1] 2010
+[1] &quot;Unique assetids in matched data: 86120&quot;
+[1] &quot;Unique assetids in matched data: 86120&quot;
+[1] &quot;Number of treated cells in matched data:&quot;
+
+    0     1 
+84382  1738 
+[1] &quot;Number of treated cells in panel data:&quot;
+
+2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015 
+1738 1738 1738 1738 1738 1738 1738 1738 1738 1738 1738 1738 1738 1738 1738 1738 
+2016 2017 2018 2019 2020 
+1738 1738 1738 1738 1738 </code></pre>
+<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
+107].</code></pre>
+<pre><code>[1] 2011
+[1] &quot;Unique assetids in matched data: 68951&quot;
+[1] &quot;Unique assetids in matched data: 68951&quot;
+[1] &quot;Number of treated cells in matched data:&quot;
+
+    0     1 
+65944  3007 
+[1] &quot;Number of treated cells in panel data:&quot;
+
+2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015 
+3007 3007 3007 3007 3007 3007 3007 3007 3007 3007 3007 3007 3007 3007 3007 3007 
+2016 2017 2018 2019 2020 
+3007 3007 3007 3007 3007 </code></pre>
+<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
+107].</code></pre>
+<pre><code>[1] 2012
+[1] &quot;Unique assetids in matched data: 328813&quot;
+[1] &quot;Unique assetids in matched data: 328813&quot;
+[1] &quot;Number of treated cells in matched data:&quot;
+
+     0      1 
+317415  11398 
+[1] &quot;Number of treated cells in panel data:&quot;
+
+ 2000  2001  2002  2003  2004  2005  2006  2007  2008  2009  2010  2011  2012 
+11398 11398 11398 11398 11398 11398 11398 11398 11398 11398 11398 11398 11398 
+ 2013  2014  2015  2016  2017  2018  2019  2020 
+11398 11398 11398 11398 11398 11398 11398 11398 </code></pre>
+<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
+107].</code></pre>
+<pre><code>[1] 2013
+[1] &quot;Unique assetids in matched data: 64632&quot;
+[1] &quot;Unique assetids in matched data: 64632&quot;
+[1] &quot;Number of treated cells in matched data:&quot;
+
+    0     1 
+64154   478 
+[1] &quot;Number of treated cells in panel data:&quot;
+
+2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015 
+ 478  478  478  478  478  478  478  478  478  478  478  478  478  478  478  478 
+2016 2017 2018 2019 2020 
+ 478  478  478  478  478 </code></pre>
+<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
+107].</code></pre>
+<pre><code>[1] 2014
+[1] &quot;Unique assetids in matched data: 52058&quot;
+[1] &quot;Unique assetids in matched data: 52058&quot;
+[1] &quot;Number of treated cells in matched data:&quot;
+
+    0     1 
+51930   128 
+[1] &quot;Number of treated cells in panel data:&quot;
+
+2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015 
+ 128  128  128  128  128  128  128  128  128  128  128  128  128  128  128  128 
+2016 2017 2018 2019 2020 
+ 128  128  128  128  128 </code></pre>
+<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
+107].</code></pre>
+<pre><code>[1] 2015
+[1] &quot;Unique assetids in matched data: 994259&quot;
+[1] &quot;Unique assetids in matched data: 994259&quot;
+[1] &quot;Number of treated cells in matched data:&quot;
+
+     0      1 
+871826 122433 
+[1] &quot;Number of treated cells in panel data:&quot;
+
+  2000   2001   2002   2003   2004   2005   2006   2007   2008   2009   2010 
+122433 122433 122433 122433 122433 122433 122433 122433 122433 122433 122433 
+  2011   2012   2013   2014   2015   2016   2017   2018   2019   2020 
+122433 122433 122433 122433 122433 122433 122433 122433 122433 122433 </code></pre>
+<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
+107].</code></pre>
+<pre><code>[1] 2016
+[1] &quot;Unique assetids in matched data: 603159&quot;
+[1] &quot;Unique assetids in matched data: 603159&quot;
+[1] &quot;Number of treated cells in matched data:&quot;
+
+     0      1 
+600588   2571 
+[1] &quot;Number of treated cells in panel data:&quot;
+
+2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015 
+2571 2571 2571 2571 2571 2571 2571 2571 2571 2571 2571 2571 2571 2571 2571 2571 
+2016 2017 2018 2019 2020 
+2571 2571 2571 2571 2571 </code></pre>
+<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
+107].</code></pre>
+<pre><code>[1] 2017
+[1] &quot;Unique assetids in matched data: 245294&quot;
+[1] &quot;Unique assetids in matched data: 245294&quot;
+[1] &quot;Number of treated cells in matched data:&quot;
+
+     0      1 
+237419   7875 
+[1] &quot;Number of treated cells in panel data:&quot;
+
+2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015 
+7875 7875 7875 7875 7875 7875 7875 7875 7875 7875 7875 7875 7875 7875 7875 7875 
+2016 2017 2018 2019 2020 
+7875 7875 7875 7875 7875 </code></pre>
+<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
+107].</code></pre>
+<pre><code>[1] 2019
+[1] &quot;Unique assetids in matched data: 8629&quot;
+[1] &quot;Unique assetids in matched data: 8629&quot;
+[1] &quot;Number of treated cells in matched data:&quot;
+
+   0    1 
+7981  648 
+[1] &quot;Number of treated cells in panel data:&quot;
+
+2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015 
+ 648  648  648  648  648  648  648  648  648  648  648  648  648  648  648  648 
+2016 2017 2018 2019 2020 
+ 648  648  648  648  648 </code></pre>
 <pre class="r"><code># Timer
 end_time &lt;- Sys.time()
 
 duration &lt;- difftime(end_time, start_time, units=&#39;mins&#39;)
 duration</code></pre>
-<pre><code>Time difference of 3.795983 mins</code></pre>
+<pre><code>Time difference of 4.252988 mins</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1131,29 +1731,29 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] sf_1.0-7        forcats_0.5.1   stringr_1.4.0   dplyr_1.0.9    
- [5] purrr_0.3.4     readr_2.1.2     tidyr_1.2.0     tibble_3.1.7   
- [9] ggplot2_3.3.4   tidyverse_1.3.1
+ [1] units_0.8-0     sf_1.0-7        forcats_0.5.1   stringr_1.4.0  
+ [5] dplyr_1.0.9     purrr_0.3.4     readr_2.1.2     tidyr_1.2.0    
+ [9] tibble_3.1.7    ggplot2_3.3.4   tidyverse_1.3.1
 
 loaded via a namespace (and not attached):
  [1] Rcpp_1.0.8.3       lubridate_1.7.10   class_7.3-20       assertthat_0.2.1  
  [5] rprojroot_2.0.2    digest_0.6.29      utf8_1.2.2         R6_2.5.1          
- [9] cellranger_1.1.0   backports_1.2.1    reprex_2.0.0       e1071_1.7-9       
+ [9] cellranger_1.1.0   backports_1.2.1    reprex_2.0.0       e1071_1.7-11      
 [13] evaluate_0.14      httr_1.4.3         pillar_1.7.0       rlang_1.0.2       
 [17] readxl_1.3.1       rstudioapi_0.13    whisker_0.4        jquerylib_0.1.4   
-[21] rmarkdown_2.11     bit_4.0.4          munsell_0.5.0      proxy_0.4-26      
+[21] rmarkdown_2.11     bit_4.0.4          munsell_0.5.0      proxy_0.4-27      
 [25] broom_0.7.6        compiler_3.6.3     httpuv_1.6.1       modelr_0.1.8      
 [29] xfun_0.24          pkgconfig_2.0.3    htmltools_0.5.2    tidyselect_1.1.2  
 [33] workflowr_1.7.0    fansi_1.0.3        crayon_1.5.1       tzdb_0.1.2        
 [37] dbplyr_2.1.1       withr_2.4.2        later_1.2.0        grid_3.6.3        
-[41] jsonlite_1.8.0     gtable_0.3.0       lifecycle_1.0.1    DBI_1.1.2         
-[45] git2r_0.28.0       magrittr_2.0.3     units_0.8-0        scales_1.1.1      
-[49] KernSmooth_2.23-20 vroom_1.5.7        cli_3.3.0          stringi_1.7.6     
-[53] fs_1.5.0           promises_1.2.0.1   xml2_1.3.3         bslib_0.2.5.1     
-[57] ellipsis_0.3.2     generics_0.1.2     vctrs_0.4.1        tools_3.6.3       
-[61] bit64_4.0.5        glue_1.6.2         hms_1.1.1          parallel_3.6.3    
-[65] fastmap_1.1.0      yaml_2.2.1         colorspace_2.0-1   classInt_0.4-3    
-[69] rvest_1.0.2        knitr_1.34         haven_2.3.1        sass_0.4.0        </code></pre>
+[41] jsonlite_1.8.0     gtable_0.3.0       lifecycle_1.0.1    DBI_1.1.3         
+[45] git2r_0.28.0       magrittr_2.0.3     scales_1.1.1       KernSmooth_2.23-20
+[49] vroom_1.5.7        cli_3.3.0          stringi_1.7.6      fs_1.5.0          
+[53] promises_1.2.0.1   xml2_1.3.3         bslib_0.2.5.1      ellipsis_0.3.2    
+[57] generics_0.1.2     vctrs_0.4.1        tools_3.6.3        bit64_4.0.5       
+[61] glue_1.6.2         hms_1.1.1          parallel_3.6.3     fastmap_1.1.0     
+[65] yaml_2.2.1         colorspace_2.0-1   classInt_0.4-7     rvest_1.0.2       
+[69] knitr_1.34         haven_2.3.1        sass_0.4.0        </code></pre>
 </div>
 </div>
 
