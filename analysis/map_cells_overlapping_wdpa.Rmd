@@ -1,0 +1,201 @@
+---
+title: "Map - Cells with multiple WDPA IDs"
+author: "Yota"
+date: "23 6 2022"
+output: workflowr::wflow_html
+---
+
+```{r setup, include=FALSE, message = FALSE, warning = FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+knitr::opts_knit$set(root.dir = "~/shared/datalake/mapme.protectedareas")
+```
+
+```{r options and workspace, include=FALSE}
+# clean workspace, set options
+rm(list=ls())
+options(scipen=999)
+
+# get packages
+lop <- c("tidyverse", "sf", "leaflet", "leaflet.extras", "leaflet.extras2", "ggsci", "scales", "htmltools", "RColorBrewer", "raster", "rgdal", "stars")
+newp <- lop[!(lop %in% installed.packages()[,"Package"])]
+if(length(newp)) install.packages(newp)
+lapply(lop, require, character.only = TRUE)
+
+```
+
+
+```{r load data, include=FALSE}
+
+##  Protected areas
+wdpa_kfw<-
+  read_sf("~/shared/datalake/mapme.protectedareas/input/wdpa_kfw/wdpa_kfw_spatial_latinamerica_2021-02-01_supportedPAs_unique.gpkg")
+
+# Load KfW finance data 
+kfw_finance <- 
+  read_csv("~/shared/datalake/mapme.protectedareas/input/kfw_finance/mapme.protectedareas_kfw-finance-2021-03-17.csv") %>% 
+  filter(! is.na(bmz_nummer))
+
+#Load wdpa bmz keys
+keys_wdpaid_bmz <- read_csv("~/shared/datalake/mapme.protectedareas/output/matching/model_frames/keys_wdpaid_bmz.csv") %>% 
+  rename("bmz_nummer" = "value")
+
+# merge wdpa_kfw with keys
+wdpa_kfw <- left_join(wdpa_kfw, keys_wdpaid_bmz,
+                      by=c("WDPAID"))
+
+#add kfw_finance data to wdpa_kfw
+wdpa_kfw <- left_join(wdpa_kfw, kfw_finance, 
+                      by=c("bmz_nummer")) 
+
+wdpa_year <- wdpa_kfw %>% 
+  dplyr::select(WDPAID, first_year) %>% 
+  st_drop_geometry
+
+# Load fishnet
+# fishnet_all <- read_sf("~/shared/datalake/mapme.protectedareas/processing/fishnet/honeycomb_5_sqkm.gpkg")
+fishnet_all <- read_sf("~/shared/datalake/mapme.protectedareas/processing/fishnet/honeycomb_5_sqkm_subset_intersect.gpkg") #%>% 
+  # select(geom)
+
+fishnet_named <- cbind(rownames(fishnet_all),fishnet_all)
+
+colnames(fishnet_named) <- c(".assetid", colnames(fishnet_all))
+
+# Load link between assetid and WDPA ID
+keys_assetid_wdpa <- 
+  read_sf("~/shared/datalake/mapme.protectedareas/processing/fishnet/honeycomb_5_sqkm_kfw.gpkg") %>% 
+  dplyr::select(poly_id, WDPAID) %>% 
+  rename(".assetid" = "poly_id") %>% 
+  st_drop_geometry() %>% 
+  distinct(.assetid, WDPAID)   %>% 
+  mutate(.assetid = as.factor(.assetid))
+
+fishnet_dropgeom <- st_drop_geometry(fishnet_named)
+
+keys_filtered <- keys_assetid_wdpa %>% 
+  group_by(.assetid) %>% 
+  count() %>% 
+  filter(n > 1)
+
+check_data <- 
+  left_join(fishnet_dropgeom, keys_assetid_wdpa, 
+            by=c(".assetid")) %>% 
+  filter(! is.na(WDPAID),
+         .assetid %in% keys_filtered$.assetid) %>%  
+  left_join(., wdpa_year,
+            by=c("WDPAID")) %>% 
+  dplyr::select(.assetid, WDPAID, first_year) %>% 
+  mutate(key = paste(.assetid, first_year)) %>%  
+  left_join(., fishnet_named, 
+            by=c(".assetid"))
+
+count <- check_data %>% 
+  group_by(key) %>% 
+  count()
+
+check_okay <- left_join(check_data, count,
+                        by="key") %>% 
+  filter(n == 1)
+
+check_data <- left_join(check_data, count,
+                        by="key") %>% 
+  filter(n > 1)
+
+check_data <- st_sf(check_data) %>% 
+  st_transform(., ,crs = st_crs(wdpa_kfw))
+
+check_data_exp <- check_data %>% 
+  filter(first_year == 2007)
+
+
+```
+
+## Map 
+
+This map shows treatment cells that have multiple assigned PAs (WDPA IDs). Reasons for this can be: 
+
+* Cells at the border of multiple PAs
+* Cells within overlapping PAs
+
+Only cells that cause issues in our analysis, i.e. cells for which assigned PAs have had a project starting in the same year. 
+
+Example for illustration: Say, we have the following cells:
+
+* Cell "12345" with corresponding PAs with WDPA IDs "1" and "2", and
+* Cell "23456" with corresponding PAs with WDPA IDs "3" and "4".
+
+Now, say PAs "1" and "2" both have a project starting in the same year; PAs "3" and "4" have projects starting in different years. In that case, cell "12345" is shown in the map below, cell "23456" is not. Reason: The correct (for our analysis) WDPA ID can be identified for cell "23456" by filtering by project start year. For cell "12345", this is not possible. 
+
+```{r map}
+#------- Color palettes --------
+
+
+
+# color palette, which is interpolated ?
+# pal <- colorNumeric(palette = "Spectral", #c("#000000", "#666666", "#FFFFFF"), 
+#                     values(accessibility),
+#                     na.color = "transparent")
+
+# pal <- colorQuantile(palette = "Oranges", #c("#000000", "#666666", "#FFFFFF"),
+#                     values(accessibility),
+#                     n = 8,
+#                     probs = c(seq(0, 0.8, 0.1),1),#seq(0, 1, length.out = 9),
+#                     na.color = "transparent")
+
+# # the extra code building off the existing pal
+# pal_colors <- unique(pal(sort(values(accessibility)))) # hex codes
+# pal_labs <- quantile(values(accessibility), c(seq(0, 0.8, 0.1),1), na.rm = TRUE) # depends on n from pal
+# # pal_labs <- paste(lag(pal_labs), pal_labs, sep = " - ")[-1] # first lag is NA
+
+# lab_lower <- pal_labs[1:9]
+# lab_upper <- pal_labs[-1]
+# pal_labs <- paste(lab_lower, lab_upper, sep = " - ")
+
+# pal <- colorBin(palette = "RdGy", #c("#000000", "#666666", "#FFFFFF"), 
+#                     values(accessibility),
+#                     bins = 10,
+#                     pretty = TRUE,
+#                     na.color = "transparent")
+
+#------- Map --------
+
+## Create map
+my_map_matching <-
+  leaflet() %>%
+  # add external map providers
+  addTiles(group = "OpenStreetMap") %>%
+  addProviderTiles(providers$CartoDB.Positron, group="CartoDB") %>%
+  addProviderTiles(providers$Esri.WorldImagery, group="Satellite") %>%
+  addProviderTiles(providers$Esri.WorldShadedRelief, group="Topography") %>%
+  addProviderTiles(providers$NASAGIBS.ViirsEarthAtNight2012, group="Nightlights") %>%
+  # add own data
+  addPolygons(data = wdpa_kfw,
+              opacity = 0.8,
+              color = "orange", 
+              group = "PA Boundaries",
+              label = ~htmlEscape(DESIG_ENG),
+              weight = 1) %>%
+  addPolygons(data = check_data,
+              opacity = 0.8,
+              color = "green", 
+              group = "Problematic cells",
+              label = ~htmlEscape(.assetid),
+              weight = 1) %>%
+  addPolygons(data = check_data_exp,
+              opacity = 0.8,
+              color = "green", 
+              group = "Problematic cells (Example year)",
+              label = ~htmlEscape(.assetid),
+              weight = 1) %>%
+  addFullscreenControl() %>%
+  # add layers control to define which data is shown or ommited in default view
+  addLayersControl(
+    baseGroups = c("CartoDB","OpenStreetMap","Satellite","Topography","Nightlights"), #"Toner",,"Regional Primary Forests (2001)"
+    overlayGroups = c("PA Boundaries", "Problematic cells", "Problematic cells (Example year)"),
+    options = layersControlOptions(collapsed = FALSE)) #%>%
+    # omit certain layers
+    # hideGroup(group = c())
+
+my_map_matching
+
+
+```
