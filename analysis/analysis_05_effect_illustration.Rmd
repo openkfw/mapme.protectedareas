@@ -2,7 +2,7 @@
 title: "Treatment Effect Illustration"
 author: "Yota"
 date: "21 6 2022"
-output: html_document
+output: workflowr::wflow_html
 ---
 
 ```{r setup, include=FALSE}
@@ -23,60 +23,87 @@ lapply(lop, require, character.only = TRUE)
 
 ```
 
+<style>
+pre {
+  overflow-x: auto;
+}
+pre code {
+  word-wrap: normal;
+  white-space: pre;
+}
+</style>
+
 ```{r load data}
+all_years <- c(2004:2017, 2019)
 
 internal_data <- read_csv("/datadrive/datalake/mapme.protectedareas/output/matching/model_frames/projectdata_supported.csv") 
 
 internal_data_year <- 
   internal_data %>% 
+  distinct(bmz_nummer, .keep_all = TRUE) %>% 
+  filter(first_year %in% all_years) %>% 
   group_by(first_year) %>% 
-  summarize(total_disbursed = mean(total_disbursed))
+  summarize(total_disbursed = sum(total_disbursed))
 
 # Observations tables
 obs_table_loss <- 
-  read_rds("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/obs_table_m12")
+  read_rds("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/obs_table_m12.rds")
 
 obs_table_emissions <- 
-  read_rds("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/obs_table_m32")
+  read_rds("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/obs_table_m32.rds")
 
 # Estimate tables
 est_table_loss <- 
-  read_rds("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/est_table_m12")
+  read_rds("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/est_table_m12.rds")
 
 est_table_emissions <- 
-  read_rds("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/est_table_m32")
+  read_rds("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/est_table_m32.rds")
 
 ```
 
 
 ```{r create table}
-# rbind tables
-
+# loss
+loss_effect <- round(as.numeric(as.vector(est_table_loss[1,2:(length(all_years) + 1)])), digits = 3)
 
 # emissions
-# emissions_avoided <- as.vector(est_table_emissions[1,2:(length(all_years) + 1)])
+emissions_effect <- round(as.numeric(as.vector(est_table_emissions[1,2:(length(all_years) + 1)])), digits = 3)
+
+# number of obs
+obs_treated <- as.numeric(as.vector(obs_table_loss[2,2:(length(all_years) + 1)]))
 
 # multiply obs X treatment effect 
-total_loss_avoided <- as.vector(est_table_loss[1,2:(length(all_years) + 1)]) * as.vector(obs_table_loss[2,2:(length(all_years) + 1)])
+# total_loss_avoided <- as.numeric(as.vector(est_table_loss[1,2:(length(all_years) + 1)])) * as.numeric(as.vector(obs_table_loss[2,2:(length(all_years) + 1)]))
+total_loss_avoided <- loss_effect * obs_treated
 
-total_emissions_avoided <- as.vector(est_table_emissions[1,2:(length(all_years) + 1)]) * as.vector(obs_table_emissions[2,2:(length(all_years) + 1)])
+total_emissions_avoided <- as.numeric(as.vector(est_table_emissions[1,2:(length(all_years) + 1)])) * as.numeric(as.vector(obs_table_emissions[2,2:(length(all_years) + 1)])) * 500 # is it correct to multiply by 500? bc estimate for tons per ha
 
 # add total amount of disbursement
-disbursement <- internal_data_year$total_disbursed
+disbursement <- round(internal_data_year$total_disbursed, digits = 0)
 
 # divide emissions (total) by disbursed euro
 emissions_avoided_per_eur <- total_emissions_avoided/disbursement
 
+# divide disbursements by emissions
+eur_per_avoided_ton <- disbursement/total_emissions_avoided
+
+
 # rbind tables
-effects_table <- rbind(est_table_loss,
-                       est_table_emissions,
-                       obs_table_loss,
-                       total_loss_avoided,
-                       total_emissions_avoided,
-                       disbursement,
-                       emissions_avoided_per_eur)
+effects_table <- as.data.frame(rbind(loss_effect,
+                                     emissions_effect,
+                                     obs_treated,
+                                     total_loss_avoided,
+                                     total_emissions_avoided,
+                                     disbursement,
+                                     emissions_avoided_per_eur,
+                                     eur_per_avoided_ton,
+                                     deparse.level = 1))
+names(effects_table) <- c(all_years)
+# effects_table <- round(as.numeric(effects_table), digits = 3)
+effects_table <- tibble::rownames_to_column(effects_table, "row_names")
 
 stargazer(effects_table,
+          summary = FALSE,
           type="text")
 
 ```
