@@ -39,7 +39,7 @@ pre code {
 
 
 #### ---- Create table for all years -----
-all_years <- c(2004:2017, 2019)
+all_years <- c(2004:2017)
 
 # Prepare observations table
 obs_table <- matrix(NA, nrow = 3, ncol = length(all_years)+1)
@@ -114,11 +114,6 @@ m_list1 <- list(m12_2004, m12_2005, m12_2006, m12_2007, m12_2008, m12_2009, m12_
 m_list2 <- list(m22_2004, m22_2005, m22_2006, m22_2007, m22_2008, m22_2009, m22_2010, m22_2011, m22_2012, m22_2013, m22_2014, m22_2015, m22_2016, m22_2017, m22_2019)
 m_list3 <- list(m32_2004, m32_2005, m32_2006, m32_2007, m32_2008, m32_2009, m32_2010, m32_2011, m32_2012, m32_2013, m32_2014, m32_2015, m32_2016, m32_2017, m32_2019)
 
-
-m_list1_no2019 <- list(m12_2004, m12_2005, m12_2006, m12_2007, m12_2008, m12_2009, m12_2010, m12_2011, m12_2012, m12_2013, m12_2014, m12_2015, m12_2016, m12_2017, m12_2019)
-m_list2_no2019 <- list(m22_2004, m22_2005, m22_2006, m22_2007, m22_2008, m22_2009, m22_2010, m22_2011, m22_2012, m22_2013, m22_2014, m22_2015, m22_2016, m22_2017, m22_2019)
-m_list3_no2019 <- list(m32_2004, m32_2005, m32_2006, m32_2007, m32_2008, m32_2009, m32_2010, m32_2011, m32_2012, m32_2013, m32_2014, m32_2015, m32_2016, m32_2017, m32_2019)
-
 # names(m_list1_compare) <- sort(c(all_years, all_years))
 # names(m_list2_compare) <- sort(c(all_years, all_years))
 
@@ -126,25 +121,12 @@ names(m_list1) <- all_years
 names(m_list2) <- all_years
 names(m_list3) <- all_years
 
-names(m_list1_no2019) <- c(2004:2017)
-names(m_list2_no2019) <- c(2004:2017)
-names(m_list3_no2019) <- c(2004:2017)
 ```
 
 
 ```{r Display results}
 
 # Output: fc_loss
-modelsummary(m_list1_no2019,
-             output = "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/table1_cluster_no2019.html",
-             coef_rename = c("fc_loss" = "Forest cover loss", 
-                             "treatment_disbTRUE" = "KfW support"),
-             stars = TRUE,
-             gof_map = c("nobs", "adj.r.squared", "FE: .assetid", "FE: year"),
-             title = paste0("Dependent variable: Forest cover loss"),
-             notes = list('Standard errors clustered by zones of forest protected areas (WDPA).'),
-             add_rows = as.data.frame(obs_table_m12)
-)
 modelsummary(m_list1,
              output = "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/table1_cluster.html",
              coef_rename = c("fc_loss" = "Forest cover loss", 
@@ -168,20 +150,6 @@ modelsummary(m_list1,
 # Example code for adjustments in html output
 # More adjustments can be made via kableExtra package
 # Commented for now (untested)
-
-m12_output_no2019 <- modelsummary(m_list1_no2019,
-               coef_rename = c("fc_loss" = "Forest cover loss",
-                               "treatment_disbTRUE" = "KfW support"),
-               stars = TRUE,
-               gof_map = c("nobs", "adj.r.squared", "FE: .assetid", "FE: year"),
-               title = paste0("Dependent variable: Forest cover loss"),
-               notes = list('Standard errors clustered by zones of forest protected areas (WDPA).'),
-               add_rows = as.data.frame(obs_table_m12)
-              )
-m12_output %>%
-  kable_classic(full_width = F, html_font = "Cambria") %>%
-  column_spec(1, width = "8em") %>%
-  save_kable(file = "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/table1_cluster_style_no2019.html", self_contained = T)
 
 m12_output <- modelsummary(m_list1,
                coef_rename = c("fc_loss" = "Forest cover loss",
@@ -215,16 +183,6 @@ m12_output %>%
 # )
 
 # Output: fc_area
-modelsummary(m_list2_no2019,
-             output = "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/table2_cluster_no2019.html",
-             coef_rename = c("fc_area" = "Forest cover area", 
-                             "treatment_disbTRUE" = "KfW support"),
-             stars = TRUE,
-             gof_map = c("nobs", "adj.r.squared", "FE: .assetid", "FE: year"),
-             title = paste0("Dependent variable: Forest cover area"),
-             notes = list('Standard errors clustered by zones of forest protected areas (WDPA).'),
-             add_rows = as.data.frame(obs_table_m22)
-)
 modelsummary(m_list2,
              output = "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/table2_cluster.html",
              coef_rename = c("fc_area" = "Forest cover area", 
@@ -262,16 +220,6 @@ modelsummary(m_list2,
 # )
 
 # Output: emissions
-modelsummary(m_list3_no2019,
-             output = "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/table3_no2019.html",
-             coef_rename = c("emissions" = "Emissions from deforestation", 
-                             "treatment_disbTRUE" = "KfW support"),
-             stars = TRUE,
-             gof_map = c("nobs", "adj.r.squared", "FE: .assetid", "FE: year"),
-             title = paste0("Dependent variable: Forest cover area"),
-             notes = list('Standard errors clustered by zones of forest protected areas (WDPA).'),
-             add_rows = as.data.frame(obs_table_m32)
-)
 modelsummary(m_list3,
              output = "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/table3.html",
              coef_rename = c("emissions" = "Emissions from deforestation", 
@@ -304,12 +252,5 @@ modelplot(m_list2, background = b)
 modelplot(m_list3, background = b)
 
 
-
-# Create coefficient plot for fc_loss 
-modelplot(m_list1_no2019, background = b)
-# Create coefficient plot for fc_area
-modelplot(m_list2_no2019, background = b)
-# Create coefficient plot for emissions
-modelplot(m_list3_no2019, background = b)
 ```
 
