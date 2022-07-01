@@ -92,6 +92,15 @@ keys_assetid_wdpa <- keys_assetid_wdpa %>%
             by=c("WDPAID")) %>% 
   select(.assetid, WDPAID, first_year)
 
+# load WDPA area type for heterogeneous treatment effects
+wdpa_type <- 
+  read_sf("~/shared/datalake/mapme.protectedareas/input/wdpa_kfw/wdpa_kfw_spatial_latinamerica_2021-02-01_supportedPAs_unique_simplified.gpkg") %>% 
+  st_drop_geometry() %>% 
+  select("WDPAID", "NAME", "IUCN_CAT", "DESIG_ENG") %>% 
+  mutate(WDPA_strict=ifelse(IUCN_CAT=="II" | IUCN_CAT=="Ia" | IUCN_CAT=="Ib" | IUCN_CAT=="III" | IUCN_CAT=="IV", 1,
+                            ifelse(IUCN_CAT=="V" | IUCN_CAT=="VI", 0, NA)))
+
+
 ```
 
 
@@ -119,7 +128,7 @@ project_agg$treatment_disb_duringproj <- ifelse(project_agg$disbursement_proj > 
 # merge WDPA with project data and UID
 ## load
 keys_database <-
-  read_csv("../../datalake/mapme.protectedareas/output/matching/model_frames/keys_wdpaid_bmz.csv") %>% 
+  read_csv("~/shared/datalake/mapme.protectedareas/output/matching/model_frames/keys_wdpaid_bmz.csv") %>% 
   dplyr::rename(., bmz_nummer=value)
 
 bmz_wdpa.df <- merge(keys_database, project_agg,  by=c("bmz_nummer"))
@@ -184,6 +193,7 @@ for (i in T_year) {
       rename("m_treecover" = "treecover",
              "m_loss" = "loss",
              "m_loss_t3" = "loss_t3",
+             "m_loss_tn" = "loss_tn",
              "m_emissions" = "emissions")
     # change variable names to facilitate long format conversion in code below
     colnames(m_data) <-  sub("*_anomaly*", "", colnames(m_data))
@@ -258,6 +268,7 @@ for (i in T_year) {
       rename("m_treecover" = "treecover",
              "m_loss" = "loss",
              "m_loss_t3" = "loss_t3",
+             "m_loss_tn" = "loss_tn",
              "m_emissions" = "emissions")
     # change variable names to facilitate long format conversion in code below
     colnames(m_data) <-  sub("*_anomaly*", "", colnames(m_data))
