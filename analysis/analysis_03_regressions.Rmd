@@ -89,30 +89,68 @@ for (t in all_years) {
   # Fill observations table for all regressions. Comments show procedure for m12
     
   # m12  
-  regyears <- length(unique(panel.df[get(paste0("m12_",t))$obs_selection$obsRemoved,]$year))
-  # regyears extracts the number of years that enter the regression for the respective model specification
   
-  obs_table_m12[1,paste0(t)] <- nrow(panel.df[get(paste0("m12_",t))$obs_selection$obsRemoved,])/regyears
-  obs_table_m12[2,paste0(t)] <- table(panel.df[get(paste0("m12_",t))$obs_selection$obsRemoved,]$treatment)[2]/regyears
-  obs_table_m12[3,paste0(t)] <- table(panel.df[get(paste0("m12_",t))$obs_selection$obsRemoved,]$treatment)[1]/regyears
-  # object m12_t is the regression model. Obs_selection$obsRemoved gives a vector of observation IDs that were removed in the regression. 
-  # The IDs in the vector have a negative sign -> code above selects only observations that entered the regression
-  # nrow gives the total number of obs in the regression
-  # number of treatment and control cells are extracted using table() 
+  if (length(m12_2004$obs_selection)==0) { # in case no obs are dropped
+    
+    regyears <- length(unique(panel.df$year))
+    
+    obs_table_m12[1,paste0(t)] <- nrow(panel.df)/regyears
+    obs_table_m12[2,paste0(t)] <- table(panel.df$treatment)[2]/regyears
+    obs_table_m12[3,paste0(t)] <- table(panel.df$treatment)[1]/regyears
+    
+  } else { # in case obs are dropped
+    
+    regyears <- length(unique(panel.df[get(paste0("m12_",t))$obs_selection$obsRemoved,]$year))
+    # regyears extracts the number of years that enter the regression for the respective model specification
+  
+    obs_table_m12[1,paste0(t)] <- nrow(panel.df[get(paste0("m12_",t))$obs_selection$obsRemoved,])/regyears
+    obs_table_m12[2,paste0(t)] <- table(panel.df[get(paste0("m12_",t))$obs_selection$obsRemoved,]$treatment)[2]/regyears
+    obs_table_m12[3,paste0(t)] <- table(panel.df[get(paste0("m12_",t))$obs_selection$obsRemoved,]$treatment)[1]/regyears
+    # object m12_t is the regression model. Obs_selection$obsRemoved gives a vector of observation IDs that were removed in the regression. 
+    # The IDs in the vector have a negative sign -> code above selects only observations that entered the regression
+    # nrow gives the total number of obs in the regression
+    # number of treatment and control cells are extracted using table() 
+  }
   
   # m22
-  regyears <- length(unique(panel.df[get(paste0("m22_",t))$obs_selection$obsRemoved,]$year))
   
-  obs_table_m22[1,paste0(t)] <- nrow(panel.df[get(paste0("m22_",t))$obs_selection$obsRemoved,])/regyears
-  obs_table_m22[2,paste0(t)] <- table(panel.df[get(paste0("m22_",t))$obs_selection$obsRemoved,]$treatment)[2]/regyears
-  obs_table_m22[3,paste0(t)] <- table(panel.df[get(paste0("m22_",t))$obs_selection$obsRemoved,]$treatment)[1]/regyears
+  if (length(m22_2004$obs_selection)==0) {
+    
+    regyears <- length(unique(panel.df$year))
+    
+    obs_table_m22[1,paste0(t)] <- nrow(panel.df)/regyears
+    obs_table_m22[2,paste0(t)] <- table(panel.df$treatment)[2]/regyears
+    obs_table_m22[3,paste0(t)] <- table(panel.df$treatment)[1]/regyears
+    
+  } else {
+    
+    regyears <- length(unique(panel.df[get(paste0("m22_",t))$obs_selection$obsRemoved,]$year))
+  
+    obs_table_m22[1,paste0(t)] <- nrow(panel.df[get(paste0("m22_",t))$obs_selection$obsRemoved,])/regyears
+    obs_table_m22[2,paste0(t)] <- table(panel.df[get(paste0("m22_",t))$obs_selection$obsRemoved,]$treatment)[2]/regyears
+    obs_table_m22[3,paste0(t)] <- table(panel.df[get(paste0("m22_",t))$obs_selection$obsRemoved,]$treatment)[1]/regyears
+  
+  }
   
   # m32
-  regyears <- length(unique(panel.df[get(paste0("m32_",t))$obs_selection$obsRemoved,]$year))
   
-  obs_table_m32[1,paste0(t)] <- nrow(panel.df[get(paste0("m32_",t))$obs_selection$obsRemoved,])/regyears
-  obs_table_m32[2,paste0(t)] <- table(panel.df[get(paste0("m32_",t))$obs_selection$obsRemoved,]$treatment)[2]/regyears
-  obs_table_m32[3,paste0(t)] <- table(panel.df[get(paste0("m32_",t))$obs_selection$obsRemoved,]$treatment)[1]/regyears
+  if (length(m32_2004$obs_selection)==0) {
+    
+    regyears <- length(unique(panel.df$year))
+    
+    obs_table_m32[1,paste0(t)] <- nrow(panel.df)/regyears
+    obs_table_m32[2,paste0(t)] <- table(panel.df$treatment)[2]/regyears
+    obs_table_m32[3,paste0(t)] <- table(panel.df$treatment)[1]/regyears
+    
+  } else {
+    
+    regyears <- length(unique(panel.df[get(paste0("m32_",t))$obs_selection$obsRemoved,]$year))
+    
+    obs_table_m32[1,paste0(t)] <- nrow(panel.df[get(paste0("m32_",t))$obs_selection$obsRemoved,])/regyears
+    obs_table_m32[2,paste0(t)] <- table(panel.df[get(paste0("m32_",t))$obs_selection$obsRemoved,]$treatment)[2]/regyears
+    obs_table_m32[3,paste0(t)] <- table(panel.df[get(paste0("m32_",t))$obs_selection$obsRemoved,]$treatment)[1]/regyears
+  
+  }
   
   # Fill estimates
   
