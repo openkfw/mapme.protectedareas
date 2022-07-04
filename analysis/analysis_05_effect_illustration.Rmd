@@ -74,9 +74,9 @@ obs_treated <- as.numeric(as.vector(obs_table_loss[2,2:(length(all_years) + 1)])
 
 # multiply obs X treatment effect 
 # total_loss_avoided <- as.numeric(as.vector(est_table_loss[1,2:(length(all_years) + 1)])) * as.numeric(as.vector(obs_table_loss[2,2:(length(all_years) + 1)]))
-total_loss_avoided <- loss_effect * obs_treated
+total_loss_avoided <- round(loss_effect * obs_treated, digits = 0)
 
-total_emissions_avoided <- as.numeric(as.vector(est_table_emissions[1,2:(length(all_years) + 1)])) * as.numeric(as.vector(obs_table_emissions[2,2:(length(all_years) + 1)])) * 500 # is it correct to multiply by 500? bc estimate for tons per ha
+total_emissions_avoided <- round(as.numeric(as.vector(est_table_emissions[1,2:(length(all_years) + 1)])) * as.numeric(as.vector(obs_table_emissions[2,2:(length(all_years) + 1)])) * 500, digits = 0) # is it correct to multiply by 500? bc estimate for tons per ha
 
 # add total amount of disbursement
 disbursement <- round(internal_data_year$total_disbursed, digits = 0)
@@ -99,12 +99,14 @@ effects_table <- as.data.frame(rbind(loss_effect,
                                      eur_per_avoided_ton,
                                      deparse.level = 1))
 names(effects_table) <- c(all_years)
+rownames(effects_table) <- c("Forest cover loss avoided per cell (ha)", "CO2 emissions avoided per cell (tons)", "Number of supported PA cells", "Total forest cover loss avoided (ha)", "Total CO2 emissions avoided (tons)", "KfW finance (EUR)", "Emissions avoided per EUR invested", "Euro per avoided ton of CO2 emissions")
 # effects_table <- round(as.numeric(effects_table), digits = 3)
 effects_table <- tibble::rownames_to_column(effects_table, "row_names")
 
 stargazer(effects_table,
           summary = FALSE,
-          type="text")
+          type="text",
+          notes = "Add notes here.")
 
 ```
 
