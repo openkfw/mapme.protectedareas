@@ -6,7 +6,7 @@ output: workflowr::wflow_html
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+knitr::opts_chunk$set(echo = FALSE, message = FALSE)
 knitr::opts_knit$set(root.dir = "~/shared/datalake/mapme.protectedareas")
 ```
 
@@ -39,16 +39,7 @@ pre code {
 
 
 #### ---- Create table for all years -----
-all_years <- c(2004:2017, 2019)
-
-# Prepare estimates table
-est_table <- matrix(NA, nrow = 1, ncol = length(all_years)+1)
-colnames(est_table) <- c("name", all_years)
-est_table[1,1] <- "Treatment effect estimate"
-
-est_table_m12 <- est_table
-est_table_m22 <- est_table
-est_table_m32 <- est_table
+all_years <- c(2004:2017)
 
 # Prepare observations table
 obs_table <- matrix(NA, nrow = 3, ncol = length(all_years)+1)
@@ -58,8 +49,8 @@ obs_table[1,1] <- "Total num. cells"
 obs_table[2,1] <- "--treated"
 obs_table[3,1] <- "--control"
 
-# obs_table_m11 <- obs_table
-# obs_table_m21 <- obs_table
+obs_table_m11 <- obs_table
+obs_table_m21 <- obs_table
 obs_table_m12 <- obs_table
 obs_table_m22 <- obs_table
 obs_table_m32 <- obs_table
@@ -75,7 +66,7 @@ for (t in all_years) {
            NAME_0_num = as.numeric(as.factor(NAME_0))) %>% 
     rename(., weights_cem=weights) # rename weights
   # create WDPA cluster that are country specific (important for control group, as all controll cells belong to ID 9999999999 regardless of the country. Now the control cells are clustered for each country.)
-  panel.df$WDPAID_cluster <- as.numeric(paste0(panel.df$NAME_0_num, panel.df$WDPAID_cluster)) 
+  panel.df$WDPAID_cluster <- as.numeric(paste0(panel.df$NAME_0_num, panel.df$WDPAID)) 
   
   
   # assign(paste0("m11_",t), feols(fc_loss ~ treatment_disb | .assetid + year, data = panel.df, weights = panel.df$weights_cem, panel.id = ~.assetid+year, cluster = ~.assetid) )
@@ -152,25 +143,19 @@ for (t in all_years) {
   
   }
   
-  # Fill estimates
-  
-  #m12
-  est_table_m12[1,paste0(t)] <- get(paste0("m12_",t))$coeftable[1]
-  
-  #m22
-  est_table_m22[1,paste0(t)] <- get(paste0("m22_",t))$coeftable[1]
-  
-  #m32
-  est_table_m32[1,paste0(t)] <- get(paste0("m32_",t))$coeftable[1]
   
 }
 # m_list1_compare <- list(m11_2004, m12_2004, m11_2005, m12_2005, m11_2006, m12_2006, m11_2007, m12_2007, m11_2008, m12_2008, m11_2009, m12_2009, m11_2010, m12_2010, m11_2011, m12_2011, m11_2012, m12_2012, m11_2013, m12_2013, m11_2014, m12_2014, m11_2015, m12_2015, m11_2016, m12_2016, m11_2019, m12_2019)
 # m_list2_compare <- list(m21_2004, m22_2004, m21_2005, m22_2005, m21_2006, m22_2006, m21_2007, m22_2007, m21_2008, m22_2008, m21_2009, m22_2009, m21_2010, m22_2010, m21_2011, m22_2011, m21_2012, m22_2012, m21_2013, m22_2013, m21_2014, m22_2014, m21_2015, m22_2015, m21_2016, m22_2016, m21_2019, m22_2019)
 
-m_list1 <- list(m12_2004, m12_2005, m12_2006, m12_2007, m12_2008, m12_2009, m12_2010, m12_2011, m12_2012, m12_2013, m12_2014, m12_2015, m12_2016, m12_2017, m12_2019)
-m_list2 <- list(m22_2004, m22_2005, m22_2006, m22_2007, m22_2008, m22_2009, m22_2010, m22_2011, m22_2012, m22_2013, m22_2014, m22_2015, m22_2016, m22_2017, m22_2019)
-m_list3 <- list(m32_2004, m32_2005, m32_2006, m32_2007, m32_2008, m32_2009, m32_2010, m32_2011, m32_2012, m32_2013, m32_2014, m32_2015, m32_2016, m32_2017, m32_2019)
+# m_list1 <- list(m12_2004, m12_2005, m12_2006, m12_2007, m12_2008, m12_2009, m12_2010, m12_2011, m12_2012, m12_2013, m12_2014, m12_2015, m12_2016, m12_2017, m12_2019)
+# m_list2 <- list(m22_2004, m22_2005, m22_2006, m22_2007, m22_2008, m22_2009, m22_2010, m22_2011, m22_2012, m22_2013, m22_2014, m22_2015, m22_2016, m22_2017, m22_2019)
+# m_list3 <- list(m32_2004, m32_2005, m32_2006, m32_2007, m32_2008, m32_2009, m32_2010, m32_2011, m32_2012, m32_2013, m32_2014, m32_2015, m32_2016, m32_2017, m32_2019)
 
+
+m_list1 <- list(m12_2004, m12_2005, m12_2006, m12_2007, m12_2008, m12_2009, m12_2010, m12_2011, m12_2012, m12_2013, m12_2014, m12_2015, m12_2016, m12_2017)
+m_list2 <- list(m22_2004, m22_2005, m22_2006, m22_2007, m22_2008, m22_2009, m22_2010, m22_2011, m22_2012, m22_2013, m22_2014, m22_2015, m22_2016, m22_2017)
+m_list3 <- list(m32_2004, m32_2005, m32_2006, m32_2007, m32_2008, m32_2009, m32_2010, m32_2011, m32_2012, m32_2013, m32_2014, m32_2015, m32_2016, m32_2017)
 
 # names(m_list1_compare) <- sort(c(all_years, all_years))
 # names(m_list2_compare) <- sort(c(all_years, all_years))
@@ -178,30 +163,6 @@ m_list3 <- list(m32_2004, m32_2005, m32_2006, m32_2007, m32_2008, m32_2009, m32_
 names(m_list1) <- all_years
 names(m_list2) <- all_years
 names(m_list3) <- all_years
-```
-
-```{r save obs and est table}
-
-# Observations tables
-write_rds(obs_table_m12,
-          "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/obs_table_m12.rds")
-
-write_rds(obs_table_m22,
-          "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/obs_table_m22.rds")
-
-write_rds(obs_table_m32,
-          "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/obs_table_m32.rds")
-
-# Estimate tables
-write_rds(est_table_m12,
-          "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/est_table_m12.rds")
-
-write_rds(est_table_m22,
-          "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/est_table_m22.rds")
-
-write_rds(est_table_m32,
-          "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/est_table_m32.rds")
-
 
 ```
 
@@ -246,7 +207,6 @@ m12_output %>%
   kable_classic(full_width = F, html_font = "Cambria") %>%
   column_spec(1, width = "8em") %>%
   save_kable(file = "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/table1_cluster_style.html", self_contained = T)
-
 
 
 # modelsummary(m_list1_compare,
@@ -333,5 +293,7 @@ modelplot(m_list1, background = b)
 modelplot(m_list2, background = b)
 # Create coefficient plot for emissions
 modelplot(m_list3, background = b)
+
+
 ```
 
