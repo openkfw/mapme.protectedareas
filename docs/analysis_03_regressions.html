@@ -365,7 +365,7 @@ div.tocify {
 
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
-<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 </button>
 </p>
 <div id="workflowr-report" class="collapse">
@@ -374,7 +374,7 @@ div.tocify {
 <a data-toggle="tab" href="#summary">Summary</a>
 </li>
 <li>
-<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> </a>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -383,10 +383,10 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2022-07-01
+<strong>Last updated:</strong> 2022-07-04
 </p>
 <p>
-<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 1
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
 </p>
 <p>
 <strong>Knit directory:</strong> <code>mapme.protectedareas/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
@@ -402,12 +402,12 @@ This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a> analysi
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges"> <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted changes </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguncommittedchanges" class="panel-collapse collapse">
+<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown file has unstaged changes. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
 </div>
 </div>
 </div>
@@ -474,16 +474,16 @@ This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a> analysi
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastree159609e7581b0372813d185d8de4a81c90e14b25targetblank159609ea"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/openkfw/mapme.protectedareas/tree/159609e7581b0372813d185d8de4a81c90e14b25" target="_blank">159609e</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastree2a9ed37e7208cd0efd338285e78ab9399ccfd426targetblank2a9ed37a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/openkfw/mapme.protectedareas/tree/2a9ed37e7208cd0efd338285e78ab9399ccfd426" target="_blank">2a9ed37</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastree159609e7581b0372813d185d8de4a81c90e14b25targetblank159609ea" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastree2a9ed37e7208cd0efd338285e78ab9399ccfd426targetblank2a9ed37a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/openkfw/mapme.protectedareas/tree/159609e7581b0372813d185d8de4a81c90e14b25" target="_blank">159609e</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/openkfw/mapme.protectedareas/tree/2a9ed37e7208cd0efd338285e78ab9399ccfd426" target="_blank">2a9ed37</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -494,10 +494,12 @@ Ignored files:
     Ignored:    .Rproj.user/
     Ignored:    output/regression_output/
 
+Untracked files:
+    Untracked:  analysis/analysis_01_matching_tn.Rmd
+
 Unstaged changes:
     Modified:   analysis/analysis_01_matching.Rmd
     Modified:   analysis/analysis_02_createpanel.Rmd
-    Modified:   analysis/analysis_03_regressions.Rmd
 
 </code></pre>
 <p>
@@ -536,6 +538,57 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/2a9ed37e7208cd0efd338285e78ab9399ccfd426/analysis/analysis_03_regressions.Rmd" target="_blank">2a9ed37</a>
+</td>
+<td>
+melvinhlwong
+</td>
+<td>
+2022-07-04
+</td>
+<td>
+filtered parallel trends
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/3be57f869516d07e7d087f272c995169e712ea1d/analysis/analysis_03_regressions.Rmd" target="_blank">3be57f8</a>
+</td>
+<td>
+melvinhlwong
+</td>
+<td>
+2022-07-01
+</td>
+<td>
+update: drop 2019
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/openkfw/mapme.protectedareas/3be57f869516d07e7d087f272c995169e712ea1d/docs/analysis_03_regressions.html" target="_blank">3be57f8</a>
+</td>
+<td>
+melvinhlwong
+</td>
+<td>
+2022-07-01
+</td>
+<td>
+update: drop 2019
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -932,14 +985,9 @@ pre code {
 [1] 2007
 [1] 2008
 [1] 2009
-[1] 2010
 [1] 2011
 [1] 2012
-[1] 2013
-[1] 2014
-[1] 2015
-[1] 2016
-[1] 2017</code></pre>
+[1] 2015</code></pre>
 <table style="NAborder-bottom: 0;border-bottom: 0; width: auto !important; margin-left: auto; margin-right: auto;" class="table">
 <caption>
 Dependent variable: Forest cover loss
@@ -967,28 +1015,13 @@ Dependent variable: Forest cover loss
 2009
 </th>
 <th style="text-align:center;">
-2010
-</th>
-<th style="text-align:center;">
 2011
 </th>
 <th style="text-align:center;">
 2012
 </th>
 <th style="text-align:center;">
-2013
-</th>
-<th style="text-align:center;">
-2014
-</th>
-<th style="text-align:center;">
 2015
-</th>
-<th style="text-align:center;">
-2016
-</th>
-<th style="text-align:center;">
-2017
 </th>
 </tr>
 </thead>
@@ -1016,28 +1049,13 @@ KfW support
 0.703+
 </td>
 <td style="text-align:center;">
-0.998***
-</td>
-<td style="text-align:center;">
 −0.217
 </td>
 <td style="text-align:center;">
 0.009
 </td>
 <td style="text-align:center;">
-−0.440
-</td>
-<td style="text-align:center;">
-0.493***
-</td>
-<td style="text-align:center;">
 −0.767***
-</td>
-<td style="text-align:center;">
-−1.685***
-</td>
-<td style="text-align:center;">
-−0.006
 </td>
 </tr>
 <tr>
@@ -1062,28 +1080,13 @@ KfW support
 (0.303)
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
-(0.029)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
 (0.599)
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
 (0.068)
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
-(1.455)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(0.000)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
 (0.124)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(0.138)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(0.076)
 </td>
 </tr>
 <tr>
@@ -1109,28 +1112,13 @@ Num.Obs.
 286000
 </td>
 <td style="text-align:center;">
-1722400
-</td>
-<td style="text-align:center;">
 1379020
 </td>
 <td style="text-align:center;">
 6576260
 </td>
 <td style="text-align:center;">
-1292640
-</td>
-<td style="text-align:center;">
-1041160
-</td>
-<td style="text-align:center;">
 19885180
-</td>
-<td style="text-align:center;">
-12063180
-</td>
-<td style="text-align:center;">
-4905880
 </td>
 </tr>
 <tr>
@@ -1156,28 +1144,13 @@ R2 Adj.
 0.147
 </td>
 <td style="text-align:center;">
-0.034
-</td>
-<td style="text-align:center;">
 0.123
 </td>
 <td style="text-align:center;">
 0.162
 </td>
 <td style="text-align:center;">
-0.084
-</td>
-<td style="text-align:center;">
-0.056
-</td>
-<td style="text-align:center;">
 0.058
-</td>
-<td style="text-align:center;">
-0.063
-</td>
-<td style="text-align:center;">
-0.176
 </td>
 </tr>
 <tr>
@@ -1211,40 +1184,10 @@ X
 <td style="text-align:center;">
 X
 </td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
 </tr>
 <tr>
 <td style="text-align:left;">
 FE: year
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
 </td>
 <td style="text-align:center;">
 X
@@ -1297,28 +1240,13 @@ Total num. cells
 14300
 </td>
 <td style="text-align:center;">
-86120
-</td>
-<td style="text-align:center;">
 68951
 </td>
 <td style="text-align:center;">
 328813
 </td>
 <td style="text-align:center;">
-64632
-</td>
-<td style="text-align:center;">
-52058
-</td>
-<td style="text-align:center;">
 994259
-</td>
-<td style="text-align:center;">
-603159
-</td>
-<td style="text-align:center;">
-245294
 </td>
 </tr>
 <tr>
@@ -1344,28 +1272,13 @@ Total num. cells
 518
 </td>
 <td style="text-align:center;">
-1738
-</td>
-<td style="text-align:center;">
 3007
 </td>
 <td style="text-align:center;">
 11398
 </td>
 <td style="text-align:center;">
-478
-</td>
-<td style="text-align:center;">
-128
-</td>
-<td style="text-align:center;">
 122433
-</td>
-<td style="text-align:center;">
-2571
-</td>
-<td style="text-align:center;">
-7875
 </td>
 </tr>
 <tr>
@@ -1391,28 +1304,13 @@ Total num. cells
 13782
 </td>
 <td style="text-align:center;">
-84382
-</td>
-<td style="text-align:center;">
 65944
 </td>
 <td style="text-align:center;">
 317415
 </td>
 <td style="text-align:center;">
-64154
-</td>
-<td style="text-align:center;">
-51930
-</td>
-<td style="text-align:center;">
 871826
-</td>
-<td style="text-align:center;">
-600588
-</td>
-<td style="text-align:center;">
-237419
 </td>
 </tr>
 </tbody>
@@ -1458,28 +1356,13 @@ Dependent variable: Forest cover area
 2009
 </th>
 <th style="text-align:center;">
-2010
-</th>
-<th style="text-align:center;">
 2011
 </th>
 <th style="text-align:center;">
 2012
 </th>
 <th style="text-align:center;">
-2013
-</th>
-<th style="text-align:center;">
-2014
-</th>
-<th style="text-align:center;">
 2015
-</th>
-<th style="text-align:center;">
-2016
-</th>
-<th style="text-align:center;">
-2017
 </th>
 </tr>
 </thead>
@@ -1507,28 +1390,13 @@ KfW support
 −10.865
 </td>
 <td style="text-align:center;">
-5.341***
-</td>
-<td style="text-align:center;">
 1.620
 </td>
 <td style="text-align:center;">
 0.339
 </td>
 <td style="text-align:center;">
-10.996
-</td>
-<td style="text-align:center;">
-8.137***
-</td>
-<td style="text-align:center;">
 2.897*
-</td>
-<td style="text-align:center;">
-7.917***
-</td>
-<td style="text-align:center;">
-0.695
 </td>
 </tr>
 <tr>
@@ -1553,28 +1421,13 @@ KfW support
 (12.064)
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
-(0.102)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
 (6.478)
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
 (1.492)
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
-(14.596)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(0.000)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
 (1.117)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(1.487)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(1.107)
 </td>
 </tr>
 <tr>
@@ -1600,28 +1453,13 @@ Num.Obs.
 300300
 </td>
 <td style="text-align:center;">
-1808520
-</td>
-<td style="text-align:center;">
 1447971
 </td>
 <td style="text-align:center;">
 6905073
 </td>
 <td style="text-align:center;">
-1357272
-</td>
-<td style="text-align:center;">
-1093218
-</td>
-<td style="text-align:center;">
 20879439
-</td>
-<td style="text-align:center;">
-12666339
-</td>
-<td style="text-align:center;">
-5151174
 </td>
 </tr>
 <tr>
@@ -1647,48 +1485,18 @@ R2 Adj.
 0.942
 </td>
 <td style="text-align:center;">
-0.917
-</td>
-<td style="text-align:center;">
 0.987
 </td>
 <td style="text-align:center;">
 0.999
 </td>
 <td style="text-align:center;">
-0.972
-</td>
-<td style="text-align:center;">
-0.976
-</td>
-<td style="text-align:center;">
 0.968
-</td>
-<td style="text-align:center;">
-0.979
-</td>
-<td style="text-align:center;">
-0.999
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 FE: .assetid
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
 </td>
 <td style="text-align:center;">
 X
@@ -1749,40 +1557,10 @@ X
 <td style="text-align:center;">
 X
 </td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Total num. cells
-</td>
-<td style="text-align:center;">
-NaN
-</td>
-<td style="text-align:center;">
-NaN
-</td>
-<td style="text-align:center;">
-NaN
-</td>
-<td style="text-align:center;">
-NaN
-</td>
-<td style="text-align:center;">
-NaN
 </td>
 <td style="text-align:center;">
 NaN
@@ -1843,40 +1621,10 @@ NA
 <td style="text-align:center;">
 NA
 </td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-NA
-</td>
 </tr>
 <tr>
 <td style="text-align:left;">
 –control
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-NA
 </td>
 <td style="text-align:center;">
 NA
@@ -1949,28 +1697,13 @@ Dependent variable: Forest cover area
 2009
 </th>
 <th style="text-align:center;">
-2010
-</th>
-<th style="text-align:center;">
 2011
 </th>
 <th style="text-align:center;">
 2012
 </th>
 <th style="text-align:center;">
-2013
-</th>
-<th style="text-align:center;">
-2014
-</th>
-<th style="text-align:center;">
 2015
-</th>
-<th style="text-align:center;">
-2016
-</th>
-<th style="text-align:center;">
-2017
 </th>
 </tr>
 </thead>
@@ -1998,28 +1731,13 @@ KfW support
 0.845
 </td>
 <td style="text-align:center;">
-0.644**
-</td>
-<td style="text-align:center;">
 −0.288
 </td>
 <td style="text-align:center;">
 0.011
 </td>
 <td style="text-align:center;">
-−0.655
-</td>
-<td style="text-align:center;">
-0.073***
-</td>
-<td style="text-align:center;">
 −0.920***
-</td>
-<td style="text-align:center;">
-−2.002***
-</td>
-<td style="text-align:center;">
-−0.005
 </td>
 </tr>
 <tr>
@@ -2044,28 +1762,13 @@ KfW support
 (0.683)
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
-(0.023)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
 (0.652)
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
 (0.096)
 </td>
 <td style="text-align:center;box-shadow: 0px 1px">
-(1.453)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(0.000)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
 (0.164)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(0.170)
-</td>
-<td style="text-align:center;box-shadow: 0px 1px">
-(0.090)
 </td>
 </tr>
 <tr>
@@ -2091,28 +1794,13 @@ Num.Obs.
 300300
 </td>
 <td style="text-align:center;">
-1808520
-</td>
-<td style="text-align:center;">
 1447971
 </td>
 <td style="text-align:center;">
 6905073
 </td>
 <td style="text-align:center;">
-1357272
-</td>
-<td style="text-align:center;">
-1093218
-</td>
-<td style="text-align:center;">
 20879439
-</td>
-<td style="text-align:center;">
-12666339
-</td>
-<td style="text-align:center;">
-5151174
 </td>
 </tr>
 <tr>
@@ -2138,48 +1826,18 @@ R2 Adj.
 0.171
 </td>
 <td style="text-align:center;">
-0.034
-</td>
-<td style="text-align:center;">
 0.108
 </td>
 <td style="text-align:center;">
 0.161
 </td>
 <td style="text-align:center;">
-0.096
-</td>
-<td style="text-align:center;">
-0.057
-</td>
-<td style="text-align:center;">
 0.060
-</td>
-<td style="text-align:center;">
-0.064
-</td>
-<td style="text-align:center;">
-0.257
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 FE: .assetid
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
 </td>
 <td style="text-align:center;">
 X
@@ -2240,40 +1898,10 @@ X
 <td style="text-align:center;">
 X
 </td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-X
-</td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Total num. cells
-</td>
-<td style="text-align:center;">
-NaN
-</td>
-<td style="text-align:center;">
-NaN
-</td>
-<td style="text-align:center;">
-NaN
-</td>
-<td style="text-align:center;">
-NaN
-</td>
-<td style="text-align:center;">
-NaN
 </td>
 <td style="text-align:center;">
 NaN
@@ -2334,40 +1962,10 @@ NA
 <td style="text-align:center;">
 NA
 </td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-NA
-</td>
 </tr>
 <tr>
 <td style="text-align:left;">
 –control
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-NA
 </td>
 <td style="text-align:center;">
 NA
