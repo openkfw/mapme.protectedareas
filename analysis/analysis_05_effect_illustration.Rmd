@@ -93,40 +93,47 @@ emissions_avoided_per_eur <- total_emissions_avoided/disbursement
 # divide disbursements by emissions
 eur_per_avoided_ton <- disbursement/total_emissions_avoided
 
-# total
-totals <- c(sum(total_treated_area),
-            sum(total_loss_avoided),
-            sum(total_emissions_avoided),
-            sum(disbursement),
-            sum(disbursement_per_ha),
-            sum(eur_per_avoided_ton))
-
 # rbind tables
 effects_table <- as.data.frame(rbind(
                                      # loss_effect,
                                      # emissions_effect,
                                      # obs_treated,
                                      total_treated_area,
-                                     total_loss_avoided,
-                                     total_emissions_avoided,
+                                     -total_loss_avoided,
+                                     -total_emissions_avoided,
                                      disbursement,
-                                     disbursement_per_ha,
+                                     # disbursement_per_ha,
                                      # emissions_avoided_per_eur,
-                                     eur_per_avoided_ton,
+                                     -eur_per_avoided_ton,
                                      deparse.level = 1))
+names(effects_table) <- c(all_years)
+effects_table <- subset(effects_table, select = c(-`2010`, -`2013`, -`2014`, -`2016`, -`2017`, -`2019`))
+
+
+total_1 <- sum(effects_table[1,])
+total_2 <- sum(effects_table[2,])
+total_3 <- sum(effects_table[3,])
+total_4 <- sum(effects_table[4,])
+total_5 <- total_4/total_3
+
+# total
+totals <- c(total_1, total_2, total_3, total_4, total_5)
+
 effects_table <- cbind(effects_table, totals)
-names(effects_table) <- c(all_years, "2004-2015")
+
 rownames(effects_table) <- c(
                              # "Forest cover loss avoided per cell (ha)", "CO2 emissions avoided per cell (tons)", "Number of supported PA cells", 
                              "Total supported protected area (ha)", 
                              "Total forest cover loss avoided (ha)", 
                              "Total CO2 emissions avoided (tons)", 
                              "KfW finance (EUR)", 
-                             "Finance per ha (EUR)",
+                             # "Finance per ha (EUR)",
                              # "Emissions avoided per EUR invested", 
                              "Euro per avoided ton of CO2 emissions")
 # effects_table <- round(as.numeric(effects_table), digits = 3)
 effects_table <- tibble::rownames_to_column(effects_table, "row_names")
+
+
 
 stargazer(effects_table,
           summary = FALSE,
