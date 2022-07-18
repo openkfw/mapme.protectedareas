@@ -1,0 +1,72 @@
+---
+title: 'Comments and Discussion: Green Sector Retreat'
+author: "Yota"
+date: "18 7 2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+knitr::opts_knit$set(root.dir = "~/shared/datalake/mapme.protectedareas")
+```
+
+## Green Sector Retreat
+
+Data, methodology and results were presented at the Green Sector Retreat by KfW on 8 July 2022. In this markdown file, comments, questions and discussions that came up during or after the presentation are recorded.
+
+### Questions/Comments
+
+* Does the analysis take into account the time difference between disbursement of funds and project measure implementation?
+* Is leakage taken into account? Is it possible to quantify leakage effects?
+* Does it suffice to leave out buffer zones from the analysis or is it necessary to quantify leakage in order to calculate the 'real effect'? 
+* Null effects should not be left out of calculations (e.g. calulation of value for money) because money was disbursed in projects will null effects too.
+* Do we know how much money was donated/granted by other donors? 
+* What kind of forest cover loss are we looking at? What is our hypothesis for forest cover loss? Is there a (hidden) assumption that forest cover loss was due to agricultural conversion? This is important since this assumption validates/justifies our proxy variables. For instance, a different reason for deforestation may be extraction of precious woods.
+* While agricultural conversion may be a major factor in Latin America, deforestation dynamics may be driven by other factors in other regions. Keep this in mind when extending the database to other regions.
+* Is the purpose of the projects taken into account? Some projects have other objectives, e.g. protecting biodiversity. 
+* Warning: Cost of CO2 emissions (EUR per ton) may be controversial: "It takes a lot more than for forest conservation to protect forest cover." 
+* Causal attribution not understood or not credible to some. 
+* Disbursements will not reach the protected area (and ultimately, the forest) to the same extent in all projects/regions. 
+
+
+### Suggestions 
+
+* Quantify/analyse leakage effects
+* Think about (hidden) assumptions for reasons for deforestation. Make assumptions more clear and adjust accordingly for different settings. 
+* Gather information about effects of individual projects. Return this information to operative departments/ portfolio managers. In turn: Ask for qualitative information, e.g. "what happened when", "what could be possible reasons for this effect" and also "Are our results in line with your experience/perception of this project"
+* Distinguish between land ownership in *control* areas. Effect sizes may differ depending on this variable: Deforestation dynamics are different (often stronger) in privately owned land. 
+
+### Break-out sessions: Selection
+
+How do we know that we are financing the areas that need our financial assistance most urgently? 
+
+* "LLF - bottom up proposals"
+* "Feasibility study. Dialogue partner"
+* "We don't actually know"
+
+What should be the main criteria to allocate funds and select specific protected areas for financial support (ideally)?
+
+* biodiversity value
+* level of threat: medium threat levels
+* financing need
+* likelihood of successful intervention
+* regional effects, ecological corridors
+* PA category (I - VI)
+* cooperation with GIZ/NGO 
+* cofounding to reach scale
+* PAs that have buffer zone management
+* Partner's committment to ensure sustainability
+* vulnerability
+* financing competition
+* no re-settlements
+
+How are PAs selected/prioritized for KfW financing in reality? 
+
+* feasibility studies 
+* using partner's systems/ knowledge
+* prior interventions
+* donor preference (region/biome)
+* NGO suggestion
+* partner preference & priority
+
+
