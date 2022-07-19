@@ -16,7 +16,7 @@ rm(list=ls())
 options(scipen=999)
 
 # get packages
-lop <- c("tidyverse", "sf", "leaflet", "leaflet.extras", "leaflet.extras2", "ggsci", "scales", "htmltools", "RColorBrewer", "raster", "rgdal", "stars", "kableExtra")
+lop <- c("tidyverse", "sf", "leaflet", "leaflet.extras", "leaflet.extras2", "ggsci", "scales", "htmltools", "RColorBrewer", "raster", "rgdal", "stars", "kableExtra", "plotly")
 newp <- lop[!(lop %in% installed.packages()[,"Package"])]
 if(length(newp)) install.packages(newp)
 lapply(lop, require, character.only = TRUE)
@@ -143,18 +143,40 @@ This table shows the number of *treatment* cells with multiple assigned PAs (WDP
 observations_table <- readRDS("/datadrive/datalake/mapme.protectedareas/output/matching/output_tables/observations_table.rds")
 obs_treated <- as.numeric(observations_table[2,c(2:10, 12, 13, 15)])
 
+# Data frame with variables of interest
+
+collapsed_data <- 
+  check_data_merged %>% 
+  # filter(first_year == year) %>%
+  distinct(key, .keep_all=TRUE) %>% 
+  group_by(first_year,.assetid) %>% 
+  count() %>% 
+  filter(n>1,
+         ! is.na(.assetid))
+
 # Create a table 
-year_table <- data.frame(table((check_data_merged %>% 
-              # filter(first_year == year) %>%
-              distinct(key, .keep_all=TRUE) %>% 
-              group_by(first_year,.assetid) %>% 
-              count() %>% 
-              filter(n>1))$first_year),
+year_table <- data.frame(table(collapsed_data$first_year),
               obs_treated)
-colnames(year_table) <- c("Year", "Cells with multiple WDPA IDs", "Total number of treated cells")
+colnames(year_table) <- c("Matching frame (Year)", "Cells with multiple WDPA IDs", "Total number of treated cells")
 year_table %>% 
   kbl() %>% 
   kable_classic(full_width = T, html_font = "Cambria")
+```
+
+The following plot displays the number of observations vs. the number of WDPA IDs assigned to a cell. This plot does not show cells that have only one assigned WDPA ID. Most cells that have multiple WDPA IDs have only *two* corresponding WDPA IDs. 
+
+```{r}
+# Create bar plot
+
+obs_per_bin <- 
+  collapsed_data %>% 
+  ggplot(aes(x=n, fill=as.factor(first_year), group=as.factor(first_year))) +
+  geom_bar(position = "stack") +
+  labs(x="Number of WDPA IDs assigned", 
+       y="Number of observations",
+       fill="Year")
+ggplotly(obs_per_bin)
+
 ```
 
 
