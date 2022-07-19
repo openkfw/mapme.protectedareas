@@ -16,7 +16,7 @@ rm(list=ls())
 options(scipen=999)
 
 # get packages
-lop <- c("tidyverse", "sf", "leaflet", "leaflet.extras", "leaflet.extras2", "ggsci", "scales", "htmltools", "RColorBrewer", "raster", "rgdal", "stars")
+lop <- c("tidyverse", "sf", "leaflet", "leaflet.extras", "leaflet.extras2", "ggsci", "scales", "htmltools", "RColorBrewer", "raster", "rgdal", "stars", "kableExtra")
 newp <- lop[!(lop %in% installed.packages()[,"Package"])]
 if(length(newp)) install.packages(newp)
 lapply(lop, require, character.only = TRUE)
@@ -76,6 +76,15 @@ keys_filtered <- keys_assetid_wdpa %>%
   count() %>% 
   filter(n > 1)
 
+# Merged data for table
+
+check_data_merged <- left_join(wdpa_year, keys_assetid_wdpa,
+                               by=c("WDPAID")) %>% 
+  filter(first_year > 2003) %>% 
+  unite("key", c("WDPAID", ".assetid"), remove = FALSE)
+
+# Merged data for map 
+
 check_data <- 
   left_join(fishnet_dropgeom, keys_assetid_wdpa, 
             by=c(".assetid")) %>% 
@@ -109,9 +118,9 @@ check_data_exp <- check_data %>%
 
 ```
 
-## Map 
+## Problem Description
 
-This map shows treatment cells that have multiple assigned PAs (WDPA IDs). Reasons for this can be: 
+Reasons for this can be: 
 
 * Cells at the border of multiple PAs
 * Cells within overlapping PAs
@@ -124,6 +133,34 @@ Example for illustration: Say, we have the following cells:
 * Cell "23456" with corresponding PAs with WDPA IDs "3" and "4".
 
 Now, say PAs "1" and "2" both have a project starting in the same year; PAs "3" and "4" have projects starting in different years. In that case, cell "12345" is shown in the map below, cell "23456" is not. Reason: The correct (for our analysis) WDPA ID can be identified for cell "23456" by filtering by project start year. For cell "12345", this is not possible. 
+
+## Table
+
+This table shows the number of *treatment* cells with multiple assigned PAs (WDPA IDs) for each matching frame (year).
+ 
+```{r table}
+# Load obs table
+observations_table <- readRDS("/datadrive/datalake/mapme.protectedareas/output/matching/output_tables/observations_table.rds")
+obs_treated <- as.numeric(observations_table[2,c(2:10, 12, 13, 15)])
+
+# Create a table 
+year_table <- data.frame(table((check_data_merged %>% 
+              # filter(first_year == year) %>%
+              distinct(key, .keep_all=TRUE) %>% 
+              group_by(first_year,.assetid) %>% 
+              count() %>% 
+              filter(n>1))$first_year),
+              obs_treated)
+colnames(year_table) <- c("Year", "Cells with multiple WDPA IDs", "Total number of treated cells")
+year_table %>% 
+  kbl() %>% 
+  kable_classic(full_width = T, html_font = "Cambria")
+```
+
+
+## Map 
+
+This map shows *treatment* cells that have multiple assigned PAs (WDPA IDs). 
 
 ```{r map}
 #------- Color palettes --------
