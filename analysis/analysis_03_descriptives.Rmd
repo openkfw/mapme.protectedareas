@@ -17,7 +17,7 @@ options(scipen=999)
 options(width = 200)
 
 # get packages
-lop <- c("dplyr", "plm", "stargazer", "tidyverse", "MatchIt", "glm", "optmatch", "cobalt", "gridExtra")
+lop <- c("dplyr", "plm", "stargazer", "tidyverse", "MatchIt", "optmatch", "cobalt", "gridExtra")
 newp <- lop[!(lop %in% installed.packages()[,"Package"])]
 if(length(newp)) install.packages(newp)
 lapply(lop, require, character.only = TRUE)
@@ -146,9 +146,13 @@ get_descriptives <- function(year) {
   # Love plot
   plot_love <- love.plot(treat ~ covs, 
                          data = data, 
+                         stats = c("mean.diffs", "ks"), 
                          weights = list(CEM = m_cem, 
                                         PSM = m_psm), 
                          binary = "std",
+                         shapes = c("square", "circle", "circle"),
+                         colors = c("#e41a1c", "#377eb8", "#4daf4a"),
+                         size = 5,
                          alpha = 0.8)
 
   # Balance plot (density)
