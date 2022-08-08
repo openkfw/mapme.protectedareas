@@ -152,7 +152,7 @@ get_descriptives <- function(year) {
                          binary = "std",
                          shapes = c("square", "circle", "circle"),
                          colors = c("#e41a1c", "#377eb8", "#4daf4a"),
-                         size = 5,
+                         size = 2,t
                          alpha = 0.8)
 
   # Balance plot (density)
@@ -209,7 +209,7 @@ get_descriptives <- function(year) {
                           var.name = "loss_t3", which = "both") +
     coord_cartesian(xlim = c(0, xmax))
 
-  plot(plot_love)
+  # plot(plot_love)
   plot(plot_tt)
   plot(plot_cc)
   plot(plot_tr)
