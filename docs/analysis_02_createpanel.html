@@ -73,6 +73,7 @@ if (window.hljs) {
 
 
 
+
 <style type = "text/css">
 .main-container {
   max-width: 940px;
@@ -93,6 +94,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -318,7 +322,7 @@ div.tocify {
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -381,7 +385,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2022-06-23
+<strong>Last updated:</strong> 2022-08-11
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 1
@@ -472,16 +476,16 @@ This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a> analysi
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastree1dfb8aae4a51d8abccebf9dadb4ab0d85a476af9targetblank1dfb8aaa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/openkfw/mapme.protectedareas/tree/1dfb8aae4a51d8abccebf9dadb4ab0d85a476af9" target="_blank">1dfb8aa</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastree64ebf1e7661a0060e86a649f1534ae50d976a231targetblank64ebf1ea"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/openkfw/mapme.protectedareas/tree/64ebf1e7661a0060e86a649f1534ae50d976a231" target="_blank">64ebf1e</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastree1dfb8aae4a51d8abccebf9dadb4ab0d85a476af9targetblank1dfb8aaa" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastree64ebf1e7661a0060e86a649f1534ae50d976a231targetblank64ebf1ea" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/openkfw/mapme.protectedareas/tree/1dfb8aae4a51d8abccebf9dadb4ab0d85a476af9" target="_blank">1dfb8aa</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/openkfw/mapme.protectedareas/tree/64ebf1e7661a0060e86a649f1534ae50d976a231" target="_blank">64ebf1e</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -492,10 +496,13 @@ Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
 
+Untracked files:
+    Untracked:  analysis/descriptives_propscores.Rmd
+    Untracked:  analysis/table_cells_overlapping_wdpa.Rmd
+
 Unstaged changes:
     Modified:   analysis/analysis_02_createpanel.Rmd
-    Modified:   analysis/analysis_03_regressions.Rmd
-    Modified:   analysis/analysis_05_effect_illustration.Rmd
+    Modified:   analysis/analysis_03_descriptives.Rmd
 
 </code></pre>
 <p>
@@ -534,6 +541,57 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/8d7061f2124c8acfa5db11af3ea8a5cda3c879f0/analysis/analysis_02_createpanel.Rmd" target="_blank">8d7061f</a>
+</td>
+<td>
+melvinhlwong
+</td>
+<td>
+2022-07-01
+</td>
+<td>
+add wdpa type variable
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/openkfw/mapme.protectedareas/f1f2ad7459c55cc3ab7d529bb5e427a8bba21098/docs/analysis_02_createpanel.html" target="_blank">f1f2ad7</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-23
+</td>
+<td>
+updated output
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/56570dc7c1c710c42b68d3670abd1486f72fdda5/analysis/analysis_02_createpanel.Rmd" target="_blank">56570dc</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-23
+</td>
+<td>
+partial fix duplicate cells and duplicate check
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -932,28 +990,6 @@ new analysis files
 </div>
 </div>
 </div>
-<pre class="r"><code># clean workspace, set options
-rm(list=ls())
-options(scipen=999)
-
-# get packages
-lop &lt;- c(&quot;tidyverse&quot;, &quot;sf&quot;, &quot;units&quot;)
-newp &lt;- lop[!(lop %in% installed.packages()[,&quot;Package&quot;])]
-if(length(newp)) install.packages(newp)
-lapply(lop, require, character.only = TRUE)</code></pre>
-<pre><code>Loading required package: tidyverse</code></pre>
-<pre><code>── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──</code></pre>
-<pre><code>✔ ggplot2 3.3.4     ✔ purrr   0.3.4
-✔ tibble  3.1.7     ✔ dplyr   1.0.9
-✔ tidyr   1.2.0     ✔ stringr 1.4.0
-✔ readr   2.1.2     ✔ forcats 0.5.1</code></pre>
-<pre><code>── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-✖ dplyr::filter() masks stats::filter()
-✖ dplyr::lag()    masks stats::lag()</code></pre>
-<pre><code>Loading required package: sf</code></pre>
-<pre><code>Linking to GEOS 3.8.0, GDAL 3.0.4, PROJ 7.0.0; sf_use_s2() is TRUE</code></pre>
-<pre><code>Loading required package: units</code></pre>
-<pre><code>udunits database from /usr/share/xml/udunits/udunits2.xml</code></pre>
 <pre><code>[[1]]
 [1] TRUE
 
@@ -962,222 +998,8 @@ lapply(lop, require, character.only = TRUE)</code></pre>
 
 [[3]]
 [1] TRUE</code></pre>
-<pre class="r"><code># Timer
-start_time &lt;- Sys.time()
-
-#------- Load and prepare fc data -------
-
-# # Forest loss data
-# fcl_supported_AND_nonPas &lt;-
-#   read_csv(&quot;../../datalake/mapme.protectedareas/output/polygon/sampling/fishnets/dec_08/gfw/gfw_10km_all.csv&quot;)
-# 
-# # Select variables
-# fcl_data &lt;- fcl_supported_AND_nonPas %&gt;% 
-#   select(poly_id,id.x,treatment.x, starts_with(&quot;area&quot;), starts_with(&quot;loss&quot;))
-
-# Forest loss data
-fcl &lt;- read_rds(&quot;/datadrive/datalake/mapme.protectedareas/output/matching/matching_frames/full_database.rds&quot;) %&gt;%
-  select(.assetid,
-         starts_with(&quot;treecover&quot;),
-         starts_with(&quot;loss&quot;),
-         starts_with(&quot;emissions&quot;),
-         starts_with(&quot;minprec&quot;),
-         starts_with(&quot;maxprec&quot;),
-         starts_with(&quot;wetness&quot;)) %&gt;%
-  select(-starts_with(&quot;loss_t3&quot;),
-         -starts_with(&quot;loss_tn&quot;))
-
-# change variable names to facilitate long format conversion in code below
- colnames(fcl) &lt;-  sub(&quot;*_anomaly*&quot;, &quot;&quot;, colnames(fcl))
- colnames(fcl) &lt;-  sub(&quot;*_min*&quot;, &quot;&quot;, colnames(fcl))
- 
-##  Protected areas
-wdpa_kfw&lt;-
-  read_sf(&quot;~/shared/datalake/mapme.protectedareas/input/wdpa_kfw/wdpa_kfw_spatial_latinamerica_2021-02-01_supportedPAs_unique.gpkg&quot;)
-
-# Load KfW finance data 
-kfw_finance &lt;- 
-  read_csv(&quot;~/shared/datalake/mapme.protectedareas/input/kfw_finance/mapme.protectedareas_kfw-finance-2021-03-17.csv&quot;) %&gt;% 
-  filter(! is.na(bmz_nummer))</code></pre>
-<pre><code>Rows: 42 Columns: 4
-── Column specification ────────────────────────────────────────────────────────
-Delimiter: &quot;,&quot;
-dbl (4): bmz_nummer, first_year, last_year, total_disbursed
-
-ℹ Use `spec()` to retrieve the full column specification for this data.
-ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<pre class="r"><code>#Load wdpa bmz keys
-keys_wdpaid_bmz &lt;- read_csv(&quot;~/shared/datalake/mapme.protectedareas/output/matching/model_frames/keys_wdpaid_bmz.csv&quot;) %&gt;% 
-  rename(&quot;bmz_nummer&quot; = &quot;value&quot;)</code></pre>
-<pre><code>Rows: 429 Columns: 3
-── Column specification ────────────────────────────────────────────────────────
-Delimiter: &quot;,&quot;
-chr (1): name
-dbl (2): WDPAID, value
-
-ℹ Use `spec()` to retrieve the full column specification for this data.
-ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<pre class="r"><code># merge wdpa_kfw with keys
-wdpa_kfw &lt;- left_join(wdpa_kfw, keys_wdpaid_bmz,
-                      by=c(&quot;WDPAID&quot;))
-
-#add kfw_finance data to wdpa_kfw
-wdpa_kfw &lt;- left_join(wdpa_kfw, kfw_finance, 
-                      by=c(&quot;bmz_nummer&quot;))
-
-wdpa_year &lt;- wdpa_kfw %&gt;% 
-  select(WDPAID, first_year) %&gt;% 
-  st_drop_geometry
-  
-# Load link between assetid and WDPA ID
-keys_assetid_wdpa &lt;- 
-  read_sf(&quot;~/shared/datalake/mapme.protectedareas/processing/fishnet/honeycomb_5_sqkm_kfw.gpkg&quot;) %&gt;% 
-  select(poly_id, WDPAID) %&gt;% 
-  rename(&quot;.assetid&quot; = &quot;poly_id&quot;) %&gt;% 
-  st_drop_geometry()
-  
-keys_assetid_wdpa &lt;- keys_assetid_wdpa %&gt;% 
-  distinct(.assetid, WDPAID) %&gt;%  
-  left_join(., wdpa_year,
-            by=c(&quot;WDPAID&quot;)) %&gt;% 
-  select(.assetid, WDPAID, first_year)</code></pre>
-<pre class="r"><code>projectdata_database&lt;-
-  read_csv(&quot;/datadrive/datalake/mapme.protectedareas/output/matching/model_frames/projectdata_supported.csv&quot;)
-
-## reshape
-projectdata_database_reshaped &lt;- projectdata_database %&gt;%
-  gather(name, disbursement, 21:52) %&gt;%
-  mutate(year = as.numeric(substr(name, 14,17))) %&gt;%
-  select(-name)
-## remove if BMZ==NA
-projectdata_database_reshaped &lt;- as.data.frame(projectdata_database_reshaped[-which(is.na(projectdata_database_reshaped$bmz_nummer)),])
-## aggregate by BMZ-year
-project_agg &lt;- projectdata_database_reshaped %&gt;%
-    dplyr::group_by(bmz_nummer, year, first_year) %&gt;% # check whether this makes sense
-    dplyr::summarize(disbursement_proj = sum(disbursement))
-
-
-## create treatment variable for disbursement
-project_agg$treatment_disb_duringproj &lt;- ifelse(project_agg$disbursement_proj &gt; 0, 1, 0)
-
-
-# merge WDPA with project data and UID
-## load
-keys_database &lt;-
-  read_csv(&quot;../../datalake/mapme.protectedareas/output/matching/model_frames/keys_wdpaid_bmz.csv&quot;) %&gt;% 
-  dplyr::rename(., bmz_nummer=value)
-
-bmz_wdpa.df &lt;- merge(keys_database, project_agg,  by=c(&quot;bmz_nummer&quot;))
-
-
-## load area data
-keys_assetid_wdpa &lt;- 
-  read_sf(&quot;~/shared/datalake/mapme.protectedareas/processing/fishnet/honeycomb_5_sqkm_kfw.gpkg&quot;) %&gt;% 
-  select(poly_id, WDPAID) %&gt;% 
-  rename(&quot;.assetid&quot; = &quot;poly_id&quot;) %&gt;% 
-  mutate(area_km2=set_units(st_area(.), km^2))
-
-bmz_wdpa.df&lt;-bmz_wdpa.df %&gt;% 
-  left_join(.,st_drop_geometry(keys_assetid_wdpa),by=&quot;WDPAID&quot;)
-
-## merge and calculate total BMZ project area
-area.agg&lt;- bmz_wdpa.df %&gt;% 
-  # st_drop_geometry() %&gt;% 
-  filter(treatment_disb_duringproj==1) %&gt;% 
-  group_by(year,bmz_nummer) %&gt;% 
-  summarize(area_total=sum(area_km2))
-
-# finance per total area  
-bmz_wdpa.df&lt;-bmz_wdpa.df %&gt;% 
-  left_join(.,area.agg,by=c(&quot;bmz_nummer&quot;,&quot;year&quot;))
-
-
-bmz_wdpa.df$area_total[is.na(bmz_wdpa.df$area_total)==T]&lt;-0 # fill out NA in project area with 0.
-
-
-bmz_wdpa.df$disbursement_sqkm &lt;-bmz_wdpa.df$disbursement_proj/bmz_wdpa.df$area_total # calculate disbursement per sqkm
-bmz_wdpa.df$disbursement_5sqkmcell &lt;-bmz_wdpa.df$disbursement_proj/bmz_wdpa.df$area_total*bmz_wdpa.df$area_km2 # calculate disbursements per cell
-
-## recode NaN as 0 (since we divided by 0)
-bmz_wdpa.df$disbursement_sqkm [is.nan(bmz_wdpa.df$disbursement_sqkm )]&lt;-0
-bmz_wdpa.df$disbursement_5sqkmcell [is.nan(bmz_wdpa.df$disbursement_5sqkmcell )]&lt;-0
-
-
-## calculate disbursement in each cell by year
-cell.agg&lt;- bmz_wdpa.df %&gt;% 
-  group_by(.assetid, year) %&gt;% 
-  summarize(cell_disb=sum(disbursement_5sqkmcell))</code></pre>
 <div id="panelize-psm-data" class="section level2">
 <h2>Panelize PSM data</h2>
-<pre class="r"><code># Years with matching frames:
- T_year &lt;- c(2004:2017, 2019)
-# T_year &lt;- c(2015)
-
-for (i in T_year) {
-    
-    # prepare keys, keep keys only if corresponding WDPA-ID had project start in year i
-    keys &lt;- keys_assetid_wdpa %&gt;%   
-      filter(first_year == i)
-
-    # Load matched data
-    m_data &lt;-
-      read_rds(paste0(&quot;/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/PSM/psm_matched_data_&quot;, i, &quot;.rds&quot;)) %&gt;%
-      rename(&quot;m_treecover&quot; = &quot;treecover&quot;,
-             &quot;m_loss&quot; = &quot;loss&quot;,
-             &quot;m_loss_t3&quot; = &quot;loss_t3&quot;,
-             &quot;m_emissions&quot; = &quot;emissions&quot;)
-    # change variable names to facilitate long format conversion in code below
-    colnames(m_data) &lt;-  sub(&quot;*_anomaly*&quot;, &quot;&quot;, colnames(m_data))
-    colnames(m_data) &lt;-  sub(&quot;*_min*&quot;, &quot;&quot;, colnames(m_data))    
- 
-    # Merge matched data with 
-    # merged_data &lt;- 
-    #   left_join(m_data, fcl_data,
-    #                          by=c(&quot;poly_id&quot;)) %&gt;% 
-    #   pivot_longer(cols = c(starts_with(&quot;area&quot;) | starts_with(&quot;loss&quot;)),
-    #                names_to = c(&quot;.value&quot;, &quot;year&quot;),
-    #                names_sep = &quot;_&quot;) %&gt;% 
-    #   select(-id.x, -treatment.x) %&gt;% 
-    #   mutate(year_standard = as.numeric(year) - i) %&gt;% 
-    #   rename(&quot;fc_area&quot; = &quot;area&quot;,
-    #          &quot;fc_loss&quot; = &quot;loss&quot;)
-    
-    # Merge data with panel data, reshape to long, join with keys and drop if year is NA (year 2021 from wetness)
-    merged_data &lt;- 
-      left_join(m_data, fcl, by=c(&quot;.assetid&quot;)) %&gt;% 
-      pivot_longer(cols = c(starts_with(&quot;treecover&quot;) | starts_with(&quot;loss&quot;) | starts_with(&quot;emissions&quot;) | starts_with(&quot;emissions&quot;) | starts_with(&quot;minprec&quot;) | starts_with(&quot;maxprec&quot;) | starts_with(&quot;wetness&quot;)),
-                   names_to = c(&quot;.value&quot;, &quot;year&quot;),
-                   names_sep = &quot;_&quot;) %&gt;% 
-      mutate(year_standard = as.numeric(year) - i) %&gt;% 
-      rename(&quot;fc_area&quot; = &quot;treecover&quot;,
-             &quot;fc_loss&quot; = &quot;loss&quot;) %&gt;% 
-      left_join(., keys,
-                by=c(&quot;.assetid&quot;)) %&gt;%
-      mutate(WDPAID = ifelse(treatment == 0, 9999999999, WDPAID)) %&gt;% 
-      filter(! is.na(year)) %&gt;% # new line
-      distinct(.assetid, year, .keep_all = TRUE) # adjust this as soon as we have a better solution
-        
-    ## Export data
-    write_csv(merged_data,
-              paste0(&quot;/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/PSM/psm_matched_panel_&quot;, i, &quot;.csv&quot;))
-
-  
-    # Check duplicates
-    print(i)
-    print(paste(&quot;Unique assetids in matched data:&quot;,
-                (length(unique(m_data$.assetid)))
-                ))
-    print(paste(&quot;Unique assetids in matched data:&quot;,
-                (length(unique(merged_data$.assetid)))
-                ))
-    print(&quot;Number of treated cells in matched data:&quot;)
-    print(table(m_data$treatment))
-    print(&quot;Number of treated cells in panel data:&quot;)
-    print(table(subset(merged_data, treatment == 1)$year))
-    
-}</code></pre>
-<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
-107].</code></pre>
 <pre><code>[1] 2004
 [1] &quot;Unique assetids in matched data: 577&quot;
 [1] &quot;Unique assetids in matched data: 577&quot;
@@ -1190,10 +1012,8 @@ for (i in T_year) {
 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015 
  296  296  296  296  296  296  296  296  296  296  296  296  296  296  296  296 
 2016 2017 2018 2019 2020 
- 296  296  296  296  296 </code></pre>
-<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
-107].</code></pre>
-<pre><code>[1] 2005
+ 296  296  296  296  296 
+[1] 2005
 [1] &quot;Unique assetids in matched data: 1855&quot;
 [1] &quot;Unique assetids in matched data: 1855&quot;
 [1] &quot;Number of treated cells in matched data:&quot;
@@ -1205,10 +1025,8 @@ for (i in T_year) {
 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015 
  938  938  938  938  938  938  938  938  938  938  938  938  938  938  938  938 
 2016 2017 2018 2019 2020 
- 938  938  938  938  938 </code></pre>
-<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
-107].</code></pre>
-<pre><code>[1] 2006
+ 938  938  938  938  938 
+[1] 2006
 [1] &quot;Unique assetids in matched data: 21369&quot;
 [1] &quot;Unique assetids in matched data: 21369&quot;
 [1] &quot;Number of treated cells in matched data:&quot;
@@ -1220,10 +1038,8 @@ for (i in T_year) {
  2000  2001  2002  2003  2004  2005  2006  2007  2008  2009  2010  2011  2012 
 11863 11863 11863 11863 11863 11863 11863 11863 11863 11863 11863 11863 11863 
  2013  2014  2015  2016  2017  2018  2019  2020 
-11863 11863 11863 11863 11863 11863 11863 11863 </code></pre>
-<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
-107].</code></pre>
-<pre><code>[1] 2007
+11863 11863 11863 11863 11863 11863 11863 11863 
+[1] 2007
 [1] &quot;Unique assetids in matched data: 40962&quot;
 [1] &quot;Unique assetids in matched data: 40962&quot;
 [1] &quot;Number of treated cells in matched data:&quot;
@@ -1235,10 +1051,8 @@ for (i in T_year) {
  2000  2001  2002  2003  2004  2005  2006  2007  2008  2009  2010  2011  2012 
 22846 22846 22846 22846 22846 22846 22846 22846 22846 22846 22846 22846 22846 
  2013  2014  2015  2016  2017  2018  2019  2020 
-22846 22846 22846 22846 22846 22846 22846 22846 </code></pre>
-<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
-107].</code></pre>
-<pre><code>[1] 2008
+22846 22846 22846 22846 22846 22846 22846 22846 
+[1] 2008
 [1] &quot;Unique assetids in matched data: 18754&quot;
 [1] &quot;Unique assetids in matched data: 18754&quot;
 [1] &quot;Number of treated cells in matched data:&quot;
@@ -1250,10 +1064,8 @@ for (i in T_year) {
 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015 
 9866 9866 9866 9866 9866 9866 9866 9866 9866 9866 9866 9866 9866 9866 9866 9866 
 2016 2017 2018 2019 2020 
-9866 9866 9866 9866 9866 </code></pre>
-<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
-107].</code></pre>
-<pre><code>[1] 2009
+9866 9866 9866 9866 9866 
+[1] 2009
 [1] &quot;Unique assetids in matched data: 959&quot;
 [1] &quot;Unique assetids in matched data: 959&quot;
 [1] &quot;Number of treated cells in matched data:&quot;
@@ -1265,10 +1077,8 @@ for (i in T_year) {
 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015 
  548  548  548  548  548  548  548  548  548  548  548  548  548  548  548  548 
 2016 2017 2018 2019 2020 
- 548  548  548  548  548 </code></pre>
-<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
-107].</code></pre>
-<pre><code>[1] 2010
+ 548  548  548  548  548 
+[1] 2010
 [1] &quot;Unique assetids in matched data: 3559&quot;
 [1] &quot;Unique assetids in matched data: 3559&quot;
 [1] &quot;Number of treated cells in matched data:&quot;
@@ -1280,10 +1090,8 @@ for (i in T_year) {
 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015 
 1793 1793 1793 1793 1793 1793 1793 1793 1793 1793 1793 1793 1793 1793 1793 1793 
 2016 2017 2018 2019 2020 
-1793 1793 1793 1793 1793 </code></pre>
-<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
-107].</code></pre>
-<pre><code>[1] 2011
+1793 1793 1793 1793 1793 
+[1] 2011
 [1] &quot;Unique assetids in matched data: 6037&quot;
 [1] &quot;Unique assetids in matched data: 6037&quot;
 [1] &quot;Number of treated cells in matched data:&quot;
@@ -1295,10 +1103,8 @@ for (i in T_year) {
 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015 
 3170 3170 3170 3170 3170 3170 3170 3170 3170 3170 3170 3170 3170 3170 3170 3170 
 2016 2017 2018 2019 2020 
-3170 3170 3170 3170 3170 </code></pre>
-<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
-107].</code></pre>
-<pre><code>[1] 2012
+3170 3170 3170 3170 3170 
+[1] 2012
 [1] &quot;Unique assetids in matched data: 22436&quot;
 [1] &quot;Unique assetids in matched data: 22436&quot;
 [1] &quot;Number of treated cells in matched data:&quot;
@@ -1310,10 +1116,8 @@ for (i in T_year) {
  2000  2001  2002  2003  2004  2005  2006  2007  2008  2009  2010  2011  2012 
 11678 11678 11678 11678 11678 11678 11678 11678 11678 11678 11678 11678 11678 
  2013  2014  2015  2016  2017  2018  2019  2020 
-11678 11678 11678 11678 11678 11678 11678 11678 </code></pre>
-<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
-107].</code></pre>
-<pre><code>[1] 2013
+11678 11678 11678 11678 11678 11678 11678 11678 
+[1] 2013
 [1] &quot;Unique assetids in matched data: 875&quot;
 [1] &quot;Unique assetids in matched data: 875&quot;
 [1] &quot;Number of treated cells in matched data:&quot;
@@ -1325,10 +1129,8 @@ for (i in T_year) {
 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015 
  507  507  507  507  507  507  507  507  507  507  507  507  507  507  507  507 
 2016 2017 2018 2019 2020 
- 507  507  507  507  507 </code></pre>
-<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
-107].</code></pre>
-<pre><code>[1] 2014
+ 507  507  507  507  507 
+[1] 2014
 [1] &quot;Unique assetids in matched data: 247&quot;
 [1] &quot;Unique assetids in matched data: 247&quot;
 [1] &quot;Number of treated cells in matched data:&quot;
@@ -1340,10 +1142,8 @@ for (i in T_year) {
 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015 
  128  128  128  128  128  128  128  128  128  128  128  128  128  128  128  128 
 2016 2017 2018 2019 2020 
- 128  128  128  128  128 </code></pre>
-<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
-107].</code></pre>
-<pre><code>[1] 2015
+ 128  128  128  128  128 
+[1] 2015
 [1] &quot;Unique assetids in matched data: 196511&quot;
 [1] &quot;Unique assetids in matched data: 196511&quot;
 [1] &quot;Number of treated cells in matched data:&quot;
@@ -1355,10 +1155,8 @@ for (i in T_year) {
   2000   2001   2002   2003   2004   2005   2006   2007   2008   2009   2010 
 124863 124863 124863 124863 124863 124863 124863 124863 124863 124863 124863 
   2011   2012   2013   2014   2015   2016   2017   2018   2019   2020 
-124863 124863 124863 124863 124863 124863 124863 124863 124863 124863 </code></pre>
-<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
-107].</code></pre>
-<pre><code>[1] 2016
+124863 124863 124863 124863 124863 124863 124863 124863 124863 124863 
+[1] 2016
 [1] &quot;Unique assetids in matched data: 4991&quot;
 [1] &quot;Unique assetids in matched data: 4991&quot;
 [1] &quot;Number of treated cells in matched data:&quot;
@@ -1370,10 +1168,8 @@ for (i in T_year) {
 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015 
 2575 2575 2575 2575 2575 2575 2575 2575 2575 2575 2575 2575 2575 2575 2575 2575 
 2016 2017 2018 2019 2020 
-2575 2575 2575 2575 2575 </code></pre>
-<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
-107].</code></pre>
-<pre><code>[1] 2017
+2575 2575 2575 2575 2575 
+[1] 2017
 [1] &quot;Unique assetids in matched data: 15472&quot;
 [1] &quot;Unique assetids in matched data: 15472&quot;
 [1] &quot;Number of treated cells in matched data:&quot;
@@ -1385,10 +1181,8 @@ for (i in T_year) {
 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015 
 7920 7920 7920 7920 7920 7920 7920 7920 7920 7920 7920 7920 7920 7920 7920 7920 
 2016 2017 2018 2019 2020 
-7920 7920 7920 7920 7920 </code></pre>
-<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
-107].</code></pre>
-<pre><code>[1] 2019
+7920 7920 7920 7920 7920 
+[1] 2019
 [1] &quot;Unique assetids in matched data: 1989&quot;
 [1] &quot;Unique assetids in matched data: 1989&quot;
 [1] &quot;Number of treated cells in matched data:&quot;
@@ -1404,78 +1198,6 @@ for (i in T_year) {
 </div>
 <div id="panelize-cem-data" class="section level2">
 <h2>Panelize CEM data</h2>
-<pre class="r"><code># Years with matching frames:
-T_year &lt;- c(2004:2017, 2019)
-# T_year &lt;- c(2015)
-# T_year &lt;- c(2004:2014, 2016, 2019)
-
-for (i in T_year) {
-  
-    # prepare keys, keep keys only if corresponding WDPA-ID had project start in year i
-    keys &lt;- keys_assetid_wdpa %&gt;%   
-      filter(first_year == i)
-    
-  
-    # Load matched data
-    m_data &lt;- 
-        read_rds(paste0(&quot;/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/cem_matched_data_&quot;, i, &quot;.rds&quot;)) %&gt;%
-      rename(&quot;m_treecover&quot; = &quot;treecover&quot;,
-             &quot;m_loss&quot; = &quot;loss&quot;,
-             &quot;m_loss_t3&quot; = &quot;loss_t3&quot;,
-             &quot;m_emissions&quot; = &quot;emissions&quot;)
-    # change variable names to facilitate long format conversion in code below
-    colnames(m_data) &lt;-  sub(&quot;*_anomaly*&quot;, &quot;&quot;, colnames(m_data))
-    colnames(m_data) &lt;-  sub(&quot;*_min*&quot;, &quot;&quot;, colnames(m_data))    
-    
-    # Merge matched data with 
-    # merged_data &lt;- 
-    #   left_join(m_data, fcl_data,
-    #             by=c(&quot;poly_id&quot;)) %&gt;% 
-    #   pivot_longer(cols = c(starts_with(&quot;area&quot;) | starts_with(&quot;loss&quot;)),
-    #                names_to = c(&quot;.value&quot;, &quot;year&quot;),
-    #                names_sep = &quot;_&quot;) %&gt;% 
-    #   select(-id.x, -treatment.x) %&gt;% 
-    #   mutate(year_standard = as.numeric(year) - i) %&gt;% 
-    #   rename(&quot;fc_area&quot; = &quot;area&quot;,
-    #          &quot;fc_loss&quot; = &quot;loss&quot;)
-    
-    # Merge data with panel data, reshape to long, join with keys and drop if year is NA (year 2021 from wetness)
-    merged_data &lt;- 
-      left_join(m_data, fcl,
-                             by=c(&quot;.assetid&quot;)) %&gt;% 
-      pivot_longer(cols = c(starts_with(&quot;treecover&quot;) | starts_with(&quot;loss&quot;) | starts_with(&quot;emissions&quot;) | starts_with(&quot;emissions&quot;) | starts_with(&quot;minprec&quot;) | starts_with(&quot;maxprec&quot;) | starts_with(&quot;wetness&quot;)),
-                   names_to = c(&quot;.value&quot;, &quot;year&quot;),
-                   names_sep = &quot;_&quot;) %&gt;% 
-      mutate(year_standard = as.numeric(year) - i) %&gt;% 
-      rename(&quot;fc_area&quot; = &quot;treecover&quot;,
-             &quot;fc_loss&quot; = &quot;loss&quot;) %&gt;% 
-      left_join(., keys,
-                by=c(&quot;.assetid&quot;)) %&gt;%
-      mutate(WDPAID = ifelse(treatment == 0, 9999999999, WDPAID)) %&gt;% 
-      filter(! is.na(year)) %&gt;% # new line
-      distinct(.assetid, year, .keep_all = TRUE) # adjust this as soon as we have a better solution # new line
-    
-    ## Export data
-    write_csv(merged_data, 
-              paste0(&quot;/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/cem_matched_panel_&quot;, i, &quot;.csv&quot;))
-    
-    # Check duplicates
-    print(i)
-    print(paste(&quot;Unique assetids in matched data:&quot;,
-                (length(unique(m_data$.assetid)))
-                ))
-    print(paste(&quot;Unique assetids in matched data:&quot;,
-                (length(unique(merged_data$.assetid)))
-                ))
-    print(&quot;Number of treated cells in matched data:&quot;)
-    print(table(m_data$treatment))
-    print(&quot;Number of treated cells in panel data:&quot;)
-    print(table(subset(merged_data, treatment == 1)$year))
-    
-    
-}</code></pre>
-<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
-107].</code></pre>
 <pre><code>[1] 2004
 [1] &quot;Unique assetids in matched data: 232846&quot;
 [1] &quot;Unique assetids in matched data: 232846&quot;
@@ -1488,10 +1210,8 @@ for (i in T_year) {
 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015 
  300  300  300  300  300  300  300  300  300  300  300  300  300  300  300  300 
 2016 2017 2018 2019 2020 
- 300  300  300  300  300 </code></pre>
-<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
-107].</code></pre>
-<pre><code>[1] 2005
+ 300  300  300  300  300 
+[1] 2005
 [1] &quot;Unique assetids in matched data: 273763&quot;
 [1] &quot;Unique assetids in matched data: 273763&quot;
 [1] &quot;Number of treated cells in matched data:&quot;
@@ -1503,10 +1223,8 @@ for (i in T_year) {
 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015 
  933  933  933  933  933  933  933  933  933  933  933  933  933  933  933  933 
 2016 2017 2018 2019 2020 
- 933  933  933  933  933 </code></pre>
-<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
-107].</code></pre>
-<pre><code>[1] 2006
+ 933  933  933  933  933 
+[1] 2006
 [1] &quot;Unique assetids in matched data: 150693&quot;
 [1] &quot;Unique assetids in matched data: 150693&quot;
 [1] &quot;Number of treated cells in matched data:&quot;
@@ -1518,10 +1236,8 @@ for (i in T_year) {
  2000  2001  2002  2003  2004  2005  2006  2007  2008  2009  2010  2011  2012 
 11398 11398 11398 11398 11398 11398 11398 11398 11398 11398 11398 11398 11398 
  2013  2014  2015  2016  2017  2018  2019  2020 
-11398 11398 11398 11398 11398 11398 11398 11398 </code></pre>
-<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
-107].</code></pre>
-<pre><code>[1] 2007
+11398 11398 11398 11398 11398 11398 11398 11398 
+[1] 2007
 [1] &quot;Unique assetids in matched data: 646855&quot;
 [1] &quot;Unique assetids in matched data: 646855&quot;
 [1] &quot;Number of treated cells in matched data:&quot;
@@ -1533,10 +1249,8 @@ for (i in T_year) {
  2000  2001  2002  2003  2004  2005  2006  2007  2008  2009  2010  2011  2012 
 21862 21862 21862 21862 21862 21862 21862 21862 21862 21862 21862 21862 21862 
  2013  2014  2015  2016  2017  2018  2019  2020 
-21862 21862 21862 21862 21862 21862 21862 21862 </code></pre>
-<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
-107].</code></pre>
-<pre><code>[1] 2008
+21862 21862 21862 21862 21862 21862 21862 21862 
+[1] 2008
 [1] &quot;Unique assetids in matched data: 260122&quot;
 [1] &quot;Unique assetids in matched data: 260122&quot;
 [1] &quot;Number of treated cells in matched data:&quot;
@@ -1548,10 +1262,8 @@ for (i in T_year) {
 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015 
 9034 9034 9034 9034 9034 9034 9034 9034 9034 9034 9034 9034 9034 9034 9034 9034 
 2016 2017 2018 2019 2020 
-9034 9034 9034 9034 9034 </code></pre>
-<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
-107].</code></pre>
-<pre><code>[1] 2009
+9034 9034 9034 9034 9034 
+[1] 2009
 [1] &quot;Unique assetids in matched data: 14300&quot;
 [1] &quot;Unique assetids in matched data: 14300&quot;
 [1] &quot;Number of treated cells in matched data:&quot;
@@ -1563,10 +1275,8 @@ for (i in T_year) {
 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015 
  518  518  518  518  518  518  518  518  518  518  518  518  518  518  518  518 
 2016 2017 2018 2019 2020 
- 518  518  518  518  518 </code></pre>
-<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
-107].</code></pre>
-<pre><code>[1] 2010
+ 518  518  518  518  518 
+[1] 2010
 [1] &quot;Unique assetids in matched data: 86120&quot;
 [1] &quot;Unique assetids in matched data: 86120&quot;
 [1] &quot;Number of treated cells in matched data:&quot;
@@ -1578,10 +1288,8 @@ for (i in T_year) {
 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015 
 1738 1738 1738 1738 1738 1738 1738 1738 1738 1738 1738 1738 1738 1738 1738 1738 
 2016 2017 2018 2019 2020 
-1738 1738 1738 1738 1738 </code></pre>
-<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
-107].</code></pre>
-<pre><code>[1] 2011
+1738 1738 1738 1738 1738 
+[1] 2011
 [1] &quot;Unique assetids in matched data: 68951&quot;
 [1] &quot;Unique assetids in matched data: 68951&quot;
 [1] &quot;Number of treated cells in matched data:&quot;
@@ -1593,10 +1301,8 @@ for (i in T_year) {
 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015 
 3007 3007 3007 3007 3007 3007 3007 3007 3007 3007 3007 3007 3007 3007 3007 3007 
 2016 2017 2018 2019 2020 
-3007 3007 3007 3007 3007 </code></pre>
-<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
-107].</code></pre>
-<pre><code>[1] 2012
+3007 3007 3007 3007 3007 
+[1] 2012
 [1] &quot;Unique assetids in matched data: 328813&quot;
 [1] &quot;Unique assetids in matched data: 328813&quot;
 [1] &quot;Number of treated cells in matched data:&quot;
@@ -1608,10 +1314,8 @@ for (i in T_year) {
  2000  2001  2002  2003  2004  2005  2006  2007  2008  2009  2010  2011  2012 
 11398 11398 11398 11398 11398 11398 11398 11398 11398 11398 11398 11398 11398 
  2013  2014  2015  2016  2017  2018  2019  2020 
-11398 11398 11398 11398 11398 11398 11398 11398 </code></pre>
-<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
-107].</code></pre>
-<pre><code>[1] 2013
+11398 11398 11398 11398 11398 11398 11398 11398 
+[1] 2013
 [1] &quot;Unique assetids in matched data: 64632&quot;
 [1] &quot;Unique assetids in matched data: 64632&quot;
 [1] &quot;Number of treated cells in matched data:&quot;
@@ -1623,10 +1327,8 @@ for (i in T_year) {
 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015 
  478  478  478  478  478  478  478  478  478  478  478  478  478  478  478  478 
 2016 2017 2018 2019 2020 
- 478  478  478  478  478 </code></pre>
-<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
-107].</code></pre>
-<pre><code>[1] 2014
+ 478  478  478  478  478 
+[1] 2014
 [1] &quot;Unique assetids in matched data: 52058&quot;
 [1] &quot;Unique assetids in matched data: 52058&quot;
 [1] &quot;Number of treated cells in matched data:&quot;
@@ -1638,10 +1340,8 @@ for (i in T_year) {
 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015 
  128  128  128  128  128  128  128  128  128  128  128  128  128  128  128  128 
 2016 2017 2018 2019 2020 
- 128  128  128  128  128 </code></pre>
-<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
-107].</code></pre>
-<pre><code>[1] 2015
+ 128  128  128  128  128 
+[1] 2015
 [1] &quot;Unique assetids in matched data: 994259&quot;
 [1] &quot;Unique assetids in matched data: 994259&quot;
 [1] &quot;Number of treated cells in matched data:&quot;
@@ -1653,10 +1353,8 @@ for (i in T_year) {
   2000   2001   2002   2003   2004   2005   2006   2007   2008   2009   2010 
 122433 122433 122433 122433 122433 122433 122433 122433 122433 122433 122433 
   2011   2012   2013   2014   2015   2016   2017   2018   2019   2020 
-122433 122433 122433 122433 122433 122433 122433 122433 122433 122433 </code></pre>
-<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
-107].</code></pre>
-<pre><code>[1] 2016
+122433 122433 122433 122433 122433 122433 122433 122433 122433 122433 
+[1] 2016
 [1] &quot;Unique assetids in matched data: 603159&quot;
 [1] &quot;Unique assetids in matched data: 603159&quot;
 [1] &quot;Number of treated cells in matched data:&quot;
@@ -1668,10 +1366,8 @@ for (i in T_year) {
 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015 
 2571 2571 2571 2571 2571 2571 2571 2571 2571 2571 2571 2571 2571 2571 2571 2571 
 2016 2017 2018 2019 2020 
-2571 2571 2571 2571 2571 </code></pre>
-<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
-107].</code></pre>
-<pre><code>[1] 2017
+2571 2571 2571 2571 2571 
+[1] 2017
 [1] &quot;Unique assetids in matched data: 245294&quot;
 [1] &quot;Unique assetids in matched data: 245294&quot;
 [1] &quot;Number of treated cells in matched data:&quot;
@@ -1683,10 +1379,8 @@ for (i in T_year) {
 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015 
 7875 7875 7875 7875 7875 7875 7875 7875 7875 7875 7875 7875 7875 7875 7875 7875 
 2016 2017 2018 2019 2020 
-7875 7875 7875 7875 7875 </code></pre>
-<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 3 rows [63, 85,
-107].</code></pre>
-<pre><code>[1] 2019
+7875 7875 7875 7875 7875 
+[1] 2019
 [1] &quot;Unique assetids in matched data: 8629&quot;
 [1] &quot;Unique assetids in matched data: 8629&quot;
 [1] &quot;Number of treated cells in matched data:&quot;
@@ -1699,12 +1393,7 @@ for (i in T_year) {
  648  648  648  648  648  648  648  648  648  648  648  648  648  648  648  648 
 2016 2017 2018 2019 2020 
  648  648  648  648  648 </code></pre>
-<pre class="r"><code># Timer
-end_time &lt;- Sys.time()
-
-duration &lt;- difftime(end_time, start_time, units=&#39;mins&#39;)
-duration</code></pre>
-<pre><code>Time difference of 4.252988 mins</code></pre>
+<pre><code>Time difference of 2.884933 mins</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1712,7 +1401,6 @@ duration</code></pre>
 </button>
 </p>
 <div id="workflowr-sessioninfo" class="collapse">
-<pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 3.6.3 (2020-02-29)
 Platform: x86_64-pc-linux-gnu (64-bit)
 Running under: Ubuntu 18.04.6 LTS
@@ -1731,29 +1419,36 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] units_0.8-0     sf_1.0-7        forcats_0.5.1   stringr_1.4.0  
+ [1] units_0.8-0     sf_1.0-8        forcats_0.5.1   stringr_1.4.0  
  [5] dplyr_1.0.9     purrr_0.3.4     readr_2.1.2     tidyr_1.2.0    
- [9] tibble_3.1.7    ggplot2_3.3.4   tidyverse_1.3.1
+ [9] tibble_3.1.8    ggplot2_3.3.6   tidyverse_1.3.2
 
 loaded via a namespace (and not attached):
- [1] Rcpp_1.0.8.3       lubridate_1.7.10   class_7.3-20       assertthat_0.2.1  
- [5] rprojroot_2.0.2    digest_0.6.29      utf8_1.2.2         R6_2.5.1          
- [9] cellranger_1.1.0   backports_1.2.1    reprex_2.0.0       e1071_1.7-11      
-[13] evaluate_0.14      httr_1.4.3         pillar_1.7.0       rlang_1.0.2       
-[17] readxl_1.3.1       rstudioapi_0.13    whisker_0.4        jquerylib_0.1.4   
-[21] rmarkdown_2.11     bit_4.0.4          munsell_0.5.0      proxy_0.4-27      
-[25] broom_0.7.6        compiler_3.6.3     httpuv_1.6.1       modelr_0.1.8      
-[29] xfun_0.24          pkgconfig_2.0.3    htmltools_0.5.2    tidyselect_1.1.2  
-[33] workflowr_1.7.0    fansi_1.0.3        crayon_1.5.1       tzdb_0.1.2        
-[37] dbplyr_2.1.1       withr_2.4.2        later_1.2.0        grid_3.6.3        
-[41] jsonlite_1.8.0     gtable_0.3.0       lifecycle_1.0.1    DBI_1.1.3         
-[45] git2r_0.28.0       magrittr_2.0.3     scales_1.1.1       KernSmooth_2.23-20
-[49] vroom_1.5.7        cli_3.3.0          stringi_1.7.6      fs_1.5.0          
-[53] promises_1.2.0.1   xml2_1.3.3         bslib_0.2.5.1      ellipsis_0.3.2    
-[57] generics_0.1.2     vctrs_0.4.1        tools_3.6.3        bit64_4.0.5       
-[61] glue_1.6.2         hms_1.1.1          parallel_3.6.3     fastmap_1.1.0     
-[65] yaml_2.2.1         colorspace_2.0-1   classInt_0.4-7     rvest_1.0.2       
-[69] knitr_1.34         haven_2.3.1        sass_0.4.0        </code></pre>
+ [1] httr_1.4.3          sass_0.4.1          bit64_4.0.5        
+ [4] vroom_1.5.7         jsonlite_1.8.0      modelr_0.1.8       
+ [7] bslib_0.3.1         assertthat_0.2.1    googlesheets4_1.0.0
+[10] cellranger_1.1.0    yaml_2.3.5          pillar_1.8.0       
+[13] backports_1.4.1     glue_1.6.2          digest_0.6.29      
+[16] promises_1.2.0.1    rvest_1.0.2         colorspace_2.0-3   
+[19] htmltools_0.5.3     httpuv_1.6.5        pkgconfig_2.0.3    
+[22] broom_1.0.0         haven_2.5.0         scales_1.2.0       
+[25] whisker_0.4         later_1.3.0         tzdb_0.3.0         
+[28] git2r_0.30.1        proxy_0.4-27        googledrive_2.0.0  
+[31] generics_0.1.3      ellipsis_0.3.2      withr_2.5.0        
+[34] cli_3.3.0           magrittr_2.0.3      crayon_1.5.1       
+[37] readxl_1.4.0        evaluate_0.15       fs_1.5.2           
+[40] fansi_1.0.3         xml2_1.3.3          class_7.3-20       
+[43] tools_3.6.3         hms_1.1.1           gargle_1.2.0       
+[46] lifecycle_1.0.1     munsell_0.5.0       reprex_2.0.1       
+[49] compiler_3.6.3      jquerylib_0.1.4     e1071_1.7-11       
+[52] rlang_1.0.4         classInt_0.4-7      grid_3.6.3         
+[55] rstudioapi_0.13     rmarkdown_2.14      gtable_0.3.0       
+[58] DBI_1.1.3           R6_2.5.1            lubridate_1.8.0    
+[61] knitr_1.39          fastmap_1.1.0       bit_4.0.4          
+[64] utf8_1.2.2          workflowr_1.7.0     rprojroot_2.0.3    
+[67] KernSmooth_2.23-20  stringi_1.7.8       parallel_3.6.3     
+[70] Rcpp_1.0.9          vctrs_0.4.1         dbplyr_2.2.1       
+[73] tidyselect_1.1.2    xfun_0.31          </code></pre>
 </div>
 </div>
 
