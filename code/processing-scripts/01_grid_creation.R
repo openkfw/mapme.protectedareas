@@ -37,9 +37,9 @@ for (i in c(5)) { # gridcell size in square kilometers (=100 ha). 10, 2, 1
              "../../datalake/mapme.protectedareas/processing/fishnet/honeycomb_",
              i,
              "_sqkm.gpkg",
-             sep = "",
+             sep = ""), # add closing parenthesis here
              append= FALSE # overwrite layer if exists. Use with caution
-           )
+        # ) remove closing parenthesis here
   )
 }
 
