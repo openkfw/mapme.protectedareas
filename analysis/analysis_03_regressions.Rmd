@@ -39,8 +39,8 @@ pre code {
 
 
 #### ---- Create table for all years -----
-all_years <- c(2004:2009, 2011, 2012, 2015)
-
+# all_years <- c(2004:2009, 2011, 2012, 2015)
+all_years <- c(2004:2017)
 # Prepare observations table
 obs_table <- matrix(NA, nrow = 3, ncol = length(all_years)+1)
 colnames(obs_table) <- c("name", all_years)
@@ -153,13 +153,13 @@ for (t in all_years) {
 # m_list3 <- list(m32_2004, m32_2005, m32_2006, m32_2007, m32_2008, m32_2009, m32_2010, m32_2011, m32_2012, m32_2013, m32_2014, m32_2015, m32_2016, m32_2017, m32_2019)
 
 
-# m_list1 <- list(m12_2004, m12_2005, m12_2006, m12_2007, m12_2008, m12_2009, m12_2010, m12_2011, m12_2012, m12_2013, m12_2014, m12_2015, m12_2016, m12_2017)
-# m_list2 <- list(m22_2004, m22_2005, m22_2006, m22_2007, m22_2008, m22_2009, m22_2010, m22_2011, m22_2012, m22_2013, m22_2014, m22_2015, m22_2016, m22_2017)
-# m_list3 <- list(m32_2004, m32_2005, m32_2006, m32_2007, m32_2008, m32_2009, m32_2010, m32_2011, m32_2012, m32_2013, m32_2014, m32_2015, m32_2016, m32_2017)
+m_list1 <- list(m12_2004, m12_2005, m12_2006, m12_2007, m12_2008, m12_2009, m12_2010, m12_2011, m12_2012, m12_2013, m12_2014, m12_2015, m12_2016, m12_2017)
+m_list2 <- list(m22_2004, m22_2005, m22_2006, m22_2007, m22_2008, m22_2009, m22_2010, m22_2011, m22_2012, m22_2013, m22_2014, m22_2015, m22_2016, m22_2017)
+m_list3 <- list(m32_2004, m32_2005, m32_2006, m32_2007, m32_2008, m32_2009, m32_2010, m32_2011, m32_2012, m32_2013, m32_2014, m32_2015, m32_2016, m32_2017)
 
-m_list1 <- list(m12_2004, m12_2005, m12_2006, m12_2007, m12_2008, m12_2009, m12_2011, m12_2012, m12_2015)
-m_list2 <- list(m22_2004, m22_2005, m22_2006, m22_2007, m22_2008, m22_2009, m22_2011, m22_2012, m22_2015)
-m_list3 <- list(m32_2004, m32_2005, m32_2006, m32_2007, m32_2008, m32_2009, m32_2011, m32_2012, m32_2015)
+# m_list1 <- list(m12_2004, m12_2005, m12_2006, m12_2007, m12_2008, m12_2009, m12_2011, m12_2012, m12_2015)
+# m_list2 <- list(m22_2004, m22_2005, m22_2006, m22_2007, m22_2008, m22_2009, m22_2011, m22_2012, m22_2015)
+# m_list3 <- list(m32_2004, m32_2005, m32_2006, m32_2007, m32_2008, m32_2009, m32_2011, m32_2012, m32_2015)
 
 # names(m_list1_compare) <- sort(c(all_years, all_years))
 # names(m_list2_compare) <- sort(c(all_years, all_years))
@@ -175,7 +175,7 @@ names(m_list3) <- all_years
 
 # Output: fc_loss
 modelsummary(m_list1,
-             output = "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/table1_cluster_filteredparallel.html",
+             output = "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/table1_cluster.html",
              coef_rename = c("fc_loss" = "Forest cover loss", 
                              "treatment_disbTRUE" = "KfW support"),
              stars = TRUE,
@@ -186,7 +186,7 @@ modelsummary(m_list1,
 )
 
 modelsummary(m_list1,
-             output = "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/table1_cluster_filteredparallel.tex",
+             output = "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/table1_cluster.tex",
              coef_rename = c("fc_loss" = "Forest cover loss", 
                              "treatment_disbTRUE" = "KfW support"),
              stars = TRUE,
@@ -222,7 +222,7 @@ m12_output <- modelsummary(m_list1,
 m12_output %>%
   kable_classic(full_width = F, html_font = "Cambria") %>%
   column_spec(1, width = "8em") %>%
-  save_kable(file = "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/table1_cluster_style_filteredparallel.html", self_contained = T)
+  save_kable(file = "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/table1_cluster_style.html", self_contained = T)
 
 m12_output <- modelsummary(m_list1,
                coef_rename = c("fc_loss" = "Forest cover loss",
@@ -236,7 +236,7 @@ m12_output <- modelsummary(m_list1,
 m12_output %>%
   kable_classic(full_width = F, html_font = "Cambria") %>%
   column_spec(1, width = "8em") %>%
-  save_kable(file = "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/table1_cluster_style_filteredparallel.tex")
+  save_kable(file = "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/table1_cluster_style.tex")
 
 # modelsummary(m_list1_compare,
 #              output = "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/table1_cluster_compare.html",
@@ -256,7 +256,7 @@ m12_output %>%
 
 # Output: fc_area
 modelsummary(m_list2,
-             output = "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/table2_cluster_filteredparallel.html",
+             output = "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/table2_cluster.html",
              coef_rename = c("fc_area" = "Forest cover area", 
                              "treatment_disbTRUE" = "KfW support"),
              stars = TRUE,
@@ -266,7 +266,7 @@ modelsummary(m_list2,
              add_rows = as.data.frame(obs_table_m22)
 )
 modelsummary(m_list2,
-             output = "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/table2_cluster_filteredparallel.tex",
+             output = "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/table2_cluster.tex",
              coef_rename = c("fc_area" = "Forest cover area", 
                              "treatment_disbTRUE" = "KfW support"),
              stars = TRUE,
@@ -303,7 +303,7 @@ modelsummary(m_list2,
 
 # Output: emissions
 modelsummary(m_list3,
-             output = "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/table3_filteredparallel.html",
+             output = "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/table3.html",
              coef_rename = c("emissions" = "Emissions from deforestation", 
                              "treatment_disbTRUE" = "KfW support"),
              stars = TRUE,
@@ -313,7 +313,7 @@ modelsummary(m_list3,
              add_rows = as.data.frame(obs_table_m32)
 )
 modelsummary(m_list3,
-             output = "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/table3_filteredparallel.tex",
+             output = "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/table3.tex",
              coef_rename = c("emissions" = "Emissions from deforestation", 
                              "treatment_disbTRUE" = "KfW support"),
              stars = TRUE,
