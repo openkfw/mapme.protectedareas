@@ -1,0 +1,163 @@
+\documentclass{article}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{grffile}
+\usepackage{natbib}
+\usepackage{float} %force figure placement [H]
+\usepackage{booktabs} %tables, midrule etc
+\usepackage[a4paper]{geometry}
+\geometry{verbose,tmargin=2.5cm,bmargin=2cm,lmargin=2cm,rmargin=2.5cm}
+\usepackage{tabularx}
+\usepackage{xcolor}
+
+\title{Reduction of forest cover loss and associated CO2 emissions in protected areas with German bilateral development assistance\thanks{The findings, interpretations, and conclusions expressed in this article are entirely those of the authors. They do not necessarily represent the views of KfW Development Bank and its affiliated organizations.}}
+\author{Yota Eilers\thanks{yota.eilers@kfw.de}, Jochen Kluve\thanks{jochen.kluve@kfw.de}, Johannes Schielein\thanks{johannes.schielein@kfw.de} \and Melvin H.L. Wong \thanks{melvin.wong@kfw.de}}
+
+
+
+\usepackage{Sweave}
+\begin{document}
+\input{extended_abstract-concordance}
+\maketitle
+
+
+
+%intro, related work and contribution
+The most important international climate and biodiversity science bodies IPCC and IPBES embrace area based conservation measures as one key mechanism to combat harmfull global climate change and reduce the accelerating biodiversity crisis (IPCC, IPBES). Policy makers are well aware and an international coalition of almost 100 countries supported the so called "30 by 30" target at the COP15 meeting of the Convention on Biologival Diversity in 2021 which proposed to increase terrestrial protected area coverage from currently 17 \% to 30 \% by 2030. 
+
+In order to increase proteced area (PA) coverage and especially PA management effectivness, more financial ressources have been pledged, especially to help low- and middle incomce countries where conservation relies heavily on foreign financial assistance. International public expenditure on biodiversity is estimated at USD 3.9-9.3 billion per year according to \href{https://www.oecd.org/environment/resources/biodiversity/report-a-comprehensive-overview-of-global-biodiversity-finance.pdf}{OECD/DAC} and Germany is amongst the largest bilateral donors with an ongoing portfolio of USD 2.6 Bio in 2021 and 602 supported PAs in 66 countries. 
+
+However, despite its financial and political importance, there has been no systematic assessment on the effectivness of bilateral assistance to reduce GHG emissions and biodiversity loss in PAs so far (as to our knowledge). Part of this might be due to the fact that there is no comprehensive data on international conservation finance, especially on a disaggregated scale. In light of the urgency of the problem, we think it is of utmost importance, to study those effects in more detail in order to allocate financial ressources more effectively.  
+
+As a first step we study how forest cover loss and associated CO2 emissions developed in over 400 latinamerican PAs, which where financially supported by German bilateral ODA from 2004-2020. We use a spatial matching approach and a difference in difference estimator to predict that supported PAs where effective in reducing forest cover loss and associated CO2 emissions by at least \color{red}XXX \color{black} Gigatons in total. Nevertheless we see that effectivness varies by year and country which gives important insights to further study heterogenous treatment effects. 
+
+Despite its operatinal value, our study is also relevant to prove that conservation finance in PAs atually works and should be further supported. This observation  is often contradicted when looking at monitoring data which often suggests ongoing forest and biodiversity losses without using a robust counter-factual scenario. 
+
+\section{Data}
+KfW is one of the most important conservation financiers globally
+Ongoing portfolio (2021): 2.6 Bio. Euro, 602 Supported Protected Areas (PAs) in 66 countries
+
+
+
+\section{Empirical Strategy}
+
+The major challenge to identify conservation effects of protected areas is to account for selection bias. The protection of forest areas are not assigned randomly but policymakers make conscious decisions to declare protected areas. A major selection bias is the remoteness of an area. Forest areas that are distant to settlements have a lower probability of deforestation since the population to harvest timber is absent. Likewise, machines, such as harvesters, have a greater challenge to reach rugged forest areas. In contrast, areas with soil highly suitable for agriculture may be subject to increased deforestation pressures.
+
+To overcome this selction bias we use Coarsened Exact Matching (CEM) to create statistical twins across our units of observations \citep{iacus2012causal, blackwell2009cem}. CEM is a matching method that relies on pruning your data so that each data point has a relevant counterpart. As an example, matching treatment and control units by travel time to the nearest settlement with CEM involves: First, defining range bins of the variable (e.g. 10, 30, 60, 90 minutes). Second, keeping only those observations in bins with treatment and control units. That is, if units in the bin of 90 minutes travel time and above consists only of control units or only of treatment units, the observations would be discarded from the analysis. Third, if there happen to be an unequal number of treatment and control units in a bin weights are calculated. Finally, the pruned data may be used for further analysis, such as weighted regressions.
+
+CEM is especially suitable in our setting. When applying CEM one has to consider the trade-off between keeping units of observations and increasing similarity of treatment and control units. The narrower the bins defined, the more comparable are treatment and control units. However, narrow bins may be wasteful since more units are likely to be discarded from the dataset. Similarly, wide bins make it more likely that treatment and control units fall in the same bin, thus keeping more observations. Still, treatment and control units may remain systematically different from each other after matching with wide bins. The ideal CEM scenario to prune the data via narrow bins for a large number of treatment and control units. The availability of high resolution geospatial data allows us to define narrow variable bins while keeping a large number of observations as well as achieve a high comparability between treatment and control units.
+
+CEM is applies applied once at the beginning of the intervention year. That is, if the disbursements to protected areas started in 2015, the CEM will consider the matching variables only at year 2015. Table \ref{tab:matchvar} lists the variables used to match control cells to treatment cells along with their justification for matching. The majority of the matching variables are time-invariant with the exception of the forest cover area for the previous 3 years. This variable accounts for different levels of forest cover before the intervention and is crucial to account for systematic bias. Otherwise, it would be possible to compare the deforestation rates in forest areas with urban areas.
+
+
+% left fixed width:
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+% center fixed width:
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+
+% flush right fixed width:
+\newcolumntype{R}[1]{>{\raggedleft\arraybackslash}p{#1}}
+
+
+\begin{table}[h]
+\caption{Overview of matching variables}
+\label{tab:matchvar}
+\begin{tabular}{L{2cm}L{2cm}L{9cm}L{3cm}}
+%\begin{tabularx}{\textwidth}{lllll}
+\toprule
+Covariate  & Data source & Data description  & Rationale \\
+Travel time to next city (population >5,000)                           & \cite{weiss2018global}                         & Accessibility is the ease with which larger cities can be reached from a certain location. This resource represents the travel time to major cities in the year 2015. Encoded as minutes, representing the time needed to reach that particular cell from nearby city of target population range. We use the travel time to cities with a population of 5,000 to 110 million.                                                   & Proxy for infrastructure accessibility (main determinant of forest cover loss/deforestation) \\
+Forest cover                                                           & \cite{hansen2013high}                         & ``Tree cover in the year 2000, defined as canopy closure for all vegetation taller than 5m in height. Encoded as a percentage per output grid cell, in the range 0–100.''                                                                                                                                                                                                                                                         & Compare cells with similar level of forest cover and exclude non-forest areas (e.g. cities)  \\
+Forest cover loss (aggregated over three years prior to project start) & \cite{hansen2013high}                         & ``Forest loss during the period 2000–2020, defined as a stand-replacement disturbance, or a change from a forest to non-forest state. Encoded as either 0 (no loss) or else a value in the range 1–20, representing loss detected primarily in the year 2001–2020, respectively.''                                                                                                                                                & Captures pre-treatment deforestation dynamics                                                \\
+Terrain ruggedness                                                     & \cite{farr2007shuttle, riley1999index} & This index is calculated using the same data as the elevation variable. The elevation difference between the center pixel and its eight immediate pixels are squared and then averaged and its square root is taken to get the TRI value. This function allows to efficiently calculate terrain ruggedness index (tri) statistics for polygons. For each polygon, the desired statistic/s (mean, median or sd) is/are returned. & Agricultural mechanization suitability                                                       \\
+Elevation                                                              & \cite{farr2007shuttle}                        & The layer represents the 30m global terrestrial digital elevation model from the NASA Shuttle Radar Topographic Mission (SRTM), available for download as 5 degree x 5 degree tiles. It is encoded as meter, representing the elevation at the particular grid cell.                                                                                                                                                            & Proxy for agricultural climate suitability                                                   \\
+Soil clay content                                                      & \cite{hengl2017soilgrids250m}                  & Proportion of clay particles < 0.002 mm in the fine earth fraction (g/100g)                                                                                                                                                                                                                                                                                                                                                     & Agricultural soil suitability                                                                \\
+Country                                                                & \cite{}                                        & Corresponding country of the gridcell.                                                                                                                                                                                                                                                                                                                                                                                          & Political and regulatory framework                                                          \\
+ \bottomrule
+
+\end{tabular}
+\end{table}
+
+
+After the matching approach we construct a panel dataset to estimate the aid effectiveness to reduce deforestation in protected areas:
+\begin{equation}
+	\ensuremath{loss_{c,t}=\beta_{1}T_{c,t}+\delta_{c}+\tau_{t}+\epsilon_{c,t}},
+\end{equation}
+where $loss_{c,t}$ is the change in forest cover in cell $c$, and year $t$. $T_{c,t}$ a dummy variable being 1 since the year of KfW disbursements, and 0 otherwise. All regressions include cell fixed effects and year fixed effects to account for time-invariant heterogeneity and time-variant covariates that are common across all units of observations, respectively. Moreover, the regressions are clustered on the level of protected areas, where the control group in each country forms a single cluster.
+
+Our estimates are based on multiple panel estimates, which we refer to as "matching frames." A matching frame is a common longitudinal data with the only difference that it includes observations only from the treatment and respective control group. Matching frames are constructed by selecting the start year of the intervention and perform the CEM for the treatment cells of that start year against all potential control cells. After that, all unmatched units of observations are discarded and time-variant covariates are merged with the matched units of observations. This process is repeated for the next year. Matching frames are necessary, as the treatment cells vary with each year and are, hence, matched to different set of control cells. In the following, the matching performance is illustrated for the year 2015 while the regression results are shown for each matching frame with valid parallel trends for the cell's forest cover area in hectres.
+
+\begin{figure}[H]
+\centering
+\caption{Overview of matching variable balancing}
+\includegraphics[width=\linewidth]{"figures/matching frame 2015-1"}
+\label{fig:balance2015}
+\end{figure}
+
+Figure \ref{fig:balance2015} shows that matching establishes a balanced dataset as the mean differences between treatment and control group are significantly reduced and partially eliminated. Treatment and control group become especially comparable after matching with regards to travel distance to the nearest settlement and forest cover. As a further illustration, comparing the kernel densities of unmacthed and matched cells in figure \ref{fig:travel2015} shows that distribution travel distances of treatment and control group become near identical for CEM matching and similar for PSM matching.
+
+
+\begin{figure}[H]
+\centering
+\caption{Distribution of travel time for treatment and control group before and after matching}
+\includegraphics[width=0.9\linewidth]{"figures/matching frame 2015-2"}
+\label{fig:travel2015}
+\end{figure}
+
+
+
+
+\section{Main results}
+
+Matching treatment and control groups 
+
+\begin{figure}[H]
+\centering
+\caption{Parallel trends for the 2015 matching frame}
+\includegraphics[width=1.5\linewidth]{"figures/create plots before after matching-1"}
+\label{fig:parallel2015}
+\end{figure}
+
+
+Text about table
+
+\begin{table}[H]
+\caption{Dependent variable: Forest cover loss}
+\begin{minipage}{0.1\textwidth}
+
+\centering
+\begin{tabular}[t]{lccccccccc}
+\toprule
+  & 2004 & 2005 & 2006 & 2007 & 2008 & 2009 & 2011 & 2012 & 2015\\
+\midrule
+KfW support & -1.959*** & -0.284 & -0.198*** & -0.462** & -0.122 & 0.703 + & -0.217 & 0.009 & -0.767***\\
+ & (0.205) & (0.221) & (0.037) & (0.142) & (0.422) & (0.303) & (0.599) & (0.068) & (0.124)\\
+\midrule
+Num.Obs. & 4656920 & 5475260 & 3013860 & 12937100 & 5202440 & 286000 & 1379020 & 6576260 & 19885180\\
+R2 Adj. & 0.081 & 0.082 & 0.193 & 0.054 & 0.142 & 0.147 & 0.123 & 0.162 & 0.058\\
+FE: .assetid & X & X & X & X & X & X & X & X & X\\
+FE: year & X & X & X & X & X & X & X & X & X\\
+Total num. cells & 232846 & 273763 & 150693 & 646855 & 260122 & 14300 & 68951 & 328813 & 994259\\
+--treated & 300 & 933 & 11398 & 21862 & 9034 & 518 & 3007 & 11398 & 122433\\
+--control & 232546 & 272830 & 139295 & 624993 & 251088 & 13782 & 65944 & 317415 & 871826\\
+\bottomrule
+\multicolumn{10}{l}{\rule{0pt}{1em}Standard errors clustered by zones of forest protected areas (WDPA).}\\
+\multicolumn{10}{l}{\rule{0pt}{1em}+ p $<$ 0.1, * p $<$ 0.05, ** p $<$ 0.01, *** p $<$ 0.001}\\
+\end{tabular}
+
+\label{tab:Display results}
+\end{minipage}
+\end{table}
+
+
+\section{Conclusion}
+
+
+
+
+\bibliography{references.bib} 
+\bibliographystyle{apalike}
+
+\end{document}
