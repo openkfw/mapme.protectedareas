@@ -35,7 +35,7 @@ pre code {
 </style>
 
 
-```{r run regressions}
+```{r run CEM regressions}
 
 
 #### ---- Create table for all years -----
