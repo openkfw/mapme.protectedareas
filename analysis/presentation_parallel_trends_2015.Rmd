@@ -1,0 +1,116 @@
+---
+title: "Trends before and after matching"
+author: "Yota"
+date: "21 6 2022"
+output: workflowr::wflow_html
+---
+  
+  ```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+knitr::opts_knit$set(root.dir = "~/shared/datalake/mapme.protectedareas")
+```
+
+```{r options and workspace, include=FALSE}
+# clean workspace, set options
+rm(list=ls())
+options(scipen=999)
+
+# get packages
+lop <- c("dplyr", "plm", "stargazer", "tidyverse", "MatchIt", "optmatch", "cobalt", "gridExtra", "grid", "gtable")
+newp <- lop[!(lop %in% installed.packages()[,"Package"])]
+if(length(newp)) install.packages(newp)
+lapply(lop, require, character.only = TRUE)
+
+# # set working directory
+# setwd("~/shared/datalake/mapme.protectedareas")
+```
+
+## Before and after matching
+
+```{r create plots before after matching, include=TRUE, message=FALSE, fig.width=14, fig.height=6}
+# T_year <- c(2004:2017, 2019)
+T_year <- c(2015)
+
+
+for (i in T_year) {
+  
+  
+  # Load matching frame 
+  
+  mf <- read_rds(paste0("/datadrive/datalake/mapme.protectedareas/output/matching/matching_frames/matching_frame_", i, ".rds")) %>% 
+    select(.assetid, treatment, starts_with("treecover")) %>% 
+    pivot_longer(cols = c(starts_with("treecover")),
+                 names_to = c(".value", "year"),
+                 names_sep = "_") %>% 
+    rename("fc_area" = "treecover") %>% 
+    mutate(year = as.numeric(year))
+  
+  mf_summarized <- 
+    mf %>% 
+    group_by(year, treatment) %>% 
+    summarise(mean_fca = mean(fc_area, na.rm = TRUE))
+  
+  mf_min <- min(mf_summarized$mean_fca, na.rm = TRUE)
+  mf_max <- max(mf_summarized$mean_fca, na.rm = TRUE)
+  
+  
+  
+  # Load CEM panel
+  
+  mp_cem <- 
+    read_csv(paste0("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/cem_matched_panel_", i, ".csv")) %>% 
+    mutate(fc_area_weighted = fc_area * weights)
+  
+  
+  mp_summarized_cem <- 
+    mp_cem %>% 
+    group_by(year, treatment) %>% 
+    summarise(mean_fca = mean(fc_area_weighted))
+  
+  cem_min <- min(mp_summarized_cem$mean_fca, na.rm = TRUE)
+  cem_max <- max(mp_summarized_cem$mean_fca, na.rm = TRUE)
+  
+  
+  
+
+  
+  
+  # Create plots
+  
+  ymin <- min(mf_min, cem_min)
+  ymax <- max(mf_max, cem_max)
+  
+  avg_plot_mf <- 
+    mf_summarized %>% 
+    ggplot() +
+    geom_line(aes(x = year, 
+                  y = mean_fca,
+                  col = as.factor(treatment),
+                  group = treatment)) + 
+    geom_vline(xintercept = i, col = "red", linetype = "dashed") +
+    labs(title=paste0("Before matching (Year: ", i, ")"),
+         x ="Year", y = "Absolute forest cover (ha)") +
+    theme(legend.position = "bottom") +
+    scale_colour_discrete(name= "", breaks=c("0", "1"),
+                          labels=c("Control", "Treated"))
+  
+  avg_plot_cem <- 
+    mp_summarized_cem %>% 
+    ggplot() +
+    geom_line(aes(x = year, 
+                  y = mean_fca,
+                  col = as.factor(treatment))) + 
+    geom_vline(xintercept = i, col = "red", linetype = "dashed") +
+    labs(title=paste0("After CEM (Year: ", i, ")"),
+         x ="Year", y = "") +
+    theme(legend.position = "bottom") +
+    scale_colour_discrete(name= "", breaks=c("0", "1"),
+                          labels=c("Control", "Treated"))
+  
+
+    grid.arrange(avg_plot_mf, avg_plot_cem, 
+               ncol = 3)
+}
+
+```
+
