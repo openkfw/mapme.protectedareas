@@ -17,7 +17,7 @@ rm(list=ls())
 options(scipen=999)
 
 # get packages
-lop <- c("tidyverse", "sf", "units")
+lop <- c("tidyverse", "sf", "units", "dplyr")
 newp <- lop[!(lop %in% installed.packages()[,"Package"])]
 if(length(newp)) install.packages(newp)
 lapply(lop, require, character.only = TRUE)
@@ -169,8 +169,8 @@ bmz_wdpa.df$disbursement_5sqkmcell [is.nan(bmz_wdpa.df$disbursement_5sqkmcell )]
 
 ## calculate disbursement in each cell by year
 cell.agg<- bmz_wdpa.df %>% 
-  group_by(.assetid, year) %>% 
-  summarize(cell_disb=sum(disbursement_5sqkmcell))
+  dplyr::group_by(.assetid, year) %>% 
+  dplyr::summarize(cell_disb=sum(disbursement_5sqkmcell))
 
 ```
 
@@ -193,7 +193,6 @@ for (i in T_year) {
       rename("m_treecover" = "treecover",
              "m_loss" = "loss",
              "m_loss_t3" = "loss_t3",
-             "m_loss_tn" = "loss_tn",
              "m_emissions" = "emissions")
     # change variable names to facilitate long format conversion in code below
     colnames(m_data) <-  sub("*_anomaly*", "", colnames(m_data))
@@ -268,7 +267,6 @@ for (i in T_year) {
       rename("m_treecover" = "treecover",
              "m_loss" = "loss",
              "m_loss_t3" = "loss_t3",
-             "m_loss_tn" = "loss_tn",
              "m_emissions" = "emissions")
     # change variable names to facilitate long format conversion in code below
     colnames(m_data) <-  sub("*_anomaly*", "", colnames(m_data))
