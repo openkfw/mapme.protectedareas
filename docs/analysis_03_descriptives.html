@@ -73,6 +73,7 @@ if (window.hljs) {
 
 
 
+
 <style type = "text/css">
 .main-container {
   max-width: 940px;
@@ -93,6 +94,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -318,7 +322,7 @@ div.tocify {
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -381,7 +385,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2022-06-08
+<strong>Last updated:</strong> 2022-08-04
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 1
@@ -472,16 +476,16 @@ This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a> analysi
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastree15283e77685a8311a8fe4cfc3b885d44992e1e55targetblank15283e7a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/openkfw/mapme.protectedareas/tree/15283e77685a8311a8fe4cfc3b885d44992e1e55" target="_blank">15283e7</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastree75cf7d081c45880c02d3f07e344cc64ceee951e8targetblank75cf7d0a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/openkfw/mapme.protectedareas/tree/75cf7d081c45880c02d3f07e344cc64ceee951e8" target="_blank">75cf7d0</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastree15283e77685a8311a8fe4cfc3b885d44992e1e55targetblank15283e7a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastree75cf7d081c45880c02d3f07e344cc64ceee951e8targetblank75cf7d0a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/openkfw/mapme.protectedareas/tree/15283e77685a8311a8fe4cfc3b885d44992e1e55" target="_blank">15283e7</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/openkfw/mapme.protectedareas/tree/75cf7d081c45880c02d3f07e344cc64ceee951e8" target="_blank">75cf7d0</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -493,25 +497,10 @@ Ignored files:
     Ignored:    .Rproj.user/
 
 Untracked files:
-    Untracked:  Rplot.pdf
-    Untracked:  analysis/figure/analysis_03_descriptives.Rmd/
+    Untracked:  analysis/table_cells_overlapping_wdpa.Rmd
 
 Unstaged changes:
     Modified:   analysis/analysis_03_descriptives.Rmd
-    Deleted:    analysis/figure/analysis_04_plot_paralleltrends.Rmd/create plots in pdf-1.png
-    Deleted:    analysis/figure/analysis_04_plot_paralleltrends.Rmd/create plots in pdf-10.png
-    Deleted:    analysis/figure/analysis_04_plot_paralleltrends.Rmd/create plots in pdf-11.png
-    Deleted:    analysis/figure/analysis_04_plot_paralleltrends.Rmd/create plots in pdf-12.png
-    Deleted:    analysis/figure/analysis_04_plot_paralleltrends.Rmd/create plots in pdf-13.png
-    Deleted:    analysis/figure/analysis_04_plot_paralleltrends.Rmd/create plots in pdf-14.png
-    Deleted:    analysis/figure/analysis_04_plot_paralleltrends.Rmd/create plots in pdf-2.png
-    Deleted:    analysis/figure/analysis_04_plot_paralleltrends.Rmd/create plots in pdf-3.png
-    Deleted:    analysis/figure/analysis_04_plot_paralleltrends.Rmd/create plots in pdf-4.png
-    Deleted:    analysis/figure/analysis_04_plot_paralleltrends.Rmd/create plots in pdf-5.png
-    Deleted:    analysis/figure/analysis_04_plot_paralleltrends.Rmd/create plots in pdf-6.png
-    Deleted:    analysis/figure/analysis_04_plot_paralleltrends.Rmd/create plots in pdf-7.png
-    Deleted:    analysis/figure/analysis_04_plot_paralleltrends.Rmd/create plots in pdf-8.png
-    Deleted:    analysis/figure/analysis_04_plot_paralleltrends.Rmd/create plots in pdf-9.png
 
 </code></pre>
 <p>
@@ -550,6 +539,74 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/75cf7d081c45880c02d3f07e344cc64ceee951e8/analysis/analysis_03_descriptives.Rmd" target="_blank">75cf7d0</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-08-02
+</td>
+<td>
+add ks statistics
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/31f3e1fe4c86a08f3ccb80c1e6969f0498b3fd3d/analysis/analysis_03_descriptives.Rmd" target="_blank">31f3e1f</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-14
+</td>
+<td>
+Minor changes and example code for output style
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/openkfw/mapme.protectedareas/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/analysis_03_descriptives.html" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+<td>
+output only
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/df89e7d1e65f7631d844b80b5aa6f73f2514d0c9/analysis/analysis_03_descriptives.Rmd" target="_blank">df89e7d</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-09
+</td>
+<td>
+clear environment in function
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -900,6 +957,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2004-1.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/c773c3a97bb73b0501c622e947c7dead725c5a5d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2004-1.png" target="_blank">c773c3a</a>
 </td>
 <td>
@@ -958,6 +1026,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2004-2.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/236388b12af1ef9e508f6053c1768fa6ea89ae2d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2004-2.png" target="_blank">236388b</a>
@@ -1031,6 +1110,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2004-3.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/c773c3a97bb73b0501c622e947c7dead725c5a5d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2004-3.png" target="_blank">c773c3a</a>
 </td>
 <td>
@@ -1089,6 +1179,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2004-4.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/236388b12af1ef9e508f6053c1768fa6ea89ae2d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2004-4.png" target="_blank">236388b</a>
@@ -1162,6 +1263,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2004-5.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/236388b12af1ef9e508f6053c1768fa6ea89ae2d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2004-5.png" target="_blank">236388b</a>
 </td>
 <td>
@@ -1233,6 +1345,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2004-6.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/c773c3a97bb73b0501c622e947c7dead725c5a5d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2004-6.png" target="_blank">c773c3a</a>
 </td>
 <td>
@@ -1291,6 +1414,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2004-7.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/236388b12af1ef9e508f6053c1768fa6ea89ae2d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2004-7.png" target="_blank">236388b</a>
@@ -1421,6 +1555,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2005-1.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/c773c3a97bb73b0501c622e947c7dead725c5a5d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2005-1.png" target="_blank">c773c3a</a>
 </td>
 <td>
@@ -1479,6 +1624,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2005-2.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/236388b12af1ef9e508f6053c1768fa6ea89ae2d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2005-2.png" target="_blank">236388b</a>
@@ -1552,6 +1708,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2005-3.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/c773c3a97bb73b0501c622e947c7dead725c5a5d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2005-3.png" target="_blank">c773c3a</a>
 </td>
 <td>
@@ -1610,6 +1777,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2005-4.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/236388b12af1ef9e508f6053c1768fa6ea89ae2d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2005-4.png" target="_blank">236388b</a>
@@ -1683,6 +1861,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2005-5.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/236388b12af1ef9e508f6053c1768fa6ea89ae2d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2005-5.png" target="_blank">236388b</a>
 </td>
 <td>
@@ -1754,6 +1943,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2005-6.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/c773c3a97bb73b0501c622e947c7dead725c5a5d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2005-6.png" target="_blank">c773c3a</a>
 </td>
 <td>
@@ -1812,6 +2012,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2005-7.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/236388b12af1ef9e508f6053c1768fa6ea89ae2d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2005-7.png" target="_blank">236388b</a>
@@ -1942,6 +2153,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2006-1.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/c773c3a97bb73b0501c622e947c7dead725c5a5d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2006-1.png" target="_blank">c773c3a</a>
 </td>
 <td>
@@ -2000,6 +2222,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2006-2.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/236388b12af1ef9e508f6053c1768fa6ea89ae2d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2006-2.png" target="_blank">236388b</a>
@@ -2073,6 +2306,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2006-3.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/c773c3a97bb73b0501c622e947c7dead725c5a5d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2006-3.png" target="_blank">c773c3a</a>
 </td>
 <td>
@@ -2131,6 +2375,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2006-4.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/236388b12af1ef9e508f6053c1768fa6ea89ae2d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2006-4.png" target="_blank">236388b</a>
@@ -2204,6 +2459,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2006-5.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/236388b12af1ef9e508f6053c1768fa6ea89ae2d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2006-5.png" target="_blank">236388b</a>
 </td>
 <td>
@@ -2275,6 +2541,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2006-6.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/c773c3a97bb73b0501c622e947c7dead725c5a5d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2006-6.png" target="_blank">c773c3a</a>
 </td>
 <td>
@@ -2333,6 +2610,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2006-7.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/236388b12af1ef9e508f6053c1768fa6ea89ae2d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2006-7.png" target="_blank">236388b</a>
@@ -2463,6 +2751,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2007-1.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/c773c3a97bb73b0501c622e947c7dead725c5a5d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2007-1.png" target="_blank">c773c3a</a>
 </td>
 <td>
@@ -2521,6 +2820,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2007-2.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/236388b12af1ef9e508f6053c1768fa6ea89ae2d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2007-2.png" target="_blank">236388b</a>
@@ -2594,6 +2904,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2007-3.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/c773c3a97bb73b0501c622e947c7dead725c5a5d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2007-3.png" target="_blank">c773c3a</a>
 </td>
 <td>
@@ -2652,6 +2973,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2007-4.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/236388b12af1ef9e508f6053c1768fa6ea89ae2d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2007-4.png" target="_blank">236388b</a>
@@ -2725,6 +3057,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2007-5.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/236388b12af1ef9e508f6053c1768fa6ea89ae2d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2007-5.png" target="_blank">236388b</a>
 </td>
 <td>
@@ -2796,6 +3139,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2007-6.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/c773c3a97bb73b0501c622e947c7dead725c5a5d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2007-6.png" target="_blank">c773c3a</a>
 </td>
 <td>
@@ -2854,6 +3208,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2007-7.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/236388b12af1ef9e508f6053c1768fa6ea89ae2d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2007-7.png" target="_blank">236388b</a>
@@ -2984,6 +3349,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2008-1.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/c773c3a97bb73b0501c622e947c7dead725c5a5d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2008-1.png" target="_blank">c773c3a</a>
 </td>
 <td>
@@ -3042,6 +3418,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2008-2.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/236388b12af1ef9e508f6053c1768fa6ea89ae2d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2008-2.png" target="_blank">236388b</a>
@@ -3115,6 +3502,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2008-3.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/c773c3a97bb73b0501c622e947c7dead725c5a5d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2008-3.png" target="_blank">c773c3a</a>
 </td>
 <td>
@@ -3173,6 +3571,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2008-4.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/236388b12af1ef9e508f6053c1768fa6ea89ae2d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2008-4.png" target="_blank">236388b</a>
@@ -3246,6 +3655,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2008-5.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/236388b12af1ef9e508f6053c1768fa6ea89ae2d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2008-5.png" target="_blank">236388b</a>
 </td>
 <td>
@@ -3317,6 +3737,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2008-6.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/c773c3a97bb73b0501c622e947c7dead725c5a5d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2008-6.png" target="_blank">c773c3a</a>
 </td>
 <td>
@@ -3375,6 +3806,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2008-7.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/236388b12af1ef9e508f6053c1768fa6ea89ae2d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2008-7.png" target="_blank">236388b</a>
@@ -3505,6 +3947,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2009-1.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/c773c3a97bb73b0501c622e947c7dead725c5a5d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2009-1.png" target="_blank">c773c3a</a>
 </td>
 <td>
@@ -3563,6 +4016,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2009-2.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/236388b12af1ef9e508f6053c1768fa6ea89ae2d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2009-2.png" target="_blank">236388b</a>
@@ -3636,6 +4100,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2009-3.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/c773c3a97bb73b0501c622e947c7dead725c5a5d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2009-3.png" target="_blank">c773c3a</a>
 </td>
 <td>
@@ -3694,6 +4169,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2009-4.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/236388b12af1ef9e508f6053c1768fa6ea89ae2d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2009-4.png" target="_blank">236388b</a>
@@ -3767,6 +4253,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2009-5.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/236388b12af1ef9e508f6053c1768fa6ea89ae2d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2009-5.png" target="_blank">236388b</a>
 </td>
 <td>
@@ -3838,6 +4335,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2009-6.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/c773c3a97bb73b0501c622e947c7dead725c5a5d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2009-6.png" target="_blank">c773c3a</a>
 </td>
 <td>
@@ -3896,6 +4404,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2009-7.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/236388b12af1ef9e508f6053c1768fa6ea89ae2d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2009-7.png" target="_blank">236388b</a>
@@ -4026,6 +4545,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2010-1.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/c773c3a97bb73b0501c622e947c7dead725c5a5d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2010-1.png" target="_blank">c773c3a</a>
 </td>
 <td>
@@ -4084,6 +4614,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2010-2.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/236388b12af1ef9e508f6053c1768fa6ea89ae2d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2010-2.png" target="_blank">236388b</a>
@@ -4157,6 +4698,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2010-3.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/c773c3a97bb73b0501c622e947c7dead725c5a5d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2010-3.png" target="_blank">c773c3a</a>
 </td>
 <td>
@@ -4215,6 +4767,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2010-4.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/236388b12af1ef9e508f6053c1768fa6ea89ae2d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2010-4.png" target="_blank">236388b</a>
@@ -4288,6 +4851,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2010-5.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/236388b12af1ef9e508f6053c1768fa6ea89ae2d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2010-5.png" target="_blank">236388b</a>
 </td>
 <td>
@@ -4359,6 +4933,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2010-6.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/c773c3a97bb73b0501c622e947c7dead725c5a5d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2010-6.png" target="_blank">c773c3a</a>
 </td>
 <td>
@@ -4417,6 +5002,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2010-7.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/236388b12af1ef9e508f6053c1768fa6ea89ae2d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2010-7.png" target="_blank">236388b</a>
@@ -4547,6 +5143,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2011-1.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/c773c3a97bb73b0501c622e947c7dead725c5a5d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2011-1.png" target="_blank">c773c3a</a>
 </td>
 <td>
@@ -4605,6 +5212,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2011-2.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/236388b12af1ef9e508f6053c1768fa6ea89ae2d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2011-2.png" target="_blank">236388b</a>
@@ -4678,6 +5296,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2011-3.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/c773c3a97bb73b0501c622e947c7dead725c5a5d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2011-3.png" target="_blank">c773c3a</a>
 </td>
 <td>
@@ -4736,6 +5365,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2011-4.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/236388b12af1ef9e508f6053c1768fa6ea89ae2d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2011-4.png" target="_blank">236388b</a>
@@ -4809,6 +5449,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2011-5.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/236388b12af1ef9e508f6053c1768fa6ea89ae2d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2011-5.png" target="_blank">236388b</a>
 </td>
 <td>
@@ -4880,6 +5531,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2011-6.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/c773c3a97bb73b0501c622e947c7dead725c5a5d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2011-6.png" target="_blank">c773c3a</a>
 </td>
 <td>
@@ -4938,6 +5600,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2011-7.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/236388b12af1ef9e508f6053c1768fa6ea89ae2d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2011-7.png" target="_blank">236388b</a>
@@ -5068,6 +5741,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2012-1.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/c773c3a97bb73b0501c622e947c7dead725c5a5d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2012-1.png" target="_blank">c773c3a</a>
 </td>
 <td>
@@ -5126,6 +5810,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2012-2.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/236388b12af1ef9e508f6053c1768fa6ea89ae2d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2012-2.png" target="_blank">236388b</a>
@@ -5199,6 +5894,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2012-3.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/c773c3a97bb73b0501c622e947c7dead725c5a5d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2012-3.png" target="_blank">c773c3a</a>
 </td>
 <td>
@@ -5257,6 +5963,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2012-4.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/236388b12af1ef9e508f6053c1768fa6ea89ae2d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2012-4.png" target="_blank">236388b</a>
@@ -5330,6 +6047,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2012-5.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/236388b12af1ef9e508f6053c1768fa6ea89ae2d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2012-5.png" target="_blank">236388b</a>
 </td>
 <td>
@@ -5401,6 +6129,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2012-6.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/c773c3a97bb73b0501c622e947c7dead725c5a5d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2012-6.png" target="_blank">c773c3a</a>
 </td>
 <td>
@@ -5459,6 +6198,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2012-7.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/236388b12af1ef9e508f6053c1768fa6ea89ae2d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2012-7.png" target="_blank">236388b</a>
@@ -5589,6 +6339,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2013-1.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/c773c3a97bb73b0501c622e947c7dead725c5a5d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2013-1.png" target="_blank">c773c3a</a>
 </td>
 <td>
@@ -5647,6 +6408,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2013-2.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/236388b12af1ef9e508f6053c1768fa6ea89ae2d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2013-2.png" target="_blank">236388b</a>
@@ -5720,6 +6492,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2013-3.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/c773c3a97bb73b0501c622e947c7dead725c5a5d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2013-3.png" target="_blank">c773c3a</a>
 </td>
 <td>
@@ -5778,6 +6561,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2013-4.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/236388b12af1ef9e508f6053c1768fa6ea89ae2d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2013-4.png" target="_blank">236388b</a>
@@ -5851,6 +6645,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2013-5.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/236388b12af1ef9e508f6053c1768fa6ea89ae2d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2013-5.png" target="_blank">236388b</a>
 </td>
 <td>
@@ -5922,6 +6727,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2013-6.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/c773c3a97bb73b0501c622e947c7dead725c5a5d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2013-6.png" target="_blank">c773c3a</a>
 </td>
 <td>
@@ -5980,6 +6796,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2013-7.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/236388b12af1ef9e508f6053c1768fa6ea89ae2d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2013-7.png" target="_blank">236388b</a>
@@ -6111,6 +6938,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2014-1.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/c773c3a97bb73b0501c622e947c7dead725c5a5d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2014-1.png" target="_blank">c773c3a</a>
 </td>
 <td>
@@ -6169,6 +7007,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2014-2.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/236388b12af1ef9e508f6053c1768fa6ea89ae2d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2014-2.png" target="_blank">236388b</a>
@@ -6242,6 +7091,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2014-3.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/c773c3a97bb73b0501c622e947c7dead725c5a5d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2014-3.png" target="_blank">c773c3a</a>
 </td>
 <td>
@@ -6300,6 +7160,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2014-4.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/236388b12af1ef9e508f6053c1768fa6ea89ae2d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2014-4.png" target="_blank">236388b</a>
@@ -6373,6 +7244,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2014-5.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/236388b12af1ef9e508f6053c1768fa6ea89ae2d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2014-5.png" target="_blank">236388b</a>
 </td>
 <td>
@@ -6444,6 +7326,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2014-6.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/c773c3a97bb73b0501c622e947c7dead725c5a5d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2014-6.png" target="_blank">c773c3a</a>
 </td>
 <td>
@@ -6502,6 +7395,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2014-7.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/236388b12af1ef9e508f6053c1768fa6ea89ae2d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2014-7.png" target="_blank">236388b</a>
@@ -6632,6 +7536,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2015-1.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/c773c3a97bb73b0501c622e947c7dead725c5a5d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2015-1.png" target="_blank">c773c3a</a>
 </td>
 <td>
@@ -6679,6 +7594,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2015-2.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/c773c3a97bb73b0501c622e947c7dead725c5a5d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2015-2.png" target="_blank">c773c3a</a>
@@ -6730,6 +7656,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2015-3.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/c773c3a97bb73b0501c622e947c7dead725c5a5d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2015-3.png" target="_blank">c773c3a</a>
 </td>
 <td>
@@ -6777,6 +7714,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2015-4.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/c773c3a97bb73b0501c622e947c7dead725c5a5d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2015-4.png" target="_blank">c773c3a</a>
@@ -6828,6 +7776,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2015-5.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/c773c3a97bb73b0501c622e947c7dead725c5a5d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2015-5.png" target="_blank">c773c3a</a>
 </td>
 <td>
@@ -6877,6 +7836,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2015-6.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/c773c3a97bb73b0501c622e947c7dead725c5a5d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2015-6.png" target="_blank">c773c3a</a>
 </td>
 <td>
@@ -6924,6 +7894,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2015-7.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/c773c3a97bb73b0501c622e947c7dead725c5a5d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2015-7.png" target="_blank">c773c3a</a>
@@ -7032,6 +8013,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2016-1.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/c773c3a97bb73b0501c622e947c7dead725c5a5d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2016-1.png" target="_blank">c773c3a</a>
 </td>
 <td>
@@ -7090,6 +8082,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2016-2.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/236388b12af1ef9e508f6053c1768fa6ea89ae2d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2016-2.png" target="_blank">236388b</a>
@@ -7163,6 +8166,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2016-3.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/c773c3a97bb73b0501c622e947c7dead725c5a5d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2016-3.png" target="_blank">c773c3a</a>
 </td>
 <td>
@@ -7221,6 +8235,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2016-4.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/236388b12af1ef9e508f6053c1768fa6ea89ae2d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2016-4.png" target="_blank">236388b</a>
@@ -7294,6 +8319,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2016-5.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/236388b12af1ef9e508f6053c1768fa6ea89ae2d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2016-5.png" target="_blank">236388b</a>
 </td>
 <td>
@@ -7365,6 +8401,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2016-6.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/c773c3a97bb73b0501c622e947c7dead725c5a5d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2016-6.png" target="_blank">c773c3a</a>
 </td>
 <td>
@@ -7423,6 +8470,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2016-7.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/236388b12af1ef9e508f6053c1768fa6ea89ae2d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2016-7.png" target="_blank">236388b</a>
@@ -7528,7 +8586,272 @@ as.factor(NAME_0)_Peru               Binary  -0.095     0        0
 treecover                            Contin. -0.356   0.002    -0.045 
 loss_t3                              Contin. -0.344   -0.006   -0.041 
 ----------------------------------------------------------------------</code></pre>
-<p><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202017-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202017-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202017-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202017-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202017-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202017-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202017-7.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202017-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-matching-frame-2017-1">
+Past versions of “matching frame 2017-1.png”
+</button>
+</p>
+<div id="fig-no-spaces-matching-frame-2017-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2017-1.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202017-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-matching-frame-2017-2">
+Past versions of “matching frame 2017-2.png”
+</button>
+</p>
+<div id="fig-no-spaces-matching-frame-2017-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2017-2.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202017-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-matching-frame-2017-3">
+Past versions of “matching frame 2017-3.png”
+</button>
+</p>
+<div id="fig-no-spaces-matching-frame-2017-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2017-3.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202017-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-matching-frame-2017-4">
+Past versions of “matching frame 2017-4.png”
+</button>
+</p>
+<div id="fig-no-spaces-matching-frame-2017-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2017-4.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202017-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-matching-frame-2017-5">
+Past versions of “matching frame 2017-5.png”
+</button>
+</p>
+<div id="fig-no-spaces-matching-frame-2017-5" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2017-5.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202017-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-matching-frame-2017-6">
+Past versions of “matching frame 2017-6.png”
+</button>
+</p>
+<div id="fig-no-spaces-matching-frame-2017-6" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2017-6.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/analysis_03_descriptives.Rmd/matching%20frame%202017-7.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-matching-frame-2017-7">
+Past versions of “matching frame 2017-7.png”
+</button>
+</p>
+<div id="fig-no-spaces-matching-frame-2017-7" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2017-7.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="matching-frame-2019" class="section level2">
 <h2>Matching frame 2019</h2>
@@ -7611,6 +8934,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2019-1.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/c773c3a97bb73b0501c622e947c7dead725c5a5d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2019-1.png" target="_blank">c773c3a</a>
 </td>
 <td>
@@ -7669,6 +9003,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2019-2.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/236388b12af1ef9e508f6053c1768fa6ea89ae2d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2019-2.png" target="_blank">236388b</a>
@@ -7742,6 +9087,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2019-3.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/c773c3a97bb73b0501c622e947c7dead725c5a5d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2019-3.png" target="_blank">c773c3a</a>
 </td>
 <td>
@@ -7800,6 +9156,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2019-4.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/236388b12af1ef9e508f6053c1768fa6ea89ae2d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2019-4.png" target="_blank">236388b</a>
@@ -7873,6 +9240,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2019-5.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/236388b12af1ef9e508f6053c1768fa6ea89ae2d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2019-5.png" target="_blank">236388b</a>
 </td>
 <td>
@@ -7944,6 +9322,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2019-6.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/c773c3a97bb73b0501c622e947c7dead725c5a5d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2019-6.png" target="_blank">c773c3a</a>
 </td>
 <td>
@@ -8004,6 +9393,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/6b2296a41ba4f06b792cdf7f4287013a607b51f2/docs/figure/analysis_03_descriptives.Rmd/matching frame 2019-7.png" target="_blank">6b2296a</a>
+</td>
+<td>
+Yota Eilers
+</td>
+<td>
+2022-06-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/openkfw/mapme.protectedareas/blob/236388b12af1ef9e508f6053c1768fa6ea89ae2d/docs/figure/analysis_03_descriptives.Rmd/matching frame 2019-7.png" target="_blank">236388b</a>
 </td>
 <td>
@@ -8050,7 +9450,7 @@ Yota Eilers
 </table>
 </div>
 </div>
-<pre><code>Time difference of 91.83475 mins</code></pre>
+<pre><code>Time difference of 70.24613 mins</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -8074,20 +9474,21 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] gridExtra_2.3   cobalt_4.3.2    optmatch_0.9-15 survival_3.2-13 MatchIt_4.3.0   forcats_0.5.1   stringr_1.4.0   purrr_0.3.4     readr_2.1.2     tidyr_1.2.0     tibble_3.1.7    ggplot2_3.3.4  
-[13] tidyverse_1.3.1 stargazer_5.2.2 plm_2.4-3       dplyr_1.0.9    
+ [1] gridExtra_2.3   cobalt_4.3.2    optmatch_0.9-15 survival_3.2-13 MatchIt_4.4.0   forcats_0.5.1   stringr_1.4.0   purrr_0.3.4     readr_2.1.2     tidyr_1.2.0     tibble_3.1.8    ggplot2_3.3.6  
+[13] tidyverse_1.3.2 stargazer_5.2.3 plm_2.4-3       dplyr_1.0.9    
 
 loaded via a namespace (and not attached):
- [1] svd_0.5             nlme_3.1-155        fs_1.5.0            lubridate_1.7.10    httr_1.4.3          rprojroot_2.0.2     dreamerr_1.2.3      RItools_0.1-17      numDeriv_2016.8-1.1
-[10] tools_3.6.3         backports_1.2.1     bslib_0.2.5.1       utf8_1.2.2          R6_2.5.1            DBI_1.1.2           colorspace_2.0-1    withr_2.4.2         tidyselect_1.1.2   
-[19] compiler_3.6.3      git2r_0.28.0        cli_3.3.0           rvest_1.0.2         SparseM_1.78        xml2_1.3.3          sandwich_3.0-0      labeling_0.4.2      sass_0.4.0         
-[28] scales_1.1.1        lmtest_0.9-38       fixest_0.10.4       digest_0.6.29       rmarkdown_2.11      pkgconfig_2.0.3     htmltools_0.5.2     highr_0.8           dbplyr_2.1.1       
-[37] fastmap_1.1.0       rlang_1.0.2         readxl_1.3.1        rstudioapi_0.13     farver_2.1.0        jquerylib_0.1.4     generics_0.1.2      zoo_1.8-8           jsonlite_1.8.0     
-[46] magrittr_2.0.3      Formula_1.2-4       Matrix_1.4-0        Rcpp_1.0.8.3        munsell_0.5.0       fansi_1.0.3         abind_1.4-5         lifecycle_1.0.1     stringi_1.7.6      
-[55] whisker_0.4         yaml_2.2.1          MASS_7.3-55         grid_3.6.3          promises_1.2.0.1    bdsmatrix_1.3-4     crayon_1.5.1        lattice_0.20-45     haven_2.3.1        
-[64] splines_3.6.3       hms_1.1.1           knitr_1.34          pillar_1.7.0        reprex_2.0.0        glue_1.6.2          evaluate_0.14       mitools_2.4         modelr_0.1.8       
-[73] vctrs_0.4.1         tzdb_0.1.2          httpuv_1.6.1        Rdpack_2.1.2        miscTools_0.6-26    cellranger_1.1.0    gtable_0.3.0        assertthat_0.2.1    xfun_0.24          
-[82] rbibutils_2.2.4     xtable_1.8-4        broom_0.7.6         survey_4.1-1        later_1.2.0         workflowr_1.7.0     maxLik_1.5-2        ellipsis_0.3.2     </code></pre>
+ [1] svd_0.5.2           nlme_3.1-155        fs_1.5.2            lubridate_1.8.0     httr_1.4.3          rprojroot_2.0.3     dreamerr_1.2.3      RItools_0.1-17      numDeriv_2016.8-1.1
+[10] tools_3.6.3         backports_1.4.1     bslib_0.3.1         utf8_1.2.2          R6_2.5.1            DBI_1.1.3           colorspace_2.0-3    withr_2.5.0         tidyselect_1.1.2   
+[19] compiler_3.6.3      git2r_0.30.1        cli_3.3.0           rvest_1.0.2         SparseM_1.81        xml2_1.3.3          sandwich_3.0-2      labeling_0.4.2      sass_0.4.1         
+[28] scales_1.2.0        lmtest_0.9-40       fixest_0.10.4       digest_0.6.29       rmarkdown_2.14      pkgconfig_2.0.3     htmltools_0.5.3     highr_0.9           dbplyr_2.2.1       
+[37] fastmap_1.1.0       collapse_1.8.6      rlang_1.0.4         readxl_1.4.0        rstudioapi_0.13     farver_2.1.1        jquerylib_0.1.4     generics_0.1.3      zoo_1.8-10         
+[46] jsonlite_1.8.0      googlesheets4_1.0.0 magrittr_2.0.3      Formula_1.2-4       Matrix_1.4-0        Rcpp_1.0.9          munsell_0.5.0       fansi_1.0.3         abind_1.4-5        
+[55] lifecycle_1.0.1     stringi_1.7.8       whisker_0.4         yaml_2.3.5          MASS_7.3-55         grid_3.6.3          parallel_3.6.3      promises_1.2.0.1    bdsmatrix_1.3-6    
+[64] crayon_1.5.1        lattice_0.20-45     splines_3.6.3       haven_2.5.0         hms_1.1.1           knitr_1.39          pillar_1.8.0        reprex_2.0.1        glue_1.6.2         
+[73] evaluate_0.15       mitools_2.4         modelr_0.1.8        vctrs_0.4.1         tzdb_0.3.0          httpuv_1.6.5        Rdpack_2.1.2        miscTools_0.6-26    cellranger_1.1.0   
+[82] gtable_0.3.0        assertthat_0.2.1    xfun_0.31           rbibutils_2.2.8     xtable_1.8-4        broom_1.0.0         survey_4.1-1        later_1.3.0         googledrive_2.0.0  
+[91] gargle_1.2.0        workflowr_1.7.0     maxLik_1.5-2        ellipsis_0.3.2     </code></pre>
 </div>
 </div>
 

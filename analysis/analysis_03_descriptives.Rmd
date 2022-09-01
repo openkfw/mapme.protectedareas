@@ -17,7 +17,7 @@ options(scipen=999)
 options(width = 200)
 
 # get packages
-lop <- c("dplyr", "plm", "stargazer", "tidyverse", "MatchIt", "glm", "optmatch", "cobalt", "gridExtra")
+lop <- c("dplyr", "plm", "stargazer", "tidyverse", "MatchIt", "optmatch", "cobalt", "gridExtra")
 newp <- lop[!(lop %in% installed.packages()[,"Package"])]
 if(length(newp)) install.packages(newp)
 lapply(lop, require, character.only = TRUE)
@@ -102,6 +102,52 @@ stargazer(obs_table,
           title = paste0("Number of observations after before and after CEM and PSM, respectively"))
 ```
 
+
+## Exclusion of Treatment Units 
+
+The following plots displays the number of treatment units excluded in the post-matching datasets for both matching methods. Values are in percent, relative to total number of treatment units in each year. 
+
+```{r lost pct}
+# Get obs table
+observations_table <- 
+  readRDS("/datadrive/datalake/mapme.protectedareas/output/matching/output_tables/observations_table.rds")
+
+# extract number of obs from obs table
+obs_treat <- as.numeric(observations_table[2,])
+obs_treat_cem <- as.numeric(observations_table[6,])
+obs_treat_psm <- as.numeric(observations_table[10,])
+
+# Calculate number of lost treatment units
+lost_cem <- obs_treat - obs_treat_cem
+lost_psm <- obs_treat - obs_treat_psm
+
+# Calculate percentage of lost treatment units relative to total number of treated units
+lost_pct_cem <- lost_cem / obs_treat
+lost_pct_psm <- lost_psm / obs_treat
+
+lost_table <- cbind(as.numeric(colnames(observations_table)),
+                    lost_pct_cem*100, 
+                    lost_pct_psm*100)
+
+# Names for variables
+colnames(lost_table) <- c("Year","CEM", "PSM")
+
+
+# Plot loss percentages
+as.data.frame(lost_table) %>% 
+  pivot_longer(
+    cols = c("CEM", "PSM"),
+    names_to = "method",
+    values_to = "value"
+  ) %>% 
+  ggplot(aes(x=Year, y=value, group=method, col=method)) +
+  geom_line(size = 2) +
+  labs(y="Percentage of treatment units lost",
+       col="Matching method") +
+  scale_x_continuous(breaks = seq(2004, 2019, 1))
+```
+
+
 ```{r function for descriptives}
 get_descriptives <- function(year) {
   
@@ -146,9 +192,13 @@ get_descriptives <- function(year) {
   # Love plot
   plot_love <- love.plot(treat ~ covs, 
                          data = data, 
+                         stats = c("mean.diffs", "ks"), 
                          weights = list(CEM = m_cem, 
                                         PSM = m_psm), 
                          binary = "std",
+                         shapes = c("square", "circle", "circle"),
+                         colors = c("#e41a1c", "#377eb8", "#4daf4a"),
+                         size = 2,t
                          alpha = 0.8)
 
   # Balance plot (density)
@@ -205,7 +255,7 @@ get_descriptives <- function(year) {
                           var.name = "loss_t3", which = "both") +
     coord_cartesian(xlim = c(0, xmax))
 
-  plot(plot_love)
+  # plot(plot_love)
   plot(plot_tt)
   plot(plot_cc)
   plot(plot_tr)

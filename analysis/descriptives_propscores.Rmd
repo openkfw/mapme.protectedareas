@@ -1,0 +1,138 @@
+---
+title: "Propensity Score Balance"
+author: "Yota"
+date: "8 8 2022"
+output: workflowr::wflow_html
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE)
+knitr::opts_knit$set(root.dir = "/datadrive/datalake/mapme.protectedareas")
+```
+
+```{r include=FALSE}
+# clean workspace, set options
+rm(list=ls())
+options(scipen=999)
+options(width = 200)
+
+# get packages
+lop <- c("dplyr", "plm", "stargazer", "tidyverse", "MatchIt", "optmatch", "cobalt", "gridExtra", "WeightIt")
+newp <- lop[!(lop %in% installed.packages()[,"Package"])]
+if(length(newp)) install.packages(newp)
+lapply(lop, require, character.only = TRUE)
+
+```
+
+```{r function for descriptives}
+get_pscorehist <- function(year) {
+  
+  
+  
+  # read matchit objects
+  m_psm <- 
+    read_rds(paste0("/datadrive/datalake/mapme.protectedareas/output/matching/matchit_objects/PSM/m_psm_", year, ".rds"))
+
+  data <- cbind(m_psm$treat, m_psm$X) %>% 
+    rename("treat" = "m_psm$treat")
+  covs <- subset(data, select = -c(treat))
+  
+  #Generating propensity score weights for the ATT
+  W.out <- weightit(treat ~ covs, data = data,
+                    method = "ps", estimand = "ATT")
+  
+  #Before and after weighting; which = "both"
+  bal_plot <- bal.plot(W.out, var.name = "prop.score", which = "both",
+                  type = "histogram", mirror = TRUE)
+  
+  plot(bal_plot)
+  
+  
+  #clear environment
+  rm(list=ls())
+}
+```
+
+## Matching frame 2004
+ 
+```{r matching frame 2004}
+get_pscorehist(2004)
+```
+ 
+## Matching frame 2005
+ 
+```{r matching frame 2005}
+get_pscorehist(2005)
+```
+ 
+## Matching frame 2006
+ 
+```{r matching frame 2006}
+get_pscorehist(2006)
+```
+ 
+## Matching frame 2007
+ 
+```{r matching frame 2007}
+get_pscorehist(2007)
+```
+ 
+## Matching frame 2008
+ 
+```{r matching frame 2008}
+get_pscorehist(2008)
+```
+ 
+## Matching frame 2009
+ 
+```{r matching frame 2009}
+get_pscorehist(2009)
+```
+ 
+## Matching frame 2010
+ 
+```{r matching frame 2010}
+get_pscorehist(2010)
+```
+ 
+## Matching frame 2011
+ 
+```{r matching frame 2011}
+get_pscorehist(2011)
+```
+ 
+## Matching frame 2012
+ 
+```{r matching frame 2012}
+get_pscorehist(2012)
+```
+ 
+## Matching frame 2013
+ 
+```{r matching frame 2013}
+get_pscorehist(2013)
+```
+ 
+## Matching frame 2014
+ 
+```{r matching frame 2014}
+get_pscorehist(2014)
+```
+ 
+## Matching frame 2015
+ 
+```{r matching frame 2015}
+get_pscorehist(2015)
+```
+ 
+## Matching frame 2016
+ 
+```{r matching frame 2016}
+get_pscorehist(2016)
+```
+ 
+## Matching frame 2019
+ 
+```{r matching frame 2019}
+get_pscorehist(2019)
+```
