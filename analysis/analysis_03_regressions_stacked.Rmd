@@ -1,0 +1,46 @@
+---
+title: "Regression analysis with stacked panel"
+author: "Melvin H. L. Wong"
+date: "1 9 2022"
+output: workflowr::wflow_html
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE)
+knitr::opts_knit$set(root.dir = "~/shared/datalake/mapme.protectedareas")
+```
+
+```{r include=FALSE}
+# clean workspace, set options
+rm(list=ls())
+options(scipen=999)
+options(width = 200)
+
+# get packages
+lop <- c("dplyr", "plm", "stargazer", "tidyverse", "cem", "multiwayvcov", "modelsummary", "fixest", "kableExtra")
+newp <- lop[!(lop %in% installed.packages()[,"Package"])]
+if(length(newp)) install.packages(newp)
+lapply(lop, require, character.only = TRUE)
+
+```
+
+
+```{r}
+panel.df <- read_rds("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/cem_matched_data_stacked.rds")
+
+
+
+  
+m1 <-   feols(fc_loss ~ treatment_disb | .assetid + year, data = panel.df, weights = panel.df$weights_cem, panel.id = ~stack_id+year, cluster = ~WDPAID_cluster)
+
+
+modelsummary(m1,
+             coef_rename = c("fc_loss" = "Forest cover loss", 
+                             "treatment_disbTRUE" = "KfW support"),
+             stars = TRUE,
+             gof_map = c("nobs", "adj.r.squared", "FE: .assetid", "FE: year"),
+             title = paste0("Dependent variable: Forest cover loss"),
+             notes = list('Standard errors clustered by zones of forest protected areas (WDPA).')
+)
+```
+
