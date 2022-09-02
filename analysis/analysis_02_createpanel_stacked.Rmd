@@ -26,11 +26,12 @@ lapply(lop, require, character.only = TRUE)
 
 ```{r stack Panel datasets}
 # list of panel datasets
-files <- list(paste0("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/cem_matched_panel_", 2004:2017, ".csv"))
+years <- as.list(2004:2017)
 # load each list entry and create unique panel id across all matching frames
-big.list.of.data.frames <- lapply(files, function(x){
-    read_csv(x) %>% 
-  mutate(stack_id=paste0(i, .assetid))
+big.list.of.data.frames <- lapply(years, function(x){
+  file <- list(paste0("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/cem_matched_panel_", x, ".csv"))
+  read_csv(file) %>% 
+  mutate(stack_id=paste0(x, .assetid))
 })
 # rbind all dataframes together
 big.data.frame <- do.call(rbind,big.list.of.data.frames)
@@ -46,6 +47,8 @@ big.data.frame <- do.call(rbind,big.list.of.data.frames)
     rename(., weights_cem=weights) # rename weights
   # create WDPA cluster that are country specific (important for control group, as all controll cells belong to ID 9999999999 regardless of the country. Now the control cells are clustered for each country.)
   panel.df$WDPAID_cluster <- as.numeric(paste0(panel.df$NAME_0_num, panel.df$WDPAID)) 
+  panel.df$stack <- substring(panel.df$stack_id,1,4)
+  panel.df$WDPAID_cluster_stack <- as.numeric(paste0(panel.df$stack, panel.df$NAME_0_num, panel.df$WDPAID)) 
   
   
   # save big file

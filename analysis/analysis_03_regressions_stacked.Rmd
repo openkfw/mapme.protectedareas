@@ -29,18 +29,45 @@ lapply(lop, require, character.only = TRUE)
 panel.df <- read_rds("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/cem_matched_data_stacked.rds")
 
 
+panel.df$stack <- substring(panel.df$stack_id,1,4)
+panel.df$WDPAID_cluster_stack <- as.numeric(paste0(panel.df$stack, panel.df$NAME_0_num, panel.df$WDPAID)) 
 
   
-m1 <-   feols(fc_loss ~ treatment_disb | .assetid + year, data = panel.df, weights = panel.df$weights_cem, panel.id = ~stack_id+year, cluster = ~WDPAID_cluster)
+m1 <-   feols(fc_loss ~ treatment_disb | stack_id + year, data = panel.df, weights = panel.df$weights_cem, panel.id = ~stack_id+year, cluster = ~WDPAID_cluster_stack)
+m2 <-   feols(fc_area ~ treatment_disb | stack_id + year, data = panel.df, weights = panel.df$weights_cem, panel.id = ~stack_id+year, cluster = ~WDPAID_cluster_stack)
+m3 <-   feols(emissions_tha ~ treatment_disb | stack_id + year, data = panel.df, weights = panel.df$weights_cem, panel.id = ~stack_id+year, cluster = ~WDPAID_cluster_stack)
 
 
-modelsummary(m1,
+
+m_list1 <- list(m1, m2, m3)
+names(m_list1) <- c("Loss", "Area", "Emissions")
+modelsummary(m_list1,
              coef_rename = c("fc_loss" = "Forest cover loss", 
                              "treatment_disbTRUE" = "KfW support"),
              stars = TRUE,
-             gof_map = c("nobs", "adj.r.squared", "FE: .assetid", "FE: year"),
+             gof_map = c("nobs", "adj.r.squared", "FE: stack_id", "FE: year"),
              title = paste0("Dependent variable: Forest cover loss"),
              notes = list('Standard errors clustered by zones of forest protected areas (WDPA).')
 )
 ```
 
+# Discussion points
+
+## How to interpret the coefficient of the stacked regression?
+
+- Coefficient is average estimate for all projects for the entire period
+- Do we need to make a claim of avoided forest cover loss per year?
+- If yes, then multiply coefficient with number of treatment cells and multiply/divide by weighted average of years
+- $Total FC loss avoided = \hat{\beta} * N_{treat} * \sum_{i = 2004}^{2017}\frac{N_{treat}^{i}*(2017-i)}{\sum_{i = 2004}^{2017}N_{treat}^{i}}$
+
+## Replacing annual regressions table with project level regressions
+
+- Panel dataset for each project level
+- Potentially more interesting for operatives
+- Analysis of what works and what not would be more qualitative instead of quantitative
+- Alternative would be to code project level information for the stacked regressions.
+
+## Working mode in September
+
+- Yota is leaving
+- What goals do we agree on?
