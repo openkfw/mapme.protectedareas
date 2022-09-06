@@ -190,6 +190,22 @@ get_descriptives <- function(year) {
   
   
   # Love plot
+  # Using alternate variable names
+  varnames <- data.frame(old = c("traveltime_5k_110mio", "soil_5_15cm_clay", "terrain_ruggedness_index_mean", "elevation_mean",
+                          "as.factor(NAME_0)_Belize","as.factor(NAME_0)_Bolivia", "as.factor(NAME_0)_Brazil",
+                          "as.factor(NAME_0)_Colombia", "as.factor(NAME_0)_Costa Rica", "as.factor(NAME_0)_Dominican Republic",
+                          "as.factor(NAME_0)_Ecuador", "as.factor(NAME_0)_El Salvador", "as.factor(NAME_0)_Guatemala",
+                          "as.factor(NAME_0)_Guyana", "as.factor(NAME_0)_Honduras", "as.factor(NAME_0)_Mexico",
+                          "as.factor(NAME_0)_Nicaragua", "as.factor(NAME_0)_Panama", "as.factor(NAME_0)_Peru",
+                          "treecover", "loss_t3"),
+                  new = c("Accessibility", "Clay content", "Terrain ruggedness", "Elevation",
+                          "Country - Belize","Country - Bolivia", "Country - Brazil",
+                          "Country - Colombia", "Country - Costa Rica", "Country - Dominican Republic",
+                          "Country - Ecuador", "Country - El Salvador", "Country - Guatemala",
+                          "Country - Guyana", "Country - Honduras", "Country - Mexico",
+                          "Country - Nicaragua", "Country - Panama", "Country - Peru",
+                          "Forest cover", "Forest cover loss"))
+  
   plot_love <- love.plot(treat ~ covs, 
                          data = data, 
                          stats = c("mean.diffs", "ks"), 
@@ -198,7 +214,8 @@ get_descriptives <- function(year) {
                          binary = "std",
                          shapes = c("square", "circle", "circle"),
                          colors = c("#e41a1c", "#377eb8", "#4daf4a"),
-                         size = 2,t
+                         size = 2,
+                         var.names = varnames,
                          alpha = 0.8)
 
   # Balance plot (density)
