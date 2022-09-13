@@ -59,7 +59,7 @@ for (i in T_year) {
   
   print(i)
   
-  m_out1 <- read_rds(paste0("/datadrive/datalake/mapme.protectedareas/output/matching/matchit_objects/CEM/m_cem_", i, ".rds"))
+  m_out1 <- read_rds(paste0("/datadrive/datalake/mapme.protectedareas/output/matching/matchit_objects/CEM/tn/m_cem_tn_", i, ".rds"))
   # filename <- paste0("m_cem_",i)
   # assign(filename, m_out1)
   
@@ -75,7 +75,7 @@ for (i in T_year) {
   obs_table[6,paste0(i)] <- bal_table$Observations[3,2]
   obs_table[7,paste0(i)] <- bal_table$Observations[3,1]
   
-  m_out1 <- read_rds(paste0("/datadrive/datalake/mapme.protectedareas/output/matching/matchit_objects/PSM/m_psm_", i, ".rds"))
+  m_out1 <- read_rds(paste0("/datadrive/datalake/mapme.protectedareas/output/matching/matchit_objects/PSM/tn/m_psm_tn_", i, ".rds"))
   # filename <- paste0("m_psm_",i)
   # assign(filename, m_out1)
   
@@ -155,9 +155,9 @@ get_descriptives <- function(year) {
   
   # read matchit objects
   m_psm <- 
-    read_rds(paste0("/datadrive/datalake/mapme.protectedareas/output/matching/matchit_objects/PSM/m_psm_", year, ".rds"))
+    read_rds(paste0("/datadrive/datalake/mapme.protectedareas/output/matching/matchit_objects/PSM/tn/m_psm_tn_", year, ".rds"))
   m_cem <- 
-    read_rds(paste0("/datadrive/datalake/mapme.protectedareas/output/matching/matchit_objects/CEM/m_cem_", year, ".rds"))
+    read_rds(paste0("/datadrive/datalake/mapme.protectedareas/output/matching/matchit_objects/CEM/tn/m_cem_tn_", year, ".rds"))
 
   data <- cbind(m_cem$treat, m_cem$X) %>% 
     rename("treat" = "m_cem$treat")
@@ -197,7 +197,7 @@ get_descriptives <- function(year) {
                           "as.factor(NAME_0)_Ecuador", "as.factor(NAME_0)_El Salvador", "as.factor(NAME_0)_Guatemala",
                           "as.factor(NAME_0)_Guyana", "as.factor(NAME_0)_Honduras", "as.factor(NAME_0)_Mexico",
                           "as.factor(NAME_0)_Nicaragua", "as.factor(NAME_0)_Panama", "as.factor(NAME_0)_Peru",
-                          "treecover", "loss_t3"),
+                          "treecover", "loss_tn"),
                   new = c("Accessibility", "Clay content", "Terrain ruggedness", "Elevation",
                           "Country - Belize","Country - Bolivia", "Country - Brazil",
                           "Country - Colombia", "Country - Costa Rica", "Country - Dominican Republic",
@@ -263,13 +263,13 @@ get_descriptives <- function(year) {
                                          PSM = m_psm), 
                           var.name = "treecover", which = "both")
   ### Sum FC losses (tmax)
-  xmax <- max(quantile(m_psm$X$loss_t3, .9, na.rm = TRUE), quantile(m_cem$X$loss_t3, .9, na.rm = TRUE))
+  xmax <- max(quantile(m_psm$X$loss_tn, .9, na.rm = TRUE), quantile(m_cem$X$loss_tn, .9, na.rm = TRUE))
 
   plot_sumfcl <- bal.plot(treat ~ covs, 
                           data = data, 
                           weights = list(CEM = m_cem, 
                                          PSM = m_psm), 
-                          var.name = "loss_t3", which = "both") +
+                          var.name = "loss_tn", which = "both") +
     coord_cartesian(xlim = c(0, xmax))
 
   # plot(plot_love)

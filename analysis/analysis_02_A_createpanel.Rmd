@@ -193,7 +193,7 @@ for (i in T_year) {
 
     # Load matched data
     m_data <-
-      read_rds(paste0("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/PSM/psm_matched_data_", i, ".rds")) %>%
+      read_rds(paste0("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/PSM/t3/psm_t3_matched_data_", i, ".rds")) %>%
       rename("m_treecover" = "treecover",
              "m_loss" = "loss",
              "m_loss_t3" = "loss_t3",
@@ -235,7 +235,7 @@ for (i in T_year) {
         
     ## Export data
     write_csv(merged_data,
-              paste0("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/PSM/psm_matched_panel_", i, ".csv"))
+              paste0("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/PSM/t3/psm_t3_matched_panel_", i, ".csv"))
 
   
     # Check duplicates
@@ -271,7 +271,7 @@ for (i in T_year) {
   
     # Load matched data
     m_data <- 
-        read_rds(paste0("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/cem_matched_data_", i, ".rds")) %>%
+        read_rds(paste0("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/t3/cem_t3_matched_data_", i, ".rds")) %>%
       rename("m_treecover" = "treecover",
              "m_loss" = "loss",
              "m_loss_t3" = "loss_t3",
@@ -314,7 +314,7 @@ for (i in T_year) {
     
     ## Export data
     write_csv(merged_data, 
-              paste0("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/cem_matched_panel_", i, ".csv"))
+              paste0("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/t3/cem_t3_matched_panel_", i, ".csv"))
     
     # Check duplicates
     print(i)

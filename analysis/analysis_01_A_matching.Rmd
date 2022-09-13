@@ -1,0 +1,461 @@
+---
+title: "Matching"
+author: "Yota"
+date: "28 3 2022"
+output: workflowr::wflow_html
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=TRUE)
+knitr::opts_knit$set(root.dir = "~/shared/datalake/mapme.protectedareas")
+```
+
+
+```{r include=FALSE}
+# clean workspace, set options
+rm(list=ls())
+options(scipen=999)
+
+# get packages
+lop <- c("dplyr", "plm", "stargazer", "tidyverse", "MatchIt", "glm", "optmatch", "cobalt", "gridExtra")
+newp <- lop[!(lop %in% installed.packages()[,"Package"])]
+if(length(newp)) install.packages(newp)
+lapply(lop, require, character.only = TRUE)
+
+```
+
+## Propensity Score Matching
+
+```{r Propensity Score Matching (PSM), echo=TRUE}
+# Timer
+start_time <- Sys.time()
+
+#------- Select years and prepare table -------
+
+# Years with matching frames. Years without treatment starting years (no BMZ number started in these years) 2018, 2020
+T_year <- c(2004:2017, 2019)
+
+for (i in T_year) {
+  
+  #------- Load matching frames -------
+  #file <- paste0("matching_frame_",i)
+  # df <- 
+  #   read_csv(paste("./output/matching/matching_frames/matching_frame_",i,".csv", sep = "")) %>% 
+  #   select(id, poly_id, treatment, everything())
+  # 
+  #  df <- df %>% 
+  #   filter(! is.na(country),
+  #          ! is.na(clay_content_10_cm))
+  
+  # Load data
+  df <- 
+    read_rds(paste0("/datadrive/datalake/mapme.protectedareas/output/matching/matching_frames/matching_frame_",i,".rds")) %>% 
+    select(.assetid,
+           treatment,
+           ends_with(as.character(i)),
+           traveltime_5k_110mio,
+           traveltime_20k_110mio,
+           terrain_ruggedness_index_mean,
+           elevation_mean,
+           soil_5_15cm_clay,
+           NAME_0) %>% 
+    rename_with(~str_remove(., paste0("_",i))) # drop year suffix in column name
+  
+  df <- df %>% 
+    filter(! is.na(treecover),
+           ! is.na(NAME_0),
+           ! is.na(traveltime_5k_110mio),
+           ! is.na(terrain_ruggedness_index_mean),
+           ! is.na(elevation_mean),
+           ! is.na(soil_5_15cm_clay))
+   
+  #------- NN PS matching w/ replacement and exact matching 'country'-------
+  
+#  tryCatch({
+    
+    # Get propensity scores
+    glm_out1 <- glm(treatment ~ 
+                      traveltime_5k_110mio + 
+                      soil_5_15cm_clay + 
+                      terrain_ruggedness_index_mean +
+                      elevation_mean + 
+                      as.factor(NAME_0) +
+                      treecover +
+                      loss_t3,
+                    family = binomial(link = "probit"),
+                    data = df)
+      
+    
+    stargazer(glm_out1,
+              summary=TRUE,
+              type="text",
+              title = paste0("Probit regression for matching frame ",i) #,
+              # out = paste0("../../datalake/mapme.protectedareas/output/plots/propensity_score_matching/probit_summary_",i,".html")
+              )
+    
+  
+    m_out1 <- matchit(treatment ~ 
+                        traveltime_5k_110mio + 
+                        soil_5_15cm_clay + 
+                        terrain_ruggedness_index_mean +
+                        elevation_mean + 
+                        as.factor(NAME_0) +
+                        treecover +
+                        loss_t3,
+                      data = df,
+                      method = "nearest",
+                      replace = TRUE,
+                      exact = ~ as.factor(NAME_0),
+                      distance = "glm", 
+                      discard = "both", # common support: drop units from both groups 
+                      link = "probit")
+    
+    # Save matchit object
+    write_rds(m_out1, paste0("/datadrive/datalake/mapme.protectedareas/output/matching/matchit_objects/PSM/t3/m_psm_t3_", i, ".rds"))
+    
+    print(m_out1)
+    print(summary(m_out1, un = FALSE))
+    
+    # Balance table
+    bal_table <- bal.tab(m_out1, un = TRUE)
+    print(bal_table)
+    
+    
+    # Matched data
+    m_data1 <- match.data(m_out1)
+    
+    ## Export data
+    # write_csv(m_data1, 
+    #       paste0("../../datalake/mapme.protectedareas/output/tabular/regression_input/PSM/ps_matched_data_", i, ".csv"))
+    write_rds(m_data1, 
+            paste0("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/PSM/t3/psm_t3_matched_data_", i, ".rds"))
+  
+#  }, error=function(e){cat("ERROR :",conditionMessage(e), "\n")})
+  
+}
+```
+
+## Coarsened Exact Matching
+
+```{r function for CEM}
+# Build function for matching (CEM) 
+
+custom_cem <- function(year, cutoffs_travel_time, cutoffs_loss_t3, cutoffs_elevation, cutoffs_tri, cutoffs_soil) {
+  
+  # Load data
+  df <- 
+    read_rds(paste0("/datadrive/datalake/mapme.protectedareas/output/matching/matching_frames/matching_frame_",year,".rds")) %>% 
+    select(.assetid,
+           treatment,
+           ends_with(as.character(year)),
+           traveltime_5k_110mio,
+           traveltime_20k_110mio,
+           terrain_ruggedness_index_mean,
+           elevation_mean,
+           soil_5_15cm_clay,
+           NAME_0) %>% 
+    rename_with(~str_remove(., paste0("_",year))) # drop year suffix in column name
+  
+  # Drop NA values
+  df <- df %>% 
+    filter(! is.na(treecover),
+           ! is.na(NAME_0),
+           ! is.na(traveltime_5k_110mio),
+           ! is.na(terrain_ruggedness_index_mean),
+           ! is.na(elevation_mean),
+           ! is.na(soil_5_15cm_clay))
+  
+  # Create cutoffs list
+  cutoffs_list <- c()
+  
+  # Add cutoff parameters
+  cutoffs_list$traveltime_5k_110mio <-
+    cutoffs_travel_time
+  
+  cutoffs_list$terrain_ruggedness_index_mean <- 
+    cutoffs_tri
+  
+  cutoffs_list$elevation_mean <- 
+    cutoffs_elevation
+  
+  cutoffs_list$loss_t3 <- 
+    cutoffs_loss_t3
+  
+  cutoffs_list$soil_5_15cm_clay <- 
+    cutoffs_soil
+  
+  
+  m_out2 <- matchit(treatment ~ 
+                      traveltime_5k_110mio + 
+                      soil_5_15cm_clay + 
+                      terrain_ruggedness_index_mean +
+                      elevation_mean + 
+                      as.factor(NAME_0) +
+                      treecover +
+                      loss_t3,
+                    data = df,
+                    method = "cem",
+                    cutpoints = cutoffs_list)
+  
+  # Save matchit object
+  write_rds(m_out2, paste0("/datadrive/datalake/mapme.protectedareas/output/matching/matchit_objects/CEM/t3/m_cem_t3_", year, ".rds"))
+  
+  # Matching summary
+  print(m_out2)
+  print(summary(m_out2, un = FALSE))
+  
+  # Balance table
+  bal_table <- bal.tab(m_out2, un = TRUE)
+  print(bal_table)
+  
+  # Matched data
+  m_data2 <- match.data(m_out2) 
+  
+  ## Export data
+  # write_csv(m_data2, 
+  #           paste0("../../datalake/mapme.protectedareas/output/tabular/regression_input/CEM/ce_matched_data_", i, ".csv"))
+  write_rds(m_data2, 
+            paste0("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/t3/cem_t3_matched_data_", year, ".rds"))
+  
+}
+
+```
+
+### Reference cutoffs CEM
+
+```{r reference cutoffs}
+  # Add cutoff parameters
+  # cutoffs_list$traveltime_5k_110mio <-
+  # c(0,120,300, 400, 500, 600, 800, 1000, 1500, 2000, 3000, max(df$traveltime_5k_110mio,na.rm = T)) # 0-2hrs, 2-6 hrs, >6 hrs
+  # cutoffs_list$terrain_ruggedness_index_mean <-
+  # c(0,5,10,max(df$terrain_ruggedness_index_mean,na.rm = T))
+  # cutoffs_list$elevation_mean <-
+  # c(0,500,1500,max(df$elevation_mean,na.rm = T))
+  # cutoffs_list$loss_t3 <-
+  # c(-1,0, 1, 10, 100, 200, 300, 400, 500, 600, 1000, max(df$loss_t3))
+  # cutoffs_list$soil_5_15cm_clay <-
+  # c(2.440179, 6.091119,  9.742059, 13.392999, 17.043938, 20.694878, 24.345818, 27.996758, 31.647698, 35.298637, 38.949577, 42.600517, 46.251457, 49.902397, 53.553337, 57.204276, 60.855216, 64.506156)
+  # cutoffs_list$loss <- 
+  #   c(0.0000,  509.4486, 1018.8973, 1528.3459, 2037.7946, 2547.2432, 3056.6918, 3566.1405, 4075.5891, 4585.0378, 5094.4864, 5603.9350, 6113.3837, 6622.8323, 7132.2810, 7641.7296, 8151.1782, 8660.6269)
+```
+ 
+## Matching frame 2004
+ 
+```{r matching frame 2004}
+# Assign values to input parameters
+cutoffs_travel_time <- c(0,120,300, 400, 500, 600, 800, 1000, 1500, 2000, 3000, 12015.71)
+cutoffs_loss_t3 <- c(-1,0, 1, 10, 100, 200, 300, 400, 500, 600, 1000)
+cutoffs_elevation <- c(0,500,1500,6138.56)
+cutoffs_tri <- c(0,5,10,182.1068)
+cutoffs_soil <- c(2.440179, 6.091119,  9.742059, 13.392999, 17.043938, 20.694878, 24.345818, 27.996758, 31.647698, 35.298637, 38.949577, 42.600517, 46.251457, 49.902397, 53.553337, 57.204276, 60.855216, 64.506156)
+year <- 2004
+# Call function
+custom_cem(year = year, cutoffs_travel_time = cutoffs_travel_time, cutoffs_loss_t3 = cutoffs_loss_t3,cutoffs_elevation = cutoffs_elevation, cutoffs_tri = cutoffs_tri, cutoffs_soil = cutoffs_soil)
+```
+ 
+## Matching frame 2005
+ 
+```{r matching frame 2005}
+# Assign values to input parameters
+cutoffs_travel_time <- c(0,120,300, 400, 500, 600, 800, 1000, 1500, 2000, 3000, 12015.71)
+cutoffs_loss_t3 <- c(-1,0, 1, 10, 100, 200, 300, 400, 500, 600, 1000)
+cutoffs_elevation <- c(0,500,1500,6138.56)
+cutoffs_tri <- c(0,5,10,182.1068)
+cutoffs_soil <- c(2.440179, 6.091119,  9.742059, 13.392999, 17.043938, 20.694878, 24.345818, 27.996758, 31.647698, 35.298637, 38.949577, 42.600517, 46.251457, 49.902397, 53.553337, 57.204276, 60.855216, 64.506156)
+year <- 2005
+# Call function
+custom_cem(year = year, cutoffs_travel_time = cutoffs_travel_time, cutoffs_loss_t3 = cutoffs_loss_t3,cutoffs_elevation = cutoffs_elevation, cutoffs_tri = cutoffs_tri, cutoffs_soil = cutoffs_soil)
+```
+ 
+## Matching frame 2006
+ 
+```{r matching frame 2006}
+# Assign values to input parameters
+cutoffs_travel_time <- c(0,120,300, 400, 500, 600, 800, 1000, 1500, 2000, 3000, 12015.71)
+cutoffs_loss_t3 <- c(-1,0, 1, 10, 100, 200, 300, 400, 500, 600, 1000)
+cutoffs_elevation <- c(0,500,1500,6138.56)
+cutoffs_tri <- c(0,5,10,182.1068)
+cutoffs_soil <- c(2.440179, 6.091119,  9.742059, 13.392999, 17.043938, 20.694878, 24.345818, 27.996758, 31.647698, 35.298637, 38.949577, 42.600517, 46.251457, 49.902397, 53.553337, 57.204276, 60.855216, 64.506156)
+year <- 2006
+# Call function
+custom_cem(year = year, cutoffs_travel_time = cutoffs_travel_time, cutoffs_loss_t3 = cutoffs_loss_t3,cutoffs_elevation = cutoffs_elevation, cutoffs_tri = cutoffs_tri, cutoffs_soil = cutoffs_soil)
+```
+ 
+## Matching frame 2007
+ 
+```{r matching frame 2007}
+# Assign values to input parameters
+cutoffs_travel_time <- c(0,120,300, 400, 500, 600, 800, 1000, 1500, 2000, 3000, 12015.71)
+cutoffs_loss_t3 <- c(-1,0, 1, 10, 100, 200, 300, 400, 500, 600, 1000)
+cutoffs_elevation <- c(0,500,1500,6138.56)
+cutoffs_tri <- c(0,5,10,182.1068)
+cutoffs_soil <- c(2.440179, 6.091119,  9.742059, 13.392999, 17.043938, 20.694878, 24.345818, 27.996758, 31.647698, 35.298637, 38.949577, 42.600517, 46.251457, 49.902397, 53.553337, 57.204276, 60.855216, 64.506156)
+year <- 2007
+# Call function
+custom_cem(year = year, cutoffs_travel_time = cutoffs_travel_time, cutoffs_loss_t3 = cutoffs_loss_t3,cutoffs_elevation = cutoffs_elevation, cutoffs_tri = cutoffs_tri, cutoffs_soil = cutoffs_soil)
+```
+ 
+## Matching frame 2008
+ 
+```{r matching frame 2008}
+# Assign values to input parameters
+cutoffs_travel_time <- c(0,120,300, 400, 500, 600, 800, 1000, 1500, 2000, 3000, 12015.71)
+cutoffs_loss_t3 <- c(-1,0, 1, 10, 100, 200, 300, 400, 500, 600, 1000)
+cutoffs_elevation <- c(0,500,1500,6138.56)
+cutoffs_tri <- c(0,5,10,182.1068)
+cutoffs_soil <- c(2.440179, 6.091119,  9.742059, 13.392999, 17.043938, 20.694878, 24.345818, 27.996758, 31.647698, 35.298637, 38.949577, 42.600517, 46.251457, 49.902397, 53.553337, 57.204276, 60.855216, 64.506156)
+year <- 2008
+# Call function
+custom_cem(year = year, cutoffs_travel_time = cutoffs_travel_time, cutoffs_loss_t3 = cutoffs_loss_t3,cutoffs_elevation = cutoffs_elevation, cutoffs_tri = cutoffs_tri, cutoffs_soil = cutoffs_soil)
+```
+ 
+## Matching frame 2009
+ 
+```{r matching frame 2009}
+# Assign values to input parameters
+cutoffs_travel_time <- c(0,120,300, 400, 500, 600, 800, 1000, 1500, 2000, 3000, 12015.71)
+cutoffs_loss_t3 <- c(-1,0, 1, 10, 100, 200, 300, 400, 500, 600, 1000)
+cutoffs_elevation <- c(0,500,1500,6138.56)
+cutoffs_tri <- c(0,5,10,182.1068)
+cutoffs_soil <- c(2.440179, 6.091119,  9.742059, 13.392999, 17.043938, 20.694878, 24.345818, 27.996758, 31.647698, 35.298637, 38.949577, 42.600517, 46.251457, 49.902397, 53.553337, 57.204276, 60.855216, 64.506156)
+year <- 2009
+# Call function
+custom_cem(year = year, cutoffs_travel_time = cutoffs_travel_time, cutoffs_loss_t3 = cutoffs_loss_t3,cutoffs_elevation = cutoffs_elevation, cutoffs_tri = cutoffs_tri, cutoffs_soil = cutoffs_soil)
+```
+ 
+## Matching frame 2010
+ 
+```{r matching frame 2010}
+# Assign values to input parameters
+cutoffs_travel_time <- c(0,120,300, 400, 500, 600, 800, 1000, 1500, 2000, 3000, 12015.71)
+cutoffs_loss_t3 <- c(-1,0, 1, 10, 100, 200, 300, 400, 500, 600, 1000)
+cutoffs_elevation <- c(0,500,1500,6138.56)
+cutoffs_tri <- c(0,5,10,182.1068)
+cutoffs_soil <- c(2.440179, 6.091119,  9.742059, 13.392999, 17.043938, 20.694878, 24.345818, 27.996758, 31.647698, 35.298637, 38.949577, 42.600517, 46.251457, 49.902397, 53.553337, 57.204276, 60.855216, 64.506156)
+year <- 2010
+# Call function
+custom_cem(year = year, cutoffs_travel_time = cutoffs_travel_time, cutoffs_loss_t3 = cutoffs_loss_t3,cutoffs_elevation = cutoffs_elevation, cutoffs_tri = cutoffs_tri, cutoffs_soil = cutoffs_soil)
+```
+ 
+## Matching frame 2011
+ 
+```{r matching frame 2011}
+# Assign values to input parameters
+cutoffs_travel_time <- c(0,120,300, 400, 500, 600, 800, 1000, 1500, 2000, 3000, 12015.71)
+cutoffs_loss_t3 <- c(-1,0, 1, 10, 100, 200, 300, 400, 500, 600, 1000)
+cutoffs_elevation <- c(0,500,1500,6138.56)
+cutoffs_tri <- c(0,5,10,182.1068)
+cutoffs_soil <- c(2.440179, 6.091119,  9.742059, 13.392999, 17.043938, 20.694878, 24.345818, 27.996758, 31.647698, 35.298637, 38.949577, 42.600517, 46.251457, 49.902397, 53.553337, 57.204276, 60.855216, 64.506156)
+year <- 2011
+# Call function
+custom_cem(year = year, cutoffs_travel_time = cutoffs_travel_time, cutoffs_loss_t3 = cutoffs_loss_t3,cutoffs_elevation = cutoffs_elevation, cutoffs_tri = cutoffs_tri, cutoffs_soil = cutoffs_soil)
+```
+ 
+## Matching frame 2012
+ 
+```{r matching frame 2012}
+# Assign values to input parameters
+cutoffs_travel_time <- c(0,120,300, 400, 500, 600, 800, 1000, 1500, 2000, 3000, 12015.71)
+cutoffs_loss_t3 <- c(-1,0, 1, 10, 100, 200, 300, 400, 500, 600, 1000)
+cutoffs_elevation <- c(0,500,1500,6138.56)
+cutoffs_tri <- c(0,5,10,182.1068)
+cutoffs_soil <- c(2.440179, 6.091119,  9.742059, 13.392999, 17.043938, 20.694878, 24.345818, 27.996758, 31.647698, 35.298637, 38.949577, 42.600517, 46.251457, 49.902397, 53.553337, 57.204276, 60.855216, 64.506156)
+year <- 2012
+# Call function
+custom_cem(year = year, cutoffs_travel_time = cutoffs_travel_time, cutoffs_loss_t3 = cutoffs_loss_t3,cutoffs_elevation = cutoffs_elevation, cutoffs_tri = cutoffs_tri, cutoffs_soil = cutoffs_soil)
+```
+ 
+## Matching frame 2013
+ 
+```{r matching frame 2013}
+# Assign values to input parameters
+cutoffs_travel_time <- c(0,120,300, 400, 500, 600, 800, 1000, 1500, 2000, 3000, 12015.71)
+cutoffs_loss_t3 <- c(-1,0, 1, 10, 100, 200, 300, 400, 500, 600, 1000)
+cutoffs_elevation <- c(0,500,1500,6138.56)
+cutoffs_tri <- c(0,5,10,182.1068)
+cutoffs_soil <- c(2.440179, 6.091119,  9.742059, 13.392999, 17.043938, 20.694878, 24.345818, 27.996758, 31.647698, 35.298637, 38.949577, 42.600517, 46.251457, 49.902397, 53.553337, 57.204276, 60.855216, 64.506156)
+year <- 2013
+# Call function
+custom_cem(year = year, cutoffs_travel_time = cutoffs_travel_time, cutoffs_loss_t3 = cutoffs_loss_t3,cutoffs_elevation = cutoffs_elevation, cutoffs_tri = cutoffs_tri, cutoffs_soil = cutoffs_soil)
+```
+ 
+## Matching frame 2014
+ 
+```{r matching frame 2014}
+# Assign values to input parameters
+cutoffs_travel_time <- c(0,120,300, 400, 500, 600, 800, 1000, 1500, 2000, 3000, 12015.71)
+cutoffs_loss_t3 <- c(-1,0, 1, 10, 100, 200, 300, 400, 500, 600, 1000)
+cutoffs_elevation <- c(0,500,1500,6138.56)
+cutoffs_tri <- c(0,5,10,182.1068)
+cutoffs_soil <- c(2.440179, 6.091119,  9.742059, 13.392999, 17.043938, 20.694878, 24.345818, 27.996758, 31.647698, 35.298637, 38.949577, 42.600517, 46.251457, 49.902397, 53.553337, 57.204276, 60.855216, 64.506156)
+year <- 2014
+# Call function
+custom_cem(year = year, cutoffs_travel_time = cutoffs_travel_time, cutoffs_loss_t3 = cutoffs_loss_t3,cutoffs_elevation = cutoffs_elevation, cutoffs_tri = cutoffs_tri, cutoffs_soil = cutoffs_soil)
+```
+ 
+## Matching frame 2015
+ 
+```{r matching frame 2015}
+# Assign values to input parameters
+cutoffs_travel_time <- c(0,120,300, 400, 500, 600, 800, 1000, 1500, 2000, 3000, 12015.71)
+cutoffs_loss_t3 <- c(-1,0, 1, 10, 100, 200, 300, 400, 500, 600, 1000)
+cutoffs_elevation <- c(0,500,1500,6138.56)
+cutoffs_tri <- c(0,5,10,182.1068)
+cutoffs_soil <- c(2.440179, 6.091119,  9.742059, 13.392999, 17.043938, 20.694878, 24.345818, 27.996758, 31.647698, 35.298637, 38.949577, 42.600517, 46.251457, 49.902397, 53.553337, 57.204276, 60.855216, 64.506156)
+year <- 2015
+# Call function
+custom_cem(year = year, cutoffs_travel_time = cutoffs_travel_time, cutoffs_loss_t3 = cutoffs_loss_t3,cutoffs_elevation = cutoffs_elevation, cutoffs_tri = cutoffs_tri, cutoffs_soil = cutoffs_soil)
+```
+ 
+## Matching frame 2016
+ 
+```{r matching frame 2016}
+# Assign values to input parameters
+cutoffs_travel_time <- c(0,120,300, 400, 500, 600, 800, 1000, 1500, 2000, 3000, 12015.71)
+cutoffs_loss_t3 <- c(-1,0, 1, 10, 100, 200, 300, 400, 500, 600, 1000)
+cutoffs_elevation <- c(0,500,1500,6138.56)
+cutoffs_tri <- c(0,5,10,182.1068)
+cutoffs_soil <- c(2.440179, 6.091119,  9.742059, 13.392999, 17.043938, 20.694878, 24.345818, 27.996758, 31.647698, 35.298637, 38.949577, 42.600517, 46.251457, 49.902397, 53.553337, 57.204276, 60.855216, 64.506156)
+year <- 2016
+# Call function
+custom_cem(year = year, cutoffs_travel_time = cutoffs_travel_time, cutoffs_loss_t3 = cutoffs_loss_t3,cutoffs_elevation = cutoffs_elevation, cutoffs_tri = cutoffs_tri, cutoffs_soil = cutoffs_soil)
+```
+ 
+## Matching frame 2017
+ 
+```{r matching frame 2017}
+# Assign values to input parameters
+cutoffs_travel_time <- c(0,120,300, 400, 500, 600, 800, 1000, 1500, 2000, 3000, 12015.71)
+cutoffs_loss_t3 <- c(-1,0, 1, 10, 100, 200, 300, 400, 500, 600, 1000)
+cutoffs_elevation <- c(0,500,1500,6138.56)
+cutoffs_tri <- c(0,5,10,182.1068)
+cutoffs_soil <- c(2.440179, 6.091119,  9.742059, 13.392999, 17.043938, 20.694878, 24.345818, 27.996758, 31.647698, 35.298637, 38.949577, 42.600517, 46.251457, 49.902397, 53.553337, 57.204276, 60.855216, 64.506156)
+year <- 2017
+# Call function
+custom_cem(year = year, cutoffs_travel_time = cutoffs_travel_time, cutoffs_loss_t3 = cutoffs_loss_t3,cutoffs_elevation = cutoffs_elevation, cutoffs_tri = cutoffs_tri, cutoffs_soil = cutoffs_soil)
+```
+ 
+## Matching frame 2019
+ 
+```{r matching frame 2019}
+# Assign values to input parameters
+cutoffs_travel_time <- c(0,120,300, 400, 500, 600, 800, 1000, 1500, 2000, 3000, 12015.71)
+cutoffs_loss_t3 <- c(-1,0, 1, 10, 100, 200, 300, 400, 500, 600, 1000)
+cutoffs_elevation <- c(0,500,1500,6138.56)
+cutoffs_tri <- c(0,5,10,182.1068)
+cutoffs_soil <- c(2.440179, 6.091119,  9.742059, 13.392999, 17.043938, 20.694878, 24.345818, 27.996758, 31.647698, 35.298637, 38.949577, 42.600517, 46.251457, 49.902397, 53.553337, 57.204276, 60.855216, 64.506156)
+year <- 2019
+# Call function
+custom_cem(year = year, cutoffs_travel_time = cutoffs_travel_time, cutoffs_loss_t3 = cutoffs_loss_t3,cutoffs_elevation = cutoffs_elevation, cutoffs_tri = cutoffs_tri, cutoffs_soil = cutoffs_soil)
+```
+
+## Timer
+
+```{r timer}
+# Timer
+end_time <- Sys.time()
+
+duration <- difftime(end_time, start_time, units='mins')
+duration
+```
+

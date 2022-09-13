@@ -43,7 +43,7 @@ for (i in T_year) {
   # Load CEM panel
   
   mp_cem <- 
-    read_csv(paste0("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/cem_matched_panel_", i, ".csv")) %>% 
+    read_csv(paste0("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/tn/cem_tn_matched_panel_", i, ".csv")) %>% 
     mutate(fc_area_weighted = fc_area * weights)
   
   
@@ -60,7 +60,7 @@ for (i in T_year) {
   # Load PSM panel 
   
   mp_psm <- 
-    read_csv(paste0("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/PSM/psm_matched_panel_", i, ".csv")) %>% 
+    read_csv(paste0("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/PSM/tn/psm_tn_matched_panel_", i, ".csv")) %>% 
     mutate(fc_area_weighted = fc_area * weights)
   
   
@@ -131,7 +131,7 @@ for (i in T_year) {
   # Load CEM panel
   
   mp_cem <- 
-    read_csv(paste0("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/cem_matched_panel_", i, ".csv"))
+    read_csv(paste0("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/tn/cem_tn_matched_panel_", i, ".csv"))
   
   mp_cem_i <- mp_cem %>% 
     filter(year == i) %>% 
@@ -158,7 +158,7 @@ for (i in T_year) {
   # Load PSM panel 
   
   mp_psm <- 
-    read_csv(paste0("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/PSM/psm_matched_panel_", i, ".csv"))
+    read_csv(paste0("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/PSM/tn/psm_tn_matched_panel_", i, ".csv"))
   
   mp_psm_i <- mp_psm %>% 
     filter(year == i) %>% 
@@ -240,7 +240,7 @@ for (i in T_year) {
   # Load CEM panel
   
   mp_cem <- 
-    read_csv(paste0("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/cem_matched_panel_", i, ".csv")) %>% 
+    read_csv(paste0("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/tn/cem_tn_matched_panel_", i, ".csv")) %>% 
     mutate(fc_loss_weighted = fc_loss * weights)
   
   
@@ -257,7 +257,7 @@ for (i in T_year) {
   # Load PSM panel 
   
   mp_psm <- 
-    read_csv(paste0("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/PSM/psm_matched_panel_", i, ".csv")) %>% 
+    read_csv(paste0("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/PSM/tn/psm_tn_matched_panel_", i, ".csv")) %>% 
     mutate(fc_loss_weighted = fc_loss * weights)
   
   

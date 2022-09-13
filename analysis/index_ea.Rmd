@@ -1,0 +1,51 @@
+---
+title: "Empirical Analysis Scripts"
+site: workflowr::wflow_site
+output:
+  workflowr::wflow_html:
+    toc: false
+editor_options:
+  chunk_output_type: console
+workflowr:
+  suppress_report: TRUE
+---
+
+Overview file for all scripts involved in the empirical analysis. 
+
+Chapters:
+
+- [Check data](analysis_00_checkdata.html)
+  
+- Scripts for matching
+
+  - [Matching with forest cover loss t3](analysis_01_A_matching.html)
+  
+  - [Matching with forest cover loss tn](analysis_01_B_matching.html)
+  
+- Scripts for panel creation
+
+  - [Panel creation based on t3-matched data](analysis_01_A_createpanel.html)
+  
+  - [Panel creation based on tn-matched data](analysis_01_B_createpanel.html)
+  
+- Scripts for descriptives
+
+  - [Descriptives for t3-matched data](analysis_01_A_descriptives.html)
+  
+  - [Descriptives for tn-matched data](analysis_01_B_descriptives.html)
+  
+- Scripts for displaying parallel trends
+
+  - [Parallel trend plots for t3-matched data](analysis_01_A_plot_paralleltrends.html)
+  
+  - [Parallel trend plots for tn-matched data](analysis_01_B_paralleltrends.html)
+  
+  - [Parallel trend plots for t3-matched data and cutoff prior to t = -3](analysis_01_C_paralleltrends.html)
+  
+
+
+
+
+
+
+
