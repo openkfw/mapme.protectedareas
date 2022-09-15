@@ -84,28 +84,32 @@ for (i in T_year) {
     ggplot() +
     geom_line(aes(x = year, 
                   y = mean_fca,
-                  col = as.factor(treatment))) + 
+                  col = as.factor(treatment),
+                  group = treatment)) + 
     geom_vline(xintercept = i, col = "red", linetype = "dashed") +
     coord_cartesian(ylim = c(ymin, ymax)) +
     labs(title=paste0("CEM (Year: ", i, ")"),
          x ="Year", y = "Absolute forest cover (ha)") +
     theme(legend.position = "bottom") +
     scale_colour_discrete(name= "", breaks=c("0", "1"),
-                          labels=c("Control", "Treated"))
+                          labels=c("Control", "Treated")) + 
+    scale_x_continuous(breaks = seq(2000, 2020, by = 4))
   
   avg_plot_psm <- 
     mp_summarized_psm %>% 
     ggplot() +
     geom_line(aes(x = year, 
                   y = mean_fca,
-                  col = as.factor(treatment))) + 
+                  col = as.factor(treatment),
+                  group = treatment)) + 
     geom_vline(xintercept = i, col = "red", linetype = "dashed") +
     coord_cartesian(ylim = c(ymin, ymax)) +
     labs(title=paste0("PSM (Year: ", i, ")"),
          x ="Year", y = "") +
     theme(legend.position = "bottom") +
     scale_colour_discrete(name= "", breaks=c("0", "1"),
-                          labels=c("Control", "Treated"))
+                          labels=c("Control", "Treated")) + 
+    scale_x_continuous(breaks = seq(2000, 2020, by = 4))
   
   grid.arrange(avg_plot_cem, avg_plot_psm, 
                ncol = 2)
@@ -191,28 +195,32 @@ for (i in T_year) {
     ggplot() +
     geom_line(aes(x = year, 
                   y = mean_fca,
-                  col = as.factor(treatment))) + 
+                  col = as.factor(treatment),
+                  group = treatment)) + 
     geom_vline(xintercept = i, col = "red", linetype = "dashed") +
     coord_cartesian(ylim = c(ymin, ymax)) +
     labs(title=paste0("CEM (Year: ", i, ")"),
          x ="Year", y = "Relative forest cover (ha)") +
     theme(legend.position = "bottom") +
     scale_colour_discrete(name= "", breaks=c("0", "1"),
-                          labels=c("Control", "Treated"))
+                          labels=c("Control", "Treated")) + 
+    scale_x_continuous(breaks = seq(2000, 2020, by = 4))
   
   avg_plot_psm <- 
     mp_summarized_psm %>% 
     ggplot() +
     geom_line(aes(x = year, 
                   y = mean_fca,
-                  col = as.factor(treatment))) + 
+                  col = as.factor(treatment),
+                  group = treatment)) + 
     geom_vline(xintercept = i, col = "red", linetype = "dashed") +
     coord_cartesian(ylim = c(ymin, ymax)) +
     labs(title=paste0("PSM (Year: ", i, ")"),
          x ="Year", y = "") +
     theme(legend.position = "bottom") +
     scale_colour_discrete(name= "", breaks=c("0", "1"),
-                          labels=c("Control", "Treated"))
+                          labels=c("Control", "Treated")) + 
+    scale_x_continuous(breaks = seq(2000, 2020, by = 4))
   
   grid.arrange(avg_plot_cem, avg_plot_psm, 
                ncol = 2)
@@ -281,28 +289,32 @@ for (i in T_year) {
     ggplot() +
     geom_line(aes(x = year, 
                   y = mean_fcl,
-                  col = as.factor(treatment))) + 
+                  col = as.factor(treatment),
+                  group = treatment)) + 
     geom_vline(xintercept = i, col = "red", linetype = "dashed") +
     coord_cartesian(ylim = c(ymin, ymax)) +
     labs(title=paste0("CEM (Year: ", i, ")"),
          x ="Year", y = "Absolute forest cover loss (ha)") +
     theme(legend.position = "bottom") +
     scale_colour_discrete(name= "", breaks=c("0", "1"),
-                          labels=c("Control", "Treated"))
+                          labels=c("Control", "Treated")) + 
+    scale_x_continuous(breaks = seq(2000, 2020, by = 4))
   
   avg_plot_psm <- 
     mp_summarized_psm %>% 
     ggplot() +
     geom_line(aes(x = year, 
                   y = mean_fcl,
-                  col = as.factor(treatment))) + 
+                  col = as.factor(treatment),
+                  group = treatment)) + 
     geom_vline(xintercept = i, col = "red", linetype = "dashed") +
     coord_cartesian(ylim = c(ymin, ymax)) +
     labs(title=paste0("PSM (Year: ", i, ")"),
          x ="Year", y = "") +
     theme(legend.position = "bottom") +
     scale_colour_discrete(name= "", breaks=c("0", "1"),
-                          labels=c("Control", "Treated"))
+                          labels=c("Control", "Treated")) + 
+    scale_x_continuous(breaks = seq(2000, 2020, by = 4))
   
   grid.arrange(avg_plot_cem, avg_plot_psm, 
                ncol = 2)

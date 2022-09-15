@@ -92,7 +92,8 @@ for (i in T_year) {
          x ="Year", y = "Absolute forest cover (ha)") +
     theme(legend.position = "bottom") +
     scale_colour_discrete(name= "", breaks=c("0", "1"),
-                          labels=c("Control", "Treated"))
+                          labels=c("Control", "Treated")) + 
+    scale_x_continuous(breaks = seq(i-3, 2020, by = 2))
   
   avg_plot_psm <- 
     mp_summarized_psm %>% 
@@ -107,7 +108,8 @@ for (i in T_year) {
          x ="Year", y = "") +
     theme(legend.position = "bottom") +
     scale_colour_discrete(name= "", breaks=c("0", "1"),
-                          labels=c("Control", "Treated"))
+                          labels=c("Control", "Treated")) + 
+    scale_x_continuous(breaks = seq(i-3, 2020, by = 2))
   
   grid.arrange(avg_plot_cem, avg_plot_psm, 
                ncol = 2)
@@ -201,7 +203,8 @@ for (i in T_year) {
          x ="Year", y = "Relative forest cover (ha)") +
     theme(legend.position = "bottom") +
     scale_colour_discrete(name= "", breaks=c("0", "1"),
-                          labels=c("Control", "Treated"))
+                          labels=c("Control", "Treated")) + 
+    scale_x_continuous(breaks = seq(i-3, 2020, by = 2))
   
   avg_plot_psm <- 
     mp_summarized_psm %>% 
@@ -216,7 +219,8 @@ for (i in T_year) {
          x ="Year", y = "") +
     theme(legend.position = "bottom") +
     scale_colour_discrete(name= "", breaks=c("0", "1"),
-                          labels=c("Control", "Treated"))
+                          labels=c("Control", "Treated")) + 
+    scale_x_continuous(breaks = seq(i-3, 2020, by = 2))
   
   grid.arrange(avg_plot_cem, avg_plot_psm, 
                ncol = 2)
@@ -293,7 +297,8 @@ for (i in T_year) {
          x ="Year", y = "Absolute forest cover loss (ha)") +
     theme(legend.position = "bottom") +
     scale_colour_discrete(name= "", breaks=c("0", "1"),
-                          labels=c("Control", "Treated"))
+                          labels=c("Control", "Treated")) + 
+    scale_x_continuous(breaks = seq(i-3, 2020, by = 2))
   
   avg_plot_psm <- 
     mp_summarized_psm %>% 
@@ -308,7 +313,8 @@ for (i in T_year) {
          x ="Year", y = "") +
     theme(legend.position = "bottom") +
     scale_colour_discrete(name= "", breaks=c("0", "1"),
-                          labels=c("Control", "Treated"))
+                          labels=c("Control", "Treated")) + 
+    scale_x_continuous(breaks = seq(i-3, 2020, by = 2))
   
   grid.arrange(avg_plot_cem, avg_plot_psm, 
                ncol = 2)

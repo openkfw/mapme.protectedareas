@@ -199,7 +199,7 @@ for (i in T_year) {
              "m_loss_tn" = "loss_tn",
              # "m_loss_tn" = "loss_tn",
              "m_emissions" = "emissions") %>% 
-      select(".assetid", "treatment", "m_treecover", "m_emissions", "m_loss", "m_loss_t3",
+      select(".assetid", "treatment", "m_treecover", "m_emissions", "m_loss", "m_loss_tn",
  "traveltime_5k_110mio", "traveltime_20k_110mio", "terrain_ruggedness_index_mean", "elevation_mean", "soil_5_15cm_clay", "NAME_0", "distance", "weights")
 
     # change variable names to facilitate long format conversion in code below
@@ -277,7 +277,7 @@ for (i in T_year) {
              "m_loss_tn" = "loss_tn",
              # "m_loss_tn" = "loss_tn",
              "m_emissions" = "emissions") %>% 
-      select(".assetid", "treatment", "m_treecover", "m_emissions", "m_loss", "m_loss_t3",
+      select(".assetid", "treatment", "m_treecover", "m_emissions", "m_loss", "m_loss_tn",
  "traveltime_5k_110mio", "traveltime_20k_110mio", "terrain_ruggedness_index_mean", "elevation_mean", "soil_5_15cm_clay", "NAME_0", "weights")
 
     # change variable names to facilitate long format conversion in code below
