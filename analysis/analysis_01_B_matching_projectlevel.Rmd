@@ -26,7 +26,7 @@ lapply(lop, require, character.only = TRUE)
 
 ## Propensity Score Matching
 
-```{r Propensity Score Matching (PSM), echo=TRUE}
+```{r Propensity Score Matching (PSM)}
 # Timer
 start_time <- Sys.time()
 
@@ -134,7 +134,7 @@ for (i in T_year) {
     
     ## Export data
     # write_csv(m_data1, 
-    #       paste0("../../datalake/mapme.protectedareas/output/tabular/regression_input/PSM/ps_matched_data_", bmz, ".csv"))
+    #       paste0("../../datalake/mapme.protectedareas/output/tabular/regression_input/PSM/tn_projects/ps_matched_data_", bmz, ".csv"))
     write_rds(m_data1, 
             paste0("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/PSM/tn_projects/psm_tn_matched_data_", bmz, ".rds"))
   
@@ -223,7 +223,7 @@ custom_cem <- function(bmz, cutoffs_travel_time, cutoffs_loss_tn, cutoffs_elevat
   
   ## Export data
   # write_csv(m_data2, 
-  #           paste0("../../datalake/mapme.protectedareas/output/tabular/regression_input/CEM/ce_matched_data_", i, ".csv"))
+  #           paste0("../../datalake/mapme.protectedareas/output/tabular/regression_input/CEM/tn_projects/ce_matched_data_", i, ".csv"))
   write_rds(m_data2, 
             paste0("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/tn_projects/cem_tn_matched_data_", bmz, ".rds"))
   
@@ -266,9 +266,8 @@ T_year <- list.files("/datadrive/datalake/mapme.protectedareas/output/matching/m
 T_year <- T_year[15:33]
 bmz_list <- gsub("matching_frame_", "", T_year) %>% 
   gsub(".rds", "", .)
-test <- bmz_list[1:2]
   
-for (bmz in test) {  
+for (bmz in bmz_list) {  
 custom_cem(bmz, cutoffs_travel_time = cutoffs_travel_time, cutoffs_loss_tn = cutoffs_loss_tn,cutoffs_elevation = cutoffs_elevation, cutoffs_tri = cutoffs_tri, cutoffs_soil = cutoffs_soil)}
 ```
  
