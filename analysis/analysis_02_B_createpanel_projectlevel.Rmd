@@ -1,0 +1,354 @@
+---
+title: "Panel creation tn - Project level"
+author: "Melvin HL Wong"
+date: "28 3 2022"
+output: workflowr::wflow_html
+---
+  
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE)
+knitr::opts_knit$set(root.dir = "~/shared/datalake/mapme.protectedareas")
+```
+
+
+
+```{r workspace and packages}
+# clean workspace, set options
+rm(list=ls())
+options(scipen=999)
+
+# get packages
+lop <- c("tidyverse", "sf", "units", "dplyr")
+newp <- lop[!(lop %in% installed.packages()[,"Package"])]
+if(length(newp)) install.packages(newp)
+lapply(lop, require, character.only = TRUE)
+
+```
+
+```{r load fcl}
+# Timer
+start_time <- Sys.time()
+
+#------- Load and prepare fc data -------
+
+# # Forest loss data
+# fcl_supported_AND_nonPas <-
+#   read_csv("../../datalake/mapme.protectedareas/output/polygon/sampling/fishnets/dec_08/gfw/gfw_10km_all.csv")
+# 
+# # Select variables
+# fcl_data <- fcl_supported_AND_nonPas %>% 
+#   select(poly_id,id.x,treatment.x, starts_with("area"), starts_with("loss"))
+
+# Forest loss data
+fcl <- read_rds("/datadrive/datalake/mapme.protectedareas/output/matching/matching_frames/full_database.rds") %>%
+  select(.assetid,
+         starts_with("treecover"),
+         starts_with("loss"),
+         starts_with("emissions"),
+         starts_with("minprec"),
+         starts_with("maxprec"),
+         starts_with("wetness"),
+         starts_with("not_affected_hurricane_area"),
+         starts_with("affected_hurricane_area")) %>%
+  select(-starts_with("loss_t3"),
+         -starts_with("loss_tn"))
+
+# change variable names to facilitate long format conversion in code below
+ colnames(fcl) <-  sub("*_anomaly*", "", colnames(fcl))
+ colnames(fcl) <-  sub("*_min*", "", colnames(fcl))
+ colnames(fcl) <-  sub("not_affected_hurricane_area*", "notaffhurricane", colnames(fcl))
+ colnames(fcl) <-  sub("affected_hurricane_area*", "affhurricane", colnames(fcl))
+ 
+##  Protected areas
+wdpa_kfw<-
+  read_sf("~/shared/datalake/mapme.protectedareas/input/wdpa_kfw/wdpa_kfw_spatial_latinamerica_2021-02-01_supportedPAs_unique.gpkg")
+
+# Load KfW finance data 
+kfw_finance <- 
+  read_csv("~/shared/datalake/mapme.protectedareas/input/kfw_finance/mapme.protectedareas_kfw-finance-2021-03-17.csv") %>% 
+  filter(! is.na(bmz_nummer))
+
+#Load wdpa bmz keys
+keys_wdpaid_bmz <- read_csv("~/shared/datalake/mapme.protectedareas/output/matching/model_frames/keys_wdpaid_bmz.csv") %>% 
+  rename("bmz_nummer" = "value")
+
+# merge wdpa_kfw with keys
+wdpa_kfw <- left_join(wdpa_kfw, keys_wdpaid_bmz,
+                      by=c("WDPAID"))
+
+#add kfw_finance data to wdpa_kfw
+wdpa_kfw <- left_join(wdpa_kfw, kfw_finance, 
+                      by=c("bmz_nummer"))
+
+wdpa_year <- wdpa_kfw %>% 
+  select(WDPAID, first_year) %>% 
+  st_drop_geometry
+  
+# Load link between assetid and WDPA ID
+keys_assetid_wdpa <- 
+  read_sf("~/shared/datalake/mapme.protectedareas/processing/fishnet/honeycomb_5_sqkm_kfw.gpkg") %>% 
+  select(poly_id, WDPAID) %>% 
+  rename(".assetid" = "poly_id") %>% 
+  st_drop_geometry()
+  
+keys_assetid_wdpa <- keys_assetid_wdpa %>% 
+  distinct(.assetid, WDPAID) %>%  
+  left_join(., wdpa_year,
+            by=c("WDPAID")) %>% 
+  select(.assetid, WDPAID, first_year)
+
+# load WDPA area type for heterogeneous treatment effects
+wdpa_type <- 
+  read_sf("~/shared/datalake/mapme.protectedareas/input/wdpa_kfw/wdpa_kfw_spatial_latinamerica_2021-02-01_supportedPAs_unique_simplified.gpkg") %>% 
+  st_drop_geometry() %>% 
+  select("WDPAID", "NAME", "IUCN_CAT", "DESIG_ENG") %>% 
+  mutate(WDPA_strict=ifelse(IUCN_CAT=="II" | IUCN_CAT=="Ia" | IUCN_CAT=="Ib" | IUCN_CAT=="III" | IUCN_CAT=="IV", 1,
+                            ifelse(IUCN_CAT=="V" | IUCN_CAT=="VI", 0, NA)))
+
+
+```
+
+
+```{r load disbursement data, eval = FALSE}
+projectdata_database<-
+  read_csv("/datadrive/datalake/mapme.protectedareas/output/matching/model_frames/projectdata_supported.csv")
+
+## reshape
+projectdata_database_reshaped <- projectdata_database %>%
+  gather(name, disbursement, 21:52) %>%
+  mutate(year = as.numeric(substr(name, 14,17))) %>%
+  select(-name)
+## remove if BMZ==NA
+projectdata_database_reshaped <- as.data.frame(projectdata_database_reshaped[-which(is.na(projectdata_database_reshaped$bmz_nummer)),])
+## aggregate by BMZ-year
+project_agg <- projectdata_database_reshaped %>%
+    dplyr::group_by(bmz_nummer, year, first_year) %>% # check whether this makes sense
+    dplyr::summarize(disbursement_proj = sum(disbursement))
+
+
+## create treatment variable for disbursement
+project_agg$treatment_disb_duringproj <- ifelse(project_agg$disbursement_proj > 0, 1, 0)
+
+
+# merge WDPA with project data and UID
+## load
+keys_database <-
+  read_csv("~/shared/datalake/mapme.protectedareas/output/matching/model_frames/keys_wdpaid_bmz.csv") %>% 
+  dplyr::rename(., bmz_nummer=value)
+
+bmz_wdpa.df <- merge(keys_database, project_agg,  by=c("bmz_nummer"))
+
+
+## load area data
+keys_assetid_wdpa <- 
+  read_sf("~/shared/datalake/mapme.protectedareas/processing/fishnet/honeycomb_5_sqkm_kfw.gpkg") %>% 
+  select(poly_id, WDPAID) %>% 
+  rename(".assetid" = "poly_id") %>% 
+  mutate(area_km2=set_units(st_area(.), km^2))
+
+bmz_wdpa.df<-bmz_wdpa.df %>% 
+  left_join(.,st_drop_geometry(keys_assetid_wdpa),by="WDPAID")
+
+## merge and calculate total BMZ project area
+area.agg<- bmz_wdpa.df %>% 
+  # st_drop_geometry() %>% 
+  filter(treatment_disb_duringproj==1) %>% 
+  group_by(year,bmz_nummer) %>% 
+  summarize(area_total=sum(area_km2))
+
+# finance per total area  
+bmz_wdpa.df<-bmz_wdpa.df %>% 
+  left_join(.,area.agg,by=c("bmz_nummer","year"))
+
+
+bmz_wdpa.df$area_total[is.na(bmz_wdpa.df$area_total)==T]<-0 # fill out NA in project area with 0.
+
+
+bmz_wdpa.df$disbursement_sqkm <-bmz_wdpa.df$disbursement_proj/bmz_wdpa.df$area_total # calculate disbursement per sqkm
+bmz_wdpa.df$disbursement_5sqkmcell <-bmz_wdpa.df$disbursement_proj/bmz_wdpa.df$area_total*bmz_wdpa.df$area_km2 # calculate disbursements per cell
+
+## recode NaN as 0 (since we divided by 0)
+bmz_wdpa.df$disbursement_sqkm [is.nan(bmz_wdpa.df$disbursement_sqkm )]<-0
+bmz_wdpa.df$disbursement_5sqkmcell [is.nan(bmz_wdpa.df$disbursement_5sqkmcell )]<-0
+
+
+## calculate disbursement in each cell by year
+cell.agg<- bmz_wdpa.df %>% 
+  dplyr::group_by(.assetid, year) %>% 
+  dplyr::summarize(cell_disb=sum(disbursement_5sqkmcell))
+
+```
+
+## Panelize PSM data
+
+```{r Panelize PSM data}
+# BMZ with matching frames:
+T_year <- list.files("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/PSM/tn_projects")%>% 
+  grep("psm_tn_matched_data_*", ., value = TRUE)
+
+for (i in T_year) {
+   t <- gsub("psm_tn_matched_data_", "", i) %>% 
+    substr(.,1,4)
+  
+  bmz <- gsub("psm_tn_matched_data_", "", i) %>% 
+    gsub(".rds", "", .)
+    
+    # prepare keys, keep keys only if corresponding WDPA-ID had project start in year i
+    keys <- keys_assetid_wdpa %>%   
+      filter(first_year == t)
+
+    # Load matched data
+    m_data <-
+      read_rds(paste0("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/PSM/tn_projects/psm_tn_matched_data_", bmz, ".rds")) %>%
+      rename("m_treecover" = "treecover",
+             "m_loss" = "loss",
+             "m_loss_tn" = "loss_tn",
+             # "m_loss_tn" = "loss_tn",
+             "m_emissions" = "emissions") %>% 
+      select(".assetid", "treatment", "m_treecover", "m_emissions", "m_loss", "m_loss_tn",
+ "traveltime_5k_110mio", "traveltime_20k_110mio", "terrain_ruggedness_index_mean", "elevation_mean", "soil_5_15cm_clay", "NAME_0", "distance", "weights")
+
+    # change variable names to facilitate long format conversion in code below
+    # colnames(m_data) <-  sub("*_anomaly*", "", colnames(m_data))
+    # colnames(m_data) <-  sub("*_min*", "", colnames(m_data))    
+ 
+    # Merge matched data with 
+    # merged_data <- 
+    #   left_join(m_data, fcl_data,
+    #                          by=c("poly_id")) %>% 
+    #   pivot_longer(cols = c(starts_with("area") | starts_with("loss")),
+    #                names_to = c(".value", "year"),
+    #                names_sep = "_") %>% 
+    #   select(-id.x, -treatment.x) %>% 
+    #   mutate(year_standard = as.numeric(year) - i) %>% 
+    #   rename("fc_area" = "area",
+    #          "fc_loss" = "loss")
+    
+    # Merge data with panel data, reshape to long, join with keys and drop if year is NA (year 2021 from wetness)
+    merged_data <- 
+      left_join(m_data, fcl, by=c(".assetid")) %>% 
+      pivot_longer(cols = c(starts_with("treecover") | starts_with("loss") | starts_with("emissions") | starts_with("emissions") | starts_with("minprec") | starts_with("maxprec") | starts_with("wetness") | starts_with("notaffhurricane") | starts_with("affhurricane")),
+                   names_to = c(".value", "year"),
+                   names_sep = "_") %>% 
+      mutate(year_standard = as.numeric(year) - as.integer(t)) %>% 
+      rename("fc_area" = "treecover",
+             "fc_loss" = "loss") %>% 
+      left_join(., keys,
+                by=c(".assetid")) %>%
+      mutate(WDPAID = ifelse(treatment == 0, 9999999999, WDPAID)) %>% 
+      filter(! is.na(year)) %>% # new line
+      distinct(.assetid, year, .keep_all = TRUE) # adjust this as soon as we have a better solution
+        
+    ## Export data
+    write_csv(merged_data,
+              paste0("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/PSM/tn_projects/psm_tn_matched_panel_", bmz, ".csv"))
+
+  
+    # Check duplicates
+    print(i)
+    print(paste("Unique assetids in matched data:",
+                (length(unique(m_data$.assetid)))
+                ))
+    print(paste("Unique assetids in matched data:",
+                (length(unique(merged_data$.assetid)))
+                ))
+    print("Number of treated cells in matched data:")
+    print(table(m_data$treatment))
+    print("Number of treated cells in panel data:")
+    print(table(subset(merged_data, treatment == 1)$year))
+    
+}
+```
+
+## Panelize CEM data
+
+```{r Panelize CEM data}
+# BMZ with matching frames:
+T_year <- list.files("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/tn_projects") %>% 
+  grep("cem_tn_matched_data_*", ., value = TRUE)
+
+for (i in T_year) {
+   t <- gsub("cem_tn_matched_data_", "", i) %>% 
+    substr(.,1,4)
+  
+  bmz <- gsub("cem_tn_matched_data_", "", i) %>% 
+    gsub(".rds", "", .)
+    
+  
+    # prepare keys, keep keys only if corresponding WDPA-ID had project start in year i
+    keys <- keys_assetid_wdpa %>%   
+      filter(first_year == as.integer(t))
+    
+  
+    # Load matched data
+    m_data <- 
+        read_rds(paste0("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/tn_projects/cem_tn_matched_data_", bmz, ".rds")) %>%
+      rename("m_treecover" = "treecover",
+             "m_loss" = "loss",
+             "m_loss_tn" = "loss_tn",
+             # "m_loss_tn" = "loss_tn",
+             "m_emissions" = "emissions") %>% 
+      select(".assetid", "treatment", "m_treecover", "m_emissions", "m_loss", "m_loss_tn",
+ "traveltime_5k_110mio", "traveltime_20k_110mio", "terrain_ruggedness_index_mean", "elevation_mean", "soil_5_15cm_clay", "NAME_0", "weights")
+
+    # change variable names to facilitate long format conversion in code below
+    # colnames(m_data) <-  sub("*_anomaly*", "", colnames(m_data))
+    # colnames(m_data) <-  sub("*_min*", "", colnames(m_data))    
+    
+    # Merge matched data with 
+    # merged_data <- 
+    #   left_join(m_data, fcl_data,
+    #             by=c("poly_id")) %>% 
+    #   pivot_longer(cols = c(starts_with("area") | starts_with("loss")),
+    #                names_to = c(".value", "year"),
+    #                names_sep = "_") %>% 
+    #   select(-id.x, -treatment.x) %>% 
+    #   mutate(year_standard = as.numeric(year) - i) %>% 
+    #   rename("fc_area" = "area",
+    #          "fc_loss" = "loss")
+    
+    # Merge data with panel data, reshape to long, join with keys and drop if year is NA (year 2021 from wetness)
+    merged_data <- 
+      left_join(m_data, fcl,
+                             by=c(".assetid")) %>% 
+      pivot_longer(cols = c(starts_with("treecover") | starts_with("loss") | starts_with("emissions") | starts_with("emissions") | starts_with("minprec") | starts_with("maxprec") | starts_with("wetness") | starts_with("notaffhurricane") | starts_with("affhurricane")),
+                   names_to = c(".value", "year"),
+                   names_sep = "_") %>% 
+      mutate(year_standard = as.numeric(year) - as.integer(t)) %>% 
+      rename("fc_area" = "treecover",
+             "fc_loss" = "loss") %>% 
+      left_join(., keys,
+                by=c(".assetid")) %>%
+      mutate(WDPAID = ifelse(treatment == 0, 9999999999, WDPAID)) %>% 
+      filter(! is.na(year)) %>% # new line
+      distinct(.assetid, year, .keep_all = TRUE) # adjust this as soon as we have a better solution # new line
+    
+    ## Export data
+    write_csv(merged_data, 
+              paste0("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/tn_projects/cem_tn_matched_panel_", bmz, ".csv"))
+    
+    # Check duplicates
+    print(i)
+    print(paste("Unique assetids in matched data:",
+                (length(unique(m_data$.assetid)))
+                ))
+    print(paste("Unique assetids in matched data:",
+                (length(unique(merged_data$.assetid)))
+                ))
+    print("Number of treated cells in matched data:")
+    print(table(m_data$treatment))
+    print("Number of treated cells in panel data:")
+    print(table(subset(merged_data, treatment == 1)$year))
+    
+    
+}
+```
+
+```{r end timer}
+# Timer
+end_time <- Sys.time()
+
+duration <- difftime(end_time, start_time, units='mins')
+duration
+```
+
