@@ -317,7 +317,7 @@ for (i in T_year) {
       mutate(year_standard = as.numeric(year) - as.integer(t)) %>% 
       rename("fc_area" = "treecover",
              "fc_loss" = "loss") %>% 
-      left_join(., keys,
+      left_join(., keys_assetid_wdpa,
                 by=c(".assetid")) %>%
       mutate(WDPAID = ifelse(treatment == 0, 9999999999, WDPAID)) %>% 
       filter(! is.na(year)) %>% # new line
