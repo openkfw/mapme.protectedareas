@@ -17,7 +17,7 @@ rm(list=ls())
 options(scipen=999)
 
 # get packages
-lop <- c("dplyr", "plm", "stargazer", "tidyverse", "MatchIt", "glm", "optmatch", "cobalt", "gridExtra")
+lop <- c("dplyr", "plm", "stargazer", "tidyverse", "MatchIt", "glm", "optmatch", "cobalt", "gridExtra", "sf")
 newp <- lop[!(lop %in% installed.packages()[,"Package"])]
 if(length(newp)) install.packages(newp)
 lapply(lop, require, character.only = TRUE)
