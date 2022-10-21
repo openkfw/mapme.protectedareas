@@ -87,6 +87,22 @@ wdpa_year_mult <- wdpa_year_mult %>%
     third_year=mean(third_year, na.rm = T)
   ) %>% 
   mutate_all(~ifelse(is.nan(.), NA, .)) # replace all NaN with NA
+
+
+# Load link between assetid and WDPA ID
+keys_assetid_wdpa <- 
+  read_sf("~/shared/datalake/mapme.protectedareas/processing/fishnet/honeycomb_5_sqkm_kfw.gpkg") %>% 
+  select(poly_id, WDPAID) %>% 
+  rename(".assetid" = "poly_id") %>% 
+  st_drop_geometry()
+
+# merge WDPA with treatment indicators and assetid
+keys_assetid_wdpa <- keys_assetid_wdpa %>% 
+  distinct(.assetid, WDPAID) %>%  
+  merge(.,wdpa_year_mult) %>% 
+  distinct(.assetid, .keep_all = T) # some .assetid share the same WDPAID and have different "first_years". That is because the different protected areas are close together and the cell overlaps both PA at the border. The duplicated entries are only a few but cause problems in merging data. Solution. Drop them. About 9% loss of cells still (18371/195267)
+
+
 ```
 
 
@@ -106,11 +122,6 @@ T_year <- list.files("/datadrive/datalake/mapme.protectedareas/output/matching/m
 T_year <- T_year[15:33]
 for (i in T_year) {
   
-  t <- gsub("matching_frame_", "", i) %>% 
-    substr(.,1,4)
-  
-  bmz <- gsub("matching_frame_", "", i) %>% 
-    gsub(".rds", "", .)
   #------- Load matching frames -------
   #file <- paste0("matching_frame_",i)
   # df <- 
@@ -122,8 +133,44 @@ for (i in T_year) {
   #          ! is.na(clay_content_10_cm))
   
   # Load data
-  df <- 
-    read_rds(paste0("/datadrive/datalake/mapme.protectedareas/output/matching/matching_frames/projects/",i)) %>% 
+  df <- read_rds(paste0("/datadrive/datalake/mapme.protectedareas/output/matching/matching_frames/projects/",i)) %>% merge(., keys_assetid_wdpa, by=".assetid", all.x=T)
+  # we need this t to fix the time varying variables (especially fc_loss). The problem: Some .assetid are overlapping into other WDPA.Most likely because we include buffer zones that are entirely outside of the PA but may range into another PA. Solution: Look up the number of .assetid for each first_year year and chose the first_year with the most .assetid
+first_year_num <- length(unique(df$first_year[!is.na(df$first_year)]))
+    if (first_year_num ==1){ #if only one year in first year (without counting NA)
+      t <- df %>% 
+      select(first_year) %>% 
+      na.omit() %>% 
+      unique() %>% 
+      as.numeric()
+      
+    }else{ # if mulitple years, only keep first_year with maximum number of .assetid
+      # get number of first_years
+      list_year <- df %>% 
+      select(first_year) %>% 
+      na.omit() %>% 
+      unique() 
+      # create empty variable to be filled out with frequency
+      list_year$num_asset <- NA
+      # Calculate frequency of first_years over .assetid
+      for (x in 1:first_year_num) {
+        temp <- df %>% 
+        select(.assetid, first_year)%>% 
+        na.omit() %>% 
+        filter(first_year==list_year[x,1]) 
+        list_year$num_asset[which(list_year$first_year==list_year[x,1])] <- dim(temp)[1]
+      }
+      # save first_year with maximum number of assetid as t
+      t <- list_year$first_year[which(list_year$num_asset==max(list_year$num_asset))]
+      
+    }
+
+    
+  bmz <- gsub("matching_frame_", "", i) %>% 
+    gsub(".rds", "", .)
+  
+  
+  
+  df <- df %>% 
     select(.assetid,
            treatment,
            ends_with(as.character(t)),
@@ -217,7 +264,39 @@ for (i in T_year) {
 custom_cem <- function(bmz, cutoffs_travel_time, cutoffs_loss_tn, cutoffs_elevation, cutoffs_tri, cutoffs_soil) {
   
   print(bmz)
-  year <- substr(bmz,1,4)
+  df <- 
+    read_rds(paste0("/datadrive/datalake/mapme.protectedareas/output/matching/matching_frames/projects/matching_frame_", bmz, ".rds"))%>% merge(., keys_assetid_wdpa, by=".assetid", all.x=T)
+  # we need this t to fix the time varying variables (especially fc_loss). The problem: Some .assetid are overlapping into other WDPA.Most likely because we include buffer zones that are entirely outside of the PA but may range into another PA. Solution: Look up the number of .assetid for each first_year year and chose the first_year with the most .assetid
+first_year_num <- length(unique(df$first_year[!is.na(df$first_year)]))
+    if (first_year_num ==1){ #if only one year in first year (without counting NA)
+      year <- df %>% 
+      select(first_year) %>% 
+      na.omit() %>% 
+      unique() %>% 
+      as.numeric()
+      
+    }else{ # if mulitple years, only keep first_year with maximum number of .assetid
+      # get number of first_years
+      list_year <- df %>% 
+      select(first_year) %>% 
+      na.omit() %>% 
+      unique() 
+      # create empty variable to be filled out with frequency
+      list_year$num_asset <- NA
+      # Calculate frequency of first_years over .assetid
+      for (x in 1:first_year_num) {
+        temp <- df %>% 
+        select(.assetid, first_year)%>% 
+        na.omit() %>% 
+        filter(first_year==list_year[x,1]) 
+        list_year$num_asset[which(list_year$first_year==list_year[x,1])] <- dim(temp)[1]
+      }
+      # save first_year with maximum number of assetid as t
+      year <- list_year$first_year[which(list_year$num_asset==max(list_year$num_asset))]
+      
+    }
+
+  
   # Load data
   df <- 
     read_rds(paste0("/datadrive/datalake/mapme.protectedareas/output/matching/matching_frames/projects/matching_frame_", bmz, ".rds")) %>% 
@@ -324,7 +403,6 @@ cutoffs_loss_tn <- c(-1,0, 1, 10, 100, 200, 300, 400, 500, 600, 1000)
 cutoffs_elevation <- c(0,500,1500,6138.56)
 cutoffs_tri <- c(0,5,10,182.1068)
 cutoffs_soil <- c(2.440179, 6.091119,  9.742059, 13.392999, 17.043938, 20.694878, 24.345818, 27.996758, 31.647698, 35.298637, 38.949577, 42.600517, 46.251457, 49.902397, 53.553337, 57.204276, 60.855216, 64.506156)
-year <- 2004
 # Call function
 T_year <- list.files("/datadrive/datalake/mapme.protectedareas/output/matching/matching_frames/projects")
 
