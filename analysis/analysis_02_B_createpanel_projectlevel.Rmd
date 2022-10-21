@@ -84,19 +84,57 @@ wdpa_year <- wdpa_kfw %>%
   select(WDPAID, first_year) %>% 
   st_drop_geometry
   
+# get list of number of treatment years
+wdpa_year <-   wdpa_year[order(wdpa_year$WDPAID, wdpa_year$first_year),] %>% 
+  distinct()
+n_occur <- data.frame(table(wdpa_year$WDPAID)) %>% 
+  rename(WDPAID=Var1)
+
+# create table with list of treatment years
+wdpa_year_mult <- wdpa_year %>% 
+  merge(.,n_occur) %>% 
+  rename(year=first_year) 
+
+# get the number of treatment (ordered)
+wdpa_year_mult$Freq_order <- NA
+for (i in unique(wdpa_year_mult$WDPAID)){
+  print(i)
+  wdpa_year_mult$Freq_order[which(wdpa_year_mult$WDPAID==i)] <- 1:max(wdpa_year_mult$Freq[which(wdpa_year_mult$WDPAID==i)])
+}
+
+# create variables indicating treatment years
+wdpa_year_mult$first_year <- NA
+wdpa_year_mult$first_year[which(wdpa_year_mult$Freq_order==1)] <- wdpa_year_mult$year[which(wdpa_year_mult$Freq_order==1)]
+  
+wdpa_year_mult$second_year <- NA
+wdpa_year_mult$second_year[which(wdpa_year_mult$Freq_order==2)] <- wdpa_year_mult$year[which(wdpa_year_mult$Freq_order==2)]
+
+wdpa_year_mult$third_year <- NA
+wdpa_year_mult$third_year[which(wdpa_year_mult$Freq_order==3)] <- wdpa_year_mult$year[which(wdpa_year_mult$Freq_order==3)]
+
+# collapse data so that there are unique WDPAIDs
+wdpa_year_mult <- wdpa_year_mult %>% 
+  group_by(WDPAID) %>% 
+  summarise(
+    first_year=mean(first_year, na.rm = T),
+    second_year=mean(second_year, na.rm = T),
+    third_year=mean(third_year, na.rm = T)
+  ) %>% 
+  mutate_all(~ifelse(is.nan(.), NA, .)) # replace all NaN with NA
+
+
 # Load link between assetid and WDPA ID
 keys_assetid_wdpa <- 
   read_sf("~/shared/datalake/mapme.protectedareas/processing/fishnet/honeycomb_5_sqkm_kfw.gpkg") %>% 
   select(poly_id, WDPAID) %>% 
   rename(".assetid" = "poly_id") %>% 
   st_drop_geometry()
-  
+
+# merge WDPA with treatment indicators and assetid
 keys_assetid_wdpa <- keys_assetid_wdpa %>% 
   distinct(.assetid, WDPAID) %>%  
-  left_join(., wdpa_year,
-            by=c("WDPAID")) %>% 
-  select(.assetid, WDPAID, first_year)
-
+  merge(.,wdpa_year_mult) %>% 
+  distinct(.assetid, .keep_all = T) # some .assetid share the same WDPAID and have different "first_years". That is because the different protected areas are close together and the cell overlaps both PA at the border. The duplicated entries are only a few but cause problems in merging data. Solution. Drop them. About 9% loss of cells still (18371/195267)
 # load WDPA area type for heterogeneous treatment effects
 wdpa_type <- 
   read_sf("~/shared/datalake/mapme.protectedareas/input/wdpa_kfw/wdpa_kfw_spatial_latinamerica_2021-02-01_supportedPAs_unique_simplified.gpkg") %>% 
