@@ -225,17 +225,12 @@ T_year <- list.files("/datadrive/datalake/mapme.protectedareas/output/tabular/re
   grep("psm_tn_matched_data_*", ., value = TRUE)
 
 for (i in T_year) {
-   t <- gsub("psm_tn_matched_data_", "", i) %>% 
-    substr(.,1,4)
-  
+
   bmz <- gsub("psm_tn_matched_data_", "", i) %>% 
     gsub(".rds", "", .)
-    
-    # prepare keys, keep keys only if corresponding WDPA-ID had project start in year i
-    keys <- keys_assetid_wdpa %>%   
-      filter(first_year == t)
+  
 
-    # Load matched data
+  # Load matched data
     m_data <-
       read_rds(paste0("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/PSM/tn_projects/psm_tn_matched_data_", bmz, ".rds")) %>%
       rename("m_treecover" = "treecover",
@@ -243,8 +238,9 @@ for (i in T_year) {
              "m_loss_tn" = "loss_tn",
              # "m_loss_tn" = "loss_tn",
              "m_emissions" = "emissions") %>% 
-      select(".assetid", "treatment", "m_treecover", "m_emissions", "m_loss", "m_loss_tn",
- "traveltime_5k_110mio", "traveltime_20k_110mio", "terrain_ruggedness_index_mean", "elevation_mean", "soil_5_15cm_clay", "NAME_0", "distance", "weights")
+      select(".assetid", "WDPAID", "treatment", "m_treecover", "m_emissions", "m_loss", "m_loss_tn",
+ "traveltime_5k_110mio", "traveltime_20k_110mio", "terrain_ruggedness_index_mean", "elevation_mean", "soil_5_15cm_clay", "NAME_0", "first_year", "second_year", "third_year", "distance", "weights")
+    
 
     # change variable names to facilitate long format conversion in code below
     # colnames(m_data) <-  sub("*_anomaly*", "", colnames(m_data))
@@ -268,14 +264,17 @@ for (i in T_year) {
       pivot_longer(cols = c(starts_with("treecover") | starts_with("loss") | starts_with("emissions") | starts_with("emissions") | starts_with("minprec") | starts_with("maxprec") | starts_with("wetness") | starts_with("notaffhurricane") | starts_with("affhurricane")),
                    names_to = c(".value", "year"),
                    names_sep = "_") %>% 
-      mutate(year_standard = as.numeric(year) - as.integer(t)) %>% 
+      left_join(., wdpa_type,
+                             by=c("WDPAID")) %>% 
+      mutate(year_standard = as.numeric(year) - first_year) %>% 
       rename("fc_area" = "treecover",
              "fc_loss" = "loss") %>% 
-      left_join(., keys,
-                by=c(".assetid")) %>%
       mutate(WDPAID = ifelse(treatment == 0, 9999999999, WDPAID)) %>% 
       filter(! is.na(year)) %>% # new line
-      distinct(.assetid, year, .keep_all = TRUE) # adjust this as soon as we have a better solution
+      distinct(.assetid, year, .keep_all = TRUE) # adjust this as soon as we have a better solution # new line
+    
+    
+    
         
     ## Export data
     write_csv(merged_data,
@@ -306,16 +305,9 @@ T_year <- list.files("/datadrive/datalake/mapme.protectedareas/output/tabular/re
   grep("cem_tn_matched_data_*", ., value = TRUE)
 
 for (i in T_year) {
-   t <- gsub("cem_tn_matched_data_", "", i) %>% 
-    substr(.,1,4)
-  
-  bmz <- gsub("cem_tn_matched_data_", "", i) %>% 
+
+    bmz <- gsub("cem_tn_matched_data_", "", i) %>% 
     gsub(".rds", "", .)
-    
-  
-    # prepare keys, keep keys only if corresponding WDPA-ID had project start in year i
-    keys <- keys_assetid_wdpa %>%   
-      filter(first_year == as.integer(t))
     
   
     # Load matched data
@@ -326,8 +318,8 @@ for (i in T_year) {
              "m_loss_tn" = "loss_tn",
              # "m_loss_tn" = "loss_tn",
              "m_emissions" = "emissions") %>% 
-      select(".assetid", "treatment", "m_treecover", "m_emissions", "m_loss", "m_loss_tn",
- "traveltime_5k_110mio", "traveltime_20k_110mio", "terrain_ruggedness_index_mean", "elevation_mean", "soil_5_15cm_clay", "NAME_0", "weights")
+      select(".assetid", "WDPAID", "treatment", "m_treecover", "m_emissions", "m_loss", "m_loss_tn",
+ "traveltime_5k_110mio", "traveltime_20k_110mio", "terrain_ruggedness_index_mean", "elevation_mean", "soil_5_15cm_clay", "NAME_0", "first_year", "second_year", "third_year", "weights")
 
     # change variable names to facilitate long format conversion in code below
     # colnames(m_data) <-  sub("*_anomaly*", "", colnames(m_data))
@@ -352,11 +344,11 @@ for (i in T_year) {
       pivot_longer(cols = c(starts_with("treecover") | starts_with("loss") | starts_with("emissions") | starts_with("emissions") | starts_with("minprec") | starts_with("maxprec") | starts_with("wetness") | starts_with("notaffhurricane") | starts_with("affhurricane")),
                    names_to = c(".value", "year"),
                    names_sep = "_") %>% 
-      mutate(year_standard = as.numeric(year) - as.integer(t)) %>% 
+      left_join(., wdpa_type,
+                             by=c("WDPAID")) %>% 
+      mutate(year_standard = as.numeric(year) - first_year) %>% 
       rename("fc_area" = "treecover",
              "fc_loss" = "loss") %>% 
-      left_join(., keys_assetid_wdpa,
-                by=c(".assetid")) %>%
       mutate(WDPAID = ifelse(treatment == 0, 9999999999, WDPAID)) %>% 
       filter(! is.na(year)) %>% # new line
       distinct(.assetid, year, .keep_all = TRUE) # adjust this as soon as we have a better solution # new line

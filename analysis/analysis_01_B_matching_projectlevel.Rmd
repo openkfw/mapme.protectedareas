@@ -119,7 +119,7 @@ start_time <- Sys.time()
 T_year <- list.files("/datadrive/datalake/mapme.protectedareas/output/matching/matching_frames/projects")
 
 # drop BMZ Numbers before 2004 and BMZ number starting with 2098
-T_year <- T_year[15:33]
+
 for (i in T_year) {
   
   #------- Load matching frames -------
@@ -298,8 +298,7 @@ first_year_num <- length(unique(df$first_year[!is.na(df$first_year)]))
 
   
   # Load data
-  df <- 
-    read_rds(paste0("/datadrive/datalake/mapme.protectedareas/output/matching/matching_frames/projects/matching_frame_", bmz, ".rds")) %>% 
+  df <- df %>% 
     select(.assetid,
            treatment,
            ends_with(as.character(year)),
@@ -308,7 +307,11 @@ first_year_num <- length(unique(df$first_year[!is.na(df$first_year)]))
            terrain_ruggedness_index_mean,
            elevation_mean,
            soil_5_15cm_clay,
-           NAME_0) %>% 
+           NAME_0,
+           WDPAID,
+           first_year,
+           second_year,
+           third_year) %>% 
     rename_with(~str_remove(., paste0("_",year))) # drop year suffix in column name
   
   # Drop NA values
@@ -407,7 +410,6 @@ cutoffs_soil <- c(2.440179, 6.091119,  9.742059, 13.392999, 17.043938, 20.694878
 T_year <- list.files("/datadrive/datalake/mapme.protectedareas/output/matching/matching_frames/projects")
 
 # drop BMZ Numbers before 2004 and BMZ number starting with 2098
-T_year <- T_year[15:33]
 bmz_list <- gsub("matching_frame_", "", T_year) %>% 
   gsub(".rds", "", .)
   
