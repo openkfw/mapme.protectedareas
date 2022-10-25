@@ -1,0 +1,64 @@
+---
+title: "Create stacked panel"
+author: "Melvin H. L. Wong"
+date: "1 9 2022"
+output: workflowr::wflow_html
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE)
+knitr::opts_knit$set(root.dir = "/datadrive/datalake/mapme.protectedareas")
+```
+
+
+```{r workspace and packages}
+# clean workspace, set options
+rm(list=ls())
+options(scipen=999)
+
+# get packages
+lop <- c("tidyverse", "sf", "units", "dplyr")
+newp <- lop[!(lop %in% installed.packages()[,"Package"])]
+if(length(newp)) install.packages(newp)
+lapply(lop, require, character.only = TRUE)
+
+```
+
+
+```{r stack Panel datasets}
+# list of panel datasets
+all_years <- list.files("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/tn_projects") %>% 
+  grep("cem_tn_matched_panel_*", ., value = TRUE)
+bmz_list <- all_years %>% 
+    gsub("cem_tn_matched_panel_", "", .) %>% 
+    gsub(".csv", "", .)
+
+bmz_list <- bmz_list[-which(bmz_list=="199566829")] # skip entries that cause issues because of perfect collinearity of treatment variable
+# load each list entry and create unique panel id across all matching frames
+big.list.of.data.frames <- lapply(bmz_list, function(x){
+  file <- list(paste0("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/tn_projects/cem_tn_matched_panel_", x, ".csv"))
+  read_csv(file) %>% 
+  mutate(stack_id=paste0(x, .assetid))
+})
+# rbind all dataframes together
+big.data.frame <- do.call(rbind,big.list.of.data.frames)
+
+
+
+
+
+ panel.df <- big.data.frame %>% 
+    mutate(treatment_disb = (treatment==1 & year_standard>=0),
+           emissions_tha = emissions/500,
+           NAME_0_num = as.numeric(as.factor(NAME_0))) %>% 
+    rename(., weights_cem=weights) # rename weights
+  # create WDPA cluster that are country specific (important for control group, as all controll cells belong to ID 9999999999 regardless of the country. Now the control cells are clustered for each country.)
+  panel.df$WDPAID_cluster <- as.numeric(paste0(panel.df$NAME_0_num, panel.df$WDPAID)) 
+  panel.df$stack <- substring(panel.df$stack_id,1,4)
+  panel.df$WDPAID_cluster_stack <- as.numeric(paste0(panel.df$stack, panel.df$NAME_0_num, panel.df$WDPAID)) 
+  
+  
+  # save big file
+  saveRDS(panel.df, file="/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/cem_matched_data_stacked_projects.rds")
+
+```
+
