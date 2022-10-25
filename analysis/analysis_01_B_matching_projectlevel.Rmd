@@ -119,8 +119,14 @@ start_time <- Sys.time()
 T_year <- list.files("/datadrive/datalake/mapme.protectedareas/output/matching/matching_frames/projects")
 
 # drop BMZ Numbers before 2004 and BMZ number starting with 2098
+bmz_list <- gsub("matching_frame_", "", T_year) %>% 
+  gsub(".rds", "", .)
 
-for (i in T_year) {
+# drop BMZ Numbers before with first_year being 2000 as there are no loss_tn data
+bmz_list <- bmz_list[-which(bmz_list=="199865056")]
+  
+
+for (bmz in bmz_list) {
   
   #------- Load matching frames -------
   #file <- paste0("matching_frame_",i)
@@ -133,11 +139,11 @@ for (i in T_year) {
   #          ! is.na(clay_content_10_cm))
   
   # Load data
-  df <- read_rds(paste0("/datadrive/datalake/mapme.protectedareas/output/matching/matching_frames/projects/",i)) %>% merge(., keys_assetid_wdpa, by=".assetid", all.x=T)
+  df <- read_rds(paste0("/datadrive/datalake/mapme.protectedareas/output/matching/matching_frames/projects/matching_frame_",bmz,".rds")) %>% merge(., keys_assetid_wdpa, by=".assetid", all.x=T)
   # we need this t to fix the time varying variables (especially fc_loss). The problem: Some .assetid are overlapping into other WDPA.Most likely because we include buffer zones that are entirely outside of the PA but may range into another PA. Solution: Look up the number of .assetid for each first_year year and chose the first_year with the most .assetid
 first_year_num <- length(unique(df$first_year[!is.na(df$first_year)]))
     if (first_year_num ==1){ #if only one year in first year (without counting NA)
-      t <- df %>% 
+      year <- df %>% 
       select(first_year) %>% 
       na.omit() %>% 
       unique() %>% 
@@ -160,27 +166,28 @@ first_year_num <- length(unique(df$first_year[!is.na(df$first_year)]))
         list_year$num_asset[which(list_year$first_year==list_year[x,1])] <- dim(temp)[1]
       }
       # save first_year with maximum number of assetid as t
-      t <- list_year$first_year[which(list_year$num_asset==max(list_year$num_asset))]
+      year <- list_year$first_year[which(list_year$num_asset==max(list_year$num_asset))]
+      df$first_year <- year
       
     }
 
-    
-  bmz <- gsub("matching_frame_", "", i) %>% 
-    gsub(".rds", "", .)
-  
   
   
   df <- df %>% 
     select(.assetid,
            treatment,
-           ends_with(as.character(t)),
+           ends_with(as.character(year)),
            traveltime_5k_110mio,
            traveltime_20k_110mio,
            terrain_ruggedness_index_mean,
            elevation_mean,
            soil_5_15cm_clay,
-           NAME_0) %>% 
-    rename_with(~str_remove(., paste0("_",t))) # drop year suffix in column name
+           NAME_0,
+           WDPAID,
+           first_year,
+           second_year,
+           third_year) %>% 
+    rename_with(~str_remove(., paste0("_",year))) # drop year suffix in column name
   
   df <- df %>% 
     filter(! is.na(treecover),
@@ -293,6 +300,7 @@ first_year_num <- length(unique(df$first_year[!is.na(df$first_year)]))
       }
       # save first_year with maximum number of assetid as t
       year <- list_year$first_year[which(list_year$num_asset==max(list_year$num_asset))]
+      df$first_year <- year
       
     }
 
@@ -409,11 +417,13 @@ cutoffs_soil <- c(2.440179, 6.091119,  9.742059, 13.392999, 17.043938, 20.694878
 # Call function
 T_year <- list.files("/datadrive/datalake/mapme.protectedareas/output/matching/matching_frames/projects")
 
-# drop BMZ Numbers before 2004 and BMZ number starting with 2098
+
 bmz_list <- gsub("matching_frame_", "", T_year) %>% 
   gsub(".rds", "", .)
+# drop BMZ Numbers before with first_year being 2000 as there are no loss_tn data
+bmz_list <- bmz_list[-which(bmz_list=="199865056")]
   
-for (bmz in bmz_list) {  
+for (bmz in bmz_list) { 
 custom_cem(bmz, cutoffs_travel_time = cutoffs_travel_time, cutoffs_loss_tn = cutoffs_loss_tn,cutoffs_elevation = cutoffs_elevation, cutoffs_tri = cutoffs_tri, cutoffs_soil = cutoffs_soil)}
 ```
  
