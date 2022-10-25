@@ -1,0 +1,702 @@
+---
+title: "Regression analysis with tn dataset - Project level"
+author: "Melvin H. L. Wong"
+date: "Oct 23 2022"
+output: workflowr::wflow_html
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE)
+knitr::opts_knit$set(root.dir = "~/shared/datalake/mapme.protectedareas")
+```
+
+```{r include=FALSE}
+# clean workspace, set options
+rm(list=ls())
+options(scipen=999)
+options(width = 200)
+
+# get packages
+lop <- c("dplyr", "plm", "stargazer", "tidyverse", "cem", "multiwayvcov", "modelsummary", "fixest", "kableExtra")
+newp <- lop[!(lop %in% installed.packages()[,"Package"])]
+if(length(newp)) install.packages(newp)
+lapply(lop, require, character.only = TRUE)
+
+```
+
+<style>
+pre {
+  overflow-x: auto;
+}
+pre code {
+  word-wrap: normal;
+  white-space: pre;
+}
+</style>
+
+
+```{r run PSM regressions, eval=FALSE, include=FALSE}
+
+#### ---- Create table for all years -----
+# all_years <- c(2004:2009, 2011, 2012, 2015)
+all_years <- list.files("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/PSM/tn_projects") %>% 
+  grep("psm_tn_matched_panel_*", ., value = TRUE)
+bmz_list <- all_years %>% 
+    gsub("psm_tn_matched_panel_", "", .) %>% 
+    gsub(".csv", "", .)
+
+bmz_list <- bmz_list[-which(bmz_list=="199566829"| bmz_list=="199966649")] # skip entries that cause issues because of perfect collinearity of treatment variable
+# Prepare observations table
+obs_table <- matrix(NA, nrow = 3, ncol = length(bmz_list)+1)
+colnames(obs_table) <- c("name", bmz_list)
+# rownames(obs_table) <- c("CEM obs total", "--obs treat", "--obs control")
+obs_table[1,1] <- "Total num. cells"
+obs_table[2,1] <- "--treated"
+obs_table[3,1] <- "--control"
+
+obs_table_mpsm11 <- obs_table
+obs_table_mpsm21 <- obs_table
+obs_table_mpsm12 <- obs_table
+obs_table_mpsm22 <- obs_table
+obs_table_mpsm32 <- obs_table
+
+
+for (bmz in bmz_list) {
+  print(bmz)
+  panel.df <- read.csv(paste0("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/PSM/tn/psm_tn_matched_panel_", bmz, ".csv"), sep = ",", stringsAsFactors = F)
+  
+ # create time varying treatment variable
+  panel.df <- panel.df %>% 
+    mutate(treatment_disb = (treatment==1 & year_standard>=0),
+           emissions_tha = emissions/500,
+           NAME_0_num = as.numeric(as.factor(NAME_0)))
+  # create WDPA cluster that are country specific (important for control group, as all controll cells belong to ID 9999999999 regardless of the country. Now the control cells are clustered for each country.)
+  panel.df$WDPAID_cluster <- as.numeric(paste0(panel.df$NAME_0_num, panel.df$WDPAID)) 
+  
+  
+  assign(paste0("mpsm12_",bmz), feols(fc_loss ~ treatment_disb | .assetid + year, data = panel.df, weights = panel.df$weights, panel.id = ~.assetid+year, cluster = ~WDPAID_cluster) )
+  assign(paste0("mpsm22_",bmz), feols(fc_area ~ treatment_disb | .assetid + year, data = panel.df, weights = panel.df$weights, panel.id = ~.assetid+year, cluster = ~WDPAID_cluster) )
+  
+  assign(paste0("mpsm32_",bmz), feols(emissions_tha ~ treatment_disb | .assetid + year, data = panel.df, weights = panel.df$weights, panel.id = ~.assetid+year, cluster = ~WDPAID_cluster) )
+
+  # Fill observations table for all regressions. Comments show procedure for mpsm12
+    
+  # mpsm12  
+  if (length(get(paste0("mpsm12_",bmz))$obs_selection)==0) { # in case no obs are dropped
+    
+    regyears <- length(unique(panel.df$year))
+    
+    obs_table_mpsm12[1,paste0(bmz)] <- nrow(panel.df)/regyears
+    obs_table_mpsm12[2,paste0(bmz)] <- table(panel.df$treatment)[2]/regyears
+    obs_table_mpsm12[3,paste0(bmz)] <- table(panel.df$treatment)[1]/regyears
+    
+  } else { # in case obs are dropped
+    
+    regyears <- length(unique(panel.df[get(paste0("mpsm12_",bmz))$obs_selection$obsRemoved,]$year))
+    # regyears extracts the number of years that enter the regression for the respective model specification
+  
+    obs_table_mpsm12[1,paste0(bmz)] <- nrow(panel.df[get(paste0("mpsm12_",bmz))$obs_selection$obsRemoved,])/regyears
+    obs_table_mpsm12[2,paste0(bmz)] <- table(panel.df[get(paste0("mpsm12_",bmz))$obs_selection$obsRemoved,]$treatment)[2]/regyears
+    obs_table_mpsm12[3,paste0(bmz)] <- table(panel.df[get(paste0("mpsm12_",bmz))$obs_selection$obsRemoved,]$treatment)[1]/regyears
+    # object mpsm12_t is the regression model. Obs_selection$obsRemoved gives a vector of observation IDs that were removed in the regression. 
+    # The IDs in the vector have a negative sign -> code above selects only observations that entered the regression
+    # nrow gives the total number of obs in the regression
+    # number of treatment and control cells are extracted using table() 
+  }
+  
+  # mpsm22
+  
+  if (length(get(paste0("mpsm22_",bmz))$obs_selection)==0) { # in case no obs are dropped
+    
+    regyears <- length(unique(panel.df$year))
+    
+    obs_table_mpsm22[1,paste0(bmz)] <- nrow(panel.df)/regyears
+    obs_table_mpsm22[2,paste0(bmz)] <- table(panel.df$treatment)[2]/regyears
+    obs_table_mpsm22[3,paste0(bmz)] <- table(panel.df$treatment)[1]/regyears
+    
+  } else {
+    
+    regyears <- length(unique(panel.df[get(paste0("mpsm22_",bmz))$obs_selection$obsRemoved,]$year))
+  
+    obs_table_mpsm22[1,paste0(bmz)] <- nrow(panel.df[get(paste0("mpsm22_",bmz))$obs_selection$obsRemoved,])/regyears
+    obs_table_mpsm22[2,paste0(bmz)] <- table(panel.df[get(paste0("mpsm22_",bmz))$obs_selection$obsRemoved,]$treatment)[2]/regyears
+    obs_table_mpsm22[3,paste0(bmz)] <- table(panel.df[get(paste0("mpsm22_",bmz))$obs_selection$obsRemoved,]$treatment)[1]/regyears
+  
+  }
+  
+  # mpsm32
+  
+  if (length(get(paste0("mpsm32_",bmz))$obs_selection)==0) { # in case no obs are dropped
+    
+    regyears <- length(unique(panel.df$year))
+    
+    obs_table_mpsm32[1,paste0(bmz)] <- nrow(panel.df)/regyears
+    obs_table_mpsm32[2,paste0(bmz)] <- table(panel.df$treatment)[2]/regyears
+    obs_table_mpsm32[3,paste0(bmz)] <- table(panel.df$treatment)[1]/regyears
+    
+  } else {
+    
+    regyears <- length(unique(panel.df[get(paste0("mpsm32_",bmz))$obs_selection$obsRemoved,]$year))
+    
+    obs_table_mpsm32[1,paste0(bmz)] <- nrow(panel.df[get(paste0("mpsm32_",bmz))$obs_selection$obsRemoved,])/regyears
+    obs_table_mpsm32[2,paste0(bmz)] <- table(panel.df[get(paste0("mpsm32_",bmz))$obs_selection$obsRemoved,]$treatment)[2]/regyears
+    obs_table_mpsm32[3,paste0(bmz)] <- table(panel.df[get(paste0("mpsm32_",bmz))$obs_selection$obsRemoved,]$treatment)[1]/regyears
+  
+  }
+  
+  
+}
+mpsm_list1 <- lapply(paste0("mpsm12_", bmz_list), get)
+mpsm_list2 <- lapply(paste0("mpsm22_", bmz_list), get)
+mpsm_list3 <- lapply(paste0("mpsm32_", bmz_list), get)
+
+
+names(mpsm_list1) <- bmz_list
+names(mpsm_list2) <- bmz_list
+names(mpsm_list3) <- bmz_list
+
+
+```
+
+```{r run CEM regressions}
+
+
+#### ---- Create table for all years -----
+all_years <- list.files("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/tn_projects") %>% 
+  grep("cem_tn_matched_panel_*", ., value = TRUE)
+bmz_list <- all_years %>% 
+    gsub("cem_tn_matched_panel_", "", .) %>% 
+    gsub(".csv", "", .)
+
+bmz_list <- bmz_list[-which(bmz_list=="199566829"| bmz_list=="199966649")] # skip entries that cause issues because of perfect collinearity of treatment variable
+# Prepare observations table
+obs_table <- matrix(NA, nrow = 7, ncol = length(bmz_list)+1)
+colnames(obs_table) <- c("name", bmz_list)
+# rownames(obs_table) <- c("CEM obs total", "--obs treat", "--obs control")
+obs_table[1,1] <- "Total num. cells"
+obs_table[2,1] <- "--treated"
+obs_table[3,1] <- "--control"
+obs_table[4,1] <- "WDPA_strict"
+obs_table[5,1] <- "IUCN category"
+obs_table[6,1] <- "total_disbursed" 
+obs_table[7,1] <- "Country"
+
+obs_table_m11 <- obs_table
+obs_table_m21 <- obs_table
+obs_table_m12 <- obs_table
+obs_table_m22 <- obs_table
+obs_table_m32 <- obs_table
+
+for (bmz in bmz_list) {
+
+  print(bmz)
+  panel.df <- read.csv(paste0("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/tn_projects/cem_tn_matched_panel_", bmz, ".csv"), sep = ",", stringsAsFactors = F)
+  
+ # create time varying treatment variable
+  panel.df <- panel.df %>% 
+    mutate(treatment_disb = (treatment==1 & year_standard>=0),
+           emissions_tha = emissions/500,
+           NAME_0_num = as.numeric(as.factor(NAME_0))) %>% 
+    rename(., weights_cem=weights) # rename weights
+  # create WDPA cluster that are country specific (important for control group, as all controll cells belong to ID 9999999999 regardless of the country. Now the control cells are clustered for each country.)
+  panel.df$WDPAID_cluster <- as.numeric(paste0(panel.df$NAME_0_num, panel.df$WDPAID)) 
+  
+  
+  # assign(paste0("m11_",t), feols(fc_loss ~ treatment_disb | .assetid + year, data = panel.df, weights = panel.df$weights_cem, panel.id = ~.assetid+year, cluster = ~.assetid) )
+  # assign(paste0("m21_",t), feols(fc_area ~ treatment_disb | .assetid + year, data = panel.df, weights = panel.df$weights_cem, panel.id = ~.assetid+year, cluster = ~.assetid) )
+  
+  assign(paste0("m12_",bmz), feols(fc_loss ~ treatment_disb | .assetid + year, data = panel.df, weights = panel.df$weights_cem, panel.id = ~.assetid+year, cluster = ~WDPAID_cluster) )
+  assign(paste0("m22_",bmz), feols(fc_area ~ treatment_disb | .assetid + year, data = panel.df, weights = panel.df$weights_cem, panel.id = ~.assetid+year, cluster = ~WDPAID_cluster) )
+  
+  assign(paste0("m32_",bmz), feols(emissions_tha ~ treatment_disb | .assetid + year, data = panel.df, weights = panel.df$weights_cem, panel.id = ~.assetid+year, cluster = ~WDPAID_cluster) )
+
+  # Fill observations table for all regressions. Comments show procedure for m12
+    
+  # m12  
+  
+  if (length(get(paste0("m12_",bmz))$obs_selection)==0) { # in case no obs are dropped
+    
+    regyears <- length(unique(panel.df$year))
+    
+    obs_table_m12[1,paste0(bmz)] <- nrow(panel.df)/regyears
+    obs_table_m12[2,paste0(bmz)] <- table(panel.df$treatment)[2]/regyears
+    obs_table_m12[3,paste0(bmz)] <- table(panel.df$treatment)[1]/regyears
+    
+  } else { # in case obs are dropped
+    
+    regyears <- length(unique(panel.df[get(paste0("m12_",bmz))$obs_selection$obsRemoved,]$year))
+    # regyears extracts the number of years that enter the regression for the respective model specification
+  
+    obs_table_m12[1,paste0(bmz)] <- nrow(panel.df[get(paste0("m12_",bmz))$obs_selection$obsRemoved,])/regyears
+    obs_table_m12[2,paste0(bmz)] <- table(panel.df[get(paste0("m12_",bmz))$obs_selection$obsRemoved,]$treatment)[2]/regyears
+    obs_table_m12[3,paste0(bmz)] <- table(panel.df[get(paste0("m12_",bmz))$obs_selection$obsRemoved,]$treatment)[1]/regyears
+    # object m12_t is the regression model. Obs_selection$obsRemoved gives a vector of observation IDs that were removed in the regression. 
+    # The IDs in the vector have a negative sign -> code above selects only observations that entered the regression
+    # nrow gives the total number of obs in the regression
+    # number of treatment and control cells are extracted using table() 
+  }
+  
+  # m22
+  
+  if (length(get(paste0("m22_",bmz))$obs_selection)==0) { # in case no obs are dropped
+    
+    regyears <- length(unique(panel.df$year))
+    
+    obs_table_m22[1,paste0(bmz)] <- nrow(panel.df)/regyears
+    obs_table_m22[2,paste0(bmz)] <- table(panel.df$treatment)[2]/regyears
+    obs_table_m22[3,paste0(bmz)] <- table(panel.df$treatment)[1]/regyears
+    
+  } else {
+    
+    regyears <- length(unique(panel.df[get(paste0("m22_",bmz))$obs_selection$obsRemoved,]$year))
+  
+    obs_table_m22[1,paste0(bmz)] <- nrow(panel.df[get(paste0("m22_",bmz))$obs_selection$obsRemoved,])/regyears
+    obs_table_m22[2,paste0(bmz)] <- table(panel.df[get(paste0("m22_",bmz))$obs_selection$obsRemoved,]$treatment)[2]/regyears
+    obs_table_m22[3,paste0(bmz)] <- table(panel.df[get(paste0("m22_",bmz))$obs_selection$obsRemoved,]$treatment)[1]/regyears
+  
+  }
+  
+  # m32
+  
+  if (length(get(paste0("m32_",bmz))$obs_selection)==0) { # in case no obs are dropped
+    
+    regyears <- length(unique(panel.df$year))
+    
+    obs_table_m32[1,paste0(bmz)] <- nrow(panel.df)/regyears
+    obs_table_m32[2,paste0(bmz)] <- table(panel.df$treatment)[2]/regyears
+    obs_table_m32[3,paste0(bmz)] <- table(panel.df$treatment)[1]/regyears
+    
+  } else {
+    
+    regyears <- length(unique(panel.df[get(paste0("m32_",bmz))$obs_selection$obsRemoved,]$year))
+    
+    obs_table_m32[1,paste0(bmz)] <- nrow(panel.df[get(paste0("m32_",bmz))$obs_selection$obsRemoved,])/regyears
+    obs_table_m32[2,paste0(bmz)] <- table(panel.df[get(paste0("m32_",bmz))$obs_selection$obsRemoved,]$treatment)[2]/regyears
+    obs_table_m32[3,paste0(bmz)] <- table(panel.df[get(paste0("m32_",bmz))$obs_selection$obsRemoved,]$treatment)[1]/regyears
+  
+  }
+  
+#calculate share of IUCN strict categories
+strict_share_list <- panel.df %>%
+  select(WDPA_strict) %>% 
+  na.omit(.) %>% 
+  group_by(WDPA_strict) %>%
+  summarise(cnt = n()) %>%
+  mutate(freq = round(cnt / sum(cnt), 3)) %>% 
+  arrange(desc(freq)) %>% 
+  select(-cnt) %>% 
+  mutate(WDPA_strict = replace(WDPA_strict, WDPA_strict == 1, "Y"),
+         WDPA_strict = replace(WDPA_strict, WDPA_strict == 0, "N")) # replace values 1 and 0 with Y and N
+
+iucn_strict <- paste(strict_share_list$WDPA_strict, strict_share_list$freq, collapse = " ")
+
+#calculate share of IUCN categories
+iucn_share_list <- panel.df %>%
+  select(IUCN_CAT) %>% 
+  na.omit(.) %>% 
+  group_by(IUCN_CAT) %>%
+  summarise(cnt = n()) %>%
+  mutate(freq = round(cnt / sum(cnt), 3)) %>% 
+  arrange(desc(freq)) %>% 
+  select(-cnt)
+
+iucn_cat <- paste(iucn_share_list$IUCN_CAT, iucn_share_list$freq, collapse = " ")
+
+
+
+
+bmz_disb <- unique(panel.df$total_disbursed) %>% 
+  na.omit(.) %>% 
+  paste(., collapse = " ")
+
+iso <- unique(panel.df$NAME_0) %>% 
+  na.omit(.) %>% 
+  paste(., collapse = " ")
+
+
+
+
+
+obs_table_m12[4,paste0(bmz)] <- iucn_strict
+obs_table_m22[4,paste0(bmz)] <- iucn_strict
+obs_table_m32[4,paste0(bmz)] <- iucn_strict
+
+obs_table_m12[5,paste0(bmz)] <- iucn_cat
+obs_table_m22[5,paste0(bmz)] <- iucn_cat
+obs_table_m32[5,paste0(bmz)] <- iucn_cat
+
+obs_table_m12[6,paste0(bmz)] <- bmz_disb
+obs_table_m22[6,paste0(bmz)] <- bmz_disb
+obs_table_m32[6,paste0(bmz)] <- bmz_disb
+
+obs_table_m12[7,paste0(bmz)] <- iso
+obs_table_m22[7,paste0(bmz)] <- iso
+obs_table_m32[7,paste0(bmz)] <- iso
+
+}
+
+m_list1 <- lapply(paste0("m12_", bmz_list), get)
+m_list2 <- lapply(paste0("m22_", bmz_list), get)
+m_list3 <- lapply(paste0("m32_", bmz_list), get)
+
+
+names(m_list1) <- bmz_list
+names(m_list2) <- bmz_list
+names(m_list3) <- bmz_list
+
+```
+
+
+## CEM Results
+
+```{r Display results CEM}
+
+# Output: fc_loss
+modelsummary(m_list1,
+             output = "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/tn_projects/table1_cluster_tn.html",
+             coef_rename = c("fc_loss" = "Forest cover loss", 
+                             "treatment_disbTRUE" = "KfW support"),
+             stars = TRUE,
+             gof_map = c("nobs", "adj.r.squared", "FE: .assetid", "FE: year"),
+             title = paste0("Dependent variable: Forest cover loss"),
+             notes = list('Standard errors clustered by zones of forest protected areas (WDPA).'),
+             add_rows = as.data.frame(obs_table_m12)
+)
+
+modelsummary(m_list1,
+             output = "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/tn_projects/table1_cluster_tn.tex",
+             coef_rename = c("fc_loss" = "Forest cover loss", 
+                             "treatment_disbTRUE" = "KfW support"),
+             stars = TRUE,
+             gof_map = c("nobs", "adj.r.squared", "FE: .assetid", "FE: year"),
+             title = paste0("Dependent variable: Forest cover loss"),
+             notes = list('Standard errors clustered by zones of forest protected areas (WDPA).'),
+             add_rows = as.data.frame(obs_table_m12)
+)
+
+modelsummary(m_list1,
+             coef_rename = c("fc_loss" = "Forest cover loss", 
+                             "treatment_disbTRUE" = "KfW support"),
+             stars = TRUE,
+             gof_map = c("nobs", "adj.r.squared", "FE: .assetid", "FE: year"),
+             title = paste0("Dependent variable: Forest cover loss"),
+             notes = list('Standard errors clustered by zones of forest protected areas (WDPA).'),
+             add_rows = as.data.frame(obs_table_m12)
+)
+
+# Example code for adjustments in html output
+# More adjustments can be made via kableExtra package
+# Commented for now (untested)
+
+m12_output <- modelsummary(m_list1,
+               coef_rename = c("fc_loss" = "Forest cover loss",
+                               "treatment_disbTRUE" = "KfW support"),
+               stars = TRUE,
+               gof_map = c("nobs", "adj.r.squared", "FE: .assetid", "FE: year"),
+               title = paste0("Dependent variable: Forest cover loss"),
+               notes = list('Standard errors clustered by zones of forest protected areas (WDPA).'),
+               add_rows = as.data.frame(obs_table_m12)
+              )
+m12_output %>%
+  kable_classic(full_width = F, html_font = "Cambria") %>%
+  column_spec(1, width = "8em") %>%
+  save_kable(file = "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/tn_projects/table1_cluster_style_tn.html", self_contained = T)
+
+m12_output <- modelsummary(m_list1,
+               coef_rename = c("fc_loss" = "Forest cover loss",
+                               "treatment_disbTRUE" = "KfW support"),
+               stars = TRUE,
+               gof_map = c("nobs", "adj.r.squared", "FE: .assetid", "FE: year"),
+               title = paste0("Dependent variable: Forest cover loss"),
+               notes = list('Standard errors clustered by zones of forest protected areas (WDPA).'),
+               add_rows = as.data.frame(obs_table_m12)
+              )
+m12_output %>%
+  kable_classic(full_width = F, html_font = "Cambria") %>%
+  column_spec(1, width = "8em") %>%
+  save_kable(file = "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/tn_projects/table1_cluster_style_tn.tex")
+
+# modelsummary(m_list1_compare,
+#              output = "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/table1_cluster_compare.html",
+#              coef_rename = c("fc_loss" = "Forest cover loss", 
+#                              "treatment_disbTRUE" = "KfW support"),
+#              stars = TRUE,
+#              gof_map = c("nobs", "adj.r.squared", "vcov.type", "FE: .assetid", "FE: year"),
+#              title = paste0("Dependent variable: Forest cover loss")
+# )
+# modelsummary(m_list1_compare,
+#              coef_rename = c("fc_loss" = "Forest cover loss", 
+#                              "treatment_disbTRUE" = "KfW support"),
+#              stars = TRUE,
+#              gof_map = c("nobs", "adj.r.squared", "vcov.type", "FE: .assetid", "FE: year"),
+#              title = paste0("Dependent variable: Forest cover loss")
+# )
+
+# Output: fc_area
+modelsummary(m_list2,
+             output = "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/tn_projects/table2_cluster_tn.html",
+             coef_rename = c("fc_area" = "Forest cover area", 
+                             "treatment_disbTRUE" = "KfW support"),
+             stars = TRUE,
+             gof_map = c("nobs", "adj.r.squared", "FE: .assetid", "FE: year"),
+             title = paste0("Dependent variable: Forest cover area"),
+             notes = list('Standard errors clustered by zones of forest protected areas (WDPA).'),
+             add_rows = as.data.frame(obs_table_m22)
+)
+modelsummary(m_list2,
+             output = "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/tn_projects/table2_cluster_tn.tex",
+             coef_rename = c("fc_area" = "Forest cover area", 
+                             "treatment_disbTRUE" = "KfW support"),
+             stars = TRUE,
+             gof_map = c("nobs", "adj.r.squared", "FE: .assetid", "FE: year"),
+             title = paste0("Dependent variable: Forest cover area"),
+             notes = list('Standard errors clustered by zones of forest protected areas (WDPA).'),
+             add_rows = as.data.frame(obs_table_m22)
+)
+modelsummary(m_list2,
+             coef_rename = c("fc_area" = "Forest cover area", 
+                             "treatment_disbTRUE" = "KfW support"),
+             stars = TRUE,
+             gof_map = c("nobs", "adj.r.squared", "FE: .assetid", "FE: year"),
+             title = paste0("Dependent variable: Forest cover area"),
+             notes = list('Standard errors clustered by zones of forest protected areas (WDPA).'),
+             add_rows = as.data.frame(obs_table_m22)
+)
+
+# modelsummary(m_list2_compare,
+#              output = "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/table2_cluster_compare.html",
+#              coef_rename = c("fc_area" = "Forest cover area", 
+#                              "treatment_disbTRUE" = "KfW support"),
+#              stars = TRUE,
+#              gof_map = c("nobs", "adj.r.squared", "vcov.type", "FE: .assetid", "FE: year"),
+#              title = paste0("Dependent variable: Forest cover area")
+# )
+# modelsummary(m_list2_compare,
+#              coef_rename = c("fc_area" = "Forest cover area", 
+#                              "treatment_disbTRUE" = "KfW support"),
+#              stars = TRUE,
+#              gof_map = c("nobs", "adj.r.squared", "vcov.type", "FE: .assetid", "FE: year"),
+#              title = paste0("Dependent variable: Forest cover area")
+# )
+
+# Output: emissions
+modelsummary(m_list3,
+             output = "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/tn_projects/table3_cluster_tn.html",
+             coef_rename = c("emissions" = "Emissions from deforestation", 
+                             "treatment_disbTRUE" = "KfW support"),
+             stars = TRUE,
+             gof_map = c("nobs", "adj.r.squared", "FE: .assetid", "FE: year"),
+             title = paste0("Dependent variable: CO2 Emissions from deforestation"),
+             notes = list('Standard errors clustered by zones of forest protected areas (WDPA).'),
+             add_rows = as.data.frame(obs_table_m32)
+)
+modelsummary(m_list3,
+             output = "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/tn_projects/table3_cluster_tn.tex",
+             coef_rename = c("emissions" = "Emissions from deforestation", 
+                             "treatment_disbTRUE" = "KfW support"),
+             stars = TRUE,
+             gof_map = c("nobs", "adj.r.squared", "FE: .assetid", "FE: year"),
+             title = paste0("Dependent variable: CO2 Emissions from deforestation"),
+             notes = list('Standard errors clustered by zones of forest protected areas (WDPA).'),
+             add_rows = as.data.frame(obs_table_m32)
+)
+modelsummary(m_list3,
+             coef_rename = c("emissions" = "Emissions from deforestation", 
+                             "treatment_disbTRUE" = "KfW support"),
+             stars = TRUE,
+             gof_map = c("nobs", "adj.r.squared", "FE: .assetid", "FE: year"),
+             title = paste0("Dependent variable: CO2 Emissions from deforestation"),
+             notes = list('Standard errors clustered by zones of forest protected areas (WDPA).'),
+             add_rows = as.data.frame(obs_table_m32)
+)
+
+
+
+
+b <- list(geom_vline(xintercept = 0, color = 'red'))
+# Create coefficient plot for fc_loss 
+modelplot(m_list1, background = b)
+# Create coefficient plot for fc_area
+modelplot(m_list2, background = b)
+# Create coefficient plot for emissions
+modelplot(m_list3, background = b)
+
+
+```
+
+## PSM Results
+
+```{r Display results PSM, eval=FALSE, include=FALSE}
+
+# Output: fc_loss
+modelsummary(mpsm_list1,
+             output = "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/tn_projects/tablepsm1_cluster_tn.html",
+             coef_rename = c("fc_loss" = "Forest cover loss", 
+                             "treatment_disbTRUE" = "KfW support"),
+             stars = TRUE,
+             gof_map = c("nobs", "adj.r.squared", "FE: .assetid", "FE: year"),
+             title = paste0("Dependent variable: Forest cover loss"),
+             notes = list('Standard errors clustered by zones of forest protected areas (WDPA).'),
+             add_rows = as.data.frame(obs_table_mpsm12)
+)
+
+modelsummary(mpsm_list1,
+             output = "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/tn_projects/tablepsm1_cluster_tn.tex",
+             coef_rename = c("fc_loss" = "Forest cover loss", 
+                             "treatment_disbTRUE" = "KfW support"),
+             stars = TRUE,
+             gof_map = c("nobs", "adj.r.squared", "FE: .assetid", "FE: year"),
+             title = paste0("Dependent variable: Forest cover loss"),
+             notes = list('Standard errors clustered by zones of forest protected areas (WDPA).'),
+             add_rows = as.data.frame(obs_table_mpsm12)
+)
+
+modelsummary(mpsm_list1,
+             coef_rename = c("fc_loss" = "Forest cover loss", 
+                             "treatment_disbTRUE" = "KfW support"),
+             stars = TRUE,
+             gof_map = c("nobs", "adj.r.squared", "FE: .assetid", "FE: year"),
+             title = paste0("Dependent variable: Forest cover loss"),
+             notes = list('Standard errors clustered by zones of forest protected areas (WDPA).'),
+             add_rows = as.data.frame(obs_table_mpsm12)
+)
+
+# Example code for adjustments in html output
+# More adjustments can be made via kableExtra package
+# Commented for now (untested)
+
+mpsm12_output <- modelsummary(mpsm_list1,
+               coef_rename = c("fc_loss" = "Forest cover loss",
+                               "treatment_disbTRUE" = "KfW support"),
+               stars = TRUE,
+               gof_map = c("nobs", "adj.r.squared", "FE: .assetid", "FE: year"),
+               title = paste0("Dependent variable: Forest cover loss"),
+               notes = list('Standard errors clustered by zones of forest protected areas (WDPA).'),
+               add_rows = as.data.frame(obs_table_mpsm12)
+              )
+mpsm12_output %>%
+  kable_classic(full_width = F, html_font = "Cambria") %>%
+  column_spec(1, width = "8em") %>%
+  save_kable(file = "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/tn_projects/tablepsm1_cluster_style_tn.html", self_contained = T)
+
+mpsm12_output <- modelsummary(mpsm_list1,
+               coef_rename = c("fc_loss" = "Forest cover loss",
+                               "treatment_disbTRUE" = "KfW support"),
+               stars = TRUE,
+               gof_map = c("nobs", "adj.r.squared", "FE: .assetid", "FE: year"),
+               title = paste0("Dependent variable: Forest cover loss"),
+               notes = list('Standard errors clustered by zones of forest protected areas (WDPA).'),
+               add_rows = as.data.frame(obs_table_mpsm12)
+              )
+mpsm12_output %>%
+  kable_classic(full_width = F, html_font = "Cambria") %>%
+  column_spec(1, width = "8em") %>%
+  save_kable(file = "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/tn_projects/tablepsm1_cluster_style_tn.tex")
+
+# modelsummary(m_list1_compare,
+#              output = "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/table1_cluster_compare.html",
+#              coef_rename = c("fc_loss" = "Forest cover loss", 
+#                              "treatment_disbTRUE" = "KfW support"),
+#              stars = TRUE,
+#              gof_map = c("nobs", "adj.r.squared", "vcov.type", "FE: .assetid", "FE: year"),
+#              title = paste0("Dependent variable: Forest cover loss")
+# )
+# modelsummary(m_list1_compare,
+#              coef_rename = c("fc_loss" = "Forest cover loss", 
+#                              "treatment_disbTRUE" = "KfW support"),
+#              stars = TRUE,
+#              gof_map = c("nobs", "adj.r.squared", "vcov.type", "FE: .assetid", "FE: year"),
+#              title = paste0("Dependent variable: Forest cover loss")
+# )
+
+# Output: fc_area
+modelsummary(mpsm_list2,
+             output = "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/tn_projects/tablepsm2_cluster_tn.html",
+             coef_rename = c("fc_area" = "Forest cover area", 
+                             "treatment_disbTRUE" = "KfW support"),
+             stars = TRUE,
+             gof_map = c("nobs", "adj.r.squared", "FE: .assetid", "FE: year"),
+             title = paste0("Dependent variable: Forest cover area"),
+             notes = list('Standard errors clustered by zones of forest protected areas (WDPA).'),
+             add_rows = as.data.frame(obs_table_mpsm22)
+)
+modelsummary(mpsm_list2,
+             output = "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/tn_projects/tablepsm2_cluster_tn.tex",
+             coef_rename = c("fc_area" = "Forest cover area", 
+                             "treatment_disbTRUE" = "KfW support"),
+             stars = TRUE,
+             gof_map = c("nobs", "adj.r.squared", "FE: .assetid", "FE: year"),
+             title = paste0("Dependent variable: Forest cover area"),
+             notes = list('Standard errors clustered by zones of forest protected areas (WDPA).'),
+             add_rows = as.data.frame(obs_table_mpsm22)
+)
+modelsummary(mpsm_list2,
+             coef_rename = c("fc_area" = "Forest cover area", 
+                             "treatment_disbTRUE" = "KfW support"),
+             stars = TRUE,
+             gof_map = c("nobs", "adj.r.squared", "FE: .assetid", "FE: year"),
+             title = paste0("Dependent variable: Forest cover area"),
+             notes = list('Standard errors clustered by zones of forest protected areas (WDPA).'),
+             add_rows = as.data.frame(obs_table_mpsm22)
+)
+
+# modelsummary(m_list2_compare,
+#              output = "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/table2_cluster_compare.html",
+#              coef_rename = c("fc_area" = "Forest cover area", 
+#                              "treatment_disbTRUE" = "KfW support"),
+#              stars = TRUE,
+#              gof_map = c("nobs", "adj.r.squared", "vcov.type", "FE: .assetid", "FE: year"),
+#              title = paste0("Dependent variable: Forest cover area")
+# )
+# modelsummary(m_list2_compare,
+#              coef_rename = c("fc_area" = "Forest cover area", 
+#                              "treatment_disbTRUE" = "KfW support"),
+#              stars = TRUE,
+#              gof_map = c("nobs", "adj.r.squared", "vcov.type", "FE: .assetid", "FE: year"),
+#              title = paste0("Dependent variable: Forest cover area")
+# )
+
+# Output: emissions
+modelsummary(mpsm_list3,
+             output = "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/tn_projects/tablepsm3_tn.html",
+             coef_rename = c("emissions" = "Emissions from deforestation", 
+                             "treatment_disbTRUE" = "KfW support"),
+             stars = TRUE,
+             gof_map = c("nobs", "adj.r.squared", "FE: .assetid", "FE: year"),
+             title = paste0("Dependent variable: CO2 Emissions from deforestation"),
+             notes = list('Standard errors clustered by zones of forest protected areas (WDPA).'),
+             add_rows = as.data.frame(obs_table_mpsm32)
+)
+modelsummary(mpsm_list3,
+             output = "/datadrive/datalake/mapme.protectedareas/output/tabular/regression_output/tn_projects/tablepsm3_tn.tex",
+             coef_rename = c("emissions" = "Emissions from deforestation", 
+                             "treatment_disbTRUE" = "KfW support"),
+             stars = TRUE,
+             gof_map = c("nobs", "adj.r.squared", "FE: .assetid", "FE: year"),
+             title = paste0("Dependent variable: CO2 Emissions from deforestation"),
+             notes = list('Standard errors clustered by zones of forest protected areas (WDPA).'),
+             add_rows = as.data.frame(obs_table_mpsm32)
+)
+modelsummary(mpsm_list3,
+             coef_rename = c("emissions" = "Emissions from deforestation", 
+                             "treatment_disbTRUE" = "KfW support"),
+             stars = TRUE,
+             gof_map = c("nobs", "adj.r.squared", "FE: .assetid", "FE: year"),
+             title = paste0("Dependent variable: CO2 Emissions from deforestation"),
+             notes = list('Standard errors clustered by zones of forest protected areas (WDPA).'),
+             add_rows = as.data.frame(obs_table_mpsm32)
+)
+
+
+
+
+b <- list(geom_vline(xintercept = 0, color = 'red'))
+# Create coefficient plot for fc_loss 
+modelplot(mpsm_list1, background = b)
+# Create coefficient plot for fc_area
+modelplot(mpsm_list2, background = b)
+# Create coefficient plot for emissions
+modelplot(mpsm_list3, background = b)
+
+
+```
