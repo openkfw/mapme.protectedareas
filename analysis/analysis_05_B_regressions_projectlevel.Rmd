@@ -513,13 +513,13 @@ modelsummary(m_list3,
 
 
 
-b <- list(geom_vline(xintercept = 0, color = 'red'))
-# Create coefficient plot for fc_loss 
-modelplot(m_list1, background = b)
-# Create coefficient plot for fc_area
-modelplot(m_list2, background = b)
-# Create coefficient plot for emissions
-modelplot(m_list3, background = b)
+# b <- list(geom_vline(xintercept = 0, color = 'red'))
+# # Create coefficient plot for fc_loss 
+# modelplot(m_list1, background = b)
+# # Create coefficient plot for fc_area
+# modelplot(m_list2, background = b)
+# # Create coefficient plot for emissions
+# modelplot(m_list3, background = b)
 
 
 ```
