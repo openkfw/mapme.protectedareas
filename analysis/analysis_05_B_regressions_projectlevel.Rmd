@@ -194,7 +194,8 @@ for (bmz in bmz_list) {
   
  # create time varying treatment variable
   panel.df <- panel.df %>% 
-    mutate(treatment_disb = (treatment==1 & year_standard>=0),
+    mutate(treatment_bmz = first_year_bmz<=year,
+      treatment_disb = (treatment* treatment_bmz),
            emissions_tha = emissions/500,
            NAME_0_num = as.numeric(as.factor(NAME_0))) %>% 
     rename(., weights_cem=weights) # rename weights
