@@ -9,58 +9,27 @@ raw_giz<-
   read_xlsx("../../datalake/mapme.protectedareas/input/wdpa_giz/ProtectedAreas-GIZ_Stichtag31.12.2019_v2022-02-11.xlsx",sheet = 2,
             col_types = c("text","text","text","text","text","date","date","text","text","numeric","text","text","text","text","text","text","text","text","text","text","text","text","text"))
 
+raw_giz<-
+  read_xlsx("../../datalake/mapme.protectedareas/input/wdpa_giz/ProtectedAreas_GIZ-31.12.2019__2022-03-30.xlsx",sheet = 2,
+            col_types = c("text","text","text","text","text","text","date","date","text","text","numeric","text","text","text","text","text","text","text","text","text","text","text","text","text","numeric","numeric","numeric"))
 
-View(raw_giz)
-# notes for storing data in the future
-# column: WDPA ID: Should only contain one ID per row. if there area multiple IDs suggestion would be to make two or more columns.
-# column: WDPA ID: in cases there is no clarity in the ID, this should be put in an extra comment column to avoid e.g. entries like "201 (5002? 41014?)"
-# in General it would make also sense to collect the WDPA PID which allows to identify the area of multipolygon Protected Areas (not a must but more precise in around 1% of the cases)
-# column G: check dates, one seems to be wrong. 
-# column J: Should only contain numeric information, no character values. If area is not reported should be left blank. 
-# general note: It would be usefull to have the country codes of the Areas in ISO3 format just as in the WDPA data. This would facilitate automatic download
-# 23 PAs do not contain a WDPA ID currently (253 do). 
-# Only 218 areas could be identified in the current WDPA database by the given 263 ids in total. This should be quality checked. 
 
 # ----- preprocess GIZ data to be clean -----
 raw_giz <-
   raw_giz %>%
-  rename(wdpa_id = `WDPA ID`)
+  rename(wdpa_id = `WDPA ID 1`)
 
 # recode missings
 raw_giz$wdpa_id<-ifelse(raw_giz$wdpa_id=="N/A",NA,raw_giz$wdpa_id)
 
 table(is.na(raw_giz$wdpa_id))
-# split wdpa id column
-wdpa_split<-
-  stringr::str_split(raw_giz$wdpa_id,"\\/ | \\& | \\( | \\s*",simplify = T) %>% 
-  as.data.frame()
 
-colnames(wdpa_split)<-c("wdpa_id_1","wdpa_id_2","wdpa_id_3")
-wdpa_split$wdpa_id_2<-gsub(x = wdpa_split$wdpa_id_2,pattern = "&\r\n",replacement = "")
-wdpa_split$wdpa_id_2<-gsub(x = wdpa_split$wdpa_id_2,pattern = "\\(",replacement = "")
-wdpa_split$wdpa_id_2<-gsub(x = wdpa_split$wdpa_id_2,pattern = "\\?",replacement = "")
-wdpa_split$wdpa_id_3<-gsub(x = wdpa_split$wdpa_id_3,pattern = "\\?)",replacement = "")
-
-# append the columns to the original data and delte wdpa id column
+# delete duplicate entries (same wdpa id and same project number)
+colnames(raw_giz)
 raw_giz<-
-  cbind(raw_giz,wdpa_split)
+  raw_giz [!duplicated(raw_giz[c("wdpa_id","Project no. (PN)")]),]
 
-raw_giz$wdpa_id<-NULL
-
-# transpose the data to long with wdpa_id, project start, project end, project number 
-raw_giz_long <-
-  raw_giz %>%
-  pivot_longer(cols = starts_with("wdpa_id"))
-
-# filter out blank wdpa id obs. 
-raw_giz_long <-
-  raw_giz_long %>%
-  filter(value != "")
-
-# rename columns 
-raw_giz_long<-raw_giz_long %>% 
-  rename(wdpa_identifier=name,wdpa_id=value)
-
+# this removes 10 areas
 
 
 # ----- download and unzip the full database -----
@@ -86,9 +55,9 @@ wdpa_raw <-
   )
 
 wdpa_raw<-wdpa_raw %>% 
-  filter(WDPAID%in%raw_giz_long$wdpa_id)
+  filter(WDPAID%in%raw_giz$wdpa_id)
 
-nrow(wdpa_raw)
+nrow(wdpa_raw) 
 
 wdpa_raw_1 <-
   st_read(
@@ -96,7 +65,7 @@ wdpa_raw_1 <-
   )
 
 wdpa_raw_1<-wdpa_raw_1 %>% 
-  filter(WDPAID%in%raw_giz_long$wdpa_id)
+  filter(WDPAID%in%raw_giz$wdpa_id)
 
 nrow(wdpa_raw_1)
 
@@ -106,7 +75,7 @@ wdpa_raw_2 <-
   )
 
 wdpa_raw_2<-wdpa_raw_2 %>% 
-  filter(WDPAID%in%raw_giz_long$wdpa_id)
+  filter(WDPAID%in%raw_giz$wdpa_id)
 
 nrow(wdpa_raw_2)
 
@@ -114,18 +83,50 @@ nrow(wdpa_raw_2)
 wdpa_giz<-rbind(wdpa_raw,wdpa_raw_1)
 wdpa_giz<-rbind(wdpa_giz,wdpa_raw_2)
 
+nrow(wdpa_giz) # only 215 out of 221 areas are found in the database
+
 # clean the data
 wdpa_giz<-st_make_valid(wdpa_giz)
 
-# write out the data
-st_write(wdpa_giz,"../../datalake/mapme.protectedareas/input/wdpa_giz/wdpa_giz_supported_2019_wdpaV_Feb2022.gpkg")
+# merge with GIZ data
+wdpa_giz<-merge(wdpa_giz, raw_giz,by.x="WDPAID",
+                by.y="wdpa_id")
 
-table(!raw_giz_long$wdpa_id%in%wdpa_giz$WDPAID)
+colnames(wdpa_giz)
+# reduce to relevant vars
+wdpa_giz <-
+  wdpa_giz %>%
+  select("WDPAID",
+         "ISO3",
+         "Project no. (PN)",
+         "Project name",
+         "Project start",
+         "Project end",
+         "geometry")
+
+colnames(wdpa_giz)<-c("WDPAID","ISO3","project_number","project_name","project_start","project_end","geometry")
+
+
+wdpa_giz$project_number<-gsub("\\.","",wdpa_giz$project_number)
+
+View(st_drop_geometry(wdpa_giz))
+# write out the data
+st_write(
+  wdpa_giz,"../../datalake/mapme.protectedareas/input/wdpa_giz/wdpa_giz_supported_31-12-2019_2022-07-15.gpkg",
+  delete_layer = T)
+
+write_csv(
+  st_drop_geometry(wdpa_giz),
+  "../../datalake/mapme.protectedareas/input/wdpa_giz/wdpa_giz_supported_31-12-2019_2022-07-15.csv"
+)
+
+colnames(st_drop_geometry(wdpa_giz))
+
 
 # ----- get all areas from the original data for supported countries -----
 country_codes_giz<-unique(wdpa_giz$ISO3)
 # split the codes to get individual countries
-country_codes_giz<-str_split(country_codes_giz,";",simplify = F)
+country_codes_giz<-stringr::str_split(country_codes_giz,";",simplify = F)
 country_codes_giz<-unlist(country_codes_giz)
 country_codes_giz<-country_codes_giz[country_codes_giz!=""]
 
@@ -167,39 +168,118 @@ wdpa_giz_all<-rbind(wdpa_giz_all,wdpa_raw_2)
 wdpa_giz_all<-st_make_valid(wdpa_giz_all)
 
 # write out the data
-st_write(wdpa_giz_all,"../../datalake/mapme.protectedareas/input/wdpa_giz/wdpa_giz_all_2019_wdpaV_Feb2022.gpkg")
+st_write(wdpa_giz_all,"../../datalake/mapme.protectedareas/input/wdpa_giz/wdpa_giz_all_2019_wdpaV_Feb2022_V2.gpkg")
 
 
-# ----- apply polygon simplifcation for plotting -----
-library("rmapshaper")
 
-# simplify the rest
-wdpa_giz_all<-
-  ms_simplify(wdpa_giz_all)
+# ----- format KFW data in similar way. -----
+wdpa_kfw<-
+  read_sf("../../datalake/mapme.protectedareas/input/wdpa_kfw/wdpa_kfw_spatial_latinamerica_2021-02-01_supportedPAs_unique.gpkg")
 
-# fix geometries
-wdpa_giz_all <-
-  st_make_valid(wdpa_giz_all)
+# reduce to relevant cols
+wdpa_kfw <-
+  wdpa_kfw %>%
+  select(c("WDPAID", "ISO3", starts_with("bmz")))
+
+# transform to long
+wdpa_kfw<-
+  wdpa_kfw %>%  pivot_longer(cols = starts_with("bmz"),values_to = "project_number")
+
+# delete missings
+wdpa_kfw<-wdpa_kfw %>% 
+  filter(!is.na(project_number))
 
 
-# simplify the rest
-wdpa_giz<-
-  ms_simplify(wdpa_giz)
+# read in project data
+raw_kfw<-
+  read.csv("../../datalake/mapme.protectedareas/input/kfw_finance/Portfolio_Auszahlungen.csv")
 
-# fix geometries
-wdpa_giz <-
-  st_make_valid(wdpa_giz)
+# reduce raw data
+raw_kfw <-
+  raw_kfw %>%
+  select(
+    "Stufe",
+    "BMZ.Nummer",
+    "Vorhaben",
+    "Datum.Vertrag",
+    "Datum.Projektabschluss",
+    "Zusage"
+  )
 
+raw_kfw_agg<-raw_kfw %>% 
+  group_by(BMZ.Nummer) %>% 
+  summarize(Zusage=sum(Zusage),
+            Datum.Vertrag=min(as.Date(Datum.Vertrag)),
+            Datum.Projektabschluss=min(as.Date(Datum.Projektabschluss)),
+            Vorhaben=unique(Vorhaben))
+
+
+# merge data
+wdpa_kfw<-
+  merge(wdpa_kfw,raw_kfw_agg,by.x="project_number",by.y="BMZ.Nummer")
+
+# reduce to relevant vars
+wdpa_kfw <-
+  wdpa_kfw %>%
+  select(
+    "WDPAID",
+    "ISO3",
+    "project_number",
+    "Vorhaben",
+    "Datum.Vertrag",
+    "Datum.Projektabschluss",
+    "Zusage"
+  )
+
+colnames(wdpa_kfw)<-c("WDPAID","ISO3","project_number","project_name","project_start","project_end","finance_pledged","geometry")
 
 # write out the data
-st_write(wdpa_giz_all,"../../datalake/mapme.protectedareas/input/wdpa_giz/wdpa_giz_all_2019_wdpaV_Feb2022_simplified.gpkg")
+st_write(
+  wdpa_kfw,"../../datalake/mapme.protectedareas/input/wdpa_kfw/wdpa_kfw_spatial_latinamerica_2021-02-01_V2.gpkg",
+  delete_layer = T)
 
-# write out the data
-st_write(wdpa_giz,"../../datalake/mapme.protectedareas/input/wdpa_giz/wdpa_giz_supported_2019_wdpaV_Feb2022_simplified.gpkg")
+View(st_drop_geometry(wdpa_kfw))
 
-st_write(wdpa_giz_all,"../../datalake/mapme.protectedareas/input/wdpa_giz/wdpa_giz_all_2019_wdpaV_Feb2022_simplified.gpkg")
+write_csv(
+  st_drop_geometry(wdpa_kfw),
+  "../../datalake/mapme.protectedareas/input/wdpa_kfw/wdpa_kfw_spatial_latinamerica_2021-02-01_V2.csv")
+
+colnames(st_drop_geometry(wdpa_kfw))
+View(st_drop_geometry(wdpa_giz))
+# ----- ARQUIVE -----
+# # ----- apply polygon simplifcation for plotting -----
+# library("rmapshaper")
+# 
+# # simplify the rest
+# wdpa_giz_all<-
+#   ms_simplify(wdpa_giz_all)
+# 
+# # fix geometries
+# wdpa_giz_all <-
+#   st_make_valid(wdpa_giz_all)
+# 
+# 
+# # simplify the rest
+# wdpa_giz<-
+#   ms_simplify(wdpa_giz)
+# 
+# # fix geometries
+# wdpa_giz <-
+#   st_make_valid(wdpa_giz)
+# 
+# 
+# # write out the data
+# st_write(wdpa_giz_all,"../../datalake/mapme.protectedareas/input/wdpa_giz/wdpa_giz_all_2019_wdpaV_Feb2022_simplified.gpkg")
+# 
+# # write out the data
+# st_write(wdpa_giz,"../../datalake/mapme.protectedareas/input/wdpa_giz/wdpa_giz_supported_2019_wdpaV_Feb2022_simplified.gpkg")
+# 
+# st_write(wdpa_giz_all,"../../datalake/mapme.protectedareas/input/wdpa_giz/wdpa_giz_all_2019_wdpaV_Feb2022_simplified.gpkg")
+# 
+# 
+# 
+# test<-sf::read_sf("../../datalake/mapme.protectedareas/input/wdpa_giz/wdpa_giz_supported_2019_wdpaV_Feb2022.gpkg")
+# nrow(test)
 
 
 
-test<-sf::read_sf("../../datalake/mapme.protectedareas/input/wdpa_giz/wdpa_giz_supported_2019_wdpaV_Feb2022.gpkg")
-nrow(test)

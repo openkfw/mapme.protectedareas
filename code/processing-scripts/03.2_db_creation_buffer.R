@@ -58,11 +58,13 @@ honeycomb_subeset_buffers<-
   filter(poly_id%in%within_buff_results_df$poly_id)
 
 # set year of interest
-tmp_year<-my_year
+
+
 # filter buffer areas
 tmp_buff<-
   wdpa_kfw_treated_long_projected_buf %>% 
-  filter(first_year==tmp_year)
+  # filter(first_year==my_year)  %>% 
+  filter(bmz_nummer==my_projectnumber)
 
 # intersect
 tmp_no_controls<-

@@ -4,6 +4,6 @@ wdpa_LA<-
 
 wdpa_LA <-
   wdpa_LA %>%
-  filter(DESIG_ENG != "UNESCO-MAB Biosphere Reserve") %>%
+  #filter(DESIG_ENG != "UNESCO-MAB Biosphere Reserve") %>%
   filter(STATUS != "Proposed") %>%
   filter(GEOMETRY_TYPE != "POINT")

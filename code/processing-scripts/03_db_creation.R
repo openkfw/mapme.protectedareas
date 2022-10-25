@@ -72,7 +72,9 @@ grid_intersection$treated <-
 
 
 # ---- (3) Match Project Start and End Information to the sampling AOIs -----
-## write a function to create columns that will indicate whether data should be sampled for a specific year or not. 
+## write a function to create columns that will indicate 
+  # whether data should be sampled for a specific project or not. 
+
 f.matchingyear <- function(matching.year) {
   # get relevant bmz number for year
   bmz_number <-
@@ -89,6 +91,12 @@ f.matchingyear <- function(matching.year) {
     grid_intersection %>%
     filter(WDPAID %in% matching.ids) %>%
     mutate(matching_year = matching.year)
+  # join bmz_numbers
+  grid_intersection.filter<-
+    merge(grid_intersection.filter,
+          select(wdpa_kfw_long,WDPAID,value), 
+          by = "WDPAID", 
+          all = TRUE)
   
   #  write into the AOI Frame the sampling year
   return(grid_intersection.filter)
@@ -96,6 +104,8 @@ f.matchingyear <- function(matching.year) {
 
 # apply the function for all years
 matching.frame<-do.call(rbind,lapply(2000:2020,f.matchingyear))
+matching.frame<-rename(matching.frame, bmz_number = value)
+
 # table(matching.frame$matching_year)
 # head(matching.frame)
 
@@ -309,11 +319,17 @@ database_complete <-
 write_rds(database_complete,
           "../../datalake/mapme.protectedareas/output/matching/matching_frames/full_database.rds")
 
-# ---- (5) create year-specific matching frames and save results---- 
+# ---- (5) create year-specific or project-specific matching frames and save results---- 
+# load data again if preprocessing was not changed. 
+  # Note: codeblock (1)-(3) need to be run as well for the subsequent code to work 
+database_complete<-
+  readRDS("../../datalake/mapme.protectedareas/output/matching/matching_frames/full_database.rds")
+
 ## function to create year specific matching frames
 # get control cells
 controls<-
   read_csv("../../datalake/mapme.protectedareas/processing/fishnet/honeycomb_5_sqkm_subset_within_treated_buff50km_long.csv")
+
 # get spatial data
 wdpa_LA<-
   st_read("../../datalake/mapme.protectedareas/input/wdpa_kfw/wdpa_kfw_spatial_latinamerica_2021-04-22_allPAs_valid_simplified.gpkg")
@@ -342,12 +358,23 @@ honeycomb_subeset<-
 honeycomb_subeset$poly_id <- 
   1:nrow(honeycomb_subeset)
 
+## (1) Year Specific Matching frames
+
+# get project numbers 
+bmz_numbers<-unique(project.data.reduced$bmz_nummer)
+bmz_numbers <- bmz_numbers[!is.na(bmz_numbers)]
+
+# create new folder for project specific outputs
+dir.create("../../datalake/mapme.protectedareas/output/matching/matching_frames/projects/")
+
 # note: LOOP Currently fails for years with no data. 
-for (i in c(2004:2017,2019)) {
+# for (i in c(2004:2017,2019)) {
+for (j in unique(bmz_numbers)[c(26:38)]){ #[c(1:24,26:38)] ... 201067164 creates a problem
   ## filter complete database to include only polygons from the treatment cells in a specific year
-  print(paste("Starting year",i))
+  print(paste("Starting project",j))
   # define year
-  my_year <- i
+
+  my_projectnumber<-j
   
   # filter complete database to exclude all PAs and their buffer zones
   source("code/processing-scripts/03.2_db_creation_buffer.R")
@@ -361,7 +388,7 @@ for (i in c(2004:2017,2019)) {
   # get poly_ids
   tmp_uids <-
     matching.frame %>%
-    filter(., matching_year == my_year) %>%
+    filter(., bmz_number == my_projectnumber) %>%
     pull(poly_id)
   
   database_complete_subset_2 <-
@@ -378,98 +405,146 @@ for (i in c(2004:2017,2019)) {
   write_rds(
     tmp_database_complete,
     paste(
-      "../../datalake/mapme.protectedareas/output/matching/matching_frames/matching_frame_",
-      my_year,
+      "../../datalake/mapme.protectedareas/output/matching/matching_frames/projects/matching_frame_",
+      my_projectnumber,
       ".rds",
       sep = ""
     )
   )
-}
+  }
+# }
 
-
-# ---- check Matching frames against original polygon data in R -----
-# year to check
-my_year<-2012
-
-# load data
-matching_new_check=
-  read_rds(paste("../../datalake/mapme.protectedareas/output/matching/matching_frames/matching_frame_",my_year,".rds",sep=""))
-# table the number of treatment polygons in the matching frame
-table(matching_new_check$treatment)
-
-
-# # load treated areas data
-# wdpa_LA<-
-#   st_read("../../datalake/mapme.protectedareas/input/wdpa_kfw/wdpa_kfw_spatial_latinamerica_2021-04-22_allPAs_valid_simplified.gpkg")
+### ARQUIVE
+# ## (2) Year Specific Matching frames
+# dir.create("../../datalake/mapme.protectedareas/output/matching/matching_frames/projects/")
 # 
-# # clean data
-# wdpa_LA <-
-#   wdpa_LA %>%
-#   filter(DESIG_ENG != "UNESCO-MAB Biosphere Reserve") %>%
-#   filter(STATUS != "Proposed") %>%
-#   filter(GEOMETRY_TYPE != "POINT")
+# for (i in c(2004:2017,2019)) {
+#   ## filter complete database to include only polygons from the treatment cells in a specific year
+#   print(paste("Starting year",i))
+#   # define year
+#   my_year <- i
+#   # define project
+#   # my_project<-
+#   # filter complete database to exclude all PAs and their buffer zones
+#   source("code/processing-scripts/03.2_db_creation_buffer.R")
+#   
+#   database_complete_subset<-
+#     database_complete %>%
+#     filter(!.assetid%in%tmp_no_controls)
+#   # creat treatment column
+#   database_complete_subset$treatment=0
+#   
+#   # get poly_ids
+#   tmp_uids <-
+#     matching.frame %>%
+#     filter(., matching_year == my_year) %>%
+#     pull(poly_id)
+#   
+#   database_complete_subset_2 <-
+#     database_complete %>%
+#     filter(.assetid %in% tmp_uids)
+#   
+#   # creat treatment column
+#   database_complete_subset_2$treatment = 1
+#   
+#   # bind both datasets
+#   tmp_database_complete <-
+#     rbind(database_complete_subset, database_complete_subset_2)
+#   
+#   write_rds(
+#     tmp_database_complete,
+#     paste(
+#       "../../datalake/mapme.protectedareas/output/matching/matching_frames/projects/matching_frame_",
+#       my_year,
+#       ".rds",
+#       sep = ""
+#     )
+#   )
+# }
 # 
-# # subset for treated
-# wdpa_kfw_treated <-
-#   wdpa_LA %>%
-#   filter(!is.na(bmz_n_1))
-
-# shape to long to add start date
-wdpa_kfw_treated_long <- 
-  wdpa_kfw_treated %>% 
-  pivot_longer(.,
-               cols = starts_with("bmz_n"),
-               values_to = "bmz_nummer")
-
-# filter out such that were not treated
-wdpa_kfw_treated_long <-
-  wdpa_kfw_treated_long %>% 
-  filter(!is.na(bmz_nummer))
-
-# match start year
-wdpa_kfw_treated_long<- project.data.reduced %>% 
-  select(bmz_nummer,first_year,last_year) %>% 
-  merge(wdpa_kfw_treated_long,.,by="bmz_nummer")
-
-# subset for the specified year
-wdpa_kfw_treated_long <- 
-  wdpa_kfw_treated_long %>% 
-  filter(first_year==my_year)
-
-# filter matching data
-matching_new_check_treated<- matching_new_check %>% 
-  filter(treatment==1)
-
-# merge data
-honeycomb_subeset_merge2<-
-  merge(honeycomb_subeset,matching_new_check_treated,by.y=".assetid",by.x="poly_id",)
-
-# show in map
-mapview::mapView(wdpa_kfw_treated_long)+mapView(honeycomb_subeset_merge2,col.regions ="red")
-# clean up memory 
-gc()
-
-# ---- export data for qgis check -----
-## 
-honeycomb_subeset_merge2<-
-  merge(honeycomb_subeset,matching_new_check,by.y=".assetid",by.x="poly_id",)
-
-# get centroids
-honeycomb_subeset_merge2_centroids<-
-  st_centroid(honeycomb_subeset_merge2)
-
-# select only relevant vars for check
-honeycomb_subeset_merge2_centroids<-
-  honeycomb_subeset_merge2_centroids %>% 
-  select(poly_id,treatment,geometry)
-
-
-# show in map
-#mapView(wdpa_kfw_treated_long)+mapView(honeycomb_subeset_merge2_centroids,zcol="treatment")
-# clean up memory 
-write_sf(honeycomb_subeset_merge2_centroids,
-         paste("../../datalake/mapme.protectedareas/output/matching/matching_frames/matching_frame_",my_year,".gpkg",sep=""))
-
-gc()
+# # ---- check Matching frames against original polygon data in R -----
+# # year to check
+# my_year<-2012
+# 
+# # load data
+# matching_new_check=
+#   read_rds(paste("../../datalake/mapme.protectedareas/output/matching/matching_frames/matching_frame_",my_year,".rds",sep=""))
+# # table the number of treatment polygons in the matching frame
+# table(matching_new_check$treatment)
+# 
+# 
+# # # load treated areas data
+# # wdpa_LA<-
+# #   st_read("../../datalake/mapme.protectedareas/input/wdpa_kfw/wdpa_kfw_spatial_latinamerica_2021-04-22_allPAs_valid_simplified.gpkg")
+# # 
+# # # clean data
+# # wdpa_LA <-
+# #   wdpa_LA %>%
+# #   filter(DESIG_ENG != "UNESCO-MAB Biosphere Reserve") %>%
+# #   filter(STATUS != "Proposed") %>%
+# #   filter(GEOMETRY_TYPE != "POINT")
+# # 
+# # # subset for treated
+# # wdpa_kfw_treated <-
+# #   wdpa_LA %>%
+# #   filter(!is.na(bmz_n_1))
+# 
+# # shape to long to add start date
+# wdpa_kfw_treated_long <- 
+#   wdpa_kfw_treated %>% 
+#   pivot_longer(.,
+#                cols = starts_with("bmz_n"),
+#                values_to = "bmz_nummer")
+# 
+# # filter out such that were not treated
+# wdpa_kfw_treated_long <-
+#   wdpa_kfw_treated_long %>% 
+#   filter(!is.na(bmz_nummer))
+# 
+# # match start year
+# wdpa_kfw_treated_long<- project.data.reduced %>% 
+#   select(bmz_nummer,first_year,last_year) %>% 
+#   merge(wdpa_kfw_treated_long,.,by="bmz_nummer")
+# 
+# # subset for the specified year
+# wdpa_kfw_treated_long <- 
+#   wdpa_kfw_treated_long %>% 
+#   filter(first_year==my_year)
+# 
+# # filter matching data
+# matching_new_check_treated<- matching_new_check %>% 
+#   filter(treatment==1)
+# 
+# # merge data
+# honeycomb_subeset_merge2<-
+#   merge(honeycomb_subeset,matching_new_check_treated,by.y=".assetid",by.x="poly_id",)
+# 
+# # show in map
+# mapview::mapView(wdpa_kfw_treated_long)+mapView(honeycomb_subeset_merge2,col.regions ="red")
+# # clean up memory 
+# gc()
+# 
+# # ---- export data for qgis check -----
+# ## 
+# honeycomb_subeset_merge2<-
+#   merge(honeycomb_subeset,matching_new_check,by.y=".assetid",by.x="poly_id",)
+# 
+# # get centroids
+# honeycomb_subeset_merge2_centroids<-
+#   st_centroid(honeycomb_subeset_merge2)
+# 
+# # select only relevant vars for check
+# honeycomb_subeset_merge2_centroids<-
+#   honeycomb_subeset_merge2_centroids %>% 
+#   select(poly_id,treatment,geometry)
+# 
+# 
+# # show in map
+# #mapView(wdpa_kfw_treated_long)+mapView(honeycomb_subeset_merge2_centroids,zcol="treatment")
+# # clean up memory 
+# write_sf(honeycomb_subeset_merge2_centroids,
+#          paste("../../datalake/mapme.protectedareas/output/matching/matching_frames/matching_frame_",my_year,".gpkg",sep=""))
+# 
+# gc()
 
 
