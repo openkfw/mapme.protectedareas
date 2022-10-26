@@ -170,6 +170,7 @@ bmz_list <- all_years %>%
 
 bmz_list <- bmz_list[-which(bmz_list=="199566829"| bmz_list=="199966649")] # skip entries that cause issues because of perfect collinearity of treatment variable
 # Prepare observations table
+bmz_list <- bmz_list[-which(bmz_list=="201066661")] #skip because of coastal and marine protection without any forest cover
 obs_table <- matrix(NA, nrow = 7, ncol = length(bmz_list)+1)
 colnames(obs_table) <- c("name", bmz_list)
 # rownames(obs_table) <- c("CEM obs total", "--obs treat", "--obs control")

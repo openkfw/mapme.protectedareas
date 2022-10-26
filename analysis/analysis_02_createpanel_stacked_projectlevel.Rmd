@@ -33,6 +33,7 @@ bmz_list <- all_years %>%
     gsub(".csv", "", .)
 
 bmz_list <- bmz_list[-which(bmz_list=="199566829"| bmz_list=="199966649")] # skip entries that cause issues because of perfect collinearity of treatment variable
+bmz_list <- bmz_list[-which(bmz_list=="201066661")] #skip because of coastal and marine protection without any forest cover
 # load each list entry and create unique panel id across all matching frames
 big.list.of.data.frames <- lapply(bmz_list, function(x){
   file <- list(paste0("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/tn_projects/cem_tn_matched_panel_", x, ".csv"))

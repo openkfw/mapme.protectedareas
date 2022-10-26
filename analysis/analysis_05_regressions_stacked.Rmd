@@ -37,6 +37,7 @@ m1 <-   feols(fc_loss ~ treatment_disb | stack_id + year, data = panel.df, weigh
 m2 <-   feols(fc_area ~ treatment_disb | stack_id + year, data = panel.df, weights = panel.df$weights_cem, panel.id = ~stack_id+year, cluster = ~WDPAID_cluster_stack)
 m3 <-   feols(emissions_tha ~ treatment_disb | stack_id + year, data = panel.df, weights = panel.df$weights_cem, panel.id = ~stack_id+year, cluster = ~WDPAID_cluster_stack)
 
+m1_c <-   feols(fc_loss ~ treatment_disb + affhurricane + wetness + maxprec| stack_id + year, data = panel.df, weights = panel.df$weights_cem, panel.id = ~stack_id+year, cluster = ~WDPAID_cluster_stack)
 
 
 m_list1 <- list(m1, m2, m3)
