@@ -10,9 +10,9 @@ navbar:
   - text: License
     href: license.html
   right:
-  - icon: fa-github
+  - icon: fab fa-github
     text: Source code
-    href: https://github.com/openkfw/mapme-protectedareas
+    href: https://github.com/openkfw/mapme.protectedareas
 output:
   workflowr::wflow_html:
     toc: yes
