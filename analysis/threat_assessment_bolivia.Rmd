@@ -1,6 +1,6 @@
 ---
 title: "Project Preparation: Threat Assessment for Protected Areas in Bolivia"
-author: "Johannes Schielein (Author)"
+author: "Johannes Schielein & Andreas Petutschnig"
 date: "2023-01-24"
 output: workflowr::wflow_html
 editor_options:
@@ -154,30 +154,24 @@ wdpa_allPAs_lossdata$fires_categorized <-
 bolivia_suggested_PAs <- wdpa_kfw %>% filter(WDPAID %in% bol_wdpa_ids)
 ```
 ## Introduction
-The following graphics are intented to support a peer-discussion on how publicly available geodata can be used to characterize the threat level of protected areas (short: PAs). The goal of this exercise is to define data products that could support the identification of new intervention sites and thus help KfW and its partners in the project preparation phase. In addition, information about the current portfolio and its relevance to protect the most threatened areas can be derived.
+The following analysis is intented to support a peer-discussion on the threat level of protected areas (short: PAs) in the Bolivian Amazon Basin. The goal of this exercise is to assist KfW and its partners in the project preparation phase. In addition, information about the current portfolio and its relevance to protect the most threatened areas can be derived.
 
-The general idea of this analysis is to match the complete network of existing PAs in countries where KfW is active to the the database of supported PAs by KfW. The same methodology can be used later in the project preparation phase to analyse the existing portfolio together with newly projected intervention sites. The analysis is based on publicly available data from the World Database of Protected Areas (WDPA/IUCN).[^1] The shown data focuses on suggested areas in Bolivia and contains `r nrow(wdpa_allPAs[!is.na(wdpa_allPAs$bmz_n_1),])` already funded areas from a total of `r nrow(wdpa_allPAs)` PAs.
+The goal of this analysis is to look at a set of predefined PAs, rank it according to the their threat level and compare it to the past portfolio from KfW. The analysis is based on publicly available data from the World Database of Protected Areas (WDPA/IUCN) [^1] and other freely available geodata-sources. In a first analysis step we focus on habitat destruction in terms of primary forest cover loss and in the second step we look at fires in protected areas between 2000 and 2021. Both datasets can indicate human pressures on the ecosystem as well as natural/climatic stressors that could harm the long-term stability and provision of ecosystem services. 
 
-In a first analysis step we focus on habitat destruction in terms of primary forest cover loss. To quantify forest cover loss we utilize data from the Global Forest Watch (Hansen et al, 2013)[^2]. Forest cover loss is defined in their work _"as a stand-replacement disturbance, or a change from a forest to non-forest state."_. Loss can either be the result of human activities or natural factors such as droughts, forest fires or hurricanes, amongst others. More information on the interpretation and usefullness of this data as well as suggested further steps to advance the threat assessment are given below in the discussion part. The data also include annual forest fire counts, which are taken from the NASA FIRMS data[^3].
+## Forest cover loss (2000-2020)
+To quantify forest cover loss we utilize data from the Global Forest Watch (Hansen et al, 2013)[^2]. Forest cover loss is defined in their methdology _"as a stand-replacement disturbance, or a change from a forest to non-forest state."_. Loss can either be the result of human activities or natural factors such as droughts, forest fires or hurricanes, amongst others. More information on the interpretation and usefullness of this data as well as suggested further steps to advance the threat assessment are given below in the discussion part. The data also include annual forest fire counts, which are taken from the NASA FIRMS data[^3].
 
-__In the analysis below we will focus on two key outcome indicators:__ 
+__In the analysis  we will focus on two key outcome indicators:__ 
 
 * **Total forest cover loss**: Measures the total sum of loss areas in hectare. This variable is able to identify PAs with the highest primary forest cover loss between 2001 and 2020. The identification of high loss areas can be usefull for targeting areas where we might achieve the largest impact in terms of _reducing emissions from deforstation and forest degradation_. 
 
 * **Relative forest cover loss**: Measures the percentage of primary forest cover loss inside a PA compared to its total primary forest area in 2000. The identification of PAs with high relative losses can be relevant from a biodiversity perspective. PAs with high relative losses might be places where large parts of the functional forest habitat is lost. Targeting these areas might not only help to protect the _floral biodiversity but also the fauna and humans that inhabit these areas and profit from the local forest ecosystem services_. 
 
-## Map of Threatened Areas
-The following map depicts relative and absolute forest cover loss for PAs in KfW supported areas. The size of circles is dependent on the total loss (the bigger the total loss, the larger the circle). The color is dependend on the relative loss (red circles indicate areas with high loss). From a threat perspective big red circles could be especially relevant areas for conservation. This map is interactive meaning that you can zoom into the map to see specific countries in more detail and click on areas to get summary statistics. Furthermore, supported PAs from the current and past portfolio of KfW (blue) are displayed with their actual polygon boundaries as well as all other PAs from the partnering countries (grey).
+### Map
+The following map depicts relative and absolute forest cover loss in the selected areas. The size of circles is dependent on the total loss (the bigger the total loss, the larger the circle). The color is dependend on the relative loss (red circles indicate areas with high loss). From a threat perspective big red circles could be especially relevant areas for conservation. This map is interactive meaning that you can zoom into the map to see specific countries in more detail and click on areas to get summary statistics. Furthermore, supported PAs from the current and past portfolio of KfW (blue) are displayed with their actual polygon boundaries as well as all other PAs in Bolivia (grey) which can be activated manually in the map. Furthermore the analyzed data from Global Forest watch can be seen when activated in the layer control panel as well as the distribution of primary forests in 2001.
 
-The overlays in red (PAs Suggested) are the prospective future supported areas.
-
-```{r projectmap, echo=FALSE, warning=FALSE,  fig.width=10}
+```{r projectmap_def, echo=FALSE, warning=FALSE,  fig.width=10}
 ## ----- create color palettes for the map -----
-pal_fires <- colorFactor(
-  palette = brewer.pal(5, "Reds"),
-  domain = wdpa_allPAs_lossdata$fires_categorized
-)
-
 pal_relative_loss <- colorFactor(
   palette = rev(brewer.pal(5, "RdYlGn")),
   domain = wdpa_allPAs$relative_loss_categorized
@@ -192,17 +186,6 @@ pal_absoute_loss <- colorFactor(
 colourCount = length(unique(wdpa_kfw$ISO3))
 getPalette = colorRampPalette(brewer.pal(9, "Set1"))
 
-pal_country <- colorFactor(
-  palette = getPalette(colourCount),
-  domain = wdpa_kfw$ISO3
-)
-
-# create colorramp2
-# pal_treatment <- colorFactor(
-#   palette = c("darkblue","orange"),
-#   domain = matched_data_merged$treat_ever
-# )
-
 ## add label string for map display 
 wdpa_allPAs_lossdata$label <- 
   with(wdpa_allPAs_lossdata, paste(
@@ -212,6 +195,19 @@ wdpa_allPAs_lossdata$label <-
   "Absolute Loss (2000-2020):",round(absolute_loss,digits=0)," ha", "</br>",
   "Relative Loss (2000-2020):", round(relative_loss*100,digits=2)," %:",
   "</p>"))
+
+# subset data for treated only 
+wdpa_kfw_treated<-wdpa_kfw %>% 
+  filter(is.na(bmz_n_1)==F)
+
+# subset lossdata for selected only
+wdpa_allPAs_lossdata_subset<-wdpa_allPAs_lossdata %>% 
+  filter(WDPAID %in% bol_wdpa_ids)
+
+# get centroid coordinates
+wdpa_allPAs_lossdata_subset<-
+  cbind(wdpa_allPAs_lossdata_subset,
+        st_coordinates(st_centroid(wdpa_allPAs_lossdata_subset)))
 
 # ----- create map -----
 my_map <-
@@ -234,30 +230,13 @@ my_map <-
     attribution = "Hansen, M. C., P. V. Potapov, R. Moore, M. Hancher, S. A. Turubanova, A. Tyukavina, D. Thau, S. V. Stehman, S. J. Goetz, T. R. Loveland, A. Kommareddy, A. Egorov, L. Chini, C. O. Justice, and J. R. G. Townshend. 2013. “High-Resolution Global Maps of 21st-Century Forest Cover Change.” Science 342 (15 November): 850–53. Data available on-line from: http://earthenginepartners.appspot.com/science-2013-global-forest."
   ) %>%
   # add own polygon data
-  addPolygons(data = wdpa_kfw,opacity = 0.9,color = "#2b8cbe", group = "PAs KfW-supported",label = ~htmlEscape(NAME),weight = 1)%>%
+  addPolygons(data = wdpa_kfw_treated,opacity = 0.9,color = "#2b8cbe", group = "PAs KfW-supported",label = ~htmlEscape(NAME),weight = 1)%>%
   addPolygons(data = wdpa_nonSupportPA,opacity = 0.9,color = "darkgrey", group = "PAs (Others)",label = ~htmlEscape(NAME),weight = 2)%>%
   addPolygons(data = bolivia_suggested_PAs,opacity = 1, fillOpacity = 0.1, color = "#7d0f02", group = "PAs Suggested",label = ~htmlEscape(NAME),weight = 2)%>%
-  # add own active fire counts data as circles
-  addCircleMarkers(data=wdpa_allPAs_lossdata,
-                   color = ~pal_fires(fires_categorized),
-                   group = "Active Fires (2000-2021)",
-                   radius = ~ifelse(fires_categorized == "> 10000", 20, 
-                                    ifelse(fires_categorized == "5,001-10,000", 12,
-                                           ifelse(fires_categorized == "2501-5,000", 8,
-                                                  ifelse(fires_categorized == "501-2,500", 4,
-                                                         ifelse(fires_categorized == "0-500", 2, 0
-                                                         )
-                                                  )
-                                           )
-                                    )),
-                   popup = ~label,
-                   stroke = FALSE, 
-                   fillOpacity = 0.8
-                   ) %>%
   # add own forest loss data as circles
-  addCircleMarkers(data=wdpa_allPAs_lossdata,
+  addCircleMarkers(data=wdpa_allPAs_lossdata_subset,
                    color = ~pal_relative_loss(relative_loss_categorized),
-                   group = "Relative Forest Loss (2001-2020)",
+                   group = "Sum of Forest Cover Loss (2001-2020)",
                    radius = ~ifelse(absolute_loss_categorized == ">10,000", 12, 
                                     ifelse(absolute_loss_categorized == "1,000-10,000", 6,
                                            ifelse(absolute_loss_categorized == "100-1,000", 4,
@@ -269,6 +248,10 @@ my_map <-
                    stroke = FALSE, 
                    fillOpacity = 0.5
                    ) %>%
+    # labels
+  addLabelOnlyMarkers(data = wdpa_allPAs_lossdata_subset,
+                    lng = ~X, lat = ~Y, label = ~NAME,group = "Labels (PA Names)",
+                    labelOptions = labelOptions(noHide = TRUE, direction = 'top', textOnly = TRUE)) %>% 
   # add fullscreen control
   addFullscreenControl() %>%
   # add legend(s)
@@ -276,60 +259,25 @@ my_map <-
             data = wdpa_allPAs,
             pal = pal_relative_loss,
             values = ~relative_loss_categorized,
-            title = "Relative Forest Loss (2001-2020)",
+            title = "Relative Forest Cover Loss (2001-2020)",
             opacity = 1,
-            group = "PA Area Size") %>%
+            group = "Sum of Forest Cover Loss (2001-2020)") %>%
   
   # add layers control to define how and where data is displayed.
   addLayersControl(
     baseGroups = c("CartoDB","OpenStreetMap","Satellite","Topography","Nightlights"), #"Toner",,"Regional Primary Forests (2001)"
-    overlayGroups = c("PAs Suggested", "PAs KfW-supported","PAs (Others)", "Active Fires (2000-2021)", "Relative Forest Loss (2001-2020)","Forest Cover Loss (2001-2020)", "Regional Primary Forests (2001)"),
+    overlayGroups = c("PAs Suggested", "PAs KfW-supported","PAs (Others)", "Labels (PA Names)", "Sum of Forest Cover Loss (2001-2020)","Forest Cover Loss (2001-2020)", "Regional Primary Forests (2001)"),
     options = layersControlOptions(collapsed = FALSE)) %>%
   # ommit certain layers
-  hideGroup(group = c("PAs KfW-supported", "Relative Forest Loss (2001-2020)", "PA Area Size","Forest Cover Loss (2001-2020)", "Regional Primary Forests (2001)"))
+  hideGroup(group = c("PAs (Others)","Forest Cover Loss (2001-2020)", "Regional Primary Forests (2001)","Labels (PA Names)"))
 
 my_map
 ```
 
-## Lollipop plot 
-Lollipop Plots can be used to compare supported PAs to non-supported PAs in terms of their treat level. The following figure shows the forest cover loss in suggested PAs. It also shows whether any of these PAs has been or is currently supported by a project from KfW. The database also allows to filter for a specific country or to adapt the observed period (currently 2001-2020) or variable (relative loss instead of absolute). Interactive filtering could be enabled once an interactive solution (Dashboard) is in place. 
+### Absolute Trend
+Lollipop Plots can be used to compare PAs in terms of their treat level. The following figure shows absolut forest cover loss in suggested PAs. It also shows whether any of these PAs has been or is currently supported by a project from KfW.
 
-```{r lollipop_plot, message = FALSE, warning = FALSE,fig.width=10, echo=FALSE, eval = FALSE}
-# ----- create horizontal lollipop plots for top loss areas -----
-lossdata_lollipop_plot <-
-  wdpa_allPAs_lossdata %>%
-  top_n(30, wdpa_allPAs_lossdata$absolute_loss) %>%
-  # arrange(desc(absolute_loss)) %>%
-  ggplot() +
-  geom_point(aes(
-    x = reorder(NAME,-absolute_loss),
-    y = absolute_loss,
-    color = factor(bmz_n_1),
-    text = paste(
-      "Area Name: ", NAME,
-      "\nForest cover loss: ", round(absolute_loss,digits = 0), " ha",
-      "\nBMZ-Number: ", bmz_n_1)
-  )) +
-  geom_segment(aes(
-    x = reorder(NAME,-absolute_loss),
-    xend = reorder(NAME,-absolute_loss),
-    y = 0,
-    yend = absolute_loss,
-    color = factor(bmz_n_1),
-    text = paste(
-      "Area Name: ", NAME,
-      "\nForest cover loss: ", round(absolute_loss,digits = 0), " ha",
-      "\nBMZ-Number: ", bmz_n_1)
-  )) +
-  coord_flip() +
-  labs(x="", y="Absolute Forest Cover Loss in ha (2000-2020)", color = "Project Number")+
-  theme_classic()
-
-ggplotly(lossdata_lollipop_plot,tooltip = "text")
-
-
-```
-```{r lollipop_plot-suggested-regions, message = FALSE, warning = FALSE,fig.width=10, echo=FALSE, eval = TRUE}
+```{r lollipop_plot-suggested-regions-fcl, message = FALSE, warning = FALSE,fig.width=10, echo=FALSE, eval = TRUE}
 # ----- create horizontal lollipop plots for top loss areas -----
 lollipop_data <- wdpa_allPAs_lossdata %>%
   filter(WDPAID %in% bol_wdpa_ids)
@@ -369,313 +317,176 @@ lossdata_lollipop_plot <-
 
 ggplotly(lossdata_lollipop_plot,tooltip = "text")
 ```
-  
-## Crosstables
-Crosstables convey the same information about absolute as well as relative loss but on an aggregated portfolio level. They allow us to quickly assess whether our past and current portfolio adresses the most threatened areas. The crosstables group all PAs into different "loss groups" that are displayed in the first column (0-10 hectare, 10-100 hectare, etc.). The second column shows how many PAs fall into each group (in%) from the whole universe of PAs in partnerning countries. The third column shows how many PAs from the KfW portfolio fall into each group, the fourth column shows the suggested PAs. Desirable would be a overrepresentation in high loss areas by KfW. Both, absolute losses (first table) and relative losses (second table) are given below. 
 
-```{r filter_data_crosstables, message = FALSE, warning = FALSE, include=FALSE}
-## Crosstables
-# filter data for seperate display of jitters
-wdpa_allPAs_lossdata$treated<-
-  ifelse(is.na(wdpa_allPAs_lossdata$bmz_n_1)==TRUE,0,1)
+### Yearly Forest Cover Loss
+Stacked Barplots are used to assess the time-trend of one or several PAs. They show the variation in the total number of fires which can be amongst others attributed to El Niño and La Niña which are opposite extremes of ENSO, referring to cyclical environmental conditions that occur across the Equatorial Pacific Ocean. For more information see [here](https://www.noaa.gov/education/resource-collections/weather-atmosphere/el-nino). The different parts of each bar represent the different PAs. You can easily see which PAs take a larger share of the yearly total fire counts. Those are the ones where most fires occur. You can get more detailed information by hovering with the mouse over the bars. 
 
-wdpa_allPAs_lossdata_treated<-
-  wdpa_allPAs_lossdata %>%
-  filter(treated==1)
-```
+```{r line_plots_forestcoverloss, message = FALSE, warning = FALSE,fig.width=10, echo=FALSE, eval=TRUE}
+bol_annual_fires <- read.csv("data/bolivia_annual_fires_2000_2021.csv")
+fire_lines_aux_data <- st_drop_geometry(wdpa_kfw) %>%
+  select(c(WDPAID, bmz_n_1, NAME))
+names(fire_lines_aux_data) [1] <- "wdpa_id"
+bol_annual_fires <- merge (bol_annual_fires, fire_lines_aux_data, by = "wdpa_id", all.x = TRUE)
 
-
-```{r cross_tables_loss, message = FALSE, warning = FALSE, echo=FALSE, results='asis'}
-# ----- crosstables for relative and absolute loss -----
-library("knitr")
-# create absolute loss table
-loss_data_summarycats_absolute <-
-  wdpa_allPAs_lossdata %>%
-  filter(treated == 0) %>%
-  {
-    round(table(.$absolute_loss_categorized) / nrow(.) * 100, digits = 2)
-  } %>%
-  as.data.frame() %>%
-  rename("Absolute Forst Loss (ha)" = Var1, "% of all PAs" = Freq) 
-
-loss_data_summarycats_absolute$`% of KfW Supported PAs` <-
-  wdpa_allPAs_lossdata %>%
-  filter(treated == 1) %>%
-  {
-    round(table(.$absolute_loss_categorized) / nrow(.) * 100, digits = 2)
-  } %>%
-  as.data.frame() %>%
-  rename("Absolute Forst Loss (ha)" = Var1,
-         "% of KfW Supported PAs" = Freq) %>%
-  pull("% of KfW Supported PAs")
-
-loss_data_summarycats_absolute$`% of Suggested PAs` <-
-  wdpa_allPAs_lossdata %>%
-  filter(WDPAID %in% bol_wdpa_ids) %>%
-  {
-    round(table(.$absolute_loss_categorized) / nrow(.) * 100, digits = 2)
-  } %>%
-  as.data.frame() %>%
-  rename("Absolute Forst Loss (ha)" = Var1,
-         "% of Suggested PAs" = Freq) %>%
-  pull("% of Suggested PAs")
-
-kable(loss_data_summarycats_absolute)
-
-# create relative loss tables
-loss_data_summarycats_relative <-
-  wdpa_allPAs_lossdata %>%
-  filter(treated == 0) %>%
-  {
-    round(table(.$relative_loss_categorized) / nrow(.) * 100, digits = 2)
-  } %>%
-  as.data.frame() %>%
-  rename("Relative Forst Loss" = Var1, "% of all PAs" = Freq) 
-
-loss_data_summarycats_relative$`% of KfW Supported PAs` <-
-  wdpa_allPAs_lossdata %>%
-  filter(treated == 1) %>%
-  {
-    round(table(.$relative_loss_categorized) / nrow(.) * 100, digits = 2)
-  } %>%
-  as.data.frame() %>%
-  rename("Relative Forst Loss (ha)" = Var1,
-         "% of KfW Supported PAs" = Freq) %>%
-  pull("% of KfW Supported PAs")
-
-loss_data_summarycats_relative$`% of Suggested PAs` <-
-  wdpa_allPAs_lossdata %>%
-  filter(WDPAID %in% bol_wdpa_ids) %>%
-  {
-    round(table(.$relative_loss_categorized) / nrow(.) * 100, digits = 2)
-  } %>%
-  as.data.frame() %>%
-  rename("Relative Forst Loss (ha)" = Var1,
-         "% of Suggested PAs" = Freq) %>%
-  pull("% of Suggested PAs")
-
-kable(loss_data_summarycats_relative)
-
-
-```
-  
-  
-
-<!-- ## Jitter Plots -->
-<!-- Jitter Plots are a different way of displaying absolut and relative loss data and the current portfolio. Data is displayed in the plot on the country level. Different colors correspond to different countries. Country names are given with their abbreviations.  -->
-<!-- The advantage of Jitter Plots  is that individual data-points (PAs) can be identified by clicking on them in the figure. Jitter Plots allow to visualize the (highly right-skewed) data distribution in an intuitive way and compare KfWs portfolio (**-> black dots**) to the whole country universe. In a Dashboard it could be possible to colorize a set of suggested new PAs in the planning stage of a new project. -->
-
-```{r jitter_plot, message = FALSE, warning = FALSE,fig.width=10, echo=FALSE, eval=FALSE}
-# ----- jitter plots absolute loss -----
-# create plot
-lossdata_absolute_jitter_plot <-
-  wdpa_allPAs_lossdata %>%
-  filter(treated == 0) %>%
-  ggplot() +
-  geom_jitter(
-    aes(
-    x = ISO3,
-    y = absolute_loss,
-    color = factor(ISO3),
-    text = paste(
-      "Area Name: ", NAME,
-      "\nAbsolute forest loss: ", round(absolute_loss,digits = 0), " ha",
-      "\nRelative forest loss: ", round(relative_loss,digits = 2)*100, " %",
-      "\nBMZ-Number: ", bmz_n_1)
-    ),
-    alpha = .8) +
-  geom_jitter(
-    data = wdpa_allPAs_lossdata_treated,
-    aes(x = ISO3, 
-        y = absolute_loss,
-        text = paste(
-          "Area Name: ", NAME,
-          "\nAbsolute forest loss: ", round(absolute_loss,digits = 0), " ha",
-          "\nRelative forest loss: ", round(relative_loss,digits = 2)*100, " %",
-          "\nBMZ-Number: ", bmz_n_1)),
-    color = "black",
-    alpha = .8
-  )+
-  labs(color="Country",x="")+
-  scale_y_continuous(labels=function(x) format(x, big.mark = ",", scientific = FALSE),name="Forest Loss in ha")+
-  theme_classic()
-
-ggplotly(lossdata_absolute_jitter_plot,tooltip = "text")
-
-# ----- jitter plots relative loss -----
-# create plot
-lossdata_relative_jitter_plot <-
-  wdpa_allPAs_lossdata %>%
-  filter(treated == 0) %>%
-  ggplot() +
-  geom_jitter(
-    aes(
-      x = ISO3,
-      y = relative_loss,
-      color = factor(ISO3),
-      text = paste(
-        "Area Name: ", NAME,
-        "\nAbsolute forest loss: ", round(absolute_loss,digits = 0), " ha",
-        "\nRelative forest loss: ", round(relative_loss,digits = 2)*100, " %",
-        "\nBMZ-Number: ", bmz_n_1)
-    ),
-    alpha = .8) +
-  geom_jitter(
-    data = wdpa_allPAs_lossdata_treated,
-    aes(x = ISO3, 
-        y = relative_loss,
-        text = paste(
-          "Area Name: ", NAME,
-          "\nAbsolute forest loss: ", round(absolute_loss,digits = 0), " ha",
-          "\nRelative forest loss: ", round(relative_loss,digits = 2)*100, " %",
-          "\nBMZ-Number: ", bmz_n_1)),
-    color = "black",
-    alpha = .8
-  )+
-  labs(color="Country",x="")+
-  scale_y_continuous(labels = scales::percent,name="Relative forest Loss")+
-  theme_classic()
-
-ggplotly(lossdata_relative_jitter_plot,tooltip = "text")
-
-```
-  
-  
-## Lineplots
-Lineplots can be used to assess the time-trend of one or several PAs. Their advantage is to display the trend data more detailed which allows users to judge whether a trend is increasing or decreasing and whether it is more likely due to natural phenomena (often huge singular spikes in the trend) or anthropogenic causes (steady, similar trends over all years). The downside of lineplots is that they are not able to compare a large set of PAs because the plots will get fairly messy if too many individual lines are displayed. This is especially troublesome if the trends of different displayed PAs differs considerably. You can isolate trends from on or several PAs of a given project by double-clicking on the project number in the legend. Single clicks on additional projects will allow to compare different projects. Both, absolute losses and relative losses are given in separate figures below.
-
-```{r line_plots, message = FALSE, warning = FALSE,fig.width=10, echo=FALSE, eval=FALSE}
-# ----- lineplots for selected countries -----
-# ----- absolute loss lineplot -----
-## loss statistics
-gfw_lossstats2<-
-  read_csv("../../datalake/mapme.protectedareas/output/polygon/global_forest_watch/zonal_statistics_allPAs_long_temporal.csv",
-           col_types = c("cfid"))
-
-## filter for area only
-gfw_lossstats2 <-
-  gfw_lossstats2 %>%
-  filter(name == "loss")%>%
-  filter(WDPA_PID %in% wdpa_allPAs_lossdata$WDPA_PID) # indirectly filter MAB regions and invalid geometries out (see code above)
-
-gfw_lossstats_lineplot <-
-  merge(gfw_lossstats2,
-        st_drop_geometry(wdpa_kfw),
-        by.x = "WDPA_PID",
-        by.y = "WDPA_PID")
-
-gfw_lossstats_lineplot_all <-
-  merge(gfw_lossstats2,
-        st_drop_geometry(wdpa_allPAs),
-        by.x = "WDPA_PID",
-        by.y = "WDPA_PID")
-
-
-# create data
-gfw_lossstats_lineplot<-
-  gfw_lossstats_lineplot %>% 
-  select(WDPA_PID,name,year,value,bmz_n_1,ISO3,NAME)
-
-
-gfw_lossstats_lineplot_all<-
-  gfw_lossstats_lineplot_all %>% 
-  select(WDPA_PID,name,year,value,bmz_n_1,ISO3,NAME)
-
-# create labels for plot
-gfw_lossstats_lineplot_all$bmz_n_1_labeled <-
-  ifelse(
-    is.na(gfw_lossstats_lineplot_all$bmz_n_1),
-    "Not Supported",
-    gfw_lossstats_lineplot_all$bmz_n_1
-  )
-# create color pallete for fill
-palette_length <-
-  gfw_lossstats_lineplot_all %>%
-  filter(ISO3 == "BOL") %>%
-  {
-    unique(.$bmz_n_1_labeled)
-  } %>%
-  length()
-
+palette_length <- length(unique(bol_annual_fires$bmz_n_1))
 palette_lineplot<-
   c(brewer.pal(palette_length-1,"Set1"),"grey80")
 
 # create lineplot
-lossdata_absolute_lineplot <-
-  gfw_lossstats_lineplot_all %>%
-  filter(ISO3 == "BOL") %>%
-  ggplot() +
-  geom_line(aes(x=year,
-                y=value,
-                group=factor(WDPA_PID),
-                color=factor(bmz_n_1_labeled),
-                text = paste(
-                  "Area Name: ", NAME,
-                  "\nYear: ", year,
-                  #"\nRelative forest loss: ", round(relative_loss,digits = 2)*100, " %",
-                  "\nBMZ-Number: ", bmz_n_1)) ,alpha=0.4)+
-  labs(x="",title="Absolute Forest Loss in PAs in Bolivia")+
+fires_absolute_lineplot <-
+  bol_annual_fires %>%
+  ggplot(.,aes(x=year,
+                y=active_fire_counts,
+                fill=factor(NAME))) +
+  geom_bar(position="stack", 
+           stat="identity")+
+  labs(x="",title="Annual Forest Fires in Suggested PAs")+
   scale_y_continuous(labels=function(x) format(x, big.mark = ",", scientific = FALSE),name="Forest Loss in ha")+
-  scale_color_manual(name = "Project Number",values=palette_lineplot)+
   theme_classic()
 
-ggplotly(lossdata_absolute_lineplot,tooltip="text")
-
-# ----- lineplot with colors relative loss -----
-## loss statistics
-gfw_lossstats3<-
-  read_csv("../../datalake/mapme.protectedareas/output/polygon/global_forest_watch/zonal_statistics_allPAs_long_temporal.csv",
-           col_types = c("cfid"))
-
-## filter for area only
-gfw_lossstats3 <-
-  gfw_lossstats3 %>%
-  filter(name == "area")%>%
-  filter(WDPA_PID %in% wdpa_allPAs_lossdata$WDPA_PID)
-
-gfw_lossstats_lineplot_all_relative <-
-  merge(gfw_lossstats3,
-        st_drop_geometry(wdpa_allPAs),
-        by.x = "WDPA_PID",
-        by.y = "WDPA_PID") %>% 
-  select(WDPA_PID,name,year,value,bmz_n_1,ISO3,NAME) 
-
-gfw_lossstats_lineplot_all_relative$fc_relative <-
-  gfw_lossstats_lineplot_all_relative %>%
-  group_by(WDPA_PID) %>%
-  summarise(relative_loss = value / max(value)) %>% 
-  pull(relative_loss)
-
-
-# create labels for plot
-gfw_lossstats_lineplot_all_relative$bmz_n_1_labeled <-
-  ifelse(
-    is.na(gfw_lossstats_lineplot_all_relative$bmz_n_1),
-    "Not Supported",
-    gfw_lossstats_lineplot_all_relative$bmz_n_1
-  )
-
-# create plot
-lossdata_relative_lineplot <-
-  gfw_lossstats_lineplot_all_relative %>%
-  filter(ISO3 == "BOL") %>%
-  ggplot() +
-  geom_line(aes(x=year,
-                y=fc_relative,
-                group=factor(WDPA_PID),
-                color=factor(bmz_n_1_labeled),
-                text = paste(
-                  "Area Name: ", NAME,
-                  "\nYear: ", year,
-                  #"\nRelative forest loss: ", round(relative_loss,digits = 2)*100, " %",
-                  "\nBMZ-Number: ", bmz_n_1)) ,alpha=0.4)+
-  labs(x="",title="Relative Forest Loss in PAs in Bolivia")+
-  scale_y_continuous(labels=scales::percent,name="Forest cover in % of base-value (2000)")+
-  scale_color_manual(name = "Project Number",values=palette_lineplot)+
-  theme_classic()
-
-ggplotly(lossdata_relative_lineplot,tooltip = "text")
+ggplotly(fires_absolute_lineplot)
 ```
+
+## Fire counts (2000 to 2021)
+### Map
+The following map depicts a summary of fire counts in the suggested Protected Areas according to NASA Firms. In general larger protected areas expirience more fires due to their spatial extension. Nevertheless there are also exeptions. It appears that large protected areas in the Andean mountain range expirience less forest fires (you can activate a Topography layer in the map). In contrast, PAs in the east which are located closer to the Brazilian boarder (Rondonia) expirience more fires. There is also a notable correlation between forest cover loss and forest fires (You can activate the forest cover loss layer in the map). This seems plausible since fires are often used as a strategy for forest cleansing or large natural wildfires might cause permanent damage to the forest cover. However, the relationship is not perfect. 
+The map and the subsequent lollipop plots also exhibit which of the analyzed areas have been already part of past or ongoing KfW projects. The data suggests that only one area "Noel Kempff Mercado" expirienced a larger amount of fires (6,724) between 2000 and 2021. You can get individual area statistics by clicking on the colored circles in the map. 
+
+```{r projectmap_fire, echo=FALSE, warning=FALSE,  fig.width=10}
+## ----- create color palettes for the map -----
+pal_fires <- colorFactor(
+  palette = rev(brewer.pal(5, "RdYlGn")),
+  domain = wdpa_allPAs_lossdata$fires_categorized
+)
+
+## add label string for map display 
+wdpa_allPAs_lossdata$label <- 
+  with(wdpa_allPAs_lossdata, paste(
+  "<p> <b>", NAME, "</b> </br>",
+  "Primary Forests (2000)",round(max_forest,digits=0)," ha", "</br>",
+  "Forest Fires (2000-2021)", active_fire_counts, "</br>",
+  "Absolute Loss (2000-2020):",round(absolute_loss,digits=0)," ha", "</br>",
+  "Relative Loss (2000-2020):", round(relative_loss*100,digits=2)," %:",
+  "</p>"))
+
+# subset data for treated only 
+wdpa_kfw_treated<-wdpa_kfw %>% 
+  filter(is.na(bmz_n_1)==F)
+
+# subset lossdata for selected only
+wdpa_allPAs_lossdata_subset<-wdpa_allPAs_lossdata %>% 
+  filter(WDPAID %in% bol_wdpa_ids)
+
+# get centroid coordinates
+wdpa_allPAs_lossdata_subset<-
+  cbind(wdpa_allPAs_lossdata_subset,
+        st_coordinates(st_centroid(wdpa_allPAs_lossdata_subset)))
+
+# ----- create map -----
+my_map <-
+  leaflet() %>%
+  # add external map providers
+  addTiles(group = "OpenStreetMap") %>%
+  addProviderTiles(providers$CartoDB.Positron, group="CartoDB") %>%
+  addProviderTiles(providers$Esri.WorldImagery, group="Satellite") %>%
+  addProviderTiles(providers$Esri.WorldShadedRelief, group="Topography") %>%
+  addProviderTiles(providers$NASAGIBS.ViirsEarthAtNight2012, group="Nightlights") %>%
+  addTiles(
+    "https://tiles.globalforestwatch.org/umd_tree_cover_loss/latest/dynamic/{z}/{x}/{y}.png",
+    group = "Forest Cover Loss (2001-2020)",
+    #options=tileOptions(opacity = 0.7),
+    attribution = "Hansen, M. C., P. V. Potapov, R. Moore, M. Hancher, S. A. Turubanova, A. Tyukavina, D. Thau, S. V. Stehman, S. J. Goetz, T. R. Loveland, A. Kommareddy, A. Egorov, L. Chini, C. O. Justice, and J. R. G. Townshend. 2013. “High-Resolution Global Maps of 21st-Century Forest Cover Change.” Science 342 (15 November): 850–53. Data available on-line from: http://earthenginepartners.appspot.com/science-2013-global-forest."
+  ) %>%
+  addTiles(
+    "https://tiles.globalforestwatch.org/umd_regional_primary_forest_2001/latest/dynamic/{z}/{x}/{y}.png",
+    group = "Regional Primary Forests (2001)",
+    attribution = "Hansen, M. C., P. V. Potapov, R. Moore, M. Hancher, S. A. Turubanova, A. Tyukavina, D. Thau, S. V. Stehman, S. J. Goetz, T. R. Loveland, A. Kommareddy, A. Egorov, L. Chini, C. O. Justice, and J. R. G. Townshend. 2013. “High-Resolution Global Maps of 21st-Century Forest Cover Change.” Science 342 (15 November): 850–53. Data available on-line from: http://earthenginepartners.appspot.com/science-2013-global-forest."
+  ) %>%
+  # add own polygon data
+  addPolygons(data = wdpa_kfw_treated,opacity = 0.9,color = "#2b8cbe", group = "PAs KfW-supported",label = ~htmlEscape(NAME),weight = 1)%>%
+  addPolygons(data = wdpa_nonSupportPA,opacity = 0.9,color = "darkgrey", group = "PAs (Others)",label = ~htmlEscape(NAME),weight = 2)%>%
+  addPolygons(data = bolivia_suggested_PAs,opacity = 1, fillOpacity = 0.1, color = "#7d0f02", group = "PAs Suggested",label = ~htmlEscape(NAME),weight = 2)%>%
+  # add own active fire counts data as circles
+  addCircleMarkers(data=wdpa_allPAs_lossdata_subset,
+                   color = ~pal_fires(fires_categorized),
+                   group = "Active Fires Count (2000-2021)",
+                   popup = ~label,
+                   stroke = FALSE, 
+                   fillOpacity = 0.8
+                   ) %>%
+  # labels
+  addLabelOnlyMarkers(data = wdpa_allPAs_lossdata_subset,
+                    lng = ~X, lat = ~Y, label = ~NAME,group = "Labels (PA Names)",
+                    labelOptions = labelOptions(noHide = TRUE, direction = 'top', textOnly = TRUE)) %>% 
+  # controls
+  addFullscreenControl() %>%
+  # add legend(s)
+  addLegend("bottomright",
+            data = wdpa_allPAs_lossdata,
+            pal = pal_fires,
+            values = ~fires_categorized,
+            title = "Count of Active Fires in PAs (2000-2021)",
+            opacity = 1,
+            group = "Active Fires (2000-2021)") %>%
+  
+  # add layers control to define how and where data is displayed.
+  addLayersControl(
+    baseGroups = c("CartoDB","OpenStreetMap","Satellite","Topography","Nightlights"), #"Toner",,"Regional Primary Forests (2001)"
+    overlayGroups = c("PAs Suggested", "PAs KfW-supported","PAs (Others)","Labels (PA Names)", "Active Fires Count (2000-2021)","Forest Cover Loss (2001-2020)", "Regional Primary Forests (2001)"),
+    options = layersControlOptions(collapsed = FALSE)) %>%
+  # ommit certain layers
+  hideGroup(group = c("PAs (Others)","PAs KfW-supported","Forest Cover Loss (2001-2020)", "Regional Primary Forests (2001)","Labels (PA Names)"))
+
+my_map
+```
+
+### Absolute Trend
+Lollipop Plots can be used to compare PAs in terms of their treat level. The following figure shows forest fires in suggested PAs. It also shows whether any of these PAs has been or is currently supported by a project from KfW. <
+
+```{r lollipop_plot-suggested-regions, message = FALSE, warning = FALSE,fig.width=10, echo=FALSE, eval = TRUE}
+# ----- create horizontal lollipop plots for top loss areas -----
+lollipop_data <- wdpa_allPAs_lossdata %>%
+  filter(WDPAID %in% bol_wdpa_ids)
+
+lollipop_data$display_name <- ifelse (is.na(lollipop_data$bmz_n_1),
+        paste0(lollipop_data$NAME),
+        paste0(lollipop_data$NAME, " (", lollipop_data$bmz_n_1, ")")
+        )
+
+lossdata_lollipop_plot <-
+  lollipop_data %>%
+  # arrange(desc(absolute_loss)) %>%
+  ggplot() +
+  geom_point(aes(
+    x = reorder(display_name,-active_fire_counts),
+    y = active_fire_counts,
+    color = factor(bmz_n_1),
+    text = paste(
+      "Area Name: ", display_name,
+      "\nCount of Active Fires: ", round(active_fire_counts,digits = 0), " fires",
+      "\nBMZ-Number: ", bmz_n_1)
+  )) +
+  geom_segment(aes(
+    x = reorder(display_name,-active_fire_counts),
+    xend = reorder(display_name,-active_fire_counts),
+    y = 0,
+    yend = active_fire_counts,
+    color = factor(bmz_n_1),
+    text = paste(
+      "Area Name: ", display_name,
+      "\nCount of Active Fires: ", round(active_fire_counts,digits = 0), " fires",
+      "\nBMZ-Number: ", bmz_n_1)
+  )) +
+  coord_flip() +
+  labs(x="", y="Count of Fires (2000-2021)", color = "Project Number")+
+  theme_classic()
+
+ggplotly(lossdata_lollipop_plot,tooltip = "text")
+```
+  
+### Yearly Firecounts
+Stacked Barplots are used to assess the time-trend of one or several PAs. They show the variation in the total number of fires which can be amongst others attributed to El Niño and La Niña which are opposite extremes of ENSO, referring to cyclical environmental conditions that occur across the Equatorial Pacific Ocean. For more information see [here](https://www.noaa.gov/education/resource-collections/weather-atmosphere/el-nino). The different parts of each bar represent the different PAs. You can easily see which PAs take a larger share of the yearly total fire counts. Those are the ones where most fires occur. You can get more detailed information by hovering with the mouse over the bars. 
+
 
 ```{r line_plots-fire, message = FALSE, warning = FALSE,fig.width=10, echo=FALSE, eval=TRUE}
 bol_annual_fires <- read.csv("data/bolivia_annual_fires_2000_2021.csv")
@@ -691,33 +502,34 @@ palette_lineplot<-
 # create lineplot
 fires_absolute_lineplot <-
   bol_annual_fires %>%
-  ggplot() +
-  geom_line(aes(x=year,
+  ggplot(.,aes(x=year,
                 y=active_fire_counts,
-                group=factor(wdpa_id),
-                color=factor(bmz_n_1),
-                text = paste(
-                  "Area Name: ", NAME,
-                  "\nYear: ", year,
-                  "\nBMZ-Number: ", bmz_n_1)) ,alpha=0.4)+
+                # group=factor(NAME)
+                fill=factor(NAME))) +
+  geom_bar(position="stack", 
+           stat="identity")+
   labs(x="",title="Annual Forest Fires in Suggested PAs")+
   scale_y_continuous(labels=function(x) format(x, big.mark = ",", scientific = FALSE),name="Forest Loss in ha")+
-  scale_color_manual(name = "Project Number", values = palette_lineplot)+
+  #scale_color_manual(name = "Project Number", values = palette_lineplot)+
   theme_classic()
 
-ggplotly(fires_absolute_lineplot,tooltip="text")
+ggplotly(fires_absolute_lineplot)
 ```
 
-## Interpretation & Discussion
+## Interpretation & Discussion 
+
+### Forest Loss Data
 
 As outline above the GFW methodology defines forest cover loss as a _"as a stand-replacement disturbance, or a change from a forest to non-forest state."_. Loss can either be the result of human activities or natural factors such as droughts, forest fires or hurricanes, amongst others. Thus, the data currently does not allow the differentiate permanent loss and conversion from temporary loss due to natural factors. **A more in-depth analysis of pre-selected areas is therefore recommended when using the current data.**
 
 GFW data can be used to get an assessment of old-growth and primary forests as well as associated carbon emissions. It can indicate which areas had been highly threatened either due to natural causes (hurricanes/fires) or human causes (deforestation/logging/degradation and conversion to agriculture/silviculture). Especially useful in this context is to have a look at the whole trend from 2001 to 2020. Huge spikes in the individual trend data might indicate natural causes such as fires and hurricanes. A quick search with google always helps to confirm this hypothesis or you might look at Hurricane data e.g. on the [NOAA website](https://coast.noaa.gov/hurricanes/#map=4/32/-80) which provides historical data for hurricane tracks. More continuous growth in forest loss is probably due to the conversion of natural forests for agricultural purposes. Again you might look at the map given above and activate the satellite layer to see what might be happening below the detected loss. GFW does not (currently) allow to detect regrowth and regeneration but it is planned to provide that feature soon.  
 
-## Suggested Improvements
-* Analyze subsequent land-cover in loss-areas. This would be possible e.g. by using Landcover data from the ESA Copernicus mission. It would allow to seperate permanent conversion of forest area e.g. for agricultural purposes from natural losses e.g. due to hurricanes. 
+**Possible Improvements**
+
+* Analyze subsequent land-cover in loss-areas. This would be possible e.g. by using Landcover data from the ESA Copernicus mission. It would allow to seperate permanent conversion of forest area e.g. for agricultural purposes from natural losses e.g. due wildfires.
 * Aggregate existing loss data on a finer spatial grid or create heatmaps. This would allow to better visualize highly threatened  spots on the map. This could be especially relevant to quickly identify high pressure zones in large protected areas. 
 * Analyse bufferzones: This would allow to detect areas with high forest loss dynamics in its sourroundings. 
+
 
 [comment]: <> (Literature)
 
