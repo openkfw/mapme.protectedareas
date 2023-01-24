@@ -275,7 +275,7 @@ my_map
 ```
 
 ### Absolute Trend
-Lollipop Plots can be used to compare PAs in terms of their treat level. The following figure shows absolut forest cover loss in suggested PAs. It also shows whether any of these PAs has been or is currently supported by a project from KfW.
+Lollipop Plots can be used to compare PAs in terms of their treat level. The following figure shows absolut forest cover loss in suggested PAs. It also shows whether any of these PAs has been or is currently supported by a project from KfW. You can isolate single areas with a double click on their name in the legend. 
 
 ```{r lollipop_plot-suggested-regions-fcl, message = FALSE, warning = FALSE,fig.width=10, echo=FALSE, eval = TRUE}
 # ----- create horizontal lollipop plots for top loss areas -----
