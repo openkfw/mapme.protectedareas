@@ -489,31 +489,46 @@ Stacked Barplots are used to assess the time-trend of one or several PAs. They s
 
 
 ```{r line_plots-fire, message = FALSE, warning = FALSE,fig.width=10, echo=FALSE, eval=TRUE}
+# load data
 bol_annual_fires <- read.csv("data/bolivia_annual_fires_2000_2021.csv")
+# aggregate data
+bol_annual_fires <-
+  bol_annual_fires %>%
+  group_by(wdpa_id, year) %>%
+  summarise(active_fire_counts = sum(active_fire_counts))
+
+# add names
 fire_lines_aux_data <- st_drop_geometry(wdpa_kfw) %>%
   select(c(WDPAID, bmz_n_1, NAME))
+
 names(fire_lines_aux_data) [1] <- "wdpa_id"
-bol_annual_fires <- merge (bol_annual_fires, fire_lines_aux_data, by = "wdpa_id", all.x = TRUE)
 
-palette_length <- length(unique(bol_annual_fires$bmz_n_1))
-palette_lineplot<-
-  c(brewer.pal(palette_length-1,"Set1"),"grey80")
+# add missing values
+yrs <- sort(unique(bol_annual_fires$year))
+wdpa_ids <- unique(bol_annual_fires$wdpa_id)
 
-# create lineplot
-fires_absolute_lineplot <-
-  bol_annual_fires %>%
-  ggplot(.,aes(x=year,
-                y=active_fire_counts,
-                # group=factor(NAME)
-                fill=factor(NAME))) +
-  geom_bar(position="stack", 
-           stat="identity")+
-  labs(x="",title="Annual Forest Fires in Suggested PAs")+
-  scale_y_continuous(labels=function(x) format(x, big.mark = ",", scientific = FALSE),name="Forest Loss in ha")+
-  #scale_color_manual(name = "Project Number", values = palette_lineplot)+
+fires_long <- data.frame(
+  wdpa_id = rep(wdpa_ids, each = length(yrs)),
+  year = rep(yrs, times = length(wdpa_ids))
+)
+
+# merge names
+fires_long <-merge (fires_long, fire_lines_aux_data, by = "wdpa_id", all.x = TRUE)
+# merge missing data
+fires_long <- merge(fires_long, bol_annual_fires, all = TRUE)
+# create unique names
+fires_long$name_unique<-paste(fires_long$NAME,fires_long$wdpa_id,sep="_")
+
+# create plot
+fires_heatmap <-
+  ggplot(fires_long,
+         aes(x = year, y = as.factor(name_unique), fill = active_fire_counts)) +
+  geom_tile() +
+  scale_fill_distiller(palette = "RdYlGn",na.value = 'salmon') +
   theme_classic()
 
-ggplotly(fires_absolute_lineplot)
+
+ggplotly(fires_heatmap)
 ```
 
 ## Interpretation & Discussion 
