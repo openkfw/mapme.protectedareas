@@ -23,8 +23,9 @@ Chapters:
   - [The mapme.biodiversity package in R](mapme-biodiversity.html)
   - [Querying data from DOPA Rest API (DOPA/JRC)](dopa-rest.html)
 - Planning
-  - [Threat Assessment](threat_assessment.html)
+  - [Threat Assessment Overview](threat_assessment.html)
   - [Regional use case: Threat Assessment in Central America](rapid-assessment_centralamerica.html)
+  - [Regional use case: Threat Assessment in Bolivia](threat_assessment_bolivia.html)
 - Monitoring
 - Evaluation
 - Portfolio Analysis
