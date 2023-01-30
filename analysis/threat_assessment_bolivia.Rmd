@@ -431,7 +431,7 @@ The map and the subsequent lollipop plots also exhibit which of the analyzed are
 ```{r projectmap_fire, echo=FALSE, warning=FALSE,  fig.width=10}
 ## ----- create color palettes for the map -----
 pal_fires <- colorFactor(
-  palette = rev(brewer.pal(5, "RdYlGn")),
+  palette = rev(brewer.pal(5, "RdYlBu")),
   domain = wdpa_allPAs_lossdata$fires_categorized
 )
 
@@ -501,7 +501,7 @@ my_map <-
             data = wdpa_allPAs_lossdata,
             pal = pal_fires,
             values = ~fires_categorized,
-            title = "Count of Active Fires in PAs (2000-2021)",
+            title = "Sum of Active Fires in PAs (2000-2021)",
             opacity = 1,
             group = "Active Fires (2000-2021)") %>%
   
