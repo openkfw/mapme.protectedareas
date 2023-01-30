@@ -419,11 +419,14 @@ ggplotly(fires_heatmap)
 
 
 ## Fire counts (2000 to 2021)
-The covered within this section includes annual forest fire counts, which are taken from the NASA FIRMS [^3]. We sum up fires on an annual base for all protected areas. For simplicity we leave out fire intensity and burned area in this analysis. For ceveats on this approach please see the *Interpretation and Discussion* section below. 
+This section covers the quantification and analysis of forest fires between 2000-2021, which are taken from the NASA FIRMS arquives [^3]. We sum up fires on an annual base for all protected areas. For simplicity we leave out fire intensity and burned area in this analysis. For ceveats on this approach please see the *Interpretation and Discussion* section below. 
 
 ### Map
-The following map depicts a summary of fire counts in the suggested Protected Areas according to NASA Firms.In general larger protected areas expirience more fires due to their spatial extension. Nevertheless there are also exeptions. It appears that large protected areas in the Andean mountain range expirience less forest fires (you can activate a Topography layer in the map). In contrast, PAs in the east which are located closer to the Brazilian boarder (Rondonia) expirience more fires. There is also a notable correlation between forest cover loss and forest fires (You can activate the forest cover loss layer in the map). This seems plausible since fires are often used as a strategy for forest cleansing or large natural wildfires might cause permanent damage to the forest cover. However, the relationship is not perfect. 
-The map and the subsequent lollipop plots also exhibit which of the analyzed areas have been already part of past or ongoing KfW projects. The data suggests that only one area "Noel Kempff Mercado" expirienced a larger amount of fires (6,724) between 2000 and 2021. You can get individual area statistics by clicking on the colored circles in the map. 
+The following map depicts a summary of fire counts in the suggested Protected Areas according to NASA Firms.In general larger protected areas expirience more fires due to their spatial extension. Nevertheless there are also exeptions. It appears that large protected areas in the Andean mountain range expirience less forest fires (you can activate a Topography layer in the map). In contrast, PAs in the east which are located closer to the Brazilian boarder (Rondonia) expirience more fires. 
+
+There is also a notable correlation between forest cover loss and forest fires (You can activate the forest cover loss layer in the map). This seems plausible since fires are often used as a strategy for forest cleansing or large natural wildfires might cause permanent damage to the forest cover. However, the relationship is not perfect. 
+
+The map and the subsequent lollipop plots also exhibit which of the analyzed areas have been already part of past or ongoing KfW projects. The data suggests that only one area which was supported by KfW in the past ("Noel Kempff Mercado") expirienced a larger amount of fires (6,724) between 2000 and 2021. Again, you can get individual area statistics by clicking on the colored circles in the map. 
 
 ```{r projectmap_fire, echo=FALSE, warning=FALSE,  fig.width=10}
 ## ----- create color palettes for the map -----
@@ -514,7 +517,7 @@ my_map
 ```
 
 ### Absolute Trend
-The following "Lollipop Plots" are be used to quickly visualize the total number of fires and sort protected areas from low to high regarding the total number of fire occurences. The figure furthermor shows if any of these PAs has been or is currently supported by a project from KfW. You can get detailed statistics by hovering over the lollipops with your mouse. 
+The following "Lollipop Plots" are be used to quickly visualize the total number of fires and sort protected areas from low to high regarding the total number of fire occurences. The figure furthermore shows if any of these PAs has been or is currently supported by a project from KfW. You can get detailed statistics by hovering over the lollipops with your mouse. 
 
 ```{r lollipop_plot-suggested-regions, message = FALSE, warning = FALSE,fig.width=10,fig.height=10, echo=FALSE, eval = TRUE}
 # ----- create horizontal lollipop plots for top loss areas -----
@@ -556,9 +559,9 @@ ggplotly(lossdata_lollipop_plot,tooltip = "text")
 ```
   
 ### Yearly Firecounts
-Heatmaps are used to assess the time-trend of one or several PAs. They show the variation in the total number of fires which can be attributed to human activities or natural factors such as El Niño and La Niña (For more information see [here](https://www.noaa.gov/education/resource-collections/weather-atmosphere/el-nino)). Especially in 2010 where almost all PAs expirienced increased fire-rates, the causes might be related to a strong El-Nino from 2009-2010. 
+Heatmaps are used again to assess the time-trend of one or several PAs. They show the variation in the total number of fires which can be attributed to human activities or natural factors such as El Niño and La Niña (For more information see [here](https://www.noaa.gov/education/resource-collections/weather-atmosphere/el-nino)). Especially in 2010 where almost all PAs expirienced increased fire-rates, the causes might be related to a strong La Niña event which took place between the years 2009 and 2010 which increased dry conditions in the western Amazon increasing the likelihood of prolonged wild fires.
 
-Green color suggest a low number of fire whereas red colors indicate a larger number You can get more detailed information by hovering with the mouse over the the individual cells.  
+Blue color suggest a low number of fire whereas red colors indicate a larger number. Missing values are white. You can get more detailed information by hovering with the mouse over the the individual cells.  
 
 
 ```{r line_plots-fire, message = FALSE, warning = FALSE,fig.width=10, fig.height=10, echo=FALSE, eval=TRUE}
@@ -614,14 +617,14 @@ fires_heatmap <-
              "Area Name: ",
              NAME,
              "\nCount of Active Fires ",
-             round(active_fire_counts_sum, digits = 0),
+             round(active_fire_counts, digits = 0),
              "\nWDPA - ID: ",
              wdpa_id
            )
          )) +
   geom_tile() +
   #scale_y_discrete(limits=rev)+
-  scale_fill_distiller(palette = "RdYlGn",
+  scale_fill_distiller(palette = "RdYlBu",
                        na.value = 'grey',
                        trans = "log",
                        labels = comma_format(accuracy = 1)) +
