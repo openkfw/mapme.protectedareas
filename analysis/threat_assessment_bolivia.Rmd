@@ -189,7 +189,7 @@ This map is interactive meaning that you can zoom into the map to see specific c
 
 For analysis purposes it is usefull to also activate the satellite layer which can often indicate wether areas are affected by agricultural conversion. 
 
-```{r projectmap_def, echo=FALSE, warning=FALSE,  fig.width=10}
+```{r projectmap_def, echo=FALSE, warning=FALSE,  fig.width=10,  fig.height=7}
 ## ----- create color palettes for the map -----
 pal_relative_loss <- colorFactor(
   palette = rev(brewer.pal(5, "RdYlGn")),
@@ -428,7 +428,7 @@ There is also a notable correlation between forest cover loss and forest fires (
 
 The map and the subsequent lollipop plots also exhibit which of the analyzed areas have been already part of past or ongoing KfW projects. The data suggests that only one area which was supported by KfW in the past ("Noel Kempff Mercado") expirienced a larger amount of fires (6,724) between 2000 and 2021. Again, you can get individual area statistics by clicking on the colored circles in the map. 
 
-```{r projectmap_fire, echo=FALSE, warning=FALSE,  fig.width=10}
+```{r projectmap_fire, echo=FALSE, warning=FALSE,  fig.width=10,  fig.height=7}
 ## ----- create color palettes for the map -----
 pal_fires <- colorFactor(
   palette = rev(brewer.pal(5, "RdYlBu")),
