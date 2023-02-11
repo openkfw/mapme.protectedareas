@@ -159,14 +159,35 @@ The following analysis is intented to support a peer-discussion on the threat le
 The goal of this analysis is to look at a set of predefined PAs, rank it according to the their threat level and compare it to the past portfolio from KfW. The analysis is based on publicly available data from the World Database of Protected Areas (WDPA/IUCN) [^1] and other freely available geodata-sources. In a first analysis step we focus on habitat destruction in terms of primary forest cover loss and in the second step we look at fires in protected areas between 2000 and 2021. Both datasets can indicate human pressures on the ecosystem as well as natural/climatic stressors that could harm the long-term stability and provision of ecosystem services. 
 
 ## Analyzed Protected Areas
-Below you can find an overview of the analyzed areas. Data was downloaded from the WDPA. Some of the analyzed areas appear to be overlapping and some also show two entries in the WDPA. The following data gives some insights into governance variables as provided by the WDPA. You can also see if some of these areas where already supported by a KfW project. 
+Below you can find an overview of the analyzed areas. Data was downloaded from the WDPA. Some of the analyzed areas appear to be overlapping and some also show two entries in the WDPA. The following data gives some insights into governance variables as provided by the WDPA.
 
 ```{r table, echo=FALSE, warning=FALSE,  fig.width=10}
 
-bolivia_suggested_PAs %>% 
-  st_drop_geometry() %>% 
-  arrange(ORIG_NAME) %>% 
-  rmarkdown::paged_table()
+bolivia_suggested_PAs %>%
+  st_drop_geometry() %>%
+  arrange(ORIG_NAME) %>%
+  select(
+    WDPAID,
+    ORIG_NAME,
+    DESIG,
+    IUCN_CAT,
+    STATUS,
+    STATUS_YR,
+    GOV_TYPE,
+    OWN_TYPE,
+    MANG_AUTH,
+    ISO3,
+    MANG_PLAN,
+    AREA_KM2
+  ) %>%
+  DT::datatable(.,
+                filter = 'top',
+                options = list(
+                  dom = 't',
+                  scrollX = TRUE,
+                  scrollY = "600px",
+                  pageLength = nrow(bolivia_suggested_PAs)
+                ))
 
 
 ```
@@ -208,7 +229,7 @@ getPalette = colorRampPalette(brewer.pal(9, "Set1"))
 ## add label string for map display 
 wdpa_allPAs_lossdata$label <- 
   with(wdpa_allPAs_lossdata, paste(
-  "<p> <b>", NAME, "</b> </br>",
+  "<p> <b>", ORIG_NAME, "</b> </br>",
   "Primary Forests (2000)",round(max_forest,digits=0)," ha", "</br>",
   "Forest Fires (2000-2021)", active_fire_counts, "</br>",
   "Absolute Loss (2000-2020):",round(absolute_loss,digits=0)," ha", "</br>",
@@ -249,9 +270,9 @@ my_map <-
     attribution = "Hansen, M. C., P. V. Potapov, R. Moore, M. Hancher, S. A. Turubanova, A. Tyukavina, D. Thau, S. V. Stehman, S. J. Goetz, T. R. Loveland, A. Kommareddy, A. Egorov, L. Chini, C. O. Justice, and J. R. G. Townshend. 2013. “High-Resolution Global Maps of 21st-Century Forest Cover Change.” Science 342 (15 November): 850–53. Data available on-line from: http://earthenginepartners.appspot.com/science-2013-global-forest."
   ) %>%
   # add own polygon data
-  addPolygons(data = wdpa_kfw_treated,opacity = 0.9,color = "#2b8cbe", group = "PAs KfW-supported",label = ~htmlEscape(NAME),weight = 1)%>%
-  addPolygons(data = wdpa_nonSupportPA,opacity = 0.9,color = "darkgrey", group = "PAs (Others)",label = ~htmlEscape(NAME),weight = 2)%>%
-  addPolygons(data = bolivia_suggested_PAs,opacity = 1, fillOpacity = 0.1, color = "#7d0f02", group = "PAs Suggested",label = ~htmlEscape(NAME),weight = 2)%>%
+  addPolygons(data = wdpa_kfw_treated,opacity = 0.9,color = "#2b8cbe", group = "PAs KfW-supported",label = ~htmlEscape(ORIG_NAME),weight = 1)%>%
+  addPolygons(data = wdpa_nonSupportPA,opacity = 0.9,color = "darkgrey", group = "PAs (Others)",label = ~htmlEscape(ORIG_NAME),weight = 2)%>%
+  addPolygons(data = bolivia_suggested_PAs,opacity = 1, fillOpacity = 0.1, color = "#7d0f02", group = "PAs Suggested",label = ~htmlEscape(ORIG_NAME),weight = 2)%>%
   # add own forest loss data as circles
   addCircleMarkers(data=wdpa_allPAs_lossdata_subset,
                    color = ~pal_relative_loss(relative_loss_categorized),
@@ -269,7 +290,7 @@ my_map <-
                    ) %>%
     # labels
   addLabelOnlyMarkers(data = wdpa_allPAs_lossdata_subset,
-                    lng = ~X, lat = ~Y, label = ~NAME,group = "Labels (PA Names)",
+                    lng = ~X, lat = ~Y, label = ~ORIG_NAME,group = "Labels (PA Names)",
                     labelOptions = labelOptions(noHide = TRUE, direction = 'top', textOnly = TRUE)) %>% 
   # add fullscreen control
   addFullscreenControl() %>%
@@ -302,7 +323,7 @@ lollipop_data <- wdpa_allPAs_lossdata %>%
   filter(WDPAID %in% bol_wdpa_ids)
 
 lollipop_data$display_name <- 
-        paste0(lollipop_data$NAME, " (WDPA-ID: ", lollipop_data$WDPAID, ")")
+        paste0(lollipop_data$ORIG_NAME, " (WDPA-ID: ", lollipop_data$WDPAID, ")")
 
 lossdata_lollipop_plot <-
   lollipop_data %>%
@@ -366,7 +387,8 @@ gfw_lossstats_2 <-gfw_lossstats_2 %>%
 
 # add names
 fire_lines_aux_data <- st_drop_geometry(wdpa_kfw) %>%
-  select(c(WDPAID, bmz_n_1, NAME))
+  select(c(WDPAID, bmz_n_1))
+
 
 # names(fire_lines_aux_data) [1] <- "wdpa_id"
 names(fire_lines_aux_data) [1] <- "wdpa_id"
@@ -375,16 +397,23 @@ names(fire_lines_aux_data) [1] <- "wdpa_id"
 # change name
 names(gfw_lossstats_2) [1] <- "wdpa_id"
 
-# # merge names
-# gfw_lossstats_2_long <-merge (gfw_lossstats_2_long, 
-#                               gfw_lossstats_2, by = "wdpa_id", all.x = TRUE)
 # # merge missing data
+gfw_lossstats_2 <- merge(gfw_lossstats_2,
+                              fire_lines_aux_data, all.x = TRUE)
+
+# merge names
+names_auxdata<-wdpa_allPAs_lossdata %>%
+  st_drop_geometry() %>% 
+  select(WDPAID,ORIG_NAME)
+
+names(names_auxdata) [1] <- "wdpa_id"
 
 gfw_lossstats_2 <- merge(gfw_lossstats_2,
-                              fire_lines_aux_data, all = TRUE)
+                              names_auxdata)
+
 
 # create unique names
-gfw_lossstats_2$name_unique<-paste(gfw_lossstats_2$NAME," (WDPA-ID: ",gfw_lossstats_2$wdpa_id,")",sep="")
+gfw_lossstats_2$name_unique<-paste(gfw_lossstats_2$ORIG_NAME," (WDPA-ID: ",gfw_lossstats_2$wdpa_id,")",sep="")
 
 # merge total forest loss data for sorting
 gfw_lossstats_3 <-
@@ -404,7 +433,7 @@ fires_heatmap <-
              y = reorder(name_unique,-absolute_loss),
              fill = value,
              text = paste(
-               "Area Name: ", NAME,
+               "Area Name: ", ORIG_NAME,
                "\nForest cover loss: ", round(value,digits = 0), " ha",
                "\nWDPA - ID: ", wdpa_id))) +
   geom_tile() +
@@ -438,7 +467,7 @@ pal_fires <- colorFactor(
 ## add label string for map display 
 wdpa_allPAs_lossdata$label <- 
   with(wdpa_allPAs_lossdata, paste(
-  "<p> <b>", NAME, "</b> </br>",
+  "<p> <b>", ORIG_NAME, "</b> </br>",
   "Primary Forests (2000)",round(max_forest,digits=0)," ha", "</br>",
   "Forest Fires (2000-2021)", active_fire_counts, "</br>",
   "Absolute Loss (2000-2020):",round(absolute_loss,digits=0)," ha", "</br>",
@@ -479,9 +508,9 @@ my_map <-
     attribution = "Hansen, M. C., P. V. Potapov, R. Moore, M. Hancher, S. A. Turubanova, A. Tyukavina, D. Thau, S. V. Stehman, S. J. Goetz, T. R. Loveland, A. Kommareddy, A. Egorov, L. Chini, C. O. Justice, and J. R. G. Townshend. 2013. “High-Resolution Global Maps of 21st-Century Forest Cover Change.” Science 342 (15 November): 850–53. Data available on-line from: http://earthenginepartners.appspot.com/science-2013-global-forest."
   ) %>%
   # add own polygon data
-  addPolygons(data = wdpa_kfw_treated,opacity = 0.9,color = "#2b8cbe", group = "PAs KfW-supported",label = ~htmlEscape(NAME),weight = 1)%>%
-  addPolygons(data = wdpa_nonSupportPA,opacity = 0.9,color = "darkgrey", group = "PAs (Others)",label = ~htmlEscape(NAME),weight = 2)%>%
-  addPolygons(data = bolivia_suggested_PAs,opacity = 1, fillOpacity = 0.1, color = "#7d0f02", group = "PAs Suggested",label = ~htmlEscape(NAME),weight = 2)%>%
+  addPolygons(data = wdpa_kfw_treated,opacity = 0.9,color = "#2b8cbe", group = "PAs KfW-supported",label = ~htmlEscape(ORIG_NAME),weight = 1)%>%
+  addPolygons(data = wdpa_nonSupportPA,opacity = 0.9,color = "darkgrey", group = "PAs (Others)",label = ~htmlEscape(ORIG_NAME),weight = 2)%>%
+  addPolygons(data = bolivia_suggested_PAs,opacity = 1, fillOpacity = 0.1, color = "#7d0f02", group = "PAs Suggested",label = ~htmlEscape(ORIG_NAME),weight = 2)%>%
   # add own active fire counts data as circles
   addCircleMarkers(data=wdpa_allPAs_lossdata_subset,
                    color = ~pal_fires(fires_categorized),
@@ -492,7 +521,7 @@ my_map <-
                    ) %>%
   # labels
   addLabelOnlyMarkers(data = wdpa_allPAs_lossdata_subset,
-                    lng = ~X, lat = ~Y, label = ~NAME,group = "Labels (PA Names)",
+                    lng = ~X, lat = ~Y, label = ~ORIG_NAME,group = "Labels (PA Names)",
                     labelOptions = labelOptions(noHide = TRUE, direction = 'top', textOnly = TRUE)) %>% 
   # controls
   addFullscreenControl() %>%
@@ -525,7 +554,7 @@ lollipop_data <- wdpa_allPAs_lossdata %>%
   filter(WDPAID %in% bol_wdpa_ids)
 
 lollipop_data$display_name <- 
-        paste0(lollipop_data$NAME, " (WDPA-ID: ", lollipop_data$WDPAID, ")")
+        paste0(lollipop_data$ORIG_NAME, " (WDPA-ID: ", lollipop_data$WDPAID, ")")
 
 lossdata_lollipop_plot <-
   lollipop_data %>%
@@ -566,7 +595,12 @@ Blue color suggest a low number of fire whereas red colors indicate a larger num
 
 ```{r line_plots-fire, message = FALSE, warning = FALSE,fig.width=10, fig.height=10, echo=FALSE, eval=TRUE}
 # load data
-bol_annual_fires <- read.csv("data/bolivia_annual_fires_2000_2021.csv")
+bol_annual_fires <- 
+  read.csv("data/bolivia_annual_fires_2000_2021.csv")
+
+# remove duplicates
+bol_annual_fires<-bol_annual_fires[!duplicated(bol_annual_fires),]
+
 # aggregate data
 bol_annual_fires <-
   bol_annual_fires %>%
@@ -574,8 +608,8 @@ bol_annual_fires <-
   summarise(active_fire_counts = sum(active_fire_counts))
 
 # add names
-fire_lines_aux_data <- st_drop_geometry(wdpa_kfw) %>%
-  select(c(WDPAID, bmz_n_1, NAME))
+fire_lines_aux_data <- st_drop_geometry(wdpa_allPAs) %>%
+  select(c(WDPAID, bmz_n_1, ORIG_NAME))
 
 names(fire_lines_aux_data) [1] <- "wdpa_id"
 
@@ -589,12 +623,19 @@ fires_long <- data.frame(
 )
 
 # merge names
-fires_long <-merge (fires_long, fire_lines_aux_data, by = "wdpa_id", all.x = TRUE)
+fires_long <-
+  merge (fires_long, fire_lines_aux_data, by = "wdpa_id", all.x = TRUE)
+
 # merge missing data
-fires_long <- merge(fires_long, bol_annual_fires, all = TRUE)
+fires_long <- 
+  merge(fires_long, bol_annual_fires, all = TRUE)
+
 # create unique names
-fires_long$name_unique<-paste(fires_long$NAME," (WDPA-ID: ",fires_long$wdpa_id,")",sep="")
-# merge with maximum data
+fires_long$name_unique<-
+  paste(fires_long$ORIG_NAME," (WDPA-ID: ",fires_long$wdpa_id,")",sep="")
+
+
+
 # merge total forest loss data for sorting
 fires_long_2 <-
   lollipop_data %>%
@@ -615,7 +656,7 @@ fires_heatmap <-
            fill = active_fire_counts,
            text = paste(
              "Area Name: ",
-             NAME,
+             ORIG_NAME,
              "\nCount of Active Fires ",
              round(active_fire_counts, digits = 0),
              "\nWDPA - ID: ",
