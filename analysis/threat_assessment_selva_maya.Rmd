@@ -1,0 +1,825 @@
+---
+title: "Project Preparation: Threat Assessment for the Selva Maya"
+author: "Johannes Schielein & Andreas Petutschnig"
+date: "2023-01-24"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+```{r setup, message = FALSE, warning = FALSE, include = FALSE}
+# load libraries and set session options. 
+library("tidyverse")
+library("sf")
+library("leaflet")
+library("leaflet.extras")
+library("leaflet.extras2")
+library("ggsci")
+library("scales")
+library("htmltools")
+library("RColorBrewer")
+library("plotly")
+options(scipen=10000)
+```
+
+```{r load-data, message = FALSE, warning = FALSE, include = FALSE}
+agg_multipoly <- function(poly_in) {
+  poly_in$geographic.id <- NULL
+  poly_in$id <- NULL
+  poly_in$metadata_origin <- NULL
+  poly_in$single_geometry_id <- NULL
+  poly_out <- aggregate(poly_in, by = list(poly_in$wdpa_id), FUN = median)
+  poly_out$Group.1 <- NULL
+  return(poly_out)
+}
+
+selva_maya <- st_read("data/selva_maya/selva_maya.gpkg", layer = "wdpa_regions") %>%
+  agg_multipoly()
+selva_maya_buffer <- st_read("data/selva_maya/selva_maya.gpkg", layer = "wdpa_regions_buffer_10km") %>%
+  agg_multipoly()
+
+wdpa <- st_read("data/wdpa_kfw_spatial_latinamerica_2021-04-22_allPAs_valid_simplified.gpkg")
+wdpa_kfw <- wdpa [wdpa$WDPAID %in% selva_maya$wdpa_id, ]
+wdpa_non_kfw <- wdpa[!wdpa$WDPAID %in% selva_maya$wdpa_id, ]
+
+load_original_and_buffer <- function(fname_original, subtract_attrs) {
+  dat_original <- read.csv(fname_original)
+  dat_original$extent <- "Original"
+  dat_out <- dat_original
+  dat_buff <- read.csv(paste0(dirname(fname_original), "/buffer_", basename(fname_original)))
+  dat_buff$extent <- "Buffered"
+  
+  # Subtract original from buffered region
+  join_columns <- c("wdpa_id", "date")
+  if ("landcover_class" %in% names(dat_buff)) {
+    join_columns <- c("wdpa_id", "landcover_class", "date")
+  }
+  dat_comb <- dat_buff %>%
+    left_join(dat_original, by = join_columns)
+  
+  for(sub_attr in subtract_attrs) {
+    attr_y <- paste0(sub_attr, ".y")
+    dat_comb [[attr_y]] <- dat_comb [[attr_y]] %>%
+      replace_na(0)
+  }
+  dat_buff [[sub_attr]] <- dat_buff [[sub_attr]] - dat_comb [[attr_y]]
+  
+  dat_out <- rbind(dat_out, dat_buff)
+  return(dat_out)
+}
+
+esa_landcover <- load_original_and_buffer("data/selva_maya/esa_landcover.csv", "landcover_area_ha")
+modis_fire <- load_original_and_buffer("data/selva_maya/fire_monthly.csv", c("monthly_fires", "monthly_sum_frp_gw"))
+tree_coverage <- load_original_and_buffer("data/selva_maya/tree_coverage.csv", "treecover_ha")
+population <- load_original_and_buffer("data/selva_maya/population.csv", "population")
+```
+
+```{r stats, message = FALSE, warning = FALSE, include = FALSE}
+tree_loss <- tree_coverage %>%
+  group_by(wdpa_id, extent) %>%
+  dplyr::summarise(relative_loss = 1 - min(treecover_ha) / max(treecover_ha),
+                   absolute_loss = max(treecover_ha) - min(treecover_ha),
+                   .groups = "rowwise")
+```
+
+
+```{r database_creation, message = FALSE, warning = FALSE, include = FALSE}
+# ----- load and transform protected areas data -----
+##  Protected areas
+## create column for area coloring based on categories
+wdpa_kfw$REP_AREA_cat<-
+  cut(wdpa_kfw$REP_AREA,
+      c(0,1000,5000,10000,20000,max(wdpa_kfw$REP_AREA)),
+      c("< 1,000 sqkm","1,001-5,000 sqkm","5,001-10,000 sqkm","10,001-20,000 sqkm",paste("20,001-",max(wdpa_kfw$REP_AREA)," sqkm",sep="")))
+
+# ----- load loss data and prepare for mapping -----
+## loss statistics
+gfw_lossstats <-
+  read_csv(
+    "data/zonal_statistics_allPAs_long_temporal.csv",
+    col_types = c("cfid")
+  )
+
+## filter for area only
+gfw_lossstats <-
+  gfw_lossstats %>%
+  filter(name == "area")
+
+## load spatial data
+wdpa_allPAs<-
+  st_read("data/wdpa_kfw_spatial_latinamerica_2021-04-22_allPAs_valid_simplified.gpkg")
+
+wdpa_allPAs <- wdpa_allPAs %>%
+  filter (ISO3 %in% c("BLZ", "GTM", "MEX"))
+
+## check if wdpa ids from loss statistics are contained in spatial data
+table(unique(gfw_lossstats$WDPA_PID) %in% wdpa_allPAs$WDPA_PID) # all but one
+
+## add column to spatial data that shows forest area in 2000 for each area (maximum is equal to area in 2000 since no forest gain is in the data)
+max_forest <-
+  gfw_lossstats %>%
+  group_by(WDPA_PID) %>%
+  dplyr::summarise(max_forest = max(value))
+
+## merge to spatial and clean up
+wdpa_allPAs <- 
+  merge(wdpa_allPAs, max_forest,"WDPA_PID")
+
+rm(max_forest)
+
+## categorize maximum forest area by meaningfull and pretty breaks
+wdpa_allPAs$max_forest_categorized <-
+  cut(
+    wdpa_allPAs$max_forest,
+    breaks = c(-1, 100, 1000, 10000,100000, max(wdpa_allPAs$max_forest, na.rm = T)),
+    labels = c("0-100", "101-1,000", "1,001-10,000", "10,001-100,000",">100,000")
+  )
+
+## calculate relative losses between 2000 and 2020 and add column to spatial data
+relative_loss <-
+  gfw_lossstats %>%
+  group_by(WDPA_PID) %>%
+  dplyr::summarise(relative_loss = 1-min(value)/max(value),absolute_loss = max(value)-min(value))
+
+## merge to spatial and clean up
+wdpa_allPAs <- 
+  merge(wdpa_allPAs, relative_loss, "WDPA_PID")
+
+rm(relative_loss)
+
+## categorize relative loss by meaningfull and pretty breaks 
+wdpa_allPAs$relative_loss_categorized <-
+  cut(
+    wdpa_allPAs$relative_loss,
+    breaks = c(-1, 0.02, 0.05, 0.1, 0.2, 1),
+    labels = c("0-2 %", "2-5 %", "5-10 %", "10-20 %",">20 %")
+  )
+
+
+## categorize absolute loss by meaningfull and pretty breaks 
+wdpa_allPAs$absolute_loss_categorized <-
+  cut(
+    wdpa_allPAs$absolute_loss,
+    breaks = c(-1, 10, 100, 1000, 10000,max(wdpa_allPAs$absolute_loss)),
+    labels = c("0-10", "10-100", "100-1,000", "1,000-10,000",">10,000")
+  )
+
+## subset data and get centroids for map
+wdpa_allPAs_lossdata<-wdpa_allPAs %>% 
+  filter(DESIG_ENG != 'UNESCO-MAB Biosphere Reserve') %>% 
+  filter(GEOMETRY_TYPE != 'POINT') %>% 
+  filter(is.nan(relative_loss)!=TRUE) %>%
+  st_centroid()
+
+## subset all data for untreated
+wdpa_nonSupportPA<-wdpa_allPAs %>% 
+  filter(DESIG_ENG != 'UNESCO-MAB Biosphere Reserve') %>% 
+  filter(GEOMETRY_TYPE != 'POINT') %>% 
+  filter(is.na(bmz_n_1)==TRUE) 
+
+## add fire data
+selva_maya_fire_sum <- modis_fire %>%
+  group_by(wdpa_id) %>%
+  summarize(active_fire_counts = sum(monthly_fires)) %>%
+  rename(WDPAID = wdpa_id)
+  
+
+wdpa_allPAs_lossdata <- merge(wdpa_allPAs_lossdata, selva_maya_fire_sum, by = "WDPAID", all.x = TRUE)
+wdpa_allPAs_lossdata$fires_categorized <-
+  cut(
+    wdpa_allPAs_lossdata$active_fire_counts,
+    breaks = c(0, 500, 2500, 5000, 10000, 1e6),
+    labels = c("0-500", "501-2,500", "2501-5,000", "5,001-10,000","> 10,000")
+  )
+```
+
+## Introduction
+The following analysis is intended to support a peer-discussion on the threat level of protected areas (short: PAs) in the Selva Maya region. The goal of this exercise is to assist KfW and its partners in the project preparation phase. In addition, information about the current portfolio and its relevance to protect the most threatened areas can be derived.
+
+The goal of this analysis is to look at a set of predefined PAs, rank it according to the their threat level and compare it to the past portfolio from KfW. The analysis is based on publicly available data from the World Database of Protected Areas (WDPA/IUCN) [^1] and other freely available geodata-sources. In a first analysis step we focus on habitat destruction in terms of primary forest cover loss and in the second step we look at fires in protected areas between 2000 and 2021. Both datasets can indicate human pressures on the ecosystem as well as natural/climatic stressors that could harm the long-term stability and provision of ecosystem services. 
+
+## Analyzed Protected Areas
+Below you can find an overview of the analyzed areas. Data was downloaded from the WDPA. Some of the analyzed areas appear to be overlapping and some also show two entries in the WDPA. The following data gives some insights into governance variables as provided by the WDPA.
+
+## Forest cover loss (2000-2020)
+To quantify forest cover loss we utilize data from the Global Forest Watch (Hansen et al, 2013)[^2]. Forest cover loss is defined in their methdology _"as a stand-replacement disturbance, or a change from a forest to non-forest state."_. Loss can either be the result of human activities or natural factors such as droughts, forest fires or hurricanes, amongst others. More information on the interpretation and usefullness of this data as well as suggested further steps to advance the threat assessment are given below in the discussion part. 
+
+__In the analysis  we will focus on two key outcome indicators:__ 
+
+* **Total forest cover loss**: Measures the total sum of loss areas in hectare. This variable is able to identify PAs with the highest primary forest cover loss between 2001 and 2020. The identification of high loss areas can be usefull for targeting areas where we might achieve the largest impact in terms of _reducing emissions from deforstation and forest degradation_. 
+
+* **Relative forest cover loss**: Measures the percentage of primary forest cover loss inside a PA compared to its total primary forest area in 2000. The identification of PAs with high relative losses can be relevant from a biodiversity perspective. PAs with high relative losses might be places where large parts of the functional forest habitat is lost. Targeting these areas might not only help to protect the _floral biodiversity but also the fauna and humans that inhabit these areas and profit from the local forest ecosystem services_. 
+
+
+### Map
+The following map depicts relative and absolute forest cover loss in the selected areas. The size of circles is dependent on the total loss (the bigger the total loss, the larger the circle). The color is dependend on the relative loss (red circles indicate areas with high loss). From a threat perspective big red circles could be especially relevant areas for conservation. 
+
+This map is interactive meaning that you can zoom into the map to see specific countries in more detail and click on areas to get summary statistics. Furthermore, supported PAs from the current and past portfolio of KfW (blue) are displayed with their actual polygon boundaries as well as all other PAs in Bolivia (grey) which can be activated manually in the map. Furthermore the analyzed data from Global Forest watch can be seen when activated in the layer control panel as well as the distribution of primary forests in 2001. 
+
+For analysis purposes it is usefull to also activate the satellite layer which can often indicate wether areas are affected by agricultural conversion. 
+
+```{r projectmap_def, echo=FALSE, warning=FALSE,  fig.width=10,  fig.height=7}
+## ----- create color palettes for the map -----
+pal_relative_loss <- colorFactor(
+  palette = rev(brewer.pal(5, "RdYlGn")),
+  domain = wdpa_allPAs$relative_loss_categorized
+)
+
+pal_absoute_loss <- colorFactor(
+  palette = rev(brewer.pal(5, "RdYlGn")),
+  domain = wdpa_allPAs$absolute_loss_categorized
+)
+
+# create colorramp function for country
+colourCount = length(unique(wdpa_kfw$ISO3))
+getPalette = colorRampPalette(brewer.pal(9, "Set1"))
+
+## add label string for map display 
+wdpa_allPAs_lossdata$label <- 
+  with(wdpa_allPAs_lossdata, paste(
+  "<p> <b>", ORIG_NAME, "</b> </br>",
+  "Primary Forests (2000)",round(max_forest,digits=0)," ha", "</br>",
+  "Forest Fires (2000-2021)", active_fire_counts, "</br>",
+  "Absolute Loss (2000-2020):",round(absolute_loss,digits=0)," ha", "</br>",
+  "Relative Loss (2000-2020):", round(relative_loss*100,digits=2)," %:",
+  "</p>"))
+
+# subset data for treated only 
+wdpa_kfw_treated <- selva_maya %>%
+  left_join(st_drop_geometry(wdpa_allPAs), join_by(wdpa_id == WDPAID))
+
+# subset lossdata for selected only
+wdpa_allPAs_lossdata_subset <- wdpa_allPAs_lossdata %>% 
+  filter(WDPAID %in% selva_maya$wdpa_id)
+
+# get centroid coordinates
+wdpa_allPAs_lossdata_subset <-
+  cbind(wdpa_allPAs_lossdata_subset,
+        st_coordinates(st_centroid(wdpa_allPAs_lossdata_subset)))
+
+bbox <- selva_maya_buffer %>%
+  st_bbox() %>%
+  as.character()
+
+# ----- create map -----
+my_map <-
+  leaflet() %>%
+  # add external map providers
+  addTiles(group = "OpenStreetMap") %>%
+  addProviderTiles(providers$CartoDB.Positron, group="CartoDB") %>%
+  addProviderTiles(providers$Esri.WorldImagery, group="Satellite") %>%
+  addProviderTiles(providers$Esri.WorldShadedRelief, group="Topography") %>%
+  addProviderTiles(providers$NASAGIBS.ViirsEarthAtNight2012, group="Nightlights") %>%
+  addTiles(
+    "https://tiles.globalforestwatch.org/umd_tree_cover_loss/latest/dynamic/{z}/{x}/{y}.png",
+    group = "Forest Cover Loss (2001-2020)",
+    #options=tileOptions(opacity = 0.7),
+    attribution = "Hansen, M. C., P. V. Potapov, R. Moore, M. Hancher, S. A. Turubanova, A. Tyukavina, D. Thau, S. V. Stehman, S. J. Goetz, T. R. Loveland, A. Kommareddy, A. Egorov, L. Chini, C. O. Justice, and J. R. G. Townshend. 2013. “High-Resolution Global Maps of 21st-Century Forest Cover Change.” Science 342 (15 November): 850–53. Data available on-line from: http://earthenginepartners.appspot.com/science-2013-global-forest."
+  ) %>%
+  addTiles(
+    "https://tiles.globalforestwatch.org/umd_regional_primary_forest_2001/latest/dynamic/{z}/{x}/{y}.png",
+    group = "Regional Primary Forests (2001)",
+    attribution = "Hansen, M. C., P. V. Potapov, R. Moore, M. Hancher, S. A. Turubanova, A. Tyukavina, D. Thau, S. V. Stehman, S. J. Goetz, T. R. Loveland, A. Kommareddy, A. Egorov, L. Chini, C. O. Justice, and J. R. G. Townshend. 2013. “High-Resolution Global Maps of 21st-Century Forest Cover Change.” Science 342 (15 November): 850–53. Data available on-line from: http://earthenginepartners.appspot.com/science-2013-global-forest."
+  ) %>%
+  # add own polygon data
+  addPolygons(data = wdpa_kfw_treated, opacity = 0.9, color = "#2b8cbe", group = "PAs Selva Maya",
+              label = ~htmlEscape(ORIG_NAME),weight = 1) %>%
+  addPolygons(data = wdpa_nonSupportPA, opacity = 0.9,color = "darkgrey", group = "PAs (Others)",
+              label = ~htmlEscape(ORIG_NAME),weight = 2) %>%
+  addPolygons(data = selva_maya_buffer, opacity = 0.1, fillOpacity = 0.1, color = "#7d0f02",
+              group = "Buffer Regions", weight = 0.2) %>%
+  # add own forest loss data as circles
+  addCircleMarkers(data=wdpa_allPAs_lossdata_subset,
+                   color = ~pal_relative_loss(relative_loss_categorized),
+                   group = "Sum of Forest Cover Loss (2001-2020)",
+                   radius = ~ifelse(absolute_loss_categorized == ">10,000", 12, 
+                                    ifelse(absolute_loss_categorized == "1,000-10,000", 6,
+                                           ifelse(absolute_loss_categorized == "100-1,000", 4,
+                                                  ifelse(absolute_loss_categorized == "10-100", 2,1
+                                                  )      
+                                           )
+                                    )),
+                   popup = ~label,
+                   stroke = FALSE, 
+                   fillOpacity = 0.5
+                   ) %>%
+    # labels
+  addLabelOnlyMarkers(data = wdpa_allPAs_lossdata_subset,
+                      lng = ~X, lat = ~Y, label = ~ORIG_NAME, group = "Labels (PA Names)",
+                      labelOptions = labelOptions(noHide = TRUE, direction = 'top', textOnly = TRUE)) %>% 
+  # add fullscreen control
+  addFullscreenControl() %>%
+  # add legend(s)
+  addLegend("bottomright",
+            data = wdpa_allPAs,
+            pal = pal_relative_loss,
+            values = ~relative_loss_categorized,
+            title = "Relative Forest Cover Loss (2001-2020)",
+            opacity = 1,
+            group = "Sum of Forest Cover Loss (2001-2020)") %>%
+  
+  # add layers control to define how and where data is displayed.
+  addLayersControl(
+    baseGroups = c("CartoDB","OpenStreetMap","Satellite","Topography","Nightlights"), #"Toner",,"Regional Primary Forests (2001)"
+    overlayGroups = c("PAs Selva Maya","Buffer Regions", "PAs (Others)", "Labels (PA Names)", "Sum of Forest Cover Loss (2001-2020)","Forest Cover Loss (2001-2020)", "Regional Primary Forests (2001)"),
+    options = layersControlOptions(collapsed = FALSE)) %>%
+  # ommit certain layers
+  hideGroup(group = c("PAs (Others)","Forest Cover Loss (2001-2020)", "Regional Primary Forests (2001)","Labels (PA Names)")) %>%
+  fitBounds(bbox [1], bbox [2], bbox [3], bbox [4])
+
+my_map
+```
+
+### Absolute Trend
+The following "Lollipop Plots" are be used to quickly visualize the total area affected by forest cover loss and sort protected areas from low to high regarding the total area affected. The figure furthermor shows if any of these PAs has been or is currently supported by a project from KfW. You can get detailed statistics by hovering over the lollipops with your mouse. 
+
+```{r lollipop_plot-suggested-regions-fcl, message = FALSE, warning = FALSE,fig.width=10,fig.height=10, echo=FALSE, eval = TRUE}
+# ----- create horizontal lollipop plots for top loss areas -----
+lollipop_data <- wdpa_allPAs_lossdata %>%
+  filter(WDPAID %in% selva_maya$wdpa_id)
+
+lollipop_data$display_name <- 
+        paste0(lollipop_data$ORIG_NAME, " (WDPA-ID: ", lollipop_data$WDPAID, ")")
+
+lossdata_lollipop_plot <-
+  lollipop_data %>%
+  # arrange(desc(absolute_loss)) %>%
+  ggplot() +
+  geom_point(aes(
+    x = reorder(display_name,-absolute_loss),
+    y = absolute_loss,
+    color = factor(bmz_n_1),
+    text = paste(
+      "Area Name: ", display_name,
+      "\nForest cover loss: ", round(absolute_loss,digits = 0), " ha",
+      "\nBMZ-Number: ", bmz_n_1)
+  )) +
+  geom_segment(aes(
+    x = reorder(display_name,-absolute_loss),
+    xend = reorder(display_name,-absolute_loss),
+    y = 0,
+    yend = absolute_loss,
+    color = factor(bmz_n_1),
+    text = paste(
+      "Area Name: ", display_name,
+      "\nForest cover loss: ", round(absolute_loss,digits = 0), " ha",
+      "\nBMZ-Number: ", bmz_n_1)
+  )) +
+  coord_flip() +
+  labs(x="", y="Absolute Forest Cover Loss in ha (2000-2020)", color = "Project Number")+
+  theme_classic()
+
+ggplotly(lossdata_lollipop_plot,tooltip = "text")
+```
+
+### Yearly Forest Cover Loss
+Heatmaps are used to assess the time-trend of one or several PAs. We use heatmaps instead of lineplots in order to increase readibility of the plot. The heatmap exhibits  variation in the total area that was affected by forest cover loss on an annual base. Green colors suggest a low amount of loss and red colors indicate a larger loss area. 
+
+You can get more detailed information by hovering with the mouse over the the individual cells. It is important to mention that the analysis does not allow to differentiate between natural and human induced losses. Therefore a more profound analysis with the map can be helpful. Sometimes outstanding large forest cover loss events can indicate natural losses (see. e.g. Otuquis which expirienced an extreme loss event in 2019) whereas continous loss events over several years might indicate ongoing anthropogenic conversion of areas for pastoril or agricultural purposes (see e.g. Isiboro Secure. You may also observe a fishbone like conversion of natural landscapes amongst the built up infrastructure in Isiboro Secure in the map).  
+
+```{r line_plots-fcl, message = FALSE, warning = FALSE,fig.width=10,fig.height=10, echo=FALSE, eval=TRUE}
+# Library
+## loss statistics
+gfw_lossstats_2 <-
+  read_csv(
+    "data/zonal_statistics_allPAs_long_temporal.csv",
+    col_types = c("cfid")
+  )
+
+## filter for area only
+gfw_lossstats_2 <-
+  gfw_lossstats_2 %>%
+  filter(name == "loss")
+
+# aggregate data
+gfw_lossstats_2 <-
+  gfw_lossstats_2 %>%
+  group_by(WDPA_PID, year) %>%
+  summarise(value = sum(value))
+
+# filter
+gfw_lossstats_2 <-gfw_lossstats_2 %>% 
+  filter(WDPA_PID %in% selva_maya$wdpa_id)
+
+# add names
+fire_lines_aux_data <- st_drop_geometry(wdpa_kfw) %>%
+  select(c(WDPAID, bmz_n_1))
+
+
+# names(fire_lines_aux_data) [1] <- "wdpa_id"
+names(fire_lines_aux_data) [1] <- "wdpa_id"
+
+
+# change name
+names(gfw_lossstats_2) [1] <- "wdpa_id"
+
+# # merge missing data
+gfw_lossstats_2 <- merge(gfw_lossstats_2,
+                              fire_lines_aux_data, all.x = TRUE)
+
+# merge names
+names_auxdata<-wdpa_allPAs_lossdata %>%
+  st_drop_geometry() %>% 
+  select(WDPAID,ORIG_NAME)
+
+names(names_auxdata) [1] <- "wdpa_id"
+
+gfw_lossstats_2 <- merge(gfw_lossstats_2,
+                              names_auxdata)
+
+
+# create unique names
+gfw_lossstats_2$name_unique<-paste(gfw_lossstats_2$ORIG_NAME," (WDPA-ID: ",gfw_lossstats_2$wdpa_id,")",sep="")
+
+# merge total forest loss data for sorting
+gfw_lossstats_3 <-
+  lollipop_data %>%
+  select(WDPAID, absolute_loss) %>%
+  merge(gfw_lossstats_2,
+        .,
+        by.x = "wdpa_id",
+        by.y = "WDPAID",
+        all.x = T)
+
+# create plot
+fires_heatmap <-
+  ggplot(gfw_lossstats_3,
+         aes(x = year, 
+             #y = as.factor(name_unique), 
+             y = reorder(name_unique,-absolute_loss),
+             fill = value,
+             text = paste(
+               "Area Name: ", ORIG_NAME,
+               "\nForest cover loss: ", round(value,digits = 0), " ha",
+               "\nWDPA - ID: ", wdpa_id))) +
+  geom_tile() +
+  scale_fill_distiller(palette = "RdYlGn",
+                       na.value = 'black', 
+                       trans = "log") +
+  theme_classic()
+
+
+ggplotly(fires_heatmap)
+```
+
+
+## Fire counts (2000 to 2021)
+This section covers the quantification and analysis of forest fires between 2000-2021, which are taken from the NASA FIRMS arquives [^3]. We sum up fires on an annual base for all protected areas. For simplicity we leave out fire intensity and burned area in this analysis. For ceveats on this approach please see the *Interpretation and Discussion* section below. 
+
+### Map
+The following map depicts a summary of fire counts in the suggested Protected Areas according to NASA Firms.In general larger protected areas expirience more fires due to their spatial extension. Nevertheless there are also exeptions. It appears that large protected areas in the Andean mountain range expirience less forest fires (you can activate a Topography layer in the map). In contrast, PAs in the east which are located closer to the Brazilian boarder (Rondonia) expirience more fires. 
+
+There is also a notable correlation between forest cover loss and forest fires (You can activate the forest cover loss layer in the map). This seems plausible since fires are often used as a strategy for forest cleansing or large natural wildfires might cause permanent damage to the forest cover. However, the relationship is not perfect. 
+
+The map and the subsequent lollipop plots also exhibit which of the analyzed areas have been already part of past or ongoing KfW projects. The data suggests that only one area which was supported by KfW in the past ("Noel Kempff Mercado") expirienced a larger amount of fires (6,724) between 2000 and 2021. Again, you can get individual area statistics by clicking on the colored circles in the map. 
+
+```{r projectmap_fire, echo=FALSE, warning=FALSE,  fig.width=10,  fig.height=7}
+## ----- create color palettes for the map -----
+pal_fires <- colorFactor(
+  palette = rev(brewer.pal(5, "RdYlBu")),
+  domain = wdpa_allPAs_lossdata$fires_categorized
+)
+
+## add label string for map display 
+wdpa_allPAs_lossdata$label <- 
+  with(wdpa_allPAs_lossdata, paste(
+  "<p> <b>", ORIG_NAME, "</b> </br>",
+  "Primary Forests (2000)",round(max_forest,digits=0)," ha", "</br>",
+  "Forest Fires (2000-2021)", active_fire_counts, "</br>",
+  "Absolute Loss (2000-2020):",round(absolute_loss,digits=0)," ha", "</br>",
+  "Relative Loss (2000-2020):", round(relative_loss*100,digits=2)," %:",
+  "</p>"))
+
+# subset lossdata for selected only
+wdpa_allPAs_lossdata_subset <- wdpa_allPAs_lossdata %>%
+  filter(WDPAID %in% selva_maya$wdpa_id)
+
+# get centroid coordinates
+wdpa_allPAs_lossdata_subset<-
+  cbind(wdpa_allPAs_lossdata_subset,
+        st_coordinates(st_centroid(wdpa_allPAs_lossdata_subset)))
+
+# ----- create map -----
+my_map <-
+  leaflet() %>%
+  # add external map providers
+  addTiles(group = "OpenStreetMap") %>%
+  addProviderTiles(providers$CartoDB.Positron, group="CartoDB") %>%
+  addProviderTiles(providers$Esri.WorldImagery, group="Satellite") %>%
+  addProviderTiles(providers$Esri.WorldShadedRelief, group="Topography") %>%
+  addProviderTiles(providers$NASAGIBS.ViirsEarthAtNight2012, group="Nightlights") %>%
+  addTiles(
+    "https://tiles.globalforestwatch.org/umd_tree_cover_loss/latest/dynamic/{z}/{x}/{y}.png",
+    group = "Forest Cover Loss (2001-2020)",
+    #options=tileOptions(opacity = 0.7),
+    attribution = "Hansen, M. C., P. V. Potapov, R. Moore, M. Hancher, S. A. Turubanova, A. Tyukavina, D. Thau, S. V. Stehman, S. J. Goetz, T. R. Loveland, A. Kommareddy, A. Egorov, L. Chini, C. O. Justice, and J. R. G. Townshend. 2013. “High-Resolution Global Maps of 21st-Century Forest Cover Change.” Science 342 (15 November): 850–53. Data available on-line from: http://earthenginepartners.appspot.com/science-2013-global-forest."
+  ) %>%
+  addTiles(
+    "https://tiles.globalforestwatch.org/umd_regional_primary_forest_2001/latest/dynamic/{z}/{x}/{y}.png",
+    group = "Regional Primary Forests (2001)",
+    attribution = "Hansen, M. C., P. V. Potapov, R. Moore, M. Hancher, S. A. Turubanova, A. Tyukavina, D. Thau, S. V. Stehman, S. J. Goetz, T. R. Loveland, A. Kommareddy, A. Egorov, L. Chini, C. O. Justice, and J. R. G. Townshend. 2013. “High-Resolution Global Maps of 21st-Century Forest Cover Change.” Science 342 (15 November): 850–53. Data available on-line from: http://earthenginepartners.appspot.com/science-2013-global-forest."
+  ) %>%
+  # add own polygon data
+  addPolygons(data = wdpa_kfw_treated, opacity = 0.9, color = "#2b8cbe", group = "PAs Selva Maya",
+              label = ~htmlEscape(ORIG_NAME),weight = 1) %>%
+  addPolygons(data = wdpa_nonSupportPA, opacity = 0.9,color = "darkgrey", group = "PAs (Others)",
+              label = ~htmlEscape(ORIG_NAME),weight = 2) %>%
+  addPolygons(data = selva_maya_buffer, opacity = 0.1, fillOpacity = 0.1, color = "#7d0f02",
+              group = "Buffer Regions", weight = 0.2) %>%
+  # add own active fire counts data as circles
+  addCircleMarkers(data=wdpa_allPAs_lossdata_subset,
+                   color = ~pal_fires(fires_categorized),
+                   group = "Active Fires Count (2000-2021)",
+                   popup = ~label,
+                   stroke = FALSE, 
+                   fillOpacity = 0.8
+                   ) %>%
+  # labels
+  addLabelOnlyMarkers(data = wdpa_allPAs_lossdata_subset,
+                    lng = ~X, lat = ~Y, label = ~ORIG_NAME,group = "Labels (PA Names)",
+                    labelOptions = labelOptions(noHide = TRUE, direction = 'top', textOnly = TRUE)) %>% 
+  # controls
+  addFullscreenControl() %>%
+  # add legend(s)
+  addLegend("bottomright",
+            data = wdpa_allPAs_lossdata,
+            pal = pal_fires,
+            values = ~fires_categorized,
+            title = "Sum of Active Fires in PAs (2000-2021)",
+            opacity = 1,
+            group = "Active Fires (2000-2021)") %>%
+  
+  # add layers control to define how and where data is displayed.
+  addLayersControl(
+    baseGroups = c("CartoDB","OpenStreetMap","Satellite","Topography","Nightlights"), #"Toner",,"Regional Primary Forests (2001)"
+    overlayGroups = c("PAs Selva Maya","Buffer Regions", "PAs (Others)", "Labels (PA Names)", "Active Fires Count (2000-2021)","Forest Cover Loss (2001-2020)", "Regional Primary Forests (2001)"),
+    options = layersControlOptions(collapsed = FALSE)) %>%
+  # ommit certain layers
+  hideGroup(group = c("PAs (Others)","Buffer Regions","Forest Cover Loss (2001-2020)", "Regional Primary Forests (2001)","Labels (PA Names)")) %>%
+  fitBounds(bbox [1], bbox [2], bbox [3], bbox [4])
+
+my_map
+```
+
+### Absolute Trend
+The following "Lollipop Plots" are be used to quickly visualize the total number of fires and sort protected areas from low to high regarding the total number of fire occurences. The figure furthermore shows if any of these PAs has been or is currently supported by a project from KfW. You can get detailed statistics by hovering over the lollipops with your mouse. 
+
+```{r lollipop_plot-suggested-regions, message = FALSE, warning = FALSE,fig.width=10,fig.height=10, echo=FALSE, eval = TRUE}
+# ----- create horizontal lollipop plots for top loss areas -----
+lollipop_data <- wdpa_allPAs_lossdata %>%
+  filter(WDPAID %in% selva_maya$wdpa_id)
+
+lollipop_data$display_name <- 
+        paste0(lollipop_data$ORIG_NAME, " (WDPA-ID: ", lollipop_data$WDPAID, ")")
+
+lossdata_lollipop_plot <-
+  lollipop_data %>%
+  # arrange(desc(absolute_loss)) %>%
+  ggplot() +
+  geom_point(aes(
+    x = reorder(display_name,-active_fire_counts),
+    y = active_fire_counts,
+    color = factor(bmz_n_1),
+    text = paste(
+      "Area Name: ", display_name,
+      "\nCount of Active Fires: ", round(active_fire_counts,digits = 0), " fires",
+      "\nBMZ-Number: ", bmz_n_1)
+  )) +
+  geom_segment(aes(
+    x = reorder(display_name,-active_fire_counts),
+    xend = reorder(display_name,-active_fire_counts),
+    y = 0,
+    yend = active_fire_counts,
+    color = factor(bmz_n_1),
+    text = paste(
+      "Area Name: ", display_name,
+      "\nCount of Active Fires: ", round(active_fire_counts,digits = 0), " fires",
+      "\nBMZ-Number: ", bmz_n_1)
+  )) +
+  coord_flip() +
+  labs(x="", y="Count of Fires (2000-2021)", color = "Project Number")+
+  theme_classic()
+
+ggplotly(lossdata_lollipop_plot,tooltip = "text")
+```
+  
+### Yearly Firecounts
+Heatmaps are used again to assess the time-trend of one or several PAs. They show the variation in the total number of fires which can be attributed to human activities or natural factors such as El Niño and La Niña (For more information see [here](https://www.noaa.gov/education/resource-collections/weather-atmosphere/el-nino)). Especially in 2010 where almost all PAs expirienced increased fire-rates, the causes might be related to a strong La Niña event which took place between the years 2009 and 2010 which increased dry conditions in the western Amazon increasing the likelihood of prolonged wild fires.
+
+Blue color suggest a low number of fire whereas red colors indicate a larger number. Missing values are white. You can get more detailed information by hovering with the mouse over the the individual cells.  
+
+```{r line_plots-fire, message = FALSE, warning = FALSE,fig.width=10, fig.height=10, echo=FALSE, eval=TRUE}
+modis_fire_yearly <- modis_fire %>%
+  mutate(year = year(date))
+
+modis_fire_yearly <- aggregate(monthly_fires ~ wdpa_id + year + extent, data = modis_fire_yearly, FUN = sum)
+names(modis_fire_yearly) [4] <- "yearly_fires"
+
+fires_long <- merge(modis_fire_yearly, st_drop_geometry(wdpa_kfw),
+      by.x = "wdpa_id", by.y = "WDPAID", all.x = TRUE, all.y = FALSE)
+
+fires_long$name_unique <-
+  paste(fires_long$ORIG_NAME," (WDPA-ID: ",fires_long$wdpa_id,")",sep="")
+
+fires_heatmap <-
+  ggplot(fires_long,
+         aes(
+           x = year,
+           y = reorder(name_unique,-yearly_fires),
+           fill = yearly_fires,
+           text = paste(
+             "Area Name: ",
+             ORIG_NAME,
+             "\nCount of Active Fires ",
+             round(yearly_fires, digits = 0),
+             "\nWDPA - ID: ",
+             wdpa_id
+           )
+         )) +
+  geom_tile() +
+  scale_fill_distiller(palette = "RdYlBu",
+                       na.value = 'grey',
+                       trans = "log",
+                       labels = comma_format(accuracy = 1)) +
+  labs(y= "", x = "",fill="Count of Fires") +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5)) +
+  scale_x_continuous(breaks = seq(2000, 2023, by = 2)) +
+  facet_wrap(vars(extent), ncol = 1, nrow = 2) +
+  ggtitle("Yearly fires in the Selva Maya PAs")
+
+ggplotly(fires_heatmap)
+```
+
+```{r fire-trend, message = FALSE, warning = FALSE,fig.width=10, fig.height=10, echo=FALSE, eval=TRUE}
+fires <- modis_fire
+fires$month <- fires$date %>%
+  month()
+fires$year <- fires$date %>%
+  year()
+
+p <- ggplot(fires, aes(x = month, y = monthly_fires, group = year)) +
+  stat_summary(fun.y = mean, geom = "line", color = "#ababab") +
+  geom_point(alpha = 0.1) +
+  theme_classic() +
+  scale_x_continuous(breaks = 1:12) +
+  xlab("Month") +
+  ylab("Fires per Month") +
+  ggtitle("Monthly Fire Events and Mean Monthly Fire Events") +
+  facet_wrap(vars(extent), ncol = 1, nrow = 2, scales = "free")
+
+ggplotly(p)
+```
+
+TODO: Text about correlation between fire counts and intensity
+
+```{r fire-correlation, message = FALSE, warning = FALSE,fig.width=10, fig.height=10, echo=FALSE, eval=TRUE}
+cor_sp <- cor(fires$monthly_fires, fires$monthly_sum_frp_gw, method = "spearman")
+
+p <- ggplot(fires, aes(x = monthly_fires, y = monthly_sum_frp_gw)) +
+  geom_point() +
+  xlab("Monthly Fires") +
+  ylab("Fire Radiative Power [GW]") +
+  ggtitle("Correlation Between Fire Frequency and Fire Radiative Power") +
+  theme_classic()
+
+ggplotly(p)
+```
+
+## Land Cover
+
+```{r plots_landcover, message = FALSE, warning = FALSE, eval = FALSE}
+# esa_landcover_fixed <- esa_landcover %>%
+#   filter(date != max(date)) %>%
+#   mutate(landcover_area_ha = landcover_area_ha * 10) %>%
+#   bind_rows(esa_landcover %>% filter(date == max(date)))
+
+esa_landcover_dummy <- esa_landcover %>%
+#esa_landcover_dummy <- esa_landcover_fixed %>%
+  expand(landcover_class, date, extent) %>%
+  mutate(landcover_area_ha = 0)
+
+cols = c("#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3", "#A6D854", "#FFD92F", "#E5C494", "#B3B3B3")
+lc_plot <- esa_landcover %>%
+#lc_plot <- esa_landcover_fixed %>%
+  bind_rows(esa_landcover_dummy) %>%
+  mutate (date = year(as.Date(date))) %>%
+  group_by(landcover_class, date, extent) %>%
+  summarize(landcover_area_ha = sum(landcover_area_ha), .groups = "rowwise") %>%
+  group_by(date == max(date), extent) %>%
+#  group_by(extent) %>%
+  do(p = plot_ly(., x = ~as.factor(date), y = ~landcover_area_ha, type = "bar",
+                 color = ~landcover_class, legendgroup = ~landcover_class,
+                 colors = cols) %>%
+       layout(barmode = "stack")
+    )
+
+subplot(style(lc_plot$p[[1]] %>%
+                layout(annotations = list(text = "Buffered", x = 0.4, y = 1.07,
+                                          showarrow = FALSE, xref = "paper", yref = "paper")),
+                showlegend = TRUE),
+        style(lc_plot$p[[2]] %>%
+                layout(annotations = list(text = "Original", x = 0.6, y = 1.07,
+                                          showarrow = FALSE, xref = "paper", yref = "paper")),
+                showlegend = FALSE),
+        style(lc_plot$p[[3]], showlegend = FALSE),
+        style(lc_plot$p[[4]], showlegend = FALSE),
+        nrows = 2, shareX = FALSE, shareY = FALSE)
+```
+
+```{r plots_landcover_2019, message = FALSE, warning = FALSE, eval = TRUE}
+esa_landcover_dummy <- esa_landcover %>%
+  expand(wdpa_id, landcover_class, date, extent) %>%
+  mutate(landcover_area_ha = 0)
+
+cols = c("#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3", "#A6D854", "#FFD92F", "#E5C494", "#B3B3B3")
+lc_plot <- esa_landcover %>%
+  bind_rows(esa_landcover_dummy) %>%
+  filter(date == max(date)) %>%
+  mutate (date = year(as.Date(date))) %>%
+  mutate (wdpa_id = as.factor(wdpa_id)) %>%
+#  group_by(landcover_class, extent, wdpa_id) %>%
+  group_by(extent) %>%
+  do(p = plot_ly(., x = ~wdpa_id, y = ~landcover_area_ha, type = "bar",
+         color = ~landcover_class, legendgroup = ~landcover_class,
+         colors = cols) %>%
+   layout(barmode = "stack")
+  )
+  subplot(style(lc_plot$p[[1]] %>%
+                  layout(annotations = list(text = "Buffered", x = 0.4, y = 1.07,
+                                            showarrow = FALSE, xref = "paper", yref = "paper")),
+                  showlegend = TRUE),
+          style(lc_plot$p[[2]] %>%
+                  layout(annotations = list(text = "Original", x = 0.6, y = 1.07,
+                                            showarrow = FALSE, xref = "paper", yref = "paper")),
+                  showlegend = FALSE)
+          )
+  
+```
+
+## Population
+
+```{r plots_population, message = FALSE, warning = FALSE, eval = TRUE}
+p <- ggplot(population, aes(x = date, y = population, color = as.factor(wdpa_id))) +
+  geom_point() +
+  facet_wrap(vars(extent), ncol = 1, nrow = 2)
+
+p <- ggplot(population, aes(x = date, y = population, color = as.factor(wdpa_id))) +
+  geom_point() +
+  geom_line()
+p
+
+population %<>%
+  group_by(wdpa_id, extent) %>%
+  slice_min(date, n = 1) %>%
+  select(-date) %>%
+  rename(pop_2k = population) %>%
+  right_join(population, join_by(wdpa_id, extent)) %>%
+  group_by(wdpa_id, extent, date) %>%
+  mutate(perc_diff_abs = (100 * (population - pop_2k)) / pop_2k)
+
+population$perc_diff_rel <- c(NA, (100 * diff(test$population, lag = 1))) / test$pop_2k
+population$perc_diff_rel [population$date == min(population$date)] <- 0
+
+ggplot(population, aes(x = date, y = perc_diff_rel, group = as.factor(wdpa_id),
+                       color = as.factor(wdpa_id)
+                       )) +
+  geom_line() +
+  facet_wrap(vars(extent), ncol = 2, nrow = 1)
+```
+//TODO add population graphs (yearly data for 2000 - 2020)
+
+## Interpretation & Discussion 
+
+### Forest cover loss data
+
+As outline above the GFW methodology defines forest cover loss as a _"as a stand-replacement disturbance, or a change from a forest to non-forest state."_. Loss can either be the result of human activities or natural factors such as droughts, forest fires or hurricanes, amongst others. Thus, the data currently does not allow the differentiate permanent loss and conversion from temporary loss due to natural factors. **A more in-depth analysis of pre-selected areas is therefore recommended when using the current data.**
+
+GFW data can be used to get an assessment of old-growth and primary forests as well as associated carbon emissions. It can indicate which areas had been highly threatened either due to natural causes (storms/fires) or human causes (deforestation/logging/degradation and conversion to agriculture/silviculture). Especially useful in this context is to have a look at the whole trend from 2001 to 2020. Huge spikes in the individual trend data might indicate natural causes such as fires and tropical storms A quick search with google always helps to confirm this hypothesis. In the upper analysis case, for example, we can see that one of the most affected areas is Otuquis National Park which was hardly hit by wildfires several times e.g. in 2019, 2020 and 2022 according to several internet sources. Natural causes can be less harmefull if the forest is able to regrow which in case of Otuquis [seems to be  unlikely](https://phys.org/news/2019-09-million-animals-perish-bolivia-wildfires.html).
+
+
+More continuous growth in forest loss is probably due to the conversion of natural forests for agricultural purposes. Again you might look at the map given above and activate the satellite layer to see what might be happening below the detected loss. GFW does not (currently) allow to detect regrowth and regeneration but it is planned to provide that feature soon.  
+
+**Possible Improvements**
+
+* Analyze subsequent land-cover in loss-areas. This would be possible e.g. by using Landcover data from the ESA Copernicus mission. It would allow to seperate permanent conversion of forest area e.g. for agricultural purposes from natural losses e.g. due wildfires.
+* Aggregate existing loss data on a finer spatial grid or create heatmaps. This would allow to better visualize highly threatened  spots on the map. This could be especially relevant to quickly identify high pressure zones in large protected areas. 
+* Analyse bufferzones: This would allow to detect areas with high forest loss dynamics in its sourroundings. 
+
+### Fire Data
+The utilized indicator (sum of forest fires) neglects the fact that fires exibit a different intensity and that the area affected by fires differs amongst observations. Nevertheless, area estimates can be derived from the forest cover loss data as well. 
+
+Also the utilized indicator does not differentiate amongst biomes. Fires in dry regions and Savannahs such as the Chaco might be more common and have a vital function for the ecosystem whereas they might be more problematic in moist rainforest where the local vegetation is less able to cope with fire stress. 
+
+**Possible Improvements**
+
+* Combine count, intensity and affected area in a combined estimator
+* Match fire data against a historical baseline to detect deviations from "normal". 
+
+[comment]: <> (Literature)
+
+[^1]: UNEP-WCMC and IUCN (2022), Protected Planet: The World Database on Protected Areas (WDPA) and World Database on Other Effective Area-based Conservation Measures (WD-OECM) [Online], February 2022, Cambridge, UK: UNEP-WCMC and IUCN. Available at: www.protectedplanet.net.
+
+[^2]: "Hansen, M. C., P. V. Potapov, R. Moore, M. Hancher, S. A. Turubanova, A. Tyukavina, D. Thau, S. V. Stehman, S. J. Goetz, T. R. Loveland, A. Kommareddy, A. Egorov, L. Chini, C. O. Justice, and J. R. G. Townshend. 2013. “High-Resolution Global Maps of 21st-Century Forest Cover Change.” Science 342 (15 November): 850–53. Data available on-line from: http://earthenginepartners.appspot.com/science-2013-global-forest."
+
+[^3]: "Justice, C.O., Giglio, L., Korontzi, S., Owens, J., Morisette, J., Roy, D., Descloitres, J., Alleaume, S., Petitcolin, F., & Kaufman, Y.J. (2002). The MODIS fire products. Remote Sensing of Environment, 83:244-262. doi:10.1016/S0034-4257(02)00076-7"
