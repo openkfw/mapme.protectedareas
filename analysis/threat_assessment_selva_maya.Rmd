@@ -105,7 +105,6 @@ tree_loss <- tree_coverage %>%
                    .groups = "rowwise")
 ```
 
-
 ```{r database_creation, message = FALSE, warning = FALSE, include = FALSE}
 # ----- load and transform protected areas data -----
 ##  Protected areas
@@ -746,7 +745,7 @@ ggplotly(p)
 
 ## Land Cover
 
-This plot shows the ESA land cover data for the year 2019 in and around the PAs. By double clicking on a class in the legend, you can single out categories for further examination.
+This plot shows the ESA land cover data for the year 2019 in and around the PAs. By double clicking on a class in the legend, you can single out categories for further examination. The second plot shows the same statistics, but for the buffer region around the PAs rather than the actual PAs.
 
 ```{r plots_landcover_2019, message = FALSE, warning = FALSE, echo = FALSE, eval = TRUE, fig.width=9}
 esa_landcover <- st_drop_geometry(wdpa_allPAs) %>%
