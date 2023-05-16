@@ -13,6 +13,7 @@
 
 <title>Home</title>
 
+<script src="site_libs/header-attrs-2.21/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -31,8 +32,8 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
-<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.2.1/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.2.1/css/v4-shims.min.css" rel="stylesheet" />
 
 <link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
 <!-- Add a small amount of space between sections. -->
@@ -41,6 +42,8 @@ div.section {
   padding-top: 12px;
 }
 </style>
+
+
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -187,8 +190,8 @@ $(document).ready(function () {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -196,16 +199,9 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -290,25 +286,50 @@ $(document).ready(function () {
 </div>
 
 
-<p>Welcome to the <strong>KfW Protected Areas Database</strong>. Here you can find routines and datasources that we are using to analyze our protected areas portfolio with open data and free and open source software tecnologies. This project is intented to create insights into our own work and propose data products that can be utilized along the whole project cycle in financial cooperation projects (project planning, monitoring, evaluation and portfolio reporting).</p>
-<p>This project was created as a reproducible research project using the <em>workflowr</em> package. For more information please visit <a href="https://github.com/jdblischak/workflowr">workflowr</a> website. In order to use our routines you can read our documentation below or and can check out our R-codes from our <a href="https://github.com/openkfw/mapme.protectedareas">Github repository</a>.</p>
-<p>The website is structured to show data-sources, routines for creating a database and methodologies to analyze the data. The <strong>KfW Protected Areas Database</strong> is a work in progress project and part of the <a href="https://mapme-initiative.org/">MAPME initiative</a> to promote the use of open geodata and open-source GIS tecnologies in international development cooperation. We invite others to leave constructive feedback on our work while we are in the doing and get in touch with us on our initiative.</p>
+<p>Welcome to the <strong>KfW Protected Areas Database</strong>. Here
+you can find routines and datasources that we are using to analyze our
+protected areas portfolio with open data and free and open source
+software tecnologies. This project is intented to create insights into
+our own work and propose data products that can be utilized along the
+whole project cycle in financial cooperation projects (project planning,
+monitoring, evaluation and portfolio reporting).</p>
+<p>This project was created as a reproducible research project using the
+<em>workflowr</em> package. For more information please visit <a
+href="https://github.com/jdblischak/workflowr">workflowr</a> website. In
+order to use our routines you can read our documentation below or and
+can check out our R-codes from our <a
+href="https://github.com/openkfw/mapme.protectedareas">Github
+repository</a>.</p>
+<p>The website is structured to show data-sources, routines for creating
+a database and methodologies to analyze the data. The <strong>KfW
+Protected Areas Database</strong> is a work in progress project and part
+of the <a href="https://mapme-initiative.org/">MAPME initiative</a> to
+promote the use of open geodata and open-source GIS tecnologies in
+international development cooperation. We invite others to leave
+constructive feedback on our work while we are in the doing and get in
+touch with us on our initiative.</p>
 <p>Chapters:</p>
 <ul>
-<li>Creating a database
+<li><p>Creating a database</p>
 <ul>
-<li><a href="mapme-biodiversity.html">The mapme.biodiversity package in R</a></li>
-<li><a href="dopa-rest.html">Querying data from DOPA Rest API (DOPA/JRC)</a></li>
+<li><a href="mapme-biodiversity.html">The mapme.biodiversity package in
+R</a></li>
+<li><a href="dopa-rest.html">Querying data from DOPA Rest API
+(DOPA/JRC)</a></li>
 </ul></li>
-<li>Planning
+<li><p>Planning</p>
 <ul>
 <li><a href="threat_assessment.html">Threat Assessment Overview</a></li>
-<li><a href="rapid-assessment_centralamerica.html">Regional use case: Threat Assessment in Central America</a></li>
-<li><a href="threat_assessment_bolivia.html">Regional use case: Threat Assessment in Bolivia</a></li>
+<li><a href="threat_assessment_selva_maya.html">Threat Assessment Selva
+Maya</a></li>
+<li><a href="rapid-assessment_centralamerica.html">Regional use case:
+Threat Assessment in Central America</a></li>
+<li><a href="threat_assessment_bolivia.html">Regional use case: Threat
+Assessment in Bolivia</a></li>
 </ul></li>
-<li>Monitoring</li>
-<li>Evaluation</li>
-<li>Portfolio Analysis
+<li><p>Monitoring</p></li>
+<li><p>Evaluation</p></li>
+<li><p>Portfolio Analysis</p>
 <ul>
 <li><a href="portfolio_analysis.html">Ecosystem Assessment</a></li>
 </ul></li>
@@ -328,6 +349,8 @@ footer is added to webpages before the MathJax javascript. -->
     "HTML-CSS": { availableFonts: ["TeX"] }
   });
 </script>
+
+
 
 
 
