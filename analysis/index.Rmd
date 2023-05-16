@@ -24,6 +24,7 @@ Chapters:
   - [Querying data from DOPA Rest API (DOPA/JRC)](dopa-rest.html)
 - Planning
   - [Threat Assessment Overview](threat_assessment.html)
+  - [Threat Assessment Selva Maya](threat_assessment_selva_maya.html)
   - [Regional use case: Threat Assessment in Central America](rapid-assessment_centralamerica.html)
   - [Regional use case: Threat Assessment in Bolivia](threat_assessment_bolivia.html)
 - Monitoring
