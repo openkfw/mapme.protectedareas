@@ -217,11 +217,14 @@ wdpa_allPAs_lossdata$fires_categorized <-
 ```
 
 ## Introduction
-The following analysis is intended to support a peer-discussion on the threat level of protected areas (short: PAs) in the Selva Maya region. The goal of this exercise is to assist KfW and its partners in the project preparation phase. In addition, information about the current portfolio and its relevance to protect the most threatened areas can be derived.
+The following analysis is intended to support a peer-discussion on the threat level of protected areas (short: PAs) in the Selva Maya region located in Mexico, Belize and Guatemala. The goal of this exercise is to assist KfW and its partners in the project preparation phase. In addition, information about the current portfolio and its relevance to protect the most threatened areas can be derived.
 
-The goal of this analysis is to look at a set of predefined PAs, rank it according to the their threat level and compare it to the past portfolio from KfW. The analysis is based on publicly available data from the World Database of Protected Areas (WDPA/IUCN) [^1] and other freely available geodata-sources. In a first analysis step we focus on habitat destruction in terms of primary forest cover loss and in the second step we look at fires in protected areas between 2000 and 2021. Both datasets can indicate human pressures on the ecosystem as well as natural/climatic stressors that could harm the long-term stability and provision of ecosystem services. 
+We look at a set of predefined PAs, rank it according to the their threat level and compare it to the past KfW portfolio. The analysis is based on publicly available data from the World Database of Protected Areas (WDPA/IUCN) [^1] and other freely available geodata sources.
+In a first analysis step we focus on habitat destruction in terms of primary forest cover loss and in the second step we look at fires in protected areas between 2000 and 2021. We also show a selection of landcover statistics and population numbers.
+These datasets can indicate human pressure on the ecosystem as well as natural/climatic stressors that could harm the long-term stability and provision of ecosystem services. 
 
 ## Analyzed Protected Areas
+
 Below you can find an overview of the analyzed areas. Data was downloaded from the WDPA. Some of the analyzed areas appear to be overlapping and some also show two entries in the WDPA. The following data gives some insights into governance variables as provided by the WDPA.
 
 ## Forest cover loss (2000-2020)
@@ -235,9 +238,10 @@ __In the analysis  we will focus on two key outcome indicators:__
 
 
 ### Map
+
 The following map depicts relative and absolute forest cover loss in the selected areas. The size of circles is dependent on the total loss (the bigger the total loss, the larger the circle). The color is dependent on the relative loss (red circles indicate areas with high loss). From a threat perspective big red circles could be especially relevant areas for conservation. 
 
-This map is interactive meaning that you can zoom into the map to see specific countries in more detail and click on areas to get summary statistics. Furthermore, supported PAs from the current and past portfolio of KfW (blue) are displayed with their actual polygon boundaries as well as all other PAs in Bolivia (grey) which can be activated manually in the map. Furthermore the analyzed data from Global Forest watch can be seen when activated in the layer control panel as well as the distribution of primary forests in 2001. 
+This map is interactive, meaning that you can zoom into the map to see specific countries in more detail and click on areas to get summary statistics. Furthermore, supported PAs from the current and past portfolio of KfW (blue), including a 10 km buffer zone (red), are displayed with their actual polygon boundaries as well as all other PAs in the surrounding area (grey) which can be activated manually in the map. Furthermore the analyzed data from Global Forest watch can be seen when activated in the layer control panel as well as the distribution of primary forests in 2001.
 
 For analysis purposes it is useful to also activate the satellite layer which can often indicate whether areas are affected by agricultural conversion. 
 
@@ -407,7 +411,7 @@ ggplotly(lossdata_lollipop_plot,tooltip = "text")
 ### Yearly Forest Cover Loss
 Heatmaps are used to assess the time-trend of one or several PAs. We use heatmaps instead of lineplots in order to increase readibility of the plot. The heatmap exhibits  variation in the total area that was affected by forest cover loss on an annual base. Green colors suggest a low amount of loss and red colors indicate a larger loss area. 
 
-You can get more detailed information by hovering with the mouse over the the individual cells. It is important to mention that the analysis does not allow to differentiate between natural and human induced losses. Therefore a more profound analysis with the map can be helpful. Sometimes outstanding large forest cover loss events can indicate natural losses (see. e.g. Otuquis which expirienced an extreme loss event in 2019) whereas continous loss events over several years might indicate ongoing anthropogenic conversion of areas for pastoril or agricultural purposes (see e.g. Isiboro Secure. You may also observe a fishbone like conversion of natural landscapes amongst the built up infrastructure in Isiboro Secure in the map).  
+You can get more detailed information by hovering with the mouse over the the individual cells. It is important to mention that the analysis does not allow to differentiate between natural and human induced losses. Therefore a more profound analysis with the map can be helpful. Sometimes outstanding large forest cover loss events can indicate natural losses, whereas continuous loss events over several years might indicate ongoing anthropogenic conversion of areas for agriculture and livestock farming.  
 
 ```{r line_plots-fcl, message = FALSE, warning = FALSE,fig.width=10,fig.height=10, echo=FALSE, eval=TRUE}
 # Library
@@ -496,15 +500,14 @@ ggplotly(fires_heatmap)
 
 
 ## Fire counts (2000 to 2021)
+
 This section covers the quantification and analysis of forest fires between 2000-2021, which are taken from the NASA FIRMS archives [^3]. We sum up fires on an annual base for all protected areas. For simplicity we leave out fire intensity and burned area in this analysis. For caveats on this approach please see the *Interpretation and Discussion* section below. 
 
 ### Map
 
-The following map depicts a summary of fire counts in the suggested Protected Areas according to NASA Firms.In general larger protected areas experience more fires due to their spatial extension. Nevertheless there are also exceptions. It appears that large protected areas in the Andean mountain range experience less forest fires (you can activate a Topography layer in the map). In contrast, PAs in the east which are located closer to the Brazilian boarder (Rondonia) experience more fires. 
+The following map depicts a summary of fire counts in the suggested Protected Areas according to NASA Firms. In general larger protected areas experience more fires due to their spatial extension. Nevertheless there are also exceptions.
 
 There is also a notable correlation between forest cover loss and forest fires (You can activate the forest cover loss layer in the map). This seems plausible since fires are often used as a strategy for forest cleansing or large natural wildfires might cause permanent damage to the forest cover. However, the relationship is not perfect. 
-
-The map and the subsequent lollipop plots also exhibit which of the analyzed areas have been already part of past or ongoing KfW projects. The data suggests that only one area which was supported by KfW in the past ("Noel Kempff Mercado") experienced a larger amount of fires (6,724) between 2000 and 2021. Again, you can get individual area statistics by clicking on the colored circles in the map. 
 
 ```{r projectmap_fire, echo=FALSE, warning=FALSE,  fig.width=10,  fig.height=7}
 ## ----- create color palettes for the map -----
@@ -604,7 +607,8 @@ my_map
 ```
 
 ### Absolute Trend
-The following "Lollipop Plots" are be used to quickly visualize the total number of fires and sort protected areas from low to high regarding the total number of fire occurences. The figure furthermore shows if any of these PAs has been or is currently supported by a project from KfW. You can get detailed statistics by hovering over the lollipops with your mouse. 
+
+The following "Lollipop Plots" are be used to quickly visualize the total number of fires and sort protected areas from low to high regarding the total number of fire occurrences. The figure furthermore shows if any of these PAs has been or is currently supported by a project from KfW. You can get detailed statistics by hovering over the lollipops with your mouse.
 
 ```{r lollipop_plot-suggested-regions, message = FALSE, warning = FALSE,fig.width=10,fig.height=10, echo=FALSE, eval = TRUE}
 # ----- create horizontal lollipop plots for top loss areas -----
@@ -646,7 +650,8 @@ ggplotly(lossdata_lollipop_plot,tooltip = "text")
 ```
   
 ### Yearly Firecounts
-Heatmaps are used again to assess the time-trend of one or several PAs. They show the variation in the total number of fires which can be attributed to human activities or natural factors such as El Niño and La Niña (For more information see [here](https://www.noaa.gov/education/resource-collections/weather-atmosphere/el-nino)). Especially in 2010 where almost all PAs expirienced increased fire-rates, the causes might be related to a strong La Niña event which took place between the years 2009 and 2010 which increased dry conditions in the western Amazon increasing the likelihood of prolonged wild fires.
+
+Heatmaps are used again to assess the time-trend of one or several PAs. They show the variation in the total number of fires which can be attributed to human activities or natural factors such as El Niño and La Niña (For more information see [here](https://www.noaa.gov/education/resource-collections/weather-atmosphere/el-nino)).
 
 Blue color suggest a low number of fire whereas red colors indicate a larger number. Missing values are white. You can get more detailed information by hovering with the mouse over the the individual cells.  
 
@@ -693,6 +698,8 @@ fires_heatmap <-
 ggplotly(fires_heatmap)
 ```
 
+The density plots below give an idea of the fire seasonality over all observed years. The prominent peaks from march to may indicate that nearly all fire activity occurs during those months, which coincides with the local dry season.
+
 ```{r fire-trend, message = FALSE, warning = FALSE,fig.width=10, fig.height=10, echo=FALSE, eval=TRUE}
 fires <- modis_fire
 fires$month <- fires$date %>%
@@ -713,20 +720,19 @@ p <- ggplot(fires_dens, aes(x = month)) +
   theme_classic() +
   facet_wrap(vars(extent), ncol = 1, nrow = 2, scales = "free")
 
-plot(p)
+ggplotly(p)
 ```
+
 ```{r, echo = FALSE}
 cor_sp <- round(cor(fires$monthly_fires, fires$monthly_sum_frp_gw, method = "spearman"), 2)
 ```
-
-TODO: Text about correlation between fire counts and intensity
 
 ### Fire Frequency and Fire Radiative Power
 
 The plots above show the number of detected fires per time unit. Additionally, the FIRMS data also contain information about the fire radiative power (FRP) in gigawatts [GW].
 But because of the high correlation between fire frequency and FRP (Spearman's $\rho = `r cor_sp`$), we only show one of them as plots.
 
-```{r fire-correlation, message = FALSE, warning = FALSE,fig.width=7, fig.height=7, echo=FALSE, eval=TRUE}
+```{r fire-correlation, message = FALSE, warning = FALSE,fig.width=6, fig.height=6, echo=FALSE, eval=TRUE}
 
 p <- ggplot(fires, aes(x = monthly_fires, y = monthly_sum_frp_gw)) +
   geom_point() +
@@ -739,6 +745,8 @@ ggplotly(p)
 ```
 
 ## Land Cover
+
+This plot shows the ESA land cover data for the year 2019 in and around the PAs. By double clicking on a class in the legend, you can single out categories for further examination.
 
 ```{r plots_landcover_2019, message = FALSE, warning = FALSE, echo = FALSE, eval = TRUE, fig.width=9}
 esa_landcover <- st_drop_geometry(wdpa_allPAs) %>%
@@ -835,26 +843,23 @@ ggplotly(pop_plot, tooltip = "text")
 
 As outline above the GFW methodology defines forest cover loss as a _"as a stand-replacement disturbance, or a change from a forest to non-forest state."_. Loss can either be the result of human activities or natural factors such as droughts, forest fires or hurricanes, amongst others. Thus, the data currently does not allow the differentiate permanent loss and conversion from temporary loss due to natural factors. **A more in-depth analysis of pre-selected areas is therefore recommended when using the current data.**
 
-GFW data can be used to get an assessment of old-growth and primary forests as well as associated carbon emissions. It can indicate which areas had been highly threatened either due to natural causes (storms/fires) or human causes (deforestation/logging/degradation and conversion to agriculture/silviculture). Especially useful in this context is to have a look at the whole trend from 2001 to 2020. Huge spikes in the individual trend data might indicate natural causes such as fires and tropical storms A quick search with google always helps to confirm this hypothesis. In the upper analysis case, for example, we can see that one of the most affected areas is Otuquis National Park which was hardly hit by wildfires several times e.g. in 2019, 2020 and 2022 according to several internet sources. Natural causes can be less harmefull if the forest is able to regrow which in case of Otuquis [seems to be  unlikely](https://phys.org/news/2019-09-million-animals-perish-bolivia-wildfires.html).
-
+GFW data can be used to get an assessment of old-growth and primary forests as well as associated carbon emissions. It can indicate which areas had been highly threatened either due to natural causes (storms/fires) or human causes (deforestation/logging/degradation and conversion to agriculture/silviculture). Especially useful in this context is to have a look at the whole trend from 2001 to 2020. Huge spikes in the individual trend data might indicate natural causes such as fires and tropical storms A quick search with Google always helps to confirm this hypothesis.
 
 More continuous growth in forest loss is probably due to the conversion of natural forests for agricultural purposes. Again you might look at the map given above and activate the satellite layer to see what might be happening below the detected loss. GFW does not (currently) allow to detect regrowth and regeneration but it is planned to provide that feature soon.  
 
 **Possible Improvements**
 
-* Analyze subsequent land-cover in loss-areas. This would be possible e.g. by using Landcover data from the ESA Copernicus mission. It would allow to seperate permanent conversion of forest area e.g. for agricultural purposes from natural losses e.g. due wildfires.
 * Aggregate existing loss data on a finer spatial grid or create heatmaps. This would allow to better visualize highly threatened  spots on the map. This could be especially relevant to quickly identify high pressure zones in large protected areas. 
-* Analyse bufferzones: This would allow to detect areas with high forest loss dynamics in its sourroundings. 
 
 ### Fire Data
 
-The utilized indicator (sum of forest fires) neglects the fact that fires exibit a different intensity and that the area affected by fires differs amongst observations. Nevertheless, area estimates can be derived from the forest cover loss data as well. 
+The utilized indicator (sum of forest fires) neglects the fact that fires exhibit a different intensity and that the area affected by fires differs amongst observations. Nevertheless, area estimates can be derived from the forest cover loss data as well. 
 
-Also the utilized indicator does not differentiate amongst biomes. Fires in dry regions and Savannahs such as the Chaco might be more common and have a vital function for the ecosystem whereas they might be more problematic in moist rainforest where the local vegetation is less able to cope with fire stress. 
+Also the utilized indicator does not differentiate between biomes. Fires in dry regions and Savannas might be more common and have a vital function for the ecosystem, whereas they might be more problematic in moist rainforest where the local vegetation is less able to cope with fire stress. 
 
 **Possible Improvements**
 
-* Combine count, intensity and affected area in a combined estimator
+* Combine count, intensity and affected area in an integrated estimator
 * Match fire data against a historical baseline to detect deviations from "normal". 
 
 [comment]: <> (Literature)
