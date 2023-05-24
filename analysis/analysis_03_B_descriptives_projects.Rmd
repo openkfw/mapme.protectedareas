@@ -1,0 +1,174 @@
+---
+title: "Balance Descriptives"
+author: "Yota"
+date: "28 3 2022"
+output: workflowr::wflow_html
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE)
+knitr::opts_knit$set(root.dir = "/datadrive/datalake/mapme.protectedareas")
+```
+
+```{r include=FALSE}
+# clean workspace, set options
+rm(list=ls())
+options(scipen=999)
+options(width = 200)
+
+# get packages
+lop <- c("dplyr", "plm", "stargazer", "tidyverse", "MatchIt", "optmatch", "cobalt", "gridExtra", "sf")
+newp <- lop[!(lop %in% installed.packages()[,"Package"])]
+if(length(newp)) install.packages(newp)
+lapply(lop, require, character.only = TRUE)
+
+```
+
+<style>
+pre {
+  overflow-x: auto;
+}
+pre code {
+  word-wrap: normal;
+  white-space: pre;
+}
+</style>
+
+```{r prepare table }
+# Timer
+start_time <- Sys.time()
+
+all_years <- list.files("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/tn_projects") %>% 
+  grep("cem_tn_matched_panel_*", ., value = TRUE)
+bmz_list <- all_years %>% 
+    gsub("cem_tn_matched_panel_", "", .) %>% 
+    gsub(".csv", "", .)
+
+bmz_list <- bmz_list[-which(bmz_list=="199566829"| bmz_list=="199966649")] # skip entries that cause issues because of perfect collinearity of treatment variable
+bmz_list <- bmz_list[-which(bmz_list=="201066661")] #skip because of coastal and marine protection without any forest cover
+
+# Prepare observations table
+obs_table <- matrix(NA, nrow = length(bmz_list), ncol = 7)
+colnames(obs_table) <- c("Country", "PA in ha.", "No. PA", "Project years", "Disbursement (mil. EUR)", "Share strict IUCN", "IUCN category" )
+rownames(obs_table) <- c(bmz_list)
+
+
+
+
+
+# Load link between assetid and WDPA ID
+keys_assetid_wdpa <- 
+  read_sf("~/shared/datalake/mapme.protectedareas/processing/fishnet/honeycomb_5_sqkm_kfw.gpkg") %>% 
+  select(poly_id, WDPAID) %>% 
+  rename(".assetid" = "poly_id") %>% 
+  st_drop_geometry()
+
+
+
+for (bmz in bmz_list) {
+
+      print(bmz)
+         panel.df <- read.csv(paste0("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/tn_projects/cem_tn_matched_panel_", bmz, ".csv"), sep = ",", stringsAsFactors = F)
+        
+    
+      
+       # Country
+      iso <- unique(panel.df$NAME_0) %>% 
+        na.omit(.) %>% 
+        paste(., collapse = " ")
+      obs_table[paste0(bmz), 1] <- iso
+       iso <- NA #delete vector to avoid writing wrong information into table
+      
+   
+      # PA in ha
+      pre.df <- read_rds(paste0("/datadrive/datalake/mapme.protectedareas/output/matching/matching_frames/projects/matching_frame_", bmz, ".rds"))%>% merge(., keys_assetid_wdpa, by=".assetid", all.x=T) %>% select(WDPAID, treatment)
+      # calculate area within PA (number of unique cells time 500 ha per cell)
+      treat_ha <- length(which(pre.df$treatment==1))*500 
+      treat_ha <- format(round(as.numeric(treat_ha), 0), nsmall=0, big.mark=",")  #format decimal points
+      obs_table[paste0(bmz), 2] <- treat_ha
+      treat_ha <- NA #delete vector to avoid writing wrong information into table
+      
+
+     
+      # No. PA
+      no_pa <- unique(panel.df$WDPAID) 
+      no_pa[which(no_pa==9999999999)] <- NA
+      
+      no_pa <- no_pa %>% 
+        na.omit(.) %>% 
+        as.numeric() %>% 
+        length()
+      obs_table[paste0(bmz), 3] <- no_pa
+       no_pa <- NA #delete vector to avoid writing wrong information into table
+  
+     # years
+     start_y <- unique(panel.df$first_year_bmz)
+     end_y <- unique(panel.df$last_year_bmz)
+     table_years <- paste(start_y, end_y, collapse = " ")
+     obs_table[paste0(bmz), 4] <- table_years
+     table_years  <- NA
+   
+     # Disbursement (EUR)
+    bmz_disb <- unique(panel.df$total_disbursed) %>% 
+    na.omit(.) %>% 
+      as.data.frame() %>% 
+      mutate(.=round(./1000000,1))
+    bmz_disb <- paste(bmz_disb, collapse = " ")
+    obs_table[paste0(bmz), 5] <- bmz_disb
+    bmz_disb <- NA #delete vector to avoid writing wrong information into table
+  
+  
+  
+     # Share strict IUCN
+ 
+      ##calculate share of IUCN strict categories
+      strict_share_list <- panel.df %>%
+        select(WDPA_strict) %>% 
+        na.omit(.) %>% 
+        group_by(WDPA_strict) %>%
+        summarise(cnt = n()) %>%
+        mutate(freq = round(cnt / sum(cnt), 3)) %>% 
+        arrange(desc(freq)) %>% 
+        select(-cnt) %>% 
+        as.data.frame()
+      
+      ## get info which element is strict WDPA
+      iucn_strict <- strict_share_list[which(strict_share_list$WDPA_strict==1),2]
+      
+      if(length(iucn_strict)==0){
+        obs_table[paste0(bmz), 6] <- 0
+        } else{
+          obs_table[paste0(bmz), 6] <- iucn_strict
+        }
+     iucn_strict <- NA #delete vector to avoid writing wrong information into table
+    
+    # IUCN category
+    iucn_share_list <- panel.df %>%
+      select(IUCN_CAT) %>% 
+      na.omit(.) %>% 
+      mutate(IUCN_CAT = replace(IUCN_CAT, IUCN_CAT == "Not Reported", "n/a"),
+             IUCN_CAT = replace(IUCN_CAT, IUCN_CAT == "Not Applicable", "n/a"),
+             IUCN_CAT = replace(IUCN_CAT, IUCN_CAT == "Not Assigned", "n/a")) %>%
+      group_by(IUCN_CAT) %>%
+      summarise(cnt = n()) %>%
+      mutate(freq = round(cnt / sum(cnt), 2)) %>% 
+      arrange(desc(freq)) %>% 
+      select(-cnt)
+  
+    iucn_cat <- paste(iucn_share_list$IUCN_CAT, iucn_share_list$freq, collapse = " ")
+  
+  
+    obs_table[paste0(bmz), 7] <- iucn_cat
+    iucn_cat <- NA #delete vector to avoid writing wrong information into table
+    
+ 
+}
+
+
+
+stargazer(obs_table, out = "/datadrive/datalake/mapme.protectedareas/output/tabular/descriptive/desc_proj.tex", notes = " ")
+
+
+
+```
+
