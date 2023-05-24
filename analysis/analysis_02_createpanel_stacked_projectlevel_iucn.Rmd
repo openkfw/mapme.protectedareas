@@ -1,0 +1,322 @@
+---
+title: "Create stacked panel"
+author: "Melvin H. L. Wong"
+date: "1 9 2022"
+output: workflowr::wflow_html
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE)
+knitr::opts_knit$set(root.dir = "/datadrive/datalake/mapme.protectedareas")
+```
+
+
+```{r workspace and packages}
+# clean workspace, set options
+rm(list=ls())
+options(scipen=999)
+
+# get packages
+lop <- c("tidyverse", "sf", "units", "dplyr")
+newp <- lop[!(lop %in% installed.packages()[,"Package"])]
+if(length(newp)) install.packages(newp)
+lapply(lop, require, character.only = TRUE)
+
+```
+
+```{r actiontype bmz lists}
+bmz_class1 <- c("199065244", "199566829", "199865056", "199865809", "199867219", "200266908", "200466094")
+bmz_class1 <- bmz_class1[-which(bmz_class1=="199566829"| bmz_class1=="199966649")] # skip entries that cause issues because of perfect collinearity of treatment variable
+bmz_class1 <- bmz_class1[-which(bmz_class1=="199065244"| bmz_class1=="199865056")] # no matching frame for these BMZ numbers
+
+bmz_class2 <- c("199566357", "199566829", "199765777", "199865056", "199867003", "199867219", "199966649", "200065086", "200066340", "200165092", "200165472", "200166090", "200266908", "200466094", "200466458", "200565689", "200766410", "200766667", "200866285", "201066836", "209810094")
+bmz_class2 <- bmz_class2[-which(bmz_class2=="199566829"| bmz_class2=="199966649")] # skip entries that cause issues because of perfect collinearity of treatment variable
+bmz_class2 <- bmz_class2[-which(bmz_class2=="199065244"|bmz_class2=="199566357"| bmz_class2=="199765777"| bmz_class2=="199865056"| bmz_class2=="200766410")] # no matching frame for these BMZ numbers
+
+bmz_class3 <- c("199867219")
+
+bmz_class4 <- c("199065244", "199566829", "199865809", "199867003", "199867219", "200065086", "200066340", "200166090", "200266908", "200466094", "200466458", "200565689", "200766410", "200766667", "201066836", "209810094")
+bmz_class4 <- bmz_class4[-which(bmz_class4=="199566829"| bmz_class4=="199966649")] # skip entries that cause issues because of perfect collinearity of treatment variable
+bmz_class4 <- bmz_class4[-which(bmz_class4=="199065244"|bmz_class4=="199566357"| bmz_class4=="199765777"| bmz_class4=="199865056"| bmz_class4=="200766410")] # no matching frame for these BMZ numbers
+
+bmz_class5 <- c("199065244", "199566357", "199566829", "199765777", "199865809", "199867219", "199966649", "200065086", "200066340", "200165092", "200165472", "200166090", "200266908", "200466094", "200466458", "200766410", "200766667", "200866285", "201066836", "209810094")
+bmz_class5 <- bmz_class5[-which(bmz_class5=="199566829"| bmz_class5=="199966649")] # skip entries that cause issues because of perfect collinearity of treatment variable
+bmz_class5 <- bmz_class5[-which(bmz_class5=="199065244"|bmz_class5=="199566357"| bmz_class5=="199765777"| bmz_class5=="199865056"| bmz_class5=="200766410")] # no matching frame for these BMZ numbers
+
+
+bmz_class6 <- c("199566829", "199765777", "199865809", "199867003", "199867219", "199966649", "200065086", "200165092", "200165472", "200166090", "200266908", "200466094", "200466458", "200565689", "200766410", "200766667", "200866285", "201066836", "209810094")
+bmz_class6 <- bmz_class6[-which(bmz_class6=="199566829"| bmz_class6=="199966649")] # skip entries that cause issues because of perfect collinearity of treatment variable
+bmz_class6 <- bmz_class6[-which(bmz_class6=="199065244"|bmz_class6=="199566357"| bmz_class6=="199765777"| bmz_class6=="199865056"| bmz_class6=="200766410")] # no matching frame for these BMZ numbers
+
+
+bmz_class7 <- c("199065244", "199566357", "199566829", "199765777", "199865056", "199867219", "199966649", "200065086", "200066340", "200165092", "200165472", "200166090", "200266908", "200466094", "200466458", "200565689", "200766410", "200766667", "200866285", "201066836", "209810094")
+bmz_class7 <- bmz_class7[-which(bmz_class7=="199566829"| bmz_class7=="199966649")] # skip entries that cause issues because of perfect collinearity of treatment variable
+bmz_class7 <- bmz_class7[-which(bmz_class7=="199065244"|bmz_class7=="199566357"| bmz_class7=="199765777"| bmz_class7=="199865056"| bmz_class7=="200766410")] # no matching frame for these BMZ numbers
+```
+
+
+```{r stack Panel datasets}
+
+#### Stacked panel dataset for bmz_class1
+big.list.of.data.frames <- lapply(bmz_class1, function(x){
+  file <- list(paste0("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/tn_projects/cem_tn_matched_panel_", x, ".csv"))
+  read_csv(file) %>% 
+  mutate(stack_id=paste0(x, .assetid)) %>% 
+    select(stack_id, .assetid, WDPAID, treatment, weights, fc_loss, fc_area, emissions, year, NAME_0, year_standard, bmz_nummer, class1, class2, class3, class4, class5, class6, class7)
+})
+# rbind all dataframes together
+big.data.frame <- do.call(rbind,big.list.of.data.frames)
+
+
+ panel.df <- big.data.frame %>% 
+    mutate(treatment_disb = (treatment==1 & year_standard>=0),
+           emissions_tha = emissions/500,
+           NAME_0_num = as.numeric(as.factor(NAME_0))) %>% 
+    rename(., weights_cem=weights) # rename weights
+  # create WDPA cluster that are country specific (important for control group, as all controll cells belong to ID 9999999999 regardless of the country. Now the control cells are clustered for each country.)
+  panel.df$WDPAID_cluster <- as.numeric(paste0(panel.df$NAME_0_num, panel.df$WDPAID)) 
+  panel.df$stack <- substring(panel.df$stack_id,1,4)
+  panel.df$WDPAID_cluster_stack <- as.numeric(paste0(panel.df$stack, panel.df$NAME_0_num, panel.df$WDPAID)) 
+  
+  
+  panel.df <- as.data.frame(panel.df)
+  
+  # save big file
+  saveRDS(panel.df, file="/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/cem_matched_data_stacked_projects_iucn1.rds")
+  
+  # clean up RAM
+  rm(big.list.of.data.frames)
+  rm(big.data.frame)
+  rm(panel.df)  
+  
+  
+  
+  
+  
+  
+  
+#### Stacked panel dataset for bmz_class2
+big.list.of.data.frames <- lapply(bmz_class2, function(x){
+  file <- list(paste0("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/tn_projects/cem_tn_matched_panel_", x, ".csv"))
+  read_csv(file) %>% 
+  mutate(stack_id=paste0(x, .assetid)) %>% 
+    select(stack_id, .assetid, WDPAID, treatment, weights, fc_loss, fc_area, emissions, year, NAME_0, year_standard, bmz_nummer, class1, class2, class3, class4, class5, class6, class7)
+})
+# rbind all dataframes together
+big.data.frame <- do.call(rbind,big.list.of.data.frames)
+
+
+ panel.df <- big.data.frame %>% 
+    mutate(treatment_disb = (treatment==1 & year_standard>=0),
+           emissions_tha = emissions/500,
+           NAME_0_num = as.numeric(as.factor(NAME_0))) %>% 
+    rename(., weights_cem=weights) # rename weights
+  # create WDPA cluster that are country specific (important for control group, as all controll cells belong to ID 9999999999 regardless of the country. Now the control cells are clustered for each country.)
+  panel.df$WDPAID_cluster <- as.numeric(paste0(panel.df$NAME_0_num, panel.df$WDPAID)) 
+  panel.df$stack <- substring(panel.df$stack_id,1,4)
+  panel.df$WDPAID_cluster_stack <- as.numeric(paste0(panel.df$stack, panel.df$NAME_0_num, panel.df$WDPAID)) 
+  
+  
+  panel.df <- as.data.frame(panel.df)
+  
+  # save big file
+  saveRDS(panel.df, file="/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/cem_matched_data_stacked_projects_iucn2.rds")
+  
+  # clean up RAM
+  rm(big.list.of.data.frames)
+  rm(big.data.frame)
+  rm(panel.df)  
+  
+
+  
+  
+  
+  
+  
+  
+  #### Stacked panel dataset for bmz_class3
+big.list.of.data.frames <- lapply(bmz_class3, function(x){
+  file <- list(paste0("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/tn_projects/cem_tn_matched_panel_", x, ".csv"))
+  read_csv(file) %>% 
+  mutate(stack_id=paste0(x, .assetid)) %>% 
+    select(stack_id, .assetid, WDPAID, treatment, weights, fc_loss, fc_area, emissions, year, NAME_0, year_standard, bmz_nummer, class1, class2, class3, class4, class5, class6, class7)
+})
+# rbind all dataframes together
+big.data.frame <- do.call(rbind,big.list.of.data.frames)
+
+
+ panel.df <- big.data.frame %>% 
+    mutate(treatment_disb = (treatment==1 & year_standard>=0),
+           emissions_tha = emissions/500,
+           NAME_0_num = as.numeric(as.factor(NAME_0))) %>% 
+    rename(., weights_cem=weights) # rename weights
+  # create WDPA cluster that are country specific (important for control group, as all controll cells belong to ID 9999999999 regardless of the country. Now the control cells are clustered for each country.)
+  panel.df$WDPAID_cluster <- as.numeric(paste0(panel.df$NAME_0_num, panel.df$WDPAID)) 
+  panel.df$stack <- substring(panel.df$stack_id,1,4)
+  panel.df$WDPAID_cluster_stack <- as.numeric(paste0(panel.df$stack, panel.df$NAME_0_num, panel.df$WDPAID)) 
+  
+  
+  panel.df <- as.data.frame(panel.df)
+  
+  # save big file
+  saveRDS(panel.df, file="/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/cem_matched_data_stacked_projects_iucn3.rds")
+  
+  # clean up RAM
+  rm(big.list.of.data.frames)
+  rm(big.data.frame)
+  rm(panel.df)  
+  
+  
+  
+  
+  
+  
+  
+  
+  #### Stacked panel dataset for bmz_class4
+big.list.of.data.frames <- lapply(bmz_class4, function(x){
+  file <- list(paste0("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/tn_projects/cem_tn_matched_panel_", x, ".csv"))
+  read_csv(file) %>% 
+  mutate(stack_id=paste0(x, .assetid)) %>% 
+    select(stack_id, .assetid, WDPAID, treatment, weights, fc_loss, fc_area, emissions, year, NAME_0, year_standard, bmz_nummer, class1, class2, class3, class4, class5, class6, class7)
+})
+# rbind all dataframes together
+big.data.frame <- do.call(rbind,big.list.of.data.frames)
+
+
+ panel.df <- big.data.frame %>% 
+    mutate(treatment_disb = (treatment==1 & year_standard>=0),
+           emissions_tha = emissions/500,
+           NAME_0_num = as.numeric(as.factor(NAME_0))) %>% 
+    rename(., weights_cem=weights) # rename weights
+  # create WDPA cluster that are country specific (important for control group, as all controll cells belong to ID 9999999999 regardless of the country. Now the control cells are clustered for each country.)
+  panel.df$WDPAID_cluster <- as.numeric(paste0(panel.df$NAME_0_num, panel.df$WDPAID)) 
+  panel.df$stack <- substring(panel.df$stack_id,1,4)
+  panel.df$WDPAID_cluster_stack <- as.numeric(paste0(panel.df$stack, panel.df$NAME_0_num, panel.df$WDPAID)) 
+  
+  
+  panel.df <- as.data.frame(panel.df)
+  
+  # save big file
+  saveRDS(panel.df, file="/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/cem_matched_data_stacked_projects_iucn4.rds")
+  
+  # clean up RAM
+  rm(big.list.of.data.frames)
+  rm(big.data.frame)
+  rm(panel.df)  
+  
+  
+  
+  
+  
+  
+  
+  
+  #### Stacked panel dataset for bmz_class5
+big.list.of.data.frames <- lapply(bmz_class5, function(x){
+  file <- list(paste0("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/tn_projects/cem_tn_matched_panel_", x, ".csv"))
+  read_csv(file) %>% 
+  mutate(stack_id=paste0(x, .assetid)) %>% 
+    select(stack_id, .assetid, WDPAID, treatment, weights, fc_loss, fc_area, emissions, year, NAME_0, year_standard, bmz_nummer, class1, class2, class3, class4, class5, class6, class7)
+})
+# rbind all dataframes together
+big.data.frame <- do.call(rbind,big.list.of.data.frames)
+
+
+ panel.df <- big.data.frame %>% 
+    mutate(treatment_disb = (treatment==1 & year_standard>=0),
+           emissions_tha = emissions/500,
+           NAME_0_num = as.numeric(as.factor(NAME_0))) %>% 
+    rename(., weights_cem=weights) # rename weights
+  # create WDPA cluster that are country specific (important for control group, as all controll cells belong to ID 9999999999 regardless of the country. Now the control cells are clustered for each country.)
+  panel.df$WDPAID_cluster <- as.numeric(paste0(panel.df$NAME_0_num, panel.df$WDPAID)) 
+  panel.df$stack <- substring(panel.df$stack_id,1,4)
+  panel.df$WDPAID_cluster_stack <- as.numeric(paste0(panel.df$stack, panel.df$NAME_0_num, panel.df$WDPAID)) 
+  
+  
+  panel.df <- as.data.frame(panel.df)
+  
+  # save big file
+  saveRDS(panel.df, file="/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/cem_matched_data_stacked_projects_iucn5.rds")
+  
+  # clean up RAM
+  rm(big.list.of.data.frames)
+  rm(big.data.frame)
+  rm(panel.df)  
+  
+  
+  
+  
+  
+  
+  
+  #### Stacked panel dataset for bmz_class6
+big.list.of.data.frames <- lapply(bmz_class6, function(x){
+  file <- list(paste0("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/tn_projects/cem_tn_matched_panel_", x, ".csv"))
+  read_csv(file) %>% 
+  mutate(stack_id=paste0(x, .assetid)) %>% 
+    select(stack_id, .assetid, WDPAID, treatment, weights, fc_loss, fc_area, emissions, year, NAME_0, year_standard, bmz_nummer, class1, class2, class3, class4, class5, class6, class7)
+})
+# rbind all dataframes together
+big.data.frame <- do.call(rbind,big.list.of.data.frames)
+
+
+ panel.df <- big.data.frame %>% 
+    mutate(treatment_disb = (treatment==1 & year_standard>=0),
+           emissions_tha = emissions/500,
+           NAME_0_num = as.numeric(as.factor(NAME_0))) %>% 
+    rename(., weights_cem=weights) # rename weights
+  # create WDPA cluster that are country specific (important for control group, as all controll cells belong to ID 9999999999 regardless of the country. Now the control cells are clustered for each country.)
+  panel.df$WDPAID_cluster <- as.numeric(paste0(panel.df$NAME_0_num, panel.df$WDPAID)) 
+  panel.df$stack <- substring(panel.df$stack_id,1,4)
+  panel.df$WDPAID_cluster_stack <- as.numeric(paste0(panel.df$stack, panel.df$NAME_0_num, panel.df$WDPAID)) 
+  
+  
+  panel.df <- as.data.frame(panel.df)
+  
+  # save big file
+  saveRDS(panel.df, file="/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/cem_matched_data_stacked_projects_iucn6.rds")
+  
+  # clean up RAM
+  rm(big.list.of.data.frames)
+  rm(big.data.frame)
+  rm(panel.df)  
+  
+  
+  
+  
+  
+  
+  
+  #### Stacked panel dataset for bmz_class7
+big.list.of.data.frames <- lapply(bmz_class7, function(x){
+  file <- list(paste0("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/tn_projects/cem_tn_matched_panel_", x, ".csv"))
+  read_csv(file) %>% 
+  mutate(stack_id=paste0(x, .assetid)) %>% 
+    select(stack_id, .assetid, WDPAID, treatment, weights, fc_loss, fc_area, emissions, year, NAME_0, year_standard, bmz_nummer, class1, class2, class3, class4, class5, class6, class7)
+})
+# rbind all dataframes together
+big.data.frame <- do.call(rbind,big.list.of.data.frames)
+
+
+ panel.df <- big.data.frame %>% 
+    mutate(treatment_disb = (treatment==1 & year_standard>=0),
+           emissions_tha = emissions/500,
+           NAME_0_num = as.numeric(as.factor(NAME_0))) %>% 
+    rename(., weights_cem=weights) # rename weights
+  # create WDPA cluster that are country specific (important for control group, as all controll cells belong to ID 9999999999 regardless of the country. Now the control cells are clustered for each country.)
+  panel.df$WDPAID_cluster <- as.numeric(paste0(panel.df$NAME_0_num, panel.df$WDPAID)) 
+  panel.df$stack <- substring(panel.df$stack_id,1,4)
+  panel.df$WDPAID_cluster_stack <- as.numeric(paste0(panel.df$stack, panel.df$NAME_0_num, panel.df$WDPAID)) 
+  
+  
+  panel.df <- as.data.frame(panel.df)
+  
+  # save big file
+  saveRDS(panel.df, file="/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/cem_matched_data_stacked_projects_iucn7.rds")
+  
+  # clean up RAM
+  rm(big.list.of.data.frames)
+  rm(big.data.frame)
+  rm(panel.df)  
+```
+
