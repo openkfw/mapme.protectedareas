@@ -245,7 +245,7 @@ cell.agg<- bmz_wdpa.df %>%
 
 ## Panelize PSM data
 
-```{r Panelize PSM data}
+```{r Panelize PSM data, eval = FALSE}
 # BMZ with matching frames:
 T_year <- list.files("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/PSM/tn_projects")%>% 
   grep("psm_tn_matched_data_*", ., value = TRUE)
