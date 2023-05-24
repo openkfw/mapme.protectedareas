@@ -155,6 +155,23 @@ wdpa_type <-
 
 ```
 
+```{r}
+# Load action types
+actiontypes <- read_rds("/datadrive/yota/test/actiontypes_bybmzpa.RDS") %>% 
+  mutate(id = as.numeric(if_else(id == "N.N.", NA_character_, id))) %>% 
+  rename(bmzno = bmz, 
+         WDPAID = id) %>% 
+  pivot_longer(c(-bmzno, -WDPAID)) %>% 
+  mutate(value = recode(value, 
+                        `2` = 1,
+                        `1` = 0,
+                        `0` = 0)) %>% # Currently, 1 = "strong focus", 0 = "weak or no focus"
+  pivot_wider(names_from = "name", values_fill = 0, 
+              values_from = "value")
+  
+```
+
+
 
 ```{r load disbursement data, eval = FALSE}
 projectdata_database<-
@@ -359,6 +376,10 @@ for (i in T_year) {
     #   rename("fc_area" = "area",
     #          "fc_loss" = "loss")
     
+    # Load relevant actiontypes
+    actiontypes_filtered <- actiontypes %>% 
+      filter(bmzno == bmz)
+    
     # Merge data with panel data, reshape to long, join with keys and drop if year is NA (year 2021 from wetness)
     merged_data <- 
       left_join(m_data, fcl,
@@ -373,7 +394,8 @@ for (i in T_year) {
              "fc_loss" = "loss") %>% 
       mutate(WDPAID = ifelse(treatment == 0, 9999999999, WDPAID)) %>% 
       filter(! is.na(year)) %>% # new line
-      distinct(.assetid, year, .keep_all = TRUE) # adjust this as soon as we have a better solution # new line
+      distinct(.assetid, year, .keep_all = TRUE) %>%  # adjust this as soon as we have a better solution # new line  
+      left_join(., actiontypes_filtered, by = c("WDPAID"))
     
     ## Export data
     write_csv(merged_data, 
