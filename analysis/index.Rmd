@@ -27,6 +27,7 @@ Chapters:
   - [Threat Assessment Selva Maya](threat_assessment_selva_maya.html)
   - [Regional use case: Threat Assessment in Central America](rapid-assessment_centralamerica.html)
   - [Regional use case: Threat Assessment in Bolivia](threat_assessment_bolivia.html)
+  - [Regional use case: Threat Assessment in the Selva Maja region](https://openkfw.github.io/mapme.protectedareas/threat_assessment_selva_maya.html)
 - Monitoring
 - Evaluation
 - Portfolio Analysis
