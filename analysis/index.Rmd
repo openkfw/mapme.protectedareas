@@ -10,7 +10,7 @@ workflowr:
   suppress_report: TRUE
 ---
 
-Welcome to the **KfW Protected Areas Database**. Here you can find routines and datasources that we are using to analyze our protected areas portfolio with open data and free and open source software tecnologies. This project is intented to create insights into our own work and propose data products that can be utilized along the whole project cycle in financial cooperation projects (project planning, monitoring, evaluation and portfolio reporting).
+Welcome to the  **KfW Protected Areas Database**. Here you can find routines and datasources that we are using to analyze our protected areas portfolio with open data and free and open source software tecnologies. This project is intented to create insights into our own work and propose data products that can be utilized along the whole project cycle in financial cooperation projects (project planning, monitoring, evaluation and portfolio reporting).
 
 This project was created as a reproducible research project using the *workflowr* package. For more information please visit [workflowr](https://github.com/jdblischak/workflowr) website. In order to use our routines you can read our documentation below or and can check out our R-codes from our [Github repository](https://github.com/openkfw/mapme.protectedareas). 
 
