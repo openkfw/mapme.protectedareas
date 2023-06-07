@@ -23,16 +23,15 @@ Chapters:
   - [The mapme.biodiversity package in R](mapme-biodiversity.html)
   - [Querying data from DOPA Rest API (DOPA/JRC)](dopa-rest.html)
 - Planning
-  - [Threat Assessment Overview](threat_assessment.html)
+  - [Threat Assessment Latin America](threat_assessment.html)
+  - [Threat Assessment Central America](rapid-assessment_centralamerica.html)
+  - [Threat Assessment Bolivia](threat_assessment_bolivia.html)
   - [Threat Assessment Selva Maya](threat_assessment_selva_maya.html)
-  - [Regional use case: Threat Assessment in Central America](rapid-assessment_centralamerica.html)
-  - [Regional use case: Threat Assessment in Bolivia](threat_assessment_bolivia.html)
-  - [Regional use case: Threat Assessment in the Selva Maja region](https://openkfw.github.io/mapme.protectedareas/threat_assessment_selva_maya.html)
 - Monitoring
 - Evaluation
 - Portfolio Analysis
-  - [Ecosystem Assessment](portfolio_analysis.html)
-  - [Ecosystem Assessment (update; in progress)](pa_new.html)
+  - [Ecosystem Assessment - old](portfolio_analysis.html)
+  - [Ecosystem Assessment - updated -in progress](pa_new.html)
   
 - [About this project](README.html)
 
