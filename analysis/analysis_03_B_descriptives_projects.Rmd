@@ -34,7 +34,7 @@ pre code {
 }
 </style>
 
-```{r prepare table }
+```{r summary stats for projects }
 # Timer
 start_time <- Sys.time()
 
@@ -170,5 +170,94 @@ stargazer(obs_table, out = "/datadrive/datalake/mapme.protectedareas/output/tabu
 
 
 
+```
+```{r balancing tables}
+
+all_years <- list.files("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/tn_projects") %>% 
+  grep("cem_tn_matched_panel_*", ., value = TRUE)
+bmz_list <- all_years %>% 
+    gsub("cem_tn_matched_panel_", "", .) %>% 
+    gsub(".csv", "", .)
+
+bmz_list <- bmz_list[-which(bmz_list=="199566829"| bmz_list=="199966649")] # skip entries that cause issues because of perfect collinearity of treatment variable
+bmz_list <- bmz_list[-which(bmz_list=="201066661")] #skip because of coastal and marine protection without any forest cover
+#bmz_list <- bmz_list[1:3]
+# bmz <- bmz_list[6]
+
+
+
+# Prepare observations table
+obs_table <- matrix(1, nrow = length(bmz_list), ncol = 12)
+colnames(obs_table) <- c("C", "T", "C", "T", "C", "T", "C", "T", "C", "T", "C", "T")
+rownames(obs_table) <- c(bmz_list)
+
+
+
+
+for (bmz in bmz_list) {
+
+      print(bmz)
+         panel.df <- read.csv(paste0("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/tn_projects/cem_tn_matched_panel_", bmz, ".csv"), sep = ",", stringsAsFactors = F) %>% 
+           filter(first_year_bmz==year) %>% # get cross sectional data of time invariant matching variables
+           select(traveltime_5k_110mio,
+                  m_treecover,
+                  m_loss_tn,
+                  soil_5_15cm_clay,
+                  terrain_ruggedness_index_mean,
+                  elevation_mean,
+                  treatment,
+                  weights) 
+         
+         stats <- panel.df %>% 
+           group_by(treatment) %>%
+           summarise(traveltime_5k_110mio = weighted.mean(traveltime_5k_110mio, weights),
+                      m_treecover  = weighted.mean(m_treecover, weights),
+                      m_loss_tn  = weighted.mean(m_loss_tn, weights),
+                      soil_5_15cm_clay  = weighted.mean(soil_5_15cm_clay, weights),
+                     terrain_ruggedness_index_mean= weighted.mean(terrain_ruggedness_index_mean, weights),
+                      elevation_mean = weighted.mean(elevation_mean, weights),
+                     ) 
+        
+        # "Forest cover"
+        obs_table[paste0(bmz), 1] <- as.character(round(stats$m_treecover[which(stats$treatment==0)], 1)) # control
+        obs_table[paste0(bmz), 2] <- as.character(round(stats$m_treecover[which(stats$treatment==1)], 1)) # treatment
+        
+        # "Forest cover loss" 
+        obs_table[paste0(bmz), 3] <- as.character(round(stats$m_loss_tn[which(stats$treatment==0)], 2)) # control
+        obs_table[paste0(bmz), 4] <- as.character(round(stats$m_loss_tn[which(stats$treatment==1)], 2)) # treatment        
+        
+        
+        # "Accessibility" 
+        obs_table[paste0(bmz), 5] <- as.character(round(stats$traveltime_5k_110mio[which(stats$treatment==0)], 0)) # control
+        obs_table[paste0(bmz), 6] <- as.character(round(stats$traveltime_5k_110mio[which(stats$treatment==1)], 0)) # treatment        
+        
+
+        
+        # "Clay content" 
+        obs_table[paste0(bmz), 7] <- as.character(round(stats$soil_5_15cm_clay[which(stats$treatment==0)], 0)) # control
+        obs_table[paste0(bmz), 8] <- as.character(round(stats$soil_5_15cm_clay[which(stats$treatment==1)], 0)) # treatment       
+        
+        
+        # "Terrain ruggedness" 
+        obs_table[paste0(bmz), 9] <- as.character(round(stats$terrain_ruggedness_index_mean[which(stats$treatment==0)], 2)) # control
+        obs_table[paste0(bmz), 10] <- as.character(round(stats$terrain_ruggedness_index_mean[which(stats$treatment==1)], 2)) # treatment        
+        
+        
+        # "Elevation"
+        obs_table[paste0(bmz), 11] <- as.character(round(stats$elevation_mean[which(stats$treatment==0)], 0)) # control
+        obs_table[paste0(bmz), 12] <- as.character(round(stats$elevation_mean[which(stats$treatment==1)], 0)) # treatment
+         
+         
+         
+         
+         
+         
+}
+
+
+
+stargazer(obs_table, type = "latex", out = "/datadrive/datalake/mapme.protectedareas/output/tabular/descriptive/desc_balance_mean.tex")
+
+c("Forest cover", "Forest cover loss", "Accessibility", "Clay content", "Terrain ruggedness", "Elevation")
 ```
 

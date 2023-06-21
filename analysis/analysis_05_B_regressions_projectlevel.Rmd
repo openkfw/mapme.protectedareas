@@ -208,7 +208,10 @@ for (bmz in bmz_list) {
   # assign(paste0("m21_",t), feols(fc_area ~ treatment_disb | .assetid + year, data = panel.df, weights = panel.df$weights_cem, panel.id = ~.assetid+year, cluster = ~.assetid) )
   
   assign(paste0("m12_",bmz), feols(fc_loss ~ treatment_disb | .assetid + year, data = panel.df, weights = panel.df$weights_cem, panel.id = ~.assetid+year, cluster = ~WDPAID_cluster) )
-  assign(paste0("m22_",bmz), feols(fc_area ~ treatment_disb | .assetid + year, data = panel.df, weights = panel.df$weights_cem, panel.id = ~.assetid+year, cluster = ~WDPAID_cluster) )
+  assign(paste0("m22_",bmz), feols(fc_area ~ treatment_disb + treatment_disb*dummy1 + treatment_disb| .assetid + year, data = panel.df, weights = panel.df$weights_cem, panel.id = ~.assetid+year, cluster = ~WDPAID_cluster) )
+  
+  assign(paste0("m22iucn_",bmz), feols(fc_area ~ treatment_disb + treatment_disb*dummy1 + treatment_disb*dummy2... + dummy1| .assetid + year, data = panel.df, weights = panel.df$weights_cem, panel.id = ~.assetid+year, cluster = ~WDPAID_cluster) )
+  
   
   assign(paste0("m32_",bmz), feols(emissions_tha ~ treatment_disb | .assetid + year, data = panel.df, weights = panel.df$weights_cem, panel.id = ~.assetid+year, cluster = ~WDPAID_cluster) )
 

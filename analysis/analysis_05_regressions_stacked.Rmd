@@ -29,11 +29,13 @@ panel.df <- read_rds("/datadrive/datalake/mapme.protectedareas/output/tabular/re
 panel.df$stack <- substring(panel.df$stack_id,1,4)
 panel.df$WDPAID_cluster_stack <- as.numeric(paste0(panel.df$stack, panel.df$NAME_0_num, panel.df$WDPAID)) 
 panel_1.df <- panel.df
+rm(panel.df)
 
 panel.df <- read_rds("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/cem_matched_data_stacked_projects_iucn2.rds")
 panel.df$stack <- substring(panel.df$stack_id,1,4)
 panel.df$WDPAID_cluster_stack <- as.numeric(paste0(panel.df$stack, panel.df$NAME_0_num, panel.df$WDPAID)) 
 panel_2.df <- panel.df
+rm(panel.df)
 
 # panel.df <- read_rds("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/cem_matched_data_stacked_projects_iucn3.rds")
 # panel.df$stack <- substring(panel.df$stack_id,1,4)
@@ -44,37 +46,47 @@ panel.df <- read_rds("/datadrive/datalake/mapme.protectedareas/output/tabular/re
 panel.df$stack <- substring(panel.df$stack_id,1,4)
 panel.df$WDPAID_cluster_stack <- as.numeric(paste0(panel.df$stack, panel.df$NAME_0_num, panel.df$WDPAID)) 
 panel_4.df <- panel.df
+rm(panel.df)
 
 
 panel.df <- read_rds("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/cem_matched_data_stacked_projects_iucn5.rds")
 panel.df$stack <- substring(panel.df$stack_id,1,4)
 panel.df$WDPAID_cluster_stack <- as.numeric(paste0(panel.df$stack, panel.df$NAME_0_num, panel.df$WDPAID)) 
 panel_5.df <- panel.df
+rm(panel.df)
 
 panel.df <- read_rds("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/cem_matched_data_stacked_projects_iucn6.rds")
 panel.df$stack <- substring(panel.df$stack_id,1,4)
 panel.df$WDPAID_cluster_stack <- as.numeric(paste0(panel.df$stack, panel.df$NAME_0_num, panel.df$WDPAID)) 
 panel_6.df <- panel.df
+rm(panel.df)
 
 panel.df <- read_rds("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/cem_matched_data_stacked_projects_iucn7.rds")
 panel.df$stack <- substring(panel.df$stack_id,1,4)
 panel.df$WDPAID_cluster_stack <- as.numeric(paste0(panel.df$stack, panel.df$NAME_0_num, panel.df$WDPAID)) 
 panel_7.df <- panel.df
+rm(panel.df)
 
 m1 <-   feols(fc_area ~ treatment_disb | stack_id + year, data = panel_1.df, weights = ~weights_cem, panel.id = ~stack_id+year, cluster = ~WDPAID_cluster_stack)
+rm(panel_1.df)
 
 m2 <-   feols(fc_area ~ treatment_disb | stack_id + year, data = panel_2.df, weights = ~weights_cem, panel.id = ~stack_id+year, cluster = ~WDPAID_cluster_stack)
+rm(panel_2.df)
 
 #m3 <-   feols(fc_area ~ treatment_disb | stack_id + year, data = panel_3.df, weights = ~weights_cem, panel.id = ~stack_id+year, cluster = ~WDPAID_cluster_stack)
 # note: This regression does not work, because of perfect collinearity with FE. Too few data variation
 
 m4 <-   feols(fc_area ~ treatment_disb | stack_id + year, data = panel_4.df, weights = ~weights_cem, panel.id = ~stack_id+year, cluster = ~WDPAID_cluster_stack)
+rm(panel_4.df)
 
 m5 <-   feols(fc_area ~ treatment_disb | stack_id + year, data = panel_5.df, weights = ~weights_cem, panel.id = ~stack_id+year, cluster = ~WDPAID_cluster_stack)
+rm(panel_5.df)
 
 m6 <-   feols(fc_area ~ treatment_disb | stack_id + year, data = panel_6.df, weights = ~weights_cem, panel.id = ~stack_id+year, cluster = ~WDPAID_cluster_stack)
+rm(panel_6.df)
 
 m7 <-   feols(fc_area ~ treatment_disb | stack_id + year, data = panel_7.df, weights = ~weights_cem, panel.id = ~stack_id+year, cluster = ~WDPAID_cluster_stack)
+rm(panel_7.df)
 
 m_list1 <- list(m1, m2, m4, m5, m6, m7)
 names(m_list1) <- c("(1) Protection", " (2) Management", "(4) Education", "(5) Law/Policy", "(6) Livelihood", "(7) Capacity")

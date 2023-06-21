@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2021.1.20)  1 SEP 2022 11:07
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2021.1.20)  6 SEP 2022 16:02
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -563,84 +563,84 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <5> on input line 28.
 LaTeX Font Info:    Font shape `TS1/aer/m/n' in size <6> not available
 (Font)              Font shape `TS1/cmr/m/n' tried instead on input line 28.
-<"figures/PAs".PNG, id=11, 363.85938pt x 279.0425pt>
+<"figures/PAs".PNG, id=13, 363.85938pt x 279.0425pt>
 File: "figures/PAs".PNG Graphic file (type png)
 <use "figures/PAs".PNG>
-Package pdftex.def Info: "figures/PAs".PNG  used on input line 59.
+Package pdftex.def Info: "figures/PAs".PNG  used on input line 60.
 (pdftex.def)             Requested size: 375.57782pt x 288.03862pt.
  [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
-<"figures/landscape-segmentation".PNG, id=32, 913.16156pt x 423.08063pt>
+<"figures/landscape-segmentation".PNG, id=35, 913.16156pt x 423.08063pt>
 File: "figures/landscape-segmentation".PNG Graphic file (type png)
 <use "figures/landscape-segmentation".PNG>
 Package pdftex.def Info: "figures/landscape-segmentation".PNG  used on input li
-ne 69.
+ne 70.
 (pdftex.def)             Requested size: 375.57782pt x 174.00645pt.
  [2 <./figures/PAs.PNG> <./figures/landscape-segmentation.PNG>]
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <7> on input line 100.
-<"figures/matching frame 2015-1".png, id=45, 596.98032pt x 359.84438pt>
+(Font)              <7> on input line 101.
+<"figures/matching frame 2015-1".png, id=48, 596.98032pt x 359.84438pt>
 File: "figures/matching frame 2015-1".png Graphic file (type png)
 <use "figures/matching frame 2015-1".png>
 Package pdftex.def Info: "figures/matching frame 2015-1".png  used on input lin
-e 109.
+e 110.
 (pdftex.def)             Requested size: 375.57782pt x 226.39017pt.
-<"figures/create plots before after matching-1".png, id=48, 1011.78pt x 433.62p
+ [3 <./figures/matching frame 2015-1.png (PNG copy)>]
+<"figures/create plots before after matching-1".png, id=62, 1011.78pt x 433.62p
 t>
 File: "figures/create plots before after matching-1".png Graphic file (type png
 )
 <use "figures/create plots before after matching-1".png>
 Package pdftex.def Info: "figures/create plots before after matching-1".png  us
-ed on input line 133.
+ed on input line 134.
 (pdftex.def)             Requested size: 610.31306pt x 261.56348pt.
 
-Overfull \hbox (140.84258pt too wide) in paragraph at lines 133--135
+Overfull \hbox (140.84258pt too wide) in paragraph at lines 134--136
  [][] 
  []
 
-[3 <./figures/matching frame 2015-1.png (PNG copy)>] [4 <./figures/create plots
- before after matching-1.png (PNG copy)>]
-Overfull \hbox (60.8183pt too wide) in paragraph at lines 149--167
+[4 <./figures/create plots before after matching-1.png (PNG copy)>]
+Overfull \hbox (60.8183pt too wide) in paragraph at lines 150--168
  [][] 
  []
 
 [5
 
 ]
-<"figures/disbursements_kfw".png, id=73, 674.52pt x 481.8pt>
+<"figures/disbursements_kfw".png, id=76, 674.52pt x 481.8pt>
 File: "figures/disbursements_kfw".png Graphic file (type png)
 <use "figures/disbursements_kfw".png>
 Package pdftex.def Info: "figures/disbursements_kfw".png  used on input line 18
-2.
+3.
 (pdftex.def)             Requested size: 375.57782pt x 268.27701pt.
  [6
 
  <./figures/disbursements_kfw.png>]
-Overfull \hbox (33.77357pt too wide) in paragraph at lines 191--206
+Overfull \hbox (33.77357pt too wide) in paragraph at lines 192--207
 [][] 
  []
 
 [7] (./extended_abstract.bbl)
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 214.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 215.
  [8]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 214.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 215.
  (./extended_abstract.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 214.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 214.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 215.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 215.
 Package rerunfilecheck Info: File `extended_abstract.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
 
 
 LaTeX Warning: There were multiply-defined labels.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 214.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 215.
  ) 
 Here is how much of TeX's memory you used:
- 8962 strings out of 494923
- 134511 string characters out of 6180742
- 223812 words of memory out of 5000000
- 12108 multiletter control sequences out of 15000+600000
+ 8966 strings out of 494923
+ 134632 string characters out of 6180742
+ 223849 words of memory out of 5000000
+ 12111 multiletter control sequences out of 15000+600000
  35613 words of font info for 71 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  44i,11n,42p,1307b,346s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -659,10 +659,10 @@ ic/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfo
 nts/cm/cmr9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/c
 msy6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pf
 b></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb>
-Output written on extended_abstract.pdf (8 pages, 501930 bytes).
+Output written on extended_abstract.pdf (8 pages, 503690 bytes).
 PDF statistics:
- 183 PDF objects out of 1000 (max. 8388607)
- 142 compressed objects within 2 object streams
- 29 named destinations out of 1000 (max. 500000)
+ 186 PDF objects out of 1000 (max. 8388607)
+ 145 compressed objects within 2 object streams
+ 30 named destinations out of 1000 (max. 500000)
  26 words of extra memory for PDF output out of 10000 (max. 10000000)
 
