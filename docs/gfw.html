@@ -1,3 +1,1087 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:a427d66edf78de272b0fecb33a0a09149a71ce89d889b9d992c63dc5e545e260
-size 40415
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Om Prakash Bhandari (Author), Johannes Schielein (Review)" />
+
+
+<title>Global Forest Watch</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">mapme.protectedareas</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/openkfw/mapme-protectedareas">
+    <span class="fas fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Global Forest Watch</h1>
+<h4 class="author">Om Prakash Bhandari (Author), Johannes Schielein (Review)</h4>
+<h4 class="date">6/16/2021</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2021-07-03
+</p>
+<p>
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 1
+</p>
+<p>
+<strong>Knit directory:</strong> <code>mapme.protectedareas/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.6.2). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges"> <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted changes </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguncommittedchanges" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The R Markdown file has unstaged changes. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20210305code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(20210305)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20210305code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20210305)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastreeb14c7b77d4236f581031fccc48d3c86400cea5f3targetblankb14c7b7a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/openkfw/mapme.protectedareas/tree/b14c7b77d4236f581031fccc48d3c86400cea5f3" target="_blank">b14c7b7</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomopenkfwmapmeprotectedareastreeb14c7b77d4236f581031fccc48d3c86400cea5f3targetblankb14c7b7a" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version <a href="https://github.com/openkfw/mapme.protectedareas/tree/b14c7b77d4236f581031fccc48d3c86400cea5f3" target="_blank">b14c7b7</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rproj.user/
+
+Unstaged changes:
+    Modified:   analysis/accessibility.rmd
+    Modified:   analysis/carbon-flux.rmd
+    Modified:   analysis/copernicus-land-cover.rmd
+    Modified:   analysis/dopa-rest.rmd
+    Modified:   analysis/gfw.rmd
+    Modified:   analysis/gmw-mangrove.rmd
+    Modified:   analysis/terrain_ruggedness_index.rmd
+    Modified:   analysis/worldpop-population-count.rmd
+    Modified:   analysis/wwf_teow.rmd
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were made to the R Markdown (<code>analysis/gfw.rmd</code>) and HTML (<code>docs/gfw.html</code>) files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view the files as they were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/openkfw/mapme.protectedareas/43d5778e27977d0a6df1b2949354be4d338b1915/docs/gfw.html" target="_blank">43d5778</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2021-07-01
+</td>
+<td>
+update gfw html
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/e6ee00d36e73478c038cdb9998a6de4f0bf591ee/analysis/gfw.rmd" target="_blank">e6ee00d</a>
+</td>
+<td>
+Ohm-Np
+</td>
+<td>
+2021-07-01
+</td>
+<td>
+update with hideoutput option
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/openkfw/mapme.protectedareas/fa42f34f1cfa75d41154a833c822ab7b273c547e/docs/gfw.html" target="_blank">fa42f34</a>
+</td>
+<td>
+Johannes Schielein
+</td>
+<td>
+2021-07-01
+</td>
+<td>
+Host with GitHub.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/openkfw/mapme.protectedareas/7de997540a23df414c5c7819dce8932ea78ae4eb/docs/gfw.html" target="_blank">7de9975</a>
+</td>
+<td>
+Om Bandhari
+</td>
+<td>
+2021-06-30
+</td>
+<td>
+gfw html for index file
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/de2457096ce3999409cfe9e6e0474ca0aacdc25c/analysis/gfw.rmd" target="_blank">de24570</a>
+</td>
+<td>
+Om Bandhari
+</td>
+<td>
+2021-06-30
+</td>
+<td>
+create gfw rmd analysis
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<pre class="r"><code># load required libraries
+#remotes::install_github(&quot;mapme-initiative/mapme.forest&quot;)
+library(&quot;mapme.forest&quot;)
+library(&quot;sf&quot;)
+library(&quot;terra&quot;)
+library(&quot;wdpar&quot;)
+library(&quot;dplyr&quot;)
+library(&quot;rmarkdown&quot;) # only used for rendering tables for this website
+
+starttime&lt;-Sys.time() # mark the start time of this routine to calculate processing time at the end</code></pre>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>Maps for Planning, Monitoring and Evaluation (MAPME) is a joint initiative by KfW, MapTailor Geospatial Consulting GbR, and Agence Française de Développement (AFD). MAPME is an open framework that develops and promotes open source data and tools for the relevant project management stages. It consists of the following core components: (i) Good practice guidance that describes workflows for using remote sensing data and products for planning, monitoring and evaluation (ii) Project-related support with remote sensing analyses. Open source code and tools provided via open code repositories (iii) User-tailored trainings. More information can be found on the <a href="https://mapme-initiative.org/">MAPME project homepage</a>.</p>
+<p>In this analysis section, we are going to download and analyse Global Forest Watch datasets using <a href="https://mapme-initiative.github.io/mapme.forest/"><code>mapme.forest</code> package</a>.</p>
+<p>Global Forest Watch makes available global data products produced by Hansen et al (2018) by examining Landsat satellite data to characterize global forest extent, annual loss, and gain.</p>
+<p>We can find following data layers in the GFW data set:</p>
+<p><code>Treecover2000</code>: This layer gives the tree canopy cover for year 2000, defined as canopy closure for all vegetation taller than 5m in height, measured in percentage ranging from 0 to 100 percent.</p>
+<p><code>Loss</code>: This layer gives the tree cover loss during the study period, defined as a complete stand-replacement disturbance (i.e., a change from a forest to non-forest state).</p>
+<p><code>Gain</code>: Tree cover gain summarized during the period 2000–2012, defined as the inverse of the information contained in the ‘Loss’ layer (a non-forest to forest change entirely within the study period).</p>
+<p><code>Lossyear</code>: Year of gross tree cover loss event. Tree cover loss during the study period, defined as a stand-replacement disturbance, or a change from a forest to non-forest state. Encoded as either 0 (no loss) or else a value in the range 1–20, representing loss detected primarily in the year 2001–2020.</p>
+</div>
+<div id="processing-workflow" class="section level1">
+<h1>Processing workflow</h1>
+<p>The purpose of this analysis is to compute tree cover, loss year and co2 emission from the global forest watch rasters. For this, following processing routine is followed:</p>
+<p><img src="assets/workflows/gfw_routine.jpg" /></p>
+</div>
+<div id="download-and-prepare-wdpa-polygons" class="section level1">
+<h1>Download and prepare wdpa polygons</h1>
+<p>For this analysis, we would choose one WDPA polygon from the country Brazil. We can download the WDPA polygons from the package <code>wdpar</code> and then filter out the desired polygon using WDPAID with package <code>dplyr</code>. We will then reproject the downloaded polygon sample to WGS84.</p>
+<pre class="r"><code># load sample WDPA polygon from country: Brazil
+br &lt;- wdpa_fetch(&quot;BRA&quot;)%&gt;%
+  filter(WDPAID %in% 16078)
+# reproject to the WGS84
+br &lt;- st_transform(br,
+                   &quot;+proj=longlat +datum=WGS84 +no_defs&quot;)
+# plot the polygon
+plot(br[1])</code></pre>
+<p><img src="figure/gfw.rmd/fetchWdpar-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-fetchWdpar-1">
+Past versions of fetchWdpar-1.png
+</button>
+</p>
+<div id="fig-fetchWdpar-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/65d7a877deba69f661cf29f85c499b3937ae5e9b/docs/figure/gfw.rmd/fetchWdpar-1.png" target="_blank">65d7a87</a>
+</td>
+<td>
+Om Bandhari
+</td>
+<td>
+2021-06-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="download-and-prepare-raster-data" class="section level1">
+<h1>Download and prepare raster data</h1>
+<p>From the package <code>mapme.forest</code> we will now download the global forest watch rasters for the year 2020 (which is the latest update) using function <code>downloadGFW</code>. The script below download the three rasters i.e. tree cover 2000, loss year, and CO2 emission.</p>
+<pre class="r"><code># download GFW data for the area of interest (latest rasters)
+raster_files = downloadfGFW(shape = br,
+                            basename = &quot;&quot;,
+                            dataset = &quot;GFC-2020-v1.8&quot;,
+                            outdir = paste0(tempdir(),&quot;/global_forest_watch/&quot;),
+                            keepTmpFiles = F)
+# plot tree cover
+plot(rast(paste0(tempdir(),&quot;/global_forest_watch/_treecover2000.tif&quot;)))</code></pre>
+<p><img src="figure/gfw.rmd/downloadGFW-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-downloadGFW-1">
+Past versions of downloadGFW-1.png
+</button>
+</p>
+<div id="fig-downloadGFW-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/65d7a877deba69f661cf29f85c499b3937ae5e9b/docs/figure/gfw.rmd/downloadGFW-1.png" target="_blank">65d7a87</a>
+</td>
+<td>
+Om Bandhari
+</td>
+<td>
+2021-06-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code># plot loss year
+plot(rast(paste0(tempdir(),&quot;/global_forest_watch/_lossyear.tif&quot;)))</code></pre>
+<p><img src="figure/gfw.rmd/downloadGFW-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-downloadGFW-2">
+Past versions of downloadGFW-2.png
+</button>
+</p>
+<div id="fig-downloadGFW-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/65d7a877deba69f661cf29f85c499b3937ae5e9b/docs/figure/gfw.rmd/downloadGFW-2.png" target="_blank">65d7a87</a>
+</td>
+<td>
+Om Bandhari
+</td>
+<td>
+2021-06-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code># plot co2 emission
+plot(rast(paste0(tempdir(),&quot;/global_forest_watch/_co2_emission_.tif&quot;)))</code></pre>
+<p><img src="figure/gfw.rmd/downloadGFW-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-downloadGFW-3">
+Past versions of downloadGFW-3.png
+</button>
+</p>
+<div id="fig-downloadGFW-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/openkfw/mapme.protectedareas/blob/65d7a877deba69f661cf29f85c499b3937ae5e9b/docs/figure/gfw.rmd/downloadGFW-3.png" target="_blank">65d7a87</a>
+</td>
+<td>
+Om Bandhari
+</td>
+<td>
+2021-06-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="compute-zonal-statistics" class="section level1">
+<h1>Compute zonal statistics</h1>
+<p>Now, we have already prepared polygon and raster data, we will compute zonal statistics using function <code>statsGRASS</code> from package <code>mapme.forest</code>.</p>
+<p>First of all, we should get path to those downloaded rasters in the temporary directory.</p>
+<pre class="r"><code># get the file paths to the raster files
+treeCover = paste0(tempdir(),&quot;/global_forest_watch/_treecover2000.tif&quot;)
+lossYear = paste0(tempdir(),&quot;/global_forest_watch/_lossyear.tif&quot;)
+co2Layer = paste0(tempdir(),&quot;/global_forest_watch/_co2_emission_.tif&quot;)</code></pre>
+<p>Since the function <code>statsGRASS</code> is based on GRASS, we should provide path to the working installation of GRASS GIS version &gt;=7.0.0.</p>
+<pre class="r"><code>grass = &quot;/usr/lib/grass78&quot;</code></pre>
+<p>The function <code>statsGRASS</code> requires few arguments:</p>
+<ul>
+<li><span class="citation">@grass</span>: path to the grass</li>
+<li><span class="citation">@addon_base</span>: loads <code>r.area</code> addon, if not found, installs automatically</li>
+<li><span class="citation">@areas</span>: polygon of interest</li>
+<li><span class="citation">@idcol</span>: unique value of zone</li>
+<li><span class="citation">@thresholdClump</span>: threshold value of forest areas to be considered in pixels</li>
+<li><span class="citation">@thresholdCover</span>: percentage of canopy cover (value differs with forest definition )</li>
+<li><span class="citation">@saveRaster</span>: If T, saves raster for given zone else does not.</li>
+<li><span class="citation">@hideoutput</span>: If T, generate messages given by the function else hide the messages.</li>
+</ul>
+<pre class="r"><code>zonal_stats = statsGRASS(grass = grass, 
+                       addon_base = &quot;./data-raw/addons&quot;, 
+                       areas = br, 
+                       tree_cover = treeCover, 
+                       tree_loss = lossYear, 
+                       tree_co2 = co2Layer, 
+                       idcol =  &quot;WDPA_PID&quot;, 
+                       thresholdClump = 6, 
+                       thresholdCover = 10, 
+                       years = 2001:2020, 
+                       saveRaster = F,
+                       hideoutput = T)</code></pre>
+<p>Now, we can have a look at the zonal statistics result.</p>
+<pre class="r"><code># view area statistics from year 2000 to 2020
+paged_table(zonal_stats[30:50])</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["area_2000"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["area_2001"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["area_2002"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["area_2003"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["area_2004"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["area_2005"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["area_2006"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["area_2007"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["area_2008"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["area_2009"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["area_2010"],"name":[11],"type":["dbl"],"align":["right"]},{"label":["area_2011"],"name":[12],"type":["dbl"],"align":["right"]},{"label":["area_2012"],"name":[13],"type":["dbl"],"align":["right"]},{"label":["area_2013"],"name":[14],"type":["dbl"],"align":["right"]},{"label":["area_2014"],"name":[15],"type":["dbl"],"align":["right"]},{"label":["area_2015"],"name":[16],"type":["dbl"],"align":["right"]},{"label":["area_2016"],"name":[17],"type":["dbl"],"align":["right"]},{"label":["area_2017"],"name":[18],"type":["dbl"],"align":["right"]},{"label":["area_2018"],"name":[19],"type":["dbl"],"align":["right"]},{"label":["area_2019"],"name":[20],"type":["dbl"],"align":["right"]},{"label":["area_2020"],"name":[21],"type":["dbl"],"align":["right"]},{"label":["geometry"],"name":[22],"type":["s_MULTIP"],"align":["right"]}],"data":[{"1":"1440.12","2":"1440.12","3":"1440.052","4":"1439.575","5":"1439.303","6":"1438.827","7":"1438.283","8":"1438.079","9":"1437.943","10":"1437.331","11":"1437.059","12":"1436.583","13":"1435.971","14":"1435.903","15":"1435.903","16":"1435.903","17":"1435.903","18":"1435.835","19":"1435.563","20":"1435.563","21":"1435.223","22":"<s_MULTIP>"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<pre class="r"><code># view area loss statistics from year 2000 to 2020
+paged_table(zonal_stats[51:71])</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["loss_2000"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["loss_2001"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["loss_2002"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["loss_2003"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["loss_2004"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["loss_2005"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["loss_2006"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["loss_2007"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["loss_2008"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["loss_2009"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["loss_2010"],"name":[11],"type":["dbl"],"align":["right"]},{"label":["loss_2011"],"name":[12],"type":["dbl"],"align":["right"]},{"label":["loss_2012"],"name":[13],"type":["dbl"],"align":["right"]},{"label":["loss_2013"],"name":[14],"type":["dbl"],"align":["right"]},{"label":["loss_2014"],"name":[15],"type":["dbl"],"align":["right"]},{"label":["loss_2015"],"name":[16],"type":["dbl"],"align":["right"]},{"label":["loss_2016"],"name":[17],"type":["dbl"],"align":["right"]},{"label":["loss_2017"],"name":[18],"type":["dbl"],"align":["right"]},{"label":["loss_2018"],"name":[19],"type":["dbl"],"align":["right"]},{"label":["loss_2019"],"name":[20],"type":["dbl"],"align":["right"]},{"label":["loss_2020"],"name":[21],"type":["dbl"],"align":["right"]},{"label":["geometry"],"name":[22],"type":["s_MULTIP"],"align":["right"]}],"data":[{"1":"0","2":"0","3":"0.06802229","4":"0.4761068","5":"0.2720905","6":"0.4761285","7":"0.5441654","8":"0.2040488","9":"0.1360429","10":"0.6121132","11":"0.2720441","12":"0.4761341","13":"0.6121298","14":"0.06801468","15":"0","16":"0","17":"0","18":"0.0680167","19":"0.2719627","20":"0","21":"0.3400546","22":"<s_MULTIP>"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<pre class="r"><code># view CO2 emission statistics from year 2000 to 2020
+paged_table(zonal_stats[72:92])</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["co2_2000"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["co2_2001"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["co2_2002"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["co2_2003"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["co2_2004"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["co2_2005"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["co2_2006"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["co2_2007"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["co2_2008"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["co2_2009"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["co2_2010"],"name":[11],"type":["dbl"],"align":["right"]},{"label":["co2_2011"],"name":[12],"type":["dbl"],"align":["right"]},{"label":["co2_2012"],"name":[13],"type":["dbl"],"align":["right"]},{"label":["co2_2013"],"name":[14],"type":["dbl"],"align":["right"]},{"label":["co2_2014"],"name":[15],"type":["dbl"],"align":["right"]},{"label":["co2_2015"],"name":[16],"type":["dbl"],"align":["right"]},{"label":["co2_2016"],"name":[17],"type":["dbl"],"align":["right"]},{"label":["co2_2017"],"name":[18],"type":["dbl"],"align":["right"]},{"label":["co2_2018"],"name":[19],"type":["dbl"],"align":["right"]},{"label":["co2_2019"],"name":[20],"type":["dbl"],"align":["right"]},{"label":["co2_2020"],"name":[21],"type":["dbl"],"align":["right"]},{"label":["geometry"],"name":[22],"type":["s_MULTIP"],"align":["right"]}],"data":[{"1":"0","2":"0","3":"16","4":"113","5":"54","6":"87","7":"120","8":"48","9":"34","10":"156","11":"70","12":"114","13":"155","14":"15","15":"0","16":"0","17":"0","18":"16","19":"64","20":"0","21":"0","22":"<s_MULTIP>"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>In the end we are going to have a look how long the rendering of this file took to get an idea about the processing speed of this routine.</p>
+<pre class="r"><code>stoptime&lt;-Sys.time()
+print(starttime-stoptime)</code></pre>
+<pre><code>Time difference of -2.508416 mins</code></pre>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.6.3 (2020-02-29)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 18.04.5 LTS
+
+Matrix products: default
+BLAS:   /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.7.1
+LAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.7.1
+
+locale:
+ [1] LC_CTYPE=C.UTF-8       LC_NUMERIC=C           LC_TIME=C.UTF-8       
+ [4] LC_COLLATE=C.UTF-8     LC_MONETARY=C.UTF-8    LC_MESSAGES=C.UTF-8   
+ [7] LC_PAPER=C.UTF-8       LC_NAME=C              LC_ADDRESS=C          
+[10] LC_TELEPHONE=C         LC_MEASUREMENT=C.UTF-8 LC_IDENTIFICATION=C   
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] rmarkdown_2.6    dplyr_1.0.7      wdpar_1.0.6      terra_1.2-15    
+[5] sf_1.0-1         mapme.forest_1.0
+
+loaded via a namespace (and not attached):
+ [1] httr_1.4.2          tidyr_1.1.3         jsonlite_1.7.2     
+ [4] R.utils_2.10.1      binman_0.1.2        assertthat_0.2.1   
+ [7] askpass_1.1         wdman_0.2.5         countrycode_1.2.0  
+[10] sp_1.4-5            RSelenium_1.7.7     yaml_2.2.1         
+[13] pillar_1.6.1        lattice_0.20-44     glue_1.4.2         
+[16] exactextractr_0.6.1 digest_0.6.27       promises_1.2.0.1   
+[19] SDMTools_1.1-221    htmltools_0.5.1.1   httpuv_1.6.1       
+[22] R.oo_1.24.0         XML_3.99-0.3        pkgconfig_2.0.3    
+[25] raster_3.4-13       s2_1.0.6            purrr_0.3.4        
+[28] processx_3.5.2      whisker_0.4         later_1.2.0        
+[31] openssl_1.4.4       git2r_0.28.0        tibble_3.1.2       
+[34] proxy_0.4-26        generics_0.1.0      ellipsis_0.3.2     
+[37] rgrass7_0.2-5       magrittr_2.0.1      crayon_1.4.1       
+[40] evaluate_0.14       ps_1.5.0            R.methodsS3_1.8.1  
+[43] fs_1.5.0            fansi_0.5.0         xml2_1.3.2         
+[46] class_7.3-19        tools_3.6.3         lifecycle_1.0.0    
+[49] extraDistr_1.9.1    stringr_1.4.0       compiler_3.6.3     
+[52] e1071_1.7-7         caTools_1.18.1      rlang_0.4.11       
+[55] classInt_0.4-3      units_0.7-2         grid_3.6.3         
+[58] rappdirs_0.3.3      igraph_1.2.6        bitops_1.0-6       
+[61] wk_0.4.1            codetools_0.2-18    DBI_1.1.1          
+[64] curl_4.3.2          R6_2.5.0            rgdal_1.5-23       
+[67] knitr_1.30          utf8_1.2.1          workflowr_1.6.2    
+[70] rprojroot_2.0.2     KernSmooth_2.23-20  semver_0.2.0       
+[73] trend_1.1.4         stringi_1.6.2       parallel_3.6.3     
+[76] Rcpp_1.0.6          vctrs_0.3.8         tidyselect_1.1.1   
+[79] xfun_0.20          </code></pre>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
