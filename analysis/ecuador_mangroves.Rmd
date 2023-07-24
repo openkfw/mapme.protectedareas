@@ -1,0 +1,284 @@
+---
+title: "Mangrove Coverage in Ecuador"
+author: "Johannes Schielein & Andreas Petutschnig"
+date: "2023-07-21"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+```{r setup, message = FALSE, warning = FALSE, include = FALSE}
+# load libraries and set session options.
+library(RColorBrewer)
+library(cartomisc)
+library(geodata)
+library(magrittr)
+library(mapme.biodiversity)
+library(mapview)
+library(plotly)
+library(sf)
+library(tidyverse)
+
+options(scipen=999)
+```
+
+```{r preprocessing, message = FALSE, warning = FALSE, include = FALSE}
+prec2wide <- function(data) {
+  pivot_wider(data, names_from = year, values_from = mangrove_extent, names_prefix = "m_area_")
+}
+  
+fname_ecu <- "data/ecuador_mangroves.gpkg"
+if (!file.exists(fname_ecu)) {
+  dat_ecu <- st_read("data/wdpa_kfw_spatial_latinamerica_2021-04-22_allPAs_valid_simplified.gpkg")
+  
+  # filter for marine and coastal areas only
+  dat_ecu <- dat_ecu %>% 
+    filter(MARINE %in% c("marine", "coastal")
+           | ISO3 == "ECU")
+  
+  # cast mulitpolygon-data to polygons
+  dat_ecu <- sf::st_cast(x = dat_ecu,to = "POLYGON")
+  
+  ##### process Mangrove data with mapme package #####
+  # initialize portfolio
+  port <- init_portfolio(dat_ecu,
+          years = 1995:2023,
+          outdir = "input/mapme.data/",
+          tmpdir = system.file("tmp", package = "mapme.biodiversity"),
+          add_resources = FALSE,
+          verbose = FALSE
+        )
+  
+  # download global mangrove watch data
+  port <- get_resources(port, resources = c("gmw")) 
+  
+  # calculate mangrove areas      
+  port <- calc_indicators(port, "mangroves_area")
+  ##### Data Wrangling for Output Data #####
+  port$mangroves_2 <- purrr::map(port$mangroves_area, prec2wide)
+  port <- select(port, assetid, mangroves_2, WDPAID, WDPA_PID, NAME, ORIG_NAME, DESIG, DESIG_ENG, IUCN_CAT, NO_TAKE, NO_TK_AREA, 
+                 GOV_TYPE, MANG_AUTH,  MANG_PLAN)
+  port_wide_2 <- unnest(port, mangroves_2)
+  
+  # filter out such areas that have no mangroves at all
+  # inspect data
+  # create a column to identify such areas that did not have any mangroves at any time. 
+  port_wide_2$sum_areas <-
+    rowSums(select(st_drop_geometry(port_wide_2), starts_with("m_area")))
+  
+  pas_mangroves <- port_wide_2 %>% 
+    filter(sum_areas > 0)
+  pas_mangroves$dif_07_20 <- pas_mangroves$m_area_2020-pas_mangroves$m_area_2007
+  st_write(pas_mangroves, fname_ecu)
+}
+pas_mangroves <- st_read(fname_ecu, layer = "ecuador_mangroves")
+
+# This layer was manually created and edited, because of a large number of small geometry issues that had to be fixed first.
+admin_areas_buf <- st_read(fname_ecu, layer = "admin_areas_buffer_5km")
+```
+
+```{r mangrove-coverage-admin-areas, message = FALSE, warning = FALSE, include = FALSE}
+if (FALSE) {
+  admin_areas_pa_diff <- st_difference(st_make_valid(admin_areas_buf), st_union(pas_mangroves))
+  
+  # For some reason, the multipolygons have to be converted one by one, otherwise some dissappear.
+  # (see also https://github.com/r-spatial/sf/issues/763)
+  admin_areas_pa_diff_poly <- lapply(1:nrow(admin_areas_pa_diff), function(i) {
+    st_cast(admin_areas_pa_diff[i, ], "POLYGON")
+    }) %>%
+    do.call(rbind, .)
+  
+  ## calculate mangrove areas
+  port_2 <- init_portfolio(admin_areas_pa_diff_poly,
+                   years = 1995:2023,
+                   outdir = "input/mapme.data/",
+                   tmpdir = system.file("tmp", package = "mapme.biodiversity"),
+                   add_resources = FALSE,
+                   verbose = FALSE
+    )
+  
+  # download global mangrove watch data
+  port_2 <- get_resources(port_2, resources = c("gmw")) 
+  
+  # calculate mangrove areas      
+  port_2 <- calc_indicators(port_2, "mangroves_area")
+  
+  
+  View(st_drop_geometry(port_2))
+  
+  
+  port_2$mangroves_2 <- purrr::map(port_2$mangroves_area, prec2wide)
+  port_2 <- select(port_2, assetid, mangroves_2, NAME_2)
+  port_2_wide_2 <- unnest(port_2, mangroves_2)
+  
+  
+  View(st_drop_geometry(port_2_wide_2))
+  
+  # create a column to identify such areas that did not have any mangroves at any time. 
+  port_2_wide_2$sum_areas <-
+    rowSums(select(st_drop_geometry(port_2_wide_2), starts_with("m_area")))
+  
+  gadm_mangroves<-port_2_wide_2 %>% 
+    filter(sum_areas>0)
+  
+  #  statistics for mangrove change. 
+  gadm_mangroves$dif_07_20<-gadm_mangroves$m_area_2020-gadm_mangroves$m_area_2007
+  st_write(gadm_mangroves, dsn = fname_ecu, layer = "gadm_mangroves")
+}
+gadm_mangroves <- st_read(fname_ecu, layer = "gadm_mangroves")
+```
+
+
+# Introduction
+
+Mangrove is tropical coastal vegetation and considered the most significant part of the marine ecosystem and provides a link between the sea and the land. Hence, considered one of the world's dominant coastal ecosystem. There have been subsequent changes in the extent of mangroves since decades. The changes might be in the form of gain or loss. Global Mangrove Watch is an open source platform offering remote sensing data and tools for monitoring mangroves around the globe. 
+The main purpose of this routine is to carry out analysis on the protected area level to see whether the extent of mangroves within definite protected areas (PAs) is increasing or decreasing.
+The individual regions we address are PAs relevant to the KfW portfolio (as provided by the World Database of Protected Areas (WDPA/IUCN) [^1]) and coastal administrative regions as references.
+
+## Datasource and Metadata Information
+
+- Dataset: Global Mangrove Watch - World Conservation Monitoring Centre (WCMC)[^2]
+- Geographical Coverage: Global
+- Spatial Resolution: ~25 meter
+- Temporal Coverage: 1996-2016
+- Temporal Resolution: Periodic updates(1996, 2007-2010, 2015 - 2020)
+- Data downloaded: 2023-07-20
+- [Metadata Link](https://data.unep-wcmc.org/pdfs/45/GMW_001_Metadata.pdf?1560444488)
+- [Download Link](https://data.unep-wcmc.org/datasets/45)
+
+# Coastal Mangrove Habitats in Equador
+
+This document gives an overview about coastal mangrove habitats in Ecuador.
+In order to get an overview that coastal seafood farming has on mangrove distribution, we compare mangrove coverage over time in and around protected areas.
+
+We compare the following two sets of areas:
+  - WDPA Regions: These are the PA outlines as provided by WDPA
+  - Administrative Regions:
+    Base unit are the Cantons of Ecuador that contain any mangroves. We applied a 5km buffer to them in order to capture "stray" mangrove coverage not covered otherwise. The buffer areas are non-overlapping in order to avoid double counting any mangrove coverage.
+    We also excluded the WDPA Regions from the Administrative Regions.
+ 
+For these sets of areas, we calculated mangrove coverage for years with available data (1996, 2007 - 2010, 2015 - 2020).
+As a first result, we can compare the difference in mangrove coverage between 1996 and 2020.
+
+On the map, WDPA regions are outlined with a bold black line to identify them.
+The color scale is the same for both layers to make them comparable.
+
+The area around Guayaquil shows a very prominent difference between the protected and non-protected areas.
+
+```{r, message = FALSE, warning = FALSE, echo = FALSE}
+mapviewOptions(basemaps = c("CartoDB.Positron", "OpenStreetMap.DE","Esri.WorldImagery","OpenTopoMap"))
+mapviewOptions(basemaps.color.shuffle = FALSE)
+
+gadm_mangroves$dif_96_20 <- gadm_mangroves$m_area_2020 - gadm_mangroves$m_area_1996
+pas_mangroves$dif_96_20 <- pas_mangroves$m_area_2020 - pas_mangroves$m_area_1996
+
+mapView(gadm_mangroves, layer.name = "Mangrove coverage change 1996 - 2020 [ha]", zcol="dif_96_20",at=c(-3000,-500,-200,-100,0,100,200,500,1000), col.regions = brewer.pal(9, "RdBu"), color = "#666666", lwd = 0.5) +
+  mapView(pas_mangroves, layer.name = "WDPA Regions", zcol="dif_96_20",at=c(-3000,-500,-200,-100,0,100,200,500,1000), col.regions = brewer.pal(9, "RdBu"), color = "black", lwd = 3, legend = FALSE)
+```
+
+# Difference of Mangrove Coverage over time
+
+We show the difference between PAs and non-PAs by plotting their absolute and relative changes in mangrove coverage.
+
+```{r, message = FALSE, warning = FALSE, echo = FALSE}
+ts_gadm_mangroves <- st_drop_geometry(gadm_mangroves)
+ts_pas_mangroves <- st_drop_geometry(pas_mangroves)
+
+ts_gadm_mangroves$id <- seq_len(nrow(ts_gadm_mangroves))
+ts_pas_mangroves$id <- seq_len(nrow(ts_pas_mangroves)) + max(ts_gadm_mangroves$id)
+
+ts_gadm_mangroves$is_pa <- FALSE
+ts_pas_mangroves$is_pa <- TRUE
+
+ts_gadm_mangroves %<>%
+  mutate(region_name = NAME_2) %>%
+  select(contains("m_area_") | is_pa | id | region_name)
+ts_pas_mangroves %<>%
+  mutate(region_name = NAME) %>%
+  select(contains("m_area_") | is_pa | id | region_name)
+ts_all <- rbind(ts_gadm_mangroves, ts_pas_mangroves)
+
+ts_all <- pivot_longer(ts_all, contains("m_area_"), names_to = "Year")
+ts_all$Year <- gsub("m_area_", "", ts_all$Year)
+ts_all$Year <- ymd(ts_all$Year, truncated = 2L)
+
+ts_all %<>%
+  group_by(id) %>%
+  mutate(pct_change = (value / lag(value) - 1) * 100) %>%
+  replace_na(list(pct_change = 0))
+
+ts_plot <- ggplot(ts_all, aes(x = Year, y = value, group = id, label = region_name)) +
+  geom_line() +
+  scale_x_date(breaks = ymd(2000 + 5 * -1:4, truncated = 2L), date_labels = "%Y") +
+  ylab("Mangrove coverage [ha]") +
+  theme_bw() +
+  ggtitle("Mangrove Coverage in Individual PA and non-PA Regions") +
+  facet_wrap(is_pa ~ ., labeller = as_labeller(c(`TRUE` = "PAs", `FALSE` = "Non PAs")))
+
+
+ts_plot_mean <- ggplot(ts_all, aes(x = Year, y = value, group = id, label = region_name)) +
+  stat_summary(fun.y = mean, geom = "line", aes(group = 1)) +
+  ylab("Mangrove Coverage [ha]") +
+  theme_bw() +
+  ggtitle("Mean of Mangrove Coverage PA and non-PA Regions") +
+  facet_wrap(is_pa ~ ., labeller = as_labeller(c(`TRUE` = "PAs", `FALSE` = "Non PAs")))
+
+pct_avg <- as.data.frame(do.call(
+  rbind,
+  by(ts_all, list(ts_all$is_pa, ts_all$Year), function(x) {
+    x <- x [!is.infinite(x$pct_change), ]
+    c(
+      is_pa = min(x$is_pa),
+      weighted_mean = weighted.mean(x$pct_change, x$value),
+      mean = mean(x$pct_change),
+      median = median(x$pct_change)
+    )
+  })
+))
+pct_avg$Year <- rep(unique(ts_all$Year), each = 2)
+
+pct_avg %<>% pivot_longer(c("weighted_mean", "mean", "median"))
+pct_avg %<>%
+  mutate(name = replace(name, name == "mean", "Mean")) %>%
+  mutate(name = replace(name, name == "median", "Median")) %>%
+  mutate(name = replace(name, name == "weighted_mean", "Mean (weighted by area size)"))
+
+plot_pct_avg <- ggplot(pct_avg, aes(x = Year, y = value, color = name)) +
+  geom_line() +
+  scale_color_discrete(name = "Statistic", labels = c("Mean", "Median", "Mean (weighted by area size)")) +
+  ggtitle("Relative Mangrove Coverage Change in PA and non-PA Regions") +
+  ylab("Mangrove Coverage Change [%]") +
+  scale_x_date(breaks = ymd(2000 + 5 * -1:4, truncated = 2L), date_labels = "%Y") +
+  facet_wrap(is_pa ~ ., labeller = as_labeller(c(`1` = "PAs", `0` = "Non PAs"))) +
+  theme_bw() + 
+  theme(legend.position = "bottom")
+```
+
+Plotting the mangrove area over time for individual regions gives a first idea of the coverage dynamics. However, because the effects are not that constant, the plots are quite busy. You can select an area within the plot to zoom in.
+
+```{r, message = FALSE, warning = FALSE, echo = FALSE}
+ggplotly(ts_plot)
+```
+
+In addition, we can look at the mean changes and see a clearer picture of the drastic changes, especially outside PAs before 2010.
+
+```{r, message = FALSE, warning = FALSE, echo = FALSE}
+ggplotly(ts_plot_mean)
+```
+
+To address the problem that our study regions vary in size, we also consider the relative changes in mangrove coverage. To show this, we plot different summary statistics of the coverage change over time and separate by protection status.
+
+```{r, message = FALSE, warning = FALSE, echo = FALSE}
+ggplotly(plot_pct_avg)
+```
+
+# Possible Improvements
+
+The motivation for this document is to examine the effects of shrimp farming in or close to mangrove habitats. It would be beneficial to extend the study by incorporating the shrimp farm locations. However, we were not able to obtain appropriate data.
+For visual inspection of the farm locations, we can look at the satellite background images in the map view, however.
+
+[comment]: <> (Literature)
+
+[^1]: UNEP-WCMC and IUCN (2022), Protected Planet: The World Database on Protected Areas (WDPA) and World Database on Other Effective Area-based Conservation Measures (WD-OECM) [Online], February 2022, Cambridge, UK: UNEP-WCMC and IUCN. Available at: www.protectedplanet.net.
+
+[^2]: Bunting P., Rosenqvist A., Lucas R., Rebelo L-M., Hilarides L., Thomas N., Hardy A., Itoh T., Shimada M. and Finlayson C.M. (2018). The Global Mangrove Watch – a New 2010 Global Baseline of Mangrove Extent. Remote Sensing 10(10): 1669. doi:10.3390/rs10101669.
