@@ -23,7 +23,7 @@ Chapters:
   - [The mapme.biodiversity package in R](mapme-biodiversity.html)
   - [Querying data from DOPA Rest API (DOPA/JRC)](dopa-rest.html)
 - Planning
-  - [Mangrove Coverage Ecuador](equador_mangroves.html)
+  - [Mangrove Coverage Ecuador](ecuador_mangroves.html)
   - [Threat Assessment Latin America](threat_assessment.html)
   - [Threat Assessment Central America](rapid-assessment_centralamerica.html)
   - [Threat Assessment Bolivia](threat_assessment_bolivia.html)
