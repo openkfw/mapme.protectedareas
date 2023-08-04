@@ -43,7 +43,7 @@ if (!file.exists(fname_ecu)) {
   # initialize portfolio
   port <- init_portfolio(dat_ecu,
           years = 1995:2023,
-          outdir = "input/mapme.data/",
+          outdir = "C:/data/mapme.biodiversity",
           tmpdir = system.file("tmp", package = "mapme.biodiversity"),
           add_resources = FALSE,
           verbose = FALSE
@@ -91,7 +91,7 @@ if (FALSE) {
   ## calculate mangrove areas
   port_2 <- init_portfolio(admin_areas_pa_diff_poly,
                    years = 1995:2023,
-                   outdir = "input/mapme.data/",
+                   outdir = "c:/data/mapme.biodiversity",
                    tmpdir = system.file("tmp", package = "mapme.biodiversity"),
                    add_resources = FALSE,
                    verbose = FALSE
@@ -102,10 +102,6 @@ if (FALSE) {
   
   # calculate mangrove areas      
   port_2 <- calc_indicators(port_2, "mangroves_area")
-  
-  
-  View(st_drop_geometry(port_2))
-  
   
   port_2$mangroves_2 <- purrr::map(port_2$mangroves_area, prec2wide)
   port_2 <- select(port_2, assetid, mangroves_2, NAME_2)
@@ -123,7 +119,7 @@ if (FALSE) {
   
   #  statistics for mangrove change. 
   gadm_mangroves$dif_07_20<-gadm_mangroves$m_area_2020-gadm_mangroves$m_area_2007
-  st_write(gadm_mangroves, dsn = fname_ecu, layer = "gadm_mangroves")
+  st_write(gadm_mangroves, dsn = fname_ecu, layer = "gadm_mangroves", append = FALSE)
 }
 gadm_mangroves <- st_read(fname_ecu, layer = "gadm_mangroves")
 ```
@@ -184,6 +180,16 @@ We show the difference between PAs and non-PAs by plotting their absolute and re
 ts_gadm_mangroves <- st_drop_geometry(gadm_mangroves)
 ts_pas_mangroves <- st_drop_geometry(pas_mangroves)
 
+pas_names <- ts_pas_mangroves %>%
+  select(NAME, WDPAID) %>%
+  unique()
+
+ts_pas_mangroves <- aggregate(
+  cbind(m_area_1996, m_area_2007, m_area_2008, m_area_2009, m_area_2010,
+        m_area_2015, m_area_2016, m_area_2017, m_area_2018, m_area_2019,
+        m_area_2020) ~ WDPAID, data = ts_pas_mangroves, FUN = sum)
+ts_pas_mangroves <- merge(ts_pas_mangroves, pas_names)
+
 ts_gadm_mangroves$id <- seq_len(nrow(ts_gadm_mangroves))
 ts_pas_mangroves$id <- seq_len(nrow(ts_pas_mangroves)) + max(ts_gadm_mangroves$id)
 
@@ -192,10 +198,13 @@ ts_pas_mangroves$is_pa <- TRUE
 
 ts_gadm_mangroves %<>%
   mutate(region_name = NAME_2) %>%
-  select(contains("m_area_") | is_pa | id | region_name)
+  mutate(wdpa_id = NA) %>%
+  select(contains("m_area_") | is_pa | id | region_name | wdpa_id)
 ts_pas_mangroves %<>%
   mutate(region_name = NAME) %>%
-  select(contains("m_area_") | is_pa | id | region_name)
+  mutate(wdpa_id = WDPAID) %>%
+  select(contains("m_area_") | is_pa | id | region_name | wdpa_id)
+
 ts_all <- rbind(ts_gadm_mangroves, ts_pas_mangroves)
 
 ts_all <- pivot_longer(ts_all, contains("m_area_"), names_to = "Year")
@@ -205,6 +214,7 @@ ts_all$Year <- ymd(ts_all$Year, truncated = 2L)
 ts_all %<>%
   group_by(id) %>%
   mutate(pct_change = (value / lag(value) - 1) * 100) %>%
+  mutate(abs_change = value - lag(value)) %>%
   replace_na(list(pct_change = 0))
 
 ts_plot <- ggplot(ts_all, aes(x = Year, y = value, group = id, label = region_name)) +
@@ -260,7 +270,7 @@ Plotting the mangrove area over time for individual regions gives a first idea o
 ggplotly(ts_plot)
 ```
 
-In addition, we can look at the mean changes and see a clearer picture of the drastic changes, especially outside PAs before 2010.
+In addition, we can look at the mean changes and see a clearer picture of the drastic changes, especially outside PAs prior to 2010.
 
 ```{r, message = FALSE, warning = FALSE, echo = FALSE}
 ggplotly(ts_plot_mean)
@@ -271,6 +281,55 @@ To address the problem that our study regions vary in size, we also consider the
 ```{r, message = FALSE, warning = FALSE, echo = FALSE}
 ggplotly(plot_pct_avg)
 ```
+
+# Mangrove Coverage of Individual PAs
+
+To examine the coverage dynamics on the individual PA level, you can hover over the respective cell in this heat map:
+
+```{r, message = FALSE, warning = FALSE, echo = FALSE, out.width=800, out.height=700}
+dat_hm <- ts_all %>%
+  filter(is_pa) %>%
+  filter(Year > "1996-01-01") %>%
+  mutate(disp_name = paste0(region_name, "\n(", wdpa_id,")"))
+
+mangrove_heatmap <-
+  ggplot(dat_hm,
+         aes(x = Year, 
+             y = reorder(disp_name,-abs_change),
+             fill = abs_change,
+             text = paste(
+               "Area Name: ", region_name,
+               "\nMangrove cover change: ", round(abs_change, digits = 1), " ha",
+               "\nWDPA ID: ", wdpa_id
+               ))) +
+  geom_tile() +
+  scale_x_date(breaks = ymd(2006 + 4 * 0:5, truncated = 2L), date_labels = "%Y") +
+  ylab(NULL) +
+  ggtitle("Mangrove Cover Change [ha]") +
+  scale_fill_distiller(palette = "RdYlGn",
+                       na.value = 'black',
+                       direction = 1,
+                       name = NULL) +
+  theme(legend.position = "bottom") +
+  theme_bw()
+
+ggplotly(mangrove_heatmap)
+```
+
+Note: Because of the irregular data sampling intervals, some blocks in the heatmap appear wider than others. The values in the first column represent the changes between years 1996 and 2007.
+
+Also, some of the region names appear multiple times, e.g. Manglares Churute. This is because there exist multiple PAs with the same name.
+However, they can be separated by their respective WDPA ID.
+
+You can check what lies behind the individual region pairs by checking them on the protected planet website:
+
+- [Manglares Churute (29808)](https://www.protectedplanet.net/29808)
+- [Manglares Churute (2238)](https://www.protectedplanet.net/2238)
+- [Isla Santay (555592949)](https://www.protectedplanet.net/555592949)
+- [Isla Santay (220063)](https://www.protectedplanet.net/220063)
+- [Galápagos Islands (191)](https://www.protectedplanet.net/191)
+- [Galápagos (187)](https://www.protectedplanet.net/187)
+- [Galápagos (11753)](https://www.protectedplanet.net/11753)
 
 # Possible Improvements
 
