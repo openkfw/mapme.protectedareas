@@ -1,0 +1,451 @@
+---
+title: "Project Preparation: Threat Assessment for Protected Areas in Honduras"
+author: "Andreas Petutschnig"
+date: "2023-10-06"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+```{r setup, message = FALSE, warning = FALSE, include = FALSE}
+# load libraries and set session options. 
+library(dplyr)
+library(htmltools)
+library(leaflet)
+library(leaflet.extras)
+library(leaflet.extras2)
+library(leafpop)
+library(magrittr)
+library(mapme.biodiversity)
+library(plotly)
+library(reshape2)
+library(scales)
+library(sf)
+options(scipen=10000)
+```
+
+```{r basemap_custom, message = FALSE, warning = FALSE, include = FALSE}
+basemap_custom <- 
+  leaflet() %>%
+  # add external map providers
+  addTiles(group = "OpenStreetMap") %>%
+  addProviderTiles(providers$CartoDB.Positron, group="CartoDB") %>%
+  addProviderTiles(providers$Esri.WorldImagery, group="Satellite") %>%
+  addProviderTiles(providers$Esri.WorldShadedRelief, group="Topography") %>%
+  addProviderTiles(providers$NASAGIBS.ViirsEarthAtNight2012, group="Nightlights") %>%
+  addTiles(
+    "https://tiles.globalforestwatch.org/umd_tree_cover_loss/latest/dynamic/{z}/{x}/{y}.png",
+    group = "Forest Cover Loss (2001-2020)",
+    #options=tileOptions(opacity = 0.7),
+    attribution = "Hansen, M. C., P. V. Potapov, R. Moore, M. Hancher, S. A. Turubanova, A. Tyukavina, D. Thau, S. V. Stehman, S. J. Goetz, T. R. Loveland, A. Kommareddy, A. Egorov, L. Chini, C. O. Justice, and J. R. G. Townshend. 2013. “High-Resolution Global Maps of 21st-Century Forest Cover Change.” Science 342 (15 November): 850–53. Data available on-line from: http://earthenginepartners.appspot.com/science-2013-global-forest."
+  ) %>%
+  addTiles(
+    "https://tiles.globalforestwatch.org/umd_regional_primary_forest_2001/latest/dynamic/{z}/{x}/{y}.png",
+    group = "Regional Primary Forests (2001)",
+    attribution = "Hansen, M. C., P. V. Potapov, R. Moore, M. Hancher, S. A. Turubanova, A. Tyukavina, D. Thau, S. V. Stehman, S. J. Goetz, T. R. Loveland, A. Kommareddy, A. Egorov, L. Chini, C. O. Justice, and J. R. G. Townshend. 2013. “High-Resolution Global Maps of 21st-Century Forest Cover Change.” Science 342 (15 November): 850–53. Data available on-line from: http://earthenginepartners.appspot.com/science-2013-global-forest."
+  ) %>%
+  addFullscreenControl() %>%
+  # add legend(s)
+  addLayersControl(
+     baseGroups = c("CartoDB", "OpenStreetMap", "Satellite", "Topography", "Nightlights"),
+     overlayGroups = c("Forest Cover Loss (2001-2020)", "Regional Primary Forests (2001)"),
+     options = layersControlOptions(collapsed = FALSE)) %>%
+  # uncheck some layers in layer control
+  hideGroup(group = c("Forest Cover Loss (2001-2020)", "Regional Primary Forests (2001)","Labels (PA Names)"))
+```
+
+
+# Introduction
+
+The following analysis is intented to support a peer-discussion on the threat level of protected areas (short: PAs) in northern Honduras. The goal of this exercise is to assist KfW and its partners in the project preparation phase. In addition, information about the current portfolio and its relevance to protect the most threatened areas can be derived.
+
+We analyse the changes in forest coverage, mangrove coverage and land cover classes of the areas.
+
+The analysis uses the publicly available data from the World Database of Protected Areas (WDPA/IUCN) [^1] as outlines.
+Mangrove coverage data is obtained from the Global Mangrove Watch [^2], forest coverage data is obtained from the Global Forest Watch [^3] and land cover data from the ESA land cover data [^4].
+
+
+```{r landcover, message = FALSE, warning = FALSE, include = FALSE}
+# case specific IDs
+hnd_wdpa_ids <- c('555558401', '555697537', '67989', '18845', '555582979', '18810', '41011')
+
+# ----- load and transform protected areas data -----
+##  Protected areas
+sf_use_s2(FALSE)
+
+wdpa_kfw <- read_sf("data/honduras_mangroves.gpkg")
+wdpa_kfw <- st_make_valid(wdpa_kfw)
+wdpa_kfw <- st_cast(wdpa_kfw, "POLYGON")
+all(st_is_valid(wdpa_kfw))
+all(st_geometry_type(wdpa_kfw) == "POLYGON")
+
+esa_lc_hnd_wdpa <- wdpa_kfw %>%
+  init_portfolio(
+    years = 2017:2023,
+    outdir = "c:/data/mapme.biodiversity",
+    add_resources = FALSE
+  ) %>%
+  get_resources(
+    resources = c("esalandcover")
+  )
+
+hnd_lc <- esa_lc_hnd_wdpa %>%
+  calc_indicators("landcover")
+
+extract_ts_landcover <- function(dat, dissolved) {
+  dat_out <- dat %>%
+    tidyr::unnest(mangroves_area) %>%
+    st_drop_geometry() %>%
+    select(nomb_ap, year, mangrove_extent) %>%
+    mutate(dissolved = dissolved) %>%
+    rename(Name = nomb_ap, Year = year, Mangrovecover = mangrove_extent)
+    return(dat_out)
+}
+
+fname_mangrove_area <- "data/honduras_mangrovecover.csv"
+if(!file.exists(fname_mangrove_area)) {
+  hnd_mangrovecover <- mang_hnd_wdpa %>%
+    calc_indicators("mangroves_area", engine = "exactextract")
+  hnd_mangrovecover_diss <- mang_hnd_wdpa_dissolved %>%
+    calc_indicators("mangroves_area", engine = "exactextract")
+  
+  mangrovecover_areas <- rbind (
+    extract_ts_mangrove(hnd_mangrovecover, FALSE),
+    extract_ts_mangrove(hnd_mangrovecover_diss, TRUE)
+  )
+  mangrovecover_areas <- aggregate(Mangrovecover ~ ., data = mangrovecover_areas, FUN = sum)
+  write.csv(mangrovecover_areas, fname_mangrove_area)
+}
+mangrovecover_areas <- read.csv(fname_mangrove_area)
+mangrovecover_areas [mangrovecover_areas$Mangrovecover > 1, ]
+```
+
+```{r mangroves, message = FALSE, warning = FALSE, include = FALSE}
+# case specific IDs
+hnd_wdpa_ids <- c('555558401', '555697537', '67989', '18845', '555582979', '18810', '41011')
+
+# ----- load and transform protected areas data -----
+##  Protected areas
+sf_use_s2(FALSE)
+
+wdpa_kfw <- read_sf("data/honduras_mangroves.gpkg")
+wdpa_kfw <- st_make_valid(wdpa_kfw)
+wdpa_kfw <- st_cast(wdpa_kfw, "POLYGON")
+all(st_is_valid(wdpa_kfw))
+all(st_geometry_type(wdpa_kfw) == "POLYGON")
+
+hnd_kfw_dissolved <- wdpa_kfw %>%
+  group_by(nomb_ap) %>%
+  summarise()
+hnd_kfw_dissolved <- smoothr::fill_holes(hnd_kfw_dissolved, 0.1)
+hnd_kfw_dissolved <- st_cast(hnd_kfw_dissolved, "POLYGON")
+
+mang_hnd_wdpa <- wdpa_kfw %>%
+  init_portfolio(
+    years = 2017:2021,
+    outdir = "c:/data/mapme.biodiversity",
+    add_resources = FALSE
+  ) %>%
+  get_resources(
+    resources = c("gmw")
+  )
+mang_hnd_wdpa_dissolved <- hnd_kfw_dissolved %>%
+  init_portfolio(
+    years = 2017:2021,
+    outdir = "c:/data/mapme.biodiversity",
+    add_resources = FALSE
+  ) %>%
+  get_resources(
+    resources = c("gmw")
+  )
+
+extract_ts_mangrove <- function(dat, dissolved) {
+  dat_out <- dat %>%
+    tidyr::unnest(mangroves_area) %>%
+    st_drop_geometry() %>%
+    select(nomb_ap, year, mangrove_extent) %>%
+    mutate(dissolved = dissolved) %>%
+    rename(Name = nomb_ap, Year = year, Mangrovecover = mangrove_extent)
+    return(dat_out)
+}
+
+fname_mangrove_area <- "data/honduras_mangrovecover.csv"
+if(!file.exists(fname_mangrove_area)) {
+  hnd_mangrovecover <- mang_hnd_wdpa %>%
+    calc_indicators("mangroves_area", engine = "exactextract")
+  hnd_mangrovecover_diss <- mang_hnd_wdpa_dissolved %>%
+    calc_indicators("mangroves_area", engine = "exactextract")
+  
+  mangrovecover_areas <- rbind (
+    extract_ts_mangrove(hnd_mangrovecover, FALSE),
+    extract_ts_mangrove(hnd_mangrovecover_diss, TRUE)
+  )
+  mangrovecover_areas <- aggregate(Mangrovecover ~ ., data = mangrovecover_areas, FUN = sum)
+  write.csv(mangrovecover_areas, fname_mangrove_area)
+}
+mangrovecover_areas <- read.csv(fname_mangrove_area)
+mangrovecover_areas [mangrovecover_areas$Mangrovecover > 1, ]
+```
+
+```{r database_creation, message = FALSE, warning = FALSE, include = FALSE}
+# case specific IDs
+hnd_wdpa_ids <- c('555558401', '555697537', '67989', '18845', '555582979', '18810', '41011')
+
+# ----- load and transform protected areas data -----
+##  Protected areas
+sf_use_s2(FALSE)
+
+wdpa_kfw <- read_sf("data/honduras_mangroves.gpkg")
+wdpa_kfw <- st_make_valid(wdpa_kfw)
+wdpa_kfw <- st_cast(wdpa_kfw, "POLYGON")
+all(st_is_valid(wdpa_kfw))
+all(st_geometry_type(wdpa_kfw) == "POLYGON")
+
+hnd_kfw_dissolved <- wdpa_kfw %>%
+  group_by(nomb_ap) %>%
+  summarise()
+hnd_kfw_dissolved <- smoothr::fill_holes(hnd_kfw_dissolved, 0.1)
+hnd_kfw_dissolved <- st_cast(hnd_kfw_dissolved, "POLYGON")
+
+
+hnd_wdpa <- wdpa_kfw %>%
+  init_portfolio(
+    years = 2017:2021,
+    outdir = "c:/data/mapme.biodiversity",
+    add_resources = FALSE
+  ) %>%
+  get_resources(
+    resources = c("gfw_treecover", "gfw_lossyear", "gfw_emissions")
+  )
+hnd_wdpa_dissolved <- hnd_kfw_dissolved %>%
+  init_portfolio(
+    years = 2017:2021,
+    outdir = "c:/data/mapme.biodiversity",
+    add_resources = FALSE
+  ) %>%
+  get_resources(
+    resources = c("gfw_treecover", "gfw_lossyear", "gfw_emissions")
+  )
+
+extract_ts <- function(dat, dissolved, min_cover) {
+  dat_out <- dat %>%
+    tidyr::unnest(treecover_area) %>%
+    st_drop_geometry() %>%
+    select(nomb_ap, years, treecover) %>%
+    mutate(dissolved = dissolved, min_cover = min_cover)
+    return(dat_out)
+}
+
+fname_treecover_area <- "data/honduras_treecover.csv"
+if(!file.exists(fname_treecover_area)) {
+  hnd_treecover_10 <- hnd_wdpa %>%
+    calc_indicators("treecover_area", min_size = 1, min_cover = 10, engine = "exactextract")
+  hnd_treecover_30 <- hnd_wdpa %>%
+    calc_indicators("treecover_area", min_size = 1, min_cover = 30, engine = "exactextract")
+  
+  
+  hnd_diss_treecover_10 <- hnd_wdpa_dissolved %>%
+    calc_indicators("treecover_area", min_size = 1, min_cover = 10, engine = "exactextract")
+  hnd_diss_treecover_30 <- hnd_wdpa_dissolved %>%
+    calc_indicators("treecover_area", min_size = 1, min_cover = 30, engine = "exactextract")
+  
+  treecover_areas <- rbind (
+    extract_ts(hnd_treecover_10, FALSE, 10),
+    extract_ts(hnd_treecover_30, FALSE, 30),
+    extract_ts(hnd_diss_treecover_10, TRUE, 10),
+    extract_ts(hnd_diss_treecover_30, TRUE, 30)
+  )
+  treecover_areas %<>%
+    rename(Name = nomb_ap, Year = years, Treecover = treecover)
+  treecover_areas <- aggregate(Treecover ~ ., data = treecover_areas, FUN = sum)
+  write.csv(treecover_areas, fname_treecover_area)
+}
+
+```
+
+# Overview Map
+
+```{r overview_map, message = FALSE, warning = FALSE, echo = FALSE}
+hnd_wdpa_overview_map <- hnd_wdpa %>%
+  rename(
+    Name = nomb_ap,
+    Category = categoria,
+    Zone = zona,
+    `Area [ha]` = area_ha
+  ) %>%
+  select(-sector, -sub_zona, - assetid)
+
+map_overview <- basemap_custom %>%
+  # add own polygon data
+  addPolygons(data = hnd_wdpa_overview_map, opacity = 0.9, color = "#2b8cbe", group = "WDPA Regions", label = ~htmlEscape(Name), weight = 1,
+              popup = popupTable(st_drop_geometry(hnd_wdpa_overview_map))) %>%
+  addLayersControl(
+     baseGroups = c("CartoDB", "OpenStreetMap", "Satellite", "Topography", "Nightlights"),
+     overlayGroups = c("WDPA Regions", "Forest Cover Loss (2001-2020)", "Regional Primary Forests (2001)"),
+     options = layersControlOptions(collapsed = FALSE))
+
+map_overview
+```
+
+```{r message = FALSE, warning = FALSE, include = FALSE}
+treecover_areas <- read.csv(fname_treecover_area)
+
+ggplot(treecover_areas, aes(x = Year, y = Treecover, color = Name)) +
+  geom_line() +
+  facet_grid(min_cover ~ dissolved)
+```
+
+```{r message = FALSE, warning = FALSE, include = FALSE}
+treecover_areas <- read.csv("data/honduras_treecover.csv")
+
+by(treecover_areas, list(treecover_areas$dissolved, treecover_areas$min_cover), function(x) {
+  summary(x$Treecover)
+})
+
+by(treecover_areas, list(treecover_areas$dissolved), function(x) {
+  summary(x$Treecover)
+})
+```
+
+```{r message = FALSE, warning = FALSE, include = FALSE}
+summarize_lc <- function(lc) {
+  do.call(rbind, lc) %>%
+    select(-percentage) %>%
+    group_by(classes, year) %>%
+    reframe(area_ha = sum(area))
+}
+
+hnd_lc_long <- hnd_lc %>%
+  mutate(is_nucleo = zona == "Nucleo") %>%
+  select(nomb_ap, is_nucleo, landcover) %>%
+  st_drop_geometry() %>%
+  group_by(nomb_ap, is_nucleo) %>%
+  reframe(summarize_lc(landcover))
+
+hnd_lc_diff <- hnd_lc_long %>%
+  group_by(nomb_ap, is_nucleo, classes) %>%
+  reframe(
+    area_2017_ha = area_ha [year == "2017"],
+    area_2018_ha = area_ha [year == "2018"],
+    area_2019_ha = area_ha [year == "2019"],
+    difference_ha = 
+      area_ha [year == max(year)] -
+      area_ha [year == min(year)]
+  ) %>%
+  rename(Name = nomb_ap, `Land cover class` = classes, Nucleo = is_nucleo)
+```
+
+# Land Cover changes
+
+The land cover change plots show a lot of different classes on limited space and are therefore hard to distinguish.
+
+To make it easier to interpret the actual numbers, we also include the tabular raw data.
+The following table lists all land cover classes detected between 2017 and 2019. The *Nucleo* column indicates, whether a line represents the core zone of a PA or the surrounding area.
+The column *difference_ha* shows the absolute area difference of a class between 2017 and 2019. You can interact with the table by clicking on the column titles or typing phrases into the search box. You can also download the data as xlsx or CSV file to use it in a tool of your choice.
+
+## Plots {.tabset}
+
+```{r landcover_changes_plots, message = FALSE, warning = FALSE, include = FALSE}
+lc_plot <- function(pa_name) {
+  lc_change_plot <- hnd_lc_long %>%
+    mutate(is_nucleo = ifelse(is_nucleo, "Nucleo", "Non-Nucleo")) %>%
+    filter(nomb_ap == pa_name) %>%
+    ggplot(aes(x = year, y = area_ha, color = classes, group = classes)) +
+      geom_line() +
+      facet_grid(. ~ is_nucleo, scales = "free") +
+      theme_bw() +
+      ylab("Area [ha]") +
+      xlab("Year") +
+      labs(color = "Class") +
+      scale_y_continuous(labels = function(x) format(x, big.mark = ",", scientific = FALSE))
+  return(lc_change_plot)
+}
+```
+
+
+```{r, results = 'asis', echo = FALSE}
+for (pa_name in unique(hnd_lc_long$nomb_ap)) {
+  cat("\n### ", pa_name, "\n")
+  pa_plot <- lc_plot(pa_name)
+  print(pa_plot)
+  cat("\n")
+}
+```
+
+## {-}
+
+```{r landcover_changes_table, message = FALSE, warning = FALSE, echo = FALSE}
+lc_table <- DT::datatable(
+          hnd_lc_diff,
+          extensions = "Buttons",
+          options = list(
+            pageLength = 5,
+            scrollX = TRUE,
+            sScrollY = "75vH",
+            scrollCollapse = TRUE,
+            searchHighlight = TRUE,
+            extensions = list("Scroller"),
+            dom = 'Bfrtip',
+            buttons = list("pageLength", 'csv', 'excel'),
+            lengthMenu = list(c(10, 25, 50, -1), c("10 rows", "25 rows", "50 rows", "all"))
+          )
+)
+lc_table
+```
+
+# Overview Map -- Forest and Mangrove Coverage
+
+To explore the changes in forest and mangrove coverage as reported by GFW and GMW, respectively, you can click on a region of your choice, which shows the two time series as a plot.
+
+```{r map_forest_magrove, message = FALSE, warning = FALSE, echo = FALSE}
+plot_one_pa <- function(dat, pa_name) {
+  dat %<>%
+    filter(dissolved == FALSE, min_cover == 10, Name == pa_name) %>%
+    select(-X, -dissolved, -min_cover) %>%
+    melt(measure.vars = c("Mangrovecover", "Treecover")) %>%
+    group_by(Name, variable) %>%
+    reframe(
+      Year = Year,
+      difference_ha = value - value[Year == min(Year)]
+    )
+  areas <- round(as.numeric(units::set_units(st_area(hnd_wdpa_dissolved), "ha")), 0)
+  areas <- trimws(format(areas, big.mark = ","))
+  display_names <- paste0(hnd_wdpa_dissolved$nomb_ap, " (Total Area: ", areas, " ha)")
+  plot_title <- display_names[grepl (dat$Name[1], display_names)]
+
+  ggplot(dat, aes(x = Year, y = difference_ha, group = variable, color = variable)) +
+    geom_line(na.rm = TRUE, linewidth = 3) +
+    ylab("Difference [ha]") +
+    ggtitle(plot_title) +
+    labs(color = NULL) +
+    theme_minimal() +
+    scale_y_continuous(labels = function(x) format(x, big.mark = ",", scientific = FALSE)) +
+    scale_color_manual(values = c("#b5923f", "#167a31"))
+}
+
+mangrove_forest_combined <- merge(mangrovecover_areas, treecover_areas, all.x = TRUE, all.y = TRUE)
+map_plots <- lapply(hnd_wdpa_dissolved$nomb_ap, plot_one_pa, dat = mangrove_forest_combined)
+
+map_forest_mangrove <- basemap_custom %>%
+  # add own polygon data
+  addPolygons(data = hnd_wdpa_dissolved, opacity = 0.9, color = "#2b8cbe", group = "WDPA Regions", label = ~htmlEscape(nomb_ap), weight = 1,
+              popup = popupGraph(map_plots)) %>%
+  addLayersControl(
+     baseGroups = c("CartoDB", "OpenStreetMap", "Satellite", "Topography", "Nightlights"),
+     overlayGroups = c("WDPA Regions", "Forest Cover Loss (2001-2020)", "Regional Primary Forests (2001)"),
+     options = layersControlOptions(collapsed = FALSE))
+```
+
+```{r map_forest_mangrove_plot, message = FALSE, warning = FALSE, echo = FALSE}
+map_forest_mangrove
+```
+
+[comment]: <> (Literature)
+
+[^1]: UNEP-WCMC and IUCN (2022), Protected Planet: The World Database on Protected Areas (WDPA) and World Database on Other Effective Area-based Conservation Measures (WD-OECM) [Online], February 2022, Cambridge, UK: UNEP-WCMC and IUCN. Available at: www.protectedplanet.net.
+
+[^2]: "Bunting, P.; Rosenqvist, A.; Hilarides, L.; Lucas, R.M.; Thomas, T.; Tadono, T.; Worthington, T.A.; Spalding, M.; Murray, N.J.; Rebelo, L-M. Global Mangrove Extent Change 1996 – 2020: Global Mangrove Watch Version 3.0. Remote Sensing. 2022"
+
+[^3]: "Hansen, M. C., P. V. Potapov, R. Moore, M. Hancher, S. A. Turubanova, A. Tyukavina, D. Thau, S. V. Stehman, S. J. Goetz, T. R. Loveland, A. Kommareddy, A. Egorov, L. Chini, C. O. Justice, and J. R. G. Townshend. 2013. “High-Resolution Global Maps of 21st-Century Forest Cover Change.” Science 342 (15 November): 850–53. Data available on-line from: http://earthenginepartners.appspot.com/science-2013-global-forest."
+
+[^4]: "ESA. Land Cover CCI Product User Guide Version 2. Tech. Rep. (2017). Available at: maps.elie.ucl.ac.be/CCI/viewer/download/ESACCI-LC-Ph2-PUGv2_2.0.pdf"
