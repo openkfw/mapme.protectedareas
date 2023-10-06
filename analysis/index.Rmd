@@ -27,6 +27,7 @@ Chapters:
   - [Threat Assessment Latin America](threat_assessment.html)
   - [Threat Assessment Central America](rapid-assessment_centralamerica.html)
   - [Threat Assessment Bolivia](threat_assessment_bolivia.html)
+  - [Threat Assessment Honduras](threat_assessment_honduras.html)
   - [Threat Assessment Selva Maya](threat_assessment_selva_maya.html)
 - Monitoring
 - Evaluation
