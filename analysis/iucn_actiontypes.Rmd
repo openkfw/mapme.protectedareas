@@ -1,0 +1,476 @@
+---
+title: "IUCN Action Types"
+author: "Yota Eilers"
+date: '2023-05-02'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, echo = FALSE)
+
+# Load packages
+library(readxl)
+library(tidyverse)
+library(stargazer)
+library(reshape2)
+library(knitr)
+library(kableExtra)
+```
+
+## Data Description
+
+## IUCN Action Types
+
+IUCN suggests the following action type classification (note: descriptions are taken verbatim from IUCN):
+
+**Land/Water Protection (1):** Actions to identify, establish or expand protected areas.
+
+*1.1 Site/Area Protection*: Establishing or expanding public or private parks, reserves, and other protected areas roughly equivalent to IUCN Categories I-VI.
+
+**Land/Water Management (2):** Actions directed at conserving or restoring sites, habitats and the wider environment.
+
+**Species Management (3):** Actions directed at managing or restoring species, focused on the species of concern itself.
+
+**Education & Awareness (4):** Actions directed at people to improve understanding and skills, and influence behavior.
+
+**Law & Policy (5):** Actions to develop, change, influence and help implement formal legislation, regulation and voluntary standards.
+
+**Livelihood, Economic & Other Incentives (6):** Actions to use economic and other incentives to influence behavior.
+
+**External Capacity Building (7):** Actions to build the infrastructure to do better conservation.
+
+```{r get list of bmz numbers}
+# # list of panel datasets
+# all_years <- list.files("/datadrive/datalake/mapme.protectedareas/output/tabular/regression_input/CEM/tn_projects") %>% 
+#   grep("cem_tn_matched_panel_*", ., value = TRUE)
+# bmz_list <- all_years %>% 
+#     gsub("cem_tn_matched_panel_", "", .) %>% 
+#     gsub(".csv", "", .)
+# 
+# bmz_list <- bmz_list[-which(bmz_list=="199566829"| bmz_list=="199966649")] # skip entries that cause issues because of perfect collinearity of treatment variable
+# bmz_list <- bmz_list[-which(bmz_list=="201066661")] #skip because of coastal and marine protection without any forest cover
+# # load each list entry and create unique panel id across all matching frames
+
+iucnat <- read_excel("/datadrive/yota/newfiles/data/iucnat.xlsx",
+                   sheet = "classification")
+bmz_list <- unique(iucnat$bmz)
+```
+
+
+```{r}
+# kfw_data <- read_excel("/datadrive/yota/test/Geodatamodel_KfW_extended_biodiversiy_KW_07.xlsx",
+#                           sheet = "fill-me (ALT)", range ="A2:BG198")
+
+kfw_data <- read_excel("/datadrive/yota/newfiles/data/iucnat_master.xlsx",
+                       sheet = "fill-me (ALT)", skip = 1,
+                       col_types = c(rep("guess", 49), rep("numeric", 10)))
+
+# Select relevant columns
+actiontypes <- kfw_data[,c(3,26:59)]
+names(actiontypes)[1] <- "id"
+
+# Cleaning the data set: rm cols where all NA
+not_all_na <- function(x) any(!is.na(x))
+actiontypes <- actiontypes %>% 
+  select(where(not_all_na))
+
+actiontypes <- actiontypes %>% 
+  unite(col = "bmz", starts_with("PN"), sep = "", na.rm = TRUE) %>% 
+  rename_with(~paste0("class", .), c(-id, -bmz)) %>% 
+  filter(bmz %in% bmz_list)
+
+at_reduced_long <- actiontypes %>% 
+  pivot_longer(c(-id, -bmz)) %>% 
+  mutate(name = str_extract(name, "class[0-9]")) %>% 
+  group_by(bmz, name) %>%
+  summarise(max = max(value))
+
+at_reduced <- at_reduced_long %>% 
+  pivot_wider(names_from = "name", values_from = "max",
+              values_fill = 0) %>% 
+  ungroup()
+
+```
+
+## By BMZ number
+
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+# By BMZ
+at_bybmz <- actiontypes %>% 
+  pivot_longer(c(-id, -bmz)) %>% 
+  mutate(name = str_extract(name, "class[0-9]")) %>% 
+  group_by(bmz, name) %>% 
+  summarise(max = max(value)) %>% 
+  group_by(max, name) %>% 
+  summarise(count = n()) %>% 
+  pivot_wider(names_from = "name", values_fill = 0, 
+              values_from = "count") %>% 
+  mutate(max = recode(max, 
+                      "0" = "No focus",
+                      "1" = "Weak focus",
+                      "2" = "Strong focus",
+                      .default = "Not specified"))
+
+names(at_bybmz) <- c("Focus", "(1) Protection", "(2) Management", "(3) Species",
+                 "(4) Education", "(5) Law/policy", "(6) Livelihood", "(7) Capacity")
+
+# stargazer(at_bybmz,
+#           type = "text",
+#           summary = FALSE,
+#           rownames = FALSE,
+#           title = "IUCN action types: focus by project (BMZ) number")
+
+at_bybmz %>%  
+  kable()
+```
+
+## By Protected Area
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# By PA
+at_bypa <- actiontypes %>% 
+  pivot_longer(c(-id, -bmz)) %>% 
+  mutate(name = str_extract(name, "class[0-9]")) %>% 
+  group_by(id, name) %>% 
+  summarise(max = max(value)) %>% 
+  group_by(max, name) %>% 
+  summarise(count = n()) %>% 
+  pivot_wider(names_from = "name",  values_fill = 0,
+              values_from = "count") %>% 
+  mutate(max = recode(max, 
+                      "0" = "No focus",
+                      "1" = "Weak focus",
+                      "2" = "Strong focus",
+                      .default = "Not specified"))
+
+names(at_bypa) <- c("Focus", "(1) Protection", "(2) Management", "(3) Species",
+                     "(4) Education", "(5) Law/policy", "(6) Livelihood", "(7) Capacity")
+
+# stargazer(at_bypa,
+#           type = "text",
+#           summary = FALSE,
+#           rownames = FALSE,
+#           title = "IUCN action types: focus by PA identifier") 
+at_bypa %>%  
+  kable()
+```
+
+## By BMZ and PA
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+at_bypa2 <- at_bypa %>%  
+  rename("F" = "Focus", "(1)" = "(1) Protection",
+         "(2)" = "(2) Management", "(3)" = "(3) Species",
+         "(4)" = "(4) Education", "(5)" = "(5) Law/policy", 
+         "(6)" = "(6) Livelihood", "(7)" = "(7) Capacity")
+new <- cbind(at_bybmz, at_bypa2) 
+at_multicol <- new %>%  
+  select("Focus", "(1) Protection", "(1)", "(2) Management", "(2)", "(3) Species", "(3)", 
+         "(4) Education", "(4)", "(5) Law/policy", "(5)", 
+         "(6) Livelihood", "(6)", "(7) Capacity", "(7)")
+
+at_multicol %>%  
+  kable(col.names = c("Focus by", "BMZ", "PA", "BMZ", "PA", "BMZ", "PA", "BMZ", "PA", 
+                      "BMZ", "PA", "BMZ", "PA", "BMZ", "PA")) %>%
+  add_header_above(c(" " = 1, "(1) Protection" = 2,  "(2) Management" = 2, "(3) Species" = 2,
+                     "(4) Education" = 2, "(5) Law/Policy" = 2, "(6) Livelihood" = 2,
+                     "(7) Capacity" = 2))
+
+at_multicol %>%  
+  kable(col.names = c("Focus by", "BMZ", "PA", "BMZ", "PA", "BMZ", "PA", "BMZ", "PA", 
+                      "BMZ", "PA", "BMZ", "PA", "BMZ", "PA"),
+        format = "latex") %>%
+  add_header_above(c(" " = 1, "(1) Protection" = 2,  "(2) Management" = 2, "(3) Species" = 2,
+                     "(4) Education" = 2, "(5) Law/Policy" = 2, "(6) Livelihood" = 2,
+                     "(7) Capacity" = 2)) %>%
+  save_kable("actiontypes_focus.tex")
+
+```
+
+
+
+## Overlap of projects by IUCN action type categories
+
+Note that focus values were re-coded to a binary focus indicator. Only *strong focus* is coded as "focus" in this case, whereas *weak focus* or *no focus* are coded as "no focus", i.e. zero.
+
+### By main categories
+
+```{r}
+# Recode focus such that strong focus is "1" and rest is "0"
+at_recoded <- at_reduced_long %>% 
+  mutate(max = recode(max,
+                      `2` = 1,
+                      `1` = 0,
+                      `0` = 0)) %>% 
+  pivot_wider(names_from = "name", values_from = "max",
+              values_fill = 0) %>% 
+  ungroup() %>%  
+  na.exclude()
+
+# Function for overlap of two vectors
+get_overlap <- function(x, y) {
+  # sum gives number of entries that match between the two vectors
+  sum((x - y) == 0) / nrow(x)
+}
+
+# Function for 'overlap' matrix
+cross_overlap <- function(start, end, data) {
+  # Go through rows (inner map) and columns (outer mapö)
+  tbl <- map_dfc(start:end, function(j) map_dbl(start:end, function(i) get_overlap(data[, i], data[, j])))
+  names(tbl) <- names(data[, start:end])
+  tbl
+}
+
+at_overlap <- as.matrix(cross_overlap(2, 8, at_recoded))
+
+rownames(at_overlap) <- c("(1) Protection", "(2) Management", "(3) Species",
+                     "(4) Education", "(5) Law/policy", "(6) Livelihood", "(7) Capacity")
+colnames(at_overlap) <- c("(1) Protection", "(2) Management", "(3) Species",
+                     "(4) Education", "(5) Law/policy", "(6) Livelihood", "(7) Capacity")
+
+at_overlap_plot <- at_overlap
+
+# Remove digits and lower triangle (redundant)
+at_overlap <- at_overlap %>%
+  format(digits = 2)
+at_overlap[lower.tri(at_overlap)] <- ""
+at_overlap %>%
+  kable()
+
+# Save latex table
+kable(at_overlap, format = "latex") %>%
+  save_kable("actiontypes_overlap.tex")
+
+# Build plot
+at_overlap_plot[lower.tri(at_overlap_plot)] <- NA 
+
+at_overlap_plot %>% 
+  melt(na.rm = TRUE) %>% 
+  ggplot(aes(Var2, Var1, fill = value)) +
+  geom_tile(color = "white")+
+ scale_fill_gradient2(low = "blue", high = "red", mid = "white", 
+   midpoint = 0, limit = c(0,1), space = "Lab", 
+   name="Focus\nOverlap") +
+  theme_minimal()+ 
+ theme(axis.text.x = element_text(angle = 45, vjust = 1, size = 10, hjust = 1),
+       axis.text.y = element_text(size = 10)) +
+  xlab("") + 
+  ylab("") +
+ coord_fixed()
+
+```
+
+
+### By subcategories
+
+```{r}
+# Recode focus such that strong focus is "1" and rest is "0"
+at_recoded_subg <- actiontypes %>% 
+  mutate(across(starts_with("class"), 
+                ~ recode(.,
+                      `2` = 1,
+                      `1` = 0,
+                      `0` = 0))) %>% 
+  filter(id != 5002) # this PA does not have any data
+
+at_overlap_subg <- as.matrix(cross_overlap(2, 25, at_recoded_subg))
+
+rownames(at_overlap_subg) <- names(at_recoded_subg[, 2:25])
+colnames(at_overlap_subg) <- names(at_recoded_subg[, 2:25])
+
+at_overlap_subg_plot <- at_overlap_subg
+
+# Summary table for each class
+
+# -- by PA
+at_subg_bmz <- actiontypes %>% 
+  group_by(bmz) %>% 
+  summarise(across(starts_with("class"), ~max(.x)))
+
+saveRDS(at_subg_bmz, "at_subg_bmz.RDS")
+
+at_subg_tab_bmz <- apply(at_subg_bmz[-c(1)], 2, table)
+maxlen <- max(sapply(at_subg_tab_bmz,length))
+fillchar <- 0
+t(sapply(at_subg_tab_bmz, function(x) c(x, rep(fillchar, maxlen - length(x)))))
+
+# -- by BMZ
+at_subg_tab <- apply(actiontypes[-c(1, 26)], 2, table)
+maxlen <- max(sapply(at_subg_tab,length))
+fillchar <- 0
+t(sapply(at_subg_tab, function(x) c(x, rep(fillchar, maxlen - length(x)))))
+
+# Remove digits and lower triangle (redundant)
+at_overlap_subg <- at_overlap_subg %>%
+  format(digits = 2)
+at_overlap_subg[lower.tri(at_overlap_subg)] <- ""
+at_overlap_subg %>%
+  kable()
+
+# Save latex table
+kable(at_overlap_subg, format = "latex") %>%
+  save_kable("actiontypes_overlap_subg.tex")
+
+# Build plot
+at_overlap_subg_plot[lower.tri(at_overlap_subg_plot)] <- NA 
+
+at_overlap_subg_plot %>% 
+  melt(na.rm = TRUE) %>% 
+  ggplot(aes(Var2, Var1, fill = value)) +
+  geom_tile(color = "white")+
+ scale_fill_gradient2(low = "blue", high = "red", mid = "white", 
+   midpoint = 0, limit = c(0,1), space = "Lab", 
+   name="Focus\nOverlap") +
+  theme_minimal()+ 
+ theme(axis.text.x = element_text(angle = 45, vjust = 1, size = 10, hjust = 1),
+       axis.text.y = element_text(size = 10)) +
+  xlab("") + 
+  ylab("") +
+ coord_fixed()
+```
+
+
+```{r eval = FALSE}
+# Recode focus such that strong focus is "1" and rest is "0"
+at_cor <- at_reduced_long %>% 
+  mutate(max = recode(max,
+                      `2` = 1,
+                      `1` = 0,
+                      `0` = 0)) %>% 
+  pivot_wider(names_from = "name", values_from = "max",
+              values_fill = 0) %>% 
+  ungroup() %>%  
+  select(-bmz) %>% 
+  na.exclude() %>% 
+  cor()
+
+rownames(at_cor) <- c("(1) Protection", "(2) Management", "(3) Species",
+                     "(4) Education", "(5) Law/policy", "(6) Livelihood", "(7) Capacity")
+colnames(at_cor) <- c("(1) Protection", "(2) Management", "(3) Species",
+                     "(4) Education", "(5) Law/policy", "(6) Livelihood", "(7) Capacity")
+
+at_cor_plot <- at_cor
+
+# Remove redundant info
+at_cor <- at_cor %>%
+  format(digits = 2)
+at_cor[lower.tri(at_cor)] <- ""
+at_cor %>%
+  kable()
+
+# Save latex table
+kable(at_cor, format = "latex") %>%
+  save_kable("actiontypes_cor.tex")
+
+# Build plot
+at_cor_plot[lower.tri(at_cor)] <- NA 
+
+at_cor_plot %>% 
+  melt(na.rm = TRUE) %>% 
+  ggplot(aes(Var2, Var1, fill = value)) +
+  geom_tile(color = "white")+
+ scale_fill_gradient2(low = "blue", high = "red", mid = "white", 
+   midpoint = 0, limit = c(-1,1), space = "Lab", 
+   name="Pearson\nCorrelation") +
+  theme_minimal()+ 
+ theme(axis.text.x = element_text(angle = 45, vjust = 1, 
+    size = 12, hjust = 1)) +
+  xlab("") + 
+  ylab("") +
+ coord_fixed()
+```
+
+## Additional info
+
+### Strong focus on protection
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+at_reduced %>% 
+  filter(class1 == 2) %>% 
+  select(bmz) %>% 
+  pull()
+  
+```
+
+### Strong focus on management
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+at_reduced %>% 
+  filter(class2 == 2) %>% 
+  select(bmz) %>% 
+  pull()
+  
+```
+
+### Projects with only one action type
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+at_reduced_long %>% 
+  mutate(max = recode(max,
+                      `2` = 1,
+                      `1` = 1,
+                      `0` = 0)) %>% 
+  group_by(bmz) %>% 
+  summarize(offocus = sum(max, na.rm = TRUE)) %>% 
+  filter(offocus == 1)
+  
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+at_reduced_long %>% 
+  mutate(max = recode(max,
+                      `2` = 1,
+                      `1` = 0,
+                      `0` = 0)) %>% 
+  group_by(bmz) %>% 
+  summarize(offocus = sum(max, na.rm = TRUE)) %>% 
+  filter(offocus == 1)
+  
+```
+
+There are no projects with only one action type.
+
+### Projects here vs. projects in draft table
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+draft_tbl_bmz <- as.character(c(199865809, 199867003, 199867219, 200065086, 200066340, 200165092, 200165472, 200166090, 200266908, 200466094, 200466458, 200565689, 200666131, 200766667, 200865444, 200866285, 200866657, 201065143, 201066836, 201165984, 201166156, 201167063, 201265685, 201367127, 201468594, 201567957, 201670124, 201697515, 209810094, 209810854, 209810961))
+
+at_bmz <- at_reduced %>% 
+  select(bmz) %>% 
+  pull()
+
+tibble(draft_tbl_bmz) %>%
+  filter(draft_tbl_bmz %in% at_bmz)
+
+
+  
+```
+
+There are some projects in the IUCN action type table that are not in Table 1 in the draft paper and vice versa. This should be looked into. 
+
+## How many BMZ per PA
+
+```{r}
+count_treatments <- actiontypes %>%  
+  group_by(id) %>%  
+  summarize(number_bmz = n())
+table(count_treatments$number_bmz)
+```
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+at_bybmzpa <- actiontypes %>% 
+  unite(col = "bmz_pa", c("bmz", "id"), sep = "_", na.rm = TRUE) %>%
+  pivot_longer(c(-bmz_pa)) %>% 
+  mutate(name = str_extract(name, "class[0-9]")) %>% 
+  group_by(bmz_pa, name) %>% 
+  summarise(max = max(value)) %>% 
+  # group_by(max, name) %>% 
+  # summarise(count = n()) %>% 
+  pivot_wider(names_from = "name", values_fill = 0, 
+              values_from = "max") %>%
+  separate(col = "bmz_pa", into = c("bmz", "id"), sep = "_")
+
+saveRDS(at_bybmzpa, "actiontypes_bybmzpa.RDS")
+```
+
