@@ -25,7 +25,7 @@ options(scipen=10000)
 ```
 
 ```{r basemap_custom, message = FALSE, warning = FALSE, include = FALSE}
-basemap_custom <- 
+basemap_custom <-
   leaflet() %>%
   # add external map providers
   addTiles(group = "OpenStreetMap") %>%
@@ -73,9 +73,12 @@ hnd_wdpa_ids <- c('555558401', '555697537', '67989', '18845', '555582979', '1881
 ##  Protected areas
 sf_use_s2(FALSE)
 
-wdpa_kfw <- read_sf("data/honduras_mangroves.gpkg")
+wdpa_kfw <- st_read("data/honduras_lifeweb.gpkg")
+
 wdpa_kfw <- st_make_valid(wdpa_kfw)
-wdpa_kfw <- st_cast(wdpa_kfw, "POLYGON")
+wdpa_kfw %<>% st_cast("MULTIPOLYGON") %>% st_cast("POLYGON")
+wdpa_kfw %<>% st_transform(4326)
+wdpa_kfw <- st_make_valid(wdpa_kfw)
 all(st_is_valid(wdpa_kfw))
 all(st_geometry_type(wdpa_kfw) == "POLYGON")
 
@@ -101,23 +104,6 @@ extract_ts_landcover <- function(dat, dissolved) {
     rename(Name = nomb_ap, Year = year, Mangrovecover = mangrove_extent)
     return(dat_out)
 }
-
-fname_mangrove_area <- "data/honduras_mangrovecover.csv"
-if(!file.exists(fname_mangrove_area)) {
-  hnd_mangrovecover <- mang_hnd_wdpa %>%
-    calc_indicators("mangroves_area", engine = "exactextract")
-  hnd_mangrovecover_diss <- mang_hnd_wdpa_dissolved %>%
-    calc_indicators("mangroves_area", engine = "exactextract")
-  
-  mangrovecover_areas <- rbind (
-    extract_ts_mangrove(hnd_mangrovecover, FALSE),
-    extract_ts_mangrove(hnd_mangrovecover_diss, TRUE)
-  )
-  mangrovecover_areas <- aggregate(Mangrovecover ~ ., data = mangrovecover_areas, FUN = sum)
-  write.csv(mangrovecover_areas, fname_mangrove_area)
-}
-mangrovecover_areas <- read.csv(fname_mangrove_area)
-mangrovecover_areas [mangrovecover_areas$Mangrovecover > 1, ]
 ```
 
 ```{r mangroves, message = FALSE, warning = FALSE, include = FALSE}
@@ -128,17 +114,11 @@ hnd_wdpa_ids <- c('555558401', '555697537', '67989', '18845', '555582979', '1881
 ##  Protected areas
 sf_use_s2(FALSE)
 
-wdpa_kfw <- read_sf("data/honduras_mangroves.gpkg")
-wdpa_kfw <- st_make_valid(wdpa_kfw)
-wdpa_kfw <- st_cast(wdpa_kfw, "POLYGON")
-all(st_is_valid(wdpa_kfw))
-all(st_geometry_type(wdpa_kfw) == "POLYGON")
-
 hnd_kfw_dissolved <- wdpa_kfw %>%
   group_by(nomb_ap) %>%
   summarise()
 hnd_kfw_dissolved <- smoothr::fill_holes(hnd_kfw_dissolved, 0.1)
-hnd_kfw_dissolved <- st_cast(hnd_kfw_dissolved, "POLYGON")
+hnd_kfw_dissolved %<>% st_cast("MULTIPOLYGON") %>% st_cast("POLYGON")
 
 mang_hnd_wdpa <- wdpa_kfw %>%
   init_portfolio(
@@ -195,17 +175,11 @@ hnd_wdpa_ids <- c('555558401', '555697537', '67989', '18845', '555582979', '1881
 ##  Protected areas
 sf_use_s2(FALSE)
 
-wdpa_kfw <- read_sf("data/honduras_mangroves.gpkg")
-wdpa_kfw <- st_make_valid(wdpa_kfw)
-wdpa_kfw <- st_cast(wdpa_kfw, "POLYGON")
-all(st_is_valid(wdpa_kfw))
-all(st_geometry_type(wdpa_kfw) == "POLYGON")
-
 hnd_kfw_dissolved <- wdpa_kfw %>%
   group_by(nomb_ap) %>%
   summarise()
 hnd_kfw_dissolved <- smoothr::fill_holes(hnd_kfw_dissolved, 0.1)
-hnd_kfw_dissolved <- st_cast(hnd_kfw_dissolved, "POLYGON")
+hnd_kfw_dissolved %<>% st_cast("MULTIPOLYGON") %>% st_cast("POLYGON")
 
 
 hnd_wdpa <- wdpa_kfw %>%
@@ -397,11 +371,11 @@ lc_table
 
 To explore the changes in forest and mangrove coverage as reported by GFW and GMW, respectively, you can click on a region of your choice, which shows the two time series as a plot.
 
-```{r map_forest_magrove, message = FALSE, warning = FALSE, echo = FALSE}
+```{r map_forest_mangrove, message = FALSE, warning = FALSE, echo = FALSE}
 plot_one_pa <- function(dat, pa_name) {
   dat %<>%
     filter(dissolved == FALSE, min_cover == 10, Name == pa_name) %>%
-    select(-X, -dissolved, -min_cover) %>%
+    select(-dissolved, -min_cover) %>%
     melt(measure.vars = c("Mangrovecover", "Treecover")) %>%
     group_by(Name, variable) %>%
     reframe(
@@ -423,7 +397,9 @@ plot_one_pa <- function(dat, pa_name) {
     scale_color_manual(values = c("#b5923f", "#167a31"))
 }
 
-mangrove_forest_combined <- merge(mangrovecover_areas, treecover_areas, all.x = TRUE, all.y = TRUE)
+mangrovecover_areas$X <- NULL
+treecover_areas$X <- NULL
+mangrove_forest_combined <- merge(mangrovecover_areas, treecover_areas, by = c("Name", "Year", "dissolved"), all.x = TRUE, all.y = TRUE)
 map_plots <- lapply(hnd_wdpa_dissolved$nomb_ap, plot_one_pa, dat = mangrove_forest_combined)
 
 map_forest_mangrove <- basemap_custom %>%
