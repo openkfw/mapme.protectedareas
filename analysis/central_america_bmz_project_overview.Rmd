@@ -1,0 +1,136 @@
+---
+title: "Centra America Portfolio -- BMZ Project Overview"
+author: "Andreas Petutschnig, Leonie Gallé"
+date: "2023-11-22"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+```{r setup, message = FALSE, warning = FALSE, include = FALSE}
+# load libraries and set session options. 
+library(RColorBrewer)
+library(dplyr)
+library(knitr)
+library(htmltools)
+library(leaflet)
+library(leaflet.extras)
+library(leaflet.extras2)
+library(leafpop)
+library(magrittr)
+library(mapme.biodiversity)
+library(plotly)
+library(reshape2)
+library(scales)
+library(sf)
+options(scipen=10000)
+```
+
+```{r basemap_custom, message = FALSE, warning = FALSE, include = FALSE}
+basemap_custom <-
+  leaflet() %>%
+  # add external map providers
+  addTiles(group = "OpenStreetMap") %>%
+  addProviderTiles(providers$CartoDB.Positron, group="CartoDB") %>%
+  addProviderTiles(providers$Esri.WorldImagery, group="Satellite") %>%
+  addProviderTiles(providers$Esri.WorldShadedRelief, group="Topography") %>%
+  addProviderTiles(providers$NASAGIBS.ViirsEarthAtNight2012, group="Nightlights") %>%
+  addFullscreenControl() %>%
+  # add legend(s)
+  addLayersControl(
+     baseGroups = c("CartoDB", "OpenStreetMap", "Satellite", "Topography", "Nightlights"),
+     options = layersControlOptions(collapsed = FALSE))
+```
+
+
+# Introduction
+
+The following analysis intended to support a strategic peer-discussion. The goal of this exercise is to assist KfW and its partners to having a coherent overview of the Protected
+Areas (short: PA) in Central America that are currently supported by KfW (Financial Cooperation). Additionally, the goal is to identify synergies in the different projects. The
+analysis uses the publicly available data from the World Database of Protected Areas (WDPA/IUCN) [^1] as outlines.
+
+# Visualized Protected Areas
+
+We look at the Central America Portfolio (bilateral and regional, 11 projects). Data was downloaded from the WDPA and provided by the Project Partners. The following map shows the
+Central America Portfolio and the PAs currently supported by KfW (Financial Cooperation). Each project has been assigned its own color. PAs which are supported in the scope of more
+than one project are outlined in black.
+
+# Map
+
+This map is interactive, meaning that you can zoom into the map to see specific countries in more detail. Furthermore, supported PAs from the current portfolio of KfW are displayed
+with their actual polygon boundaries. For analysis purposes it is useful to also activate the satellite layer which can often indicate whether areas are affected by agricultural
+conversion.
+
+```{r load_data, message = FALSE, warning = FALSE, include = FALSE}
+dat_portfolio <- st_read("data/central_america_portfolio_with_bmz_numbers.gpkg")
+
+dat_portfolio <- dat_portfolio %>%
+  rename(
+    `WDPA ID` = wdpa_id,
+    `Project Name` = Project.Name,
+    `Short Name` = Short.Name,
+    `BMZ Number` = BMZ.Number,
+    `PA Name` = PA.Name,
+    `Project Start` = Project.Start,
+    `Project End` = Project.End,
+    `Size [ha]` = Size..ha.
+  )
+
+tbl_wdpas <- table(dat_portfolio$`WDPA ID`)
+wdpa_duplicates <- names(tbl_wdpas) [tbl_wdpas > 1]
+
+bmz_duplicates <- dat_portfolio %>%
+  filter(`WDPA ID` %in% wdpa_duplicates) %>%
+  select(`WDPA ID`, geom) %>%
+  unique()
+
+bmz_projects <- unique(dat_portfolio$`BMZ Number`)
+n_bmz_projects <- length(bmz_projects)
+col <- brewer.pal(n = n_bmz_projects, name = "Set3")
+group_names <- paste0("BMZ Project ", bmz_projects)
+
+map_portfolio <- basemap_custom
+map_portfolio <- map_portfolio %>%
+    addPolygons(data = bmz_duplicates, fillOpacity = 0, opacity = 1, group = "BMZ Duplicates", color = "#000000", weight = 5)
+for(i in seq_len(n_bmz_projects)) {
+  polys <- dat_portfolio %>%
+    filter(`BMZ Number` == bmz_projects[i])
+  poly_color <- col [i]
+  group_name <- group_names[i]
+  
+  map_portfolio <- map_portfolio %>%
+    addPolygons(data = polys, fillOpacity = 0.9, fillColor = poly_color, group = group_name, color = "#666666",
+                label = ~htmlEscape(`Project Name`), weight = 1, popup = popupTable(st_drop_geometry(polys)))
+}
+
+map_portfolio <- map_portfolio %>%
+  addLayersControl(
+     baseGroups = c("CartoDB", "OpenStreetMap", "Satellite", "Topography", "Nightlights"),
+     overlayGroups = c(group_names),
+     options = layersControlOptions(collapsed = FALSE))
+```
+
+```{r map_portfolio_plot, message = FALSE, warning = FALSE, echo = FALSE}
+map_portfolio
+```
+
+To select/deselect individual BMZ Projects, you can use the layer overview on the right of the map.
+The project numbers of overlapping BMZ projects are:
+
+```{r duplicate-table, message = FALSE, warning = FALSE, echo = FALSE}
+duplicate_table <- dat_portfolio %>%
+  st_drop_geometry() %>%
+  filter(`WDPA ID` %in% wdpa_duplicates) %>%
+  select(`WDPA ID`, `BMZ Number`, `Short Name`) %>%
+  unique() %>%
+  arrange(., `WDPA ID`)
+
+kable(
+  duplicate_table
+)
+```
+
+
+[comment]: <> (Literature)
+
+[^1]: UNEP-WCMC and IUCN (2022), Protected Planet: The World Database on Protected Areas (WDPA) and World Database on Other Effective Area-based Conservation Measures (WD-OECM) [Online], February 2022, Cambridge, UK: UNEP-WCMC and IUCN. Available at: www.protectedplanet.net.
