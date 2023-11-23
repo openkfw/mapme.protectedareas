@@ -1,5 +1,5 @@
 ---
-title: "Centra America Portfolio -- BMZ Project Overview"
+title: "Central America Portfolio -- BMZ/IKI Project Overview"
 author: "Andreas Petutschnig, Leonie Gallé"
 date: "2023-11-22"
 output: workflowr::wflow_html
@@ -69,7 +69,7 @@ dat_portfolio <- dat_portfolio %>%
     `WDPA ID` = wdpa_id,
     `Project Name` = Project.Name,
     `Short Name` = Short.Name,
-    `BMZ Number` = BMZ.Number,
+    `BMZ/IKI Number` = BMZ.Number,
     `PA Name` = PA.Name,
     `Project Start` = Project.Start,
     `Project End` = Project.End,
@@ -84,17 +84,25 @@ bmz_duplicates <- dat_portfolio %>%
   select(`WDPA ID`, geom) %>%
   unique()
 
-bmz_projects <- unique(dat_portfolio$`BMZ Number`)
+bmz_projects <- unique(dat_portfolio$`BMZ/IKI Number`)
 n_bmz_projects <- length(bmz_projects)
 col <- brewer.pal(n = n_bmz_projects, name = "Set3")
-group_names <- paste0("BMZ Project ", bmz_projects)
+
+group_names <- as.character(bmz_projects)
+for (i in seq_along(bmz_projects)) {
+  prefix <- "BMZ Project"
+  if (bmz_projects [i] == "209811209") {
+    prefix <- "IKI Project"
+  }
+  group_names [i] <- paste(prefix, bmz_projects [i])
+}
 
 map_portfolio <- basemap_custom
 map_portfolio <- map_portfolio %>%
     addPolygons(data = bmz_duplicates, fillOpacity = 0, opacity = 1, group = "BMZ Duplicates", color = "#000000", weight = 5)
 for(i in seq_len(n_bmz_projects)) {
   polys <- dat_portfolio %>%
-    filter(`BMZ Number` == bmz_projects[i])
+    filter(`BMZ/IKI Number` == bmz_projects[i])
   poly_color <- col [i]
   group_name <- group_names[i]
   
@@ -107,7 +115,12 @@ map_portfolio <- map_portfolio %>%
   addLayersControl(
      baseGroups = c("CartoDB", "OpenStreetMap", "Satellite", "Topography", "Nightlights"),
      overlayGroups = c(group_names),
-     options = layersControlOptions(collapsed = FALSE))
+     options = layersControlOptions(collapsed = FALSE)) %>%
+  htmlwidgets::onRender("
+        function() {
+            $('.leaflet-control-layers-overlays').prepend('<label style=\"text-align:center\"><b>BMZ/IKI Project Overview</b></label>');
+        }
+  ")
 ```
 
 ```{r map_portfolio_plot, message = FALSE, warning = FALSE, echo = FALSE}
@@ -121,7 +134,7 @@ The project numbers of overlapping BMZ projects are:
 duplicate_table <- dat_portfolio %>%
   st_drop_geometry() %>%
   filter(`WDPA ID` %in% wdpa_duplicates) %>%
-  select(`WDPA ID`, `BMZ Number`, `Short Name`) %>%
+  select(`WDPA ID`, `BMZ/IKI Number`, `Short Name`) %>%
   unique() %>%
   arrange(., `WDPA ID`)
 
